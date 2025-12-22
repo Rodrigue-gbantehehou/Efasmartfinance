@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EFA SMART FINANCE — Inscription</title>
+  <meta name="description" content="Créer un compte EFA Smart Finance." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#1a4d2e',
+            secondary: '#f6c90e',
+            accent: '#2e7d32',
+            light: '#f8f9fa',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .gradient-bg { background: linear-gradient(135deg, #1a4d2e 0%, #2e7d32 100%); }
+    .shadow-custom { box-shadow: 0 8px 40px rgba(0,0,0,.18); }
+  </style>
+</head>
+<body class="min-h-screen gradient-bg flex items-center justify-center p-6">
+  <main class="w-full max-w-md">
+    <div class="bg-white/95 backdrop-blur rounded-2xl shadow-custom p-8">
+      <div class="flex items-center justify-center mb-6">
+        <img src="../images/estm.png" alt="Logo EFA Smart Finance" class="h-12 w-12 mr-3 rounded-full" />
+        <div>
+          <h1 class="text-xl font-extrabold text-primary leading-tight">EFA SMART FINANCE</h1>
+          <p class="text-sm text-gray-500">Création de compte (démo)</p>
+        </div>
+      </div>
+    {% for flash_error in app.flashes('verify_email_error') %}
+        <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
+    {% endfor %}
+
+      {{ form_start(registrationForm ,{'attr': {'class': 'space-y-4'}}) }}
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+            {{ form_row(registrationForm.firstName ,{'attr': {'class': 'px-3 py-2 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent'}}   ) }}
+          </div>
+          <div>
+            <label for="password2" class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+            {{ form_row(registrationForm.lastName ,{'attr': {'class': 'px-3 py-2 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent'}}) }}
+          </div>
+        </div>
+   
+
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+          {{ form_row(registrationForm.email ,{'attr': {'class': 'px-3 py-2 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent','id': 'email'}}) }}
+        </div>
+
+        <div>
+          <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Téléphone (optionnel)</label>
+          {{ form_row(registrationForm.phone ,{'attr': {'class': 'px-3 py-2 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent','id': 'phone'}}) }}
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+          {{ form_row(registrationForm.plainPassword ,{'attr': {'class': 'px-3 py-2 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent'}}) }}
+        </div>
+
+        
+
+        <label class="inline-flex items-center gap-2 text-sm">
+        {{ form_row(registrationForm.agreeTerms ,{' attr': {'class': 'rounded border-gray-300 text-primary focus:ring-secondary'}}) }}
+          <span class="text-gray-600">J’accepte les CGU et la Politique de confidentialité</span>
+        </label>
+
+        <button type="submit"
+                class="w-full bg-secondary text-primary font-bold py-2.5 rounded-lg hover:bg-yellow-500 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary">
+          Créer mon compte
+        </button>
+      {{ form_end(registrationForm) }}
+
+      <p class="mt-4 text-sm text-gray-600 text-center">
+        Déjà inscrit ?
+        <a href="index.php" class="font-semibold text-primary hover:text-accent">Se connecter</a>
+      </p>
+
+      <div class="mt-6 text-center">
+        <a href="../index.php" class="inline-flex items-center text-sm text-gray-600 hover:text-primary">
+          <i class="fa-solid fa-arrow-left mr-2"></i>Retour au site
+        </a>
+      </div>
+    </div>
+
+    <p class="text-center text-white/80 text-xs mt-4">
+      © <span id="year"></span> EFA Smart Finance — Tous droits réservés
+    </p>
+  </main>
+<script src="{{ asset('assets/js/registration.js') }}"></script>
+  <script>
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>

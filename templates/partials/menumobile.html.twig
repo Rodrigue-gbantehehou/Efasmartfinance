@@ -1,0 +1,24 @@
+  <!-- Mobile Menu -->
+  <div id="mobileMenuOverlay" class="fixed inset-0 bg-black/60 z-[60] hidden"></div>
+  <aside id="mobileMenu" class="fixed top-0 right-0 bottom-0 w-4/5 max-w-sm bg-primary text-white z-[70] translate-x-full transition-transform">
+    <div class="p-6 h-full flex flex-col">
+      <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center space-x-2">
+          <img src="{{ asset('assets/images/estm.png') }}" alt="Logo EFA Smart Finance" class="h-10 w-10 rounded-full">
+          <h3 class="text-xl font-bold">EFA SMART FINANCE</h3>
+        </div>
+        <button id="closeMobileMenu" class="text-2xl" aria-label="Fermer le menu"><i class="fas fa-times"></i></button>
+      </div>
+      <nav class="flex flex-col space-y-6">
+        <a href="#accueil" class="hover:text-secondary transition">Accueil</a>
+        <a href="#tontines" class="hover:text-secondary transition">Tontines</a>
+        <a href="#plans" class="hover:text-secondary transition">Épargne</a>
+        <a href="#securite" class="hover:text-secondary transition">Sécurité</a>
+        <a href="#faq" class="hover:text-secondary transition">Aide</a>
+        <a href="#" class="hover:text-secondary transition">Mon compte</a>
+      </nav>
+      <div class="mt-auto pt-6 border-t border-white/10 text-sm opacity-80">
+        © <span id="year"></span> EFA Smart Finance
+      </div>
+    </div>
+  </aside>

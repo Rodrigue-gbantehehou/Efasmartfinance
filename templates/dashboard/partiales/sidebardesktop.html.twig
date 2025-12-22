@@ -1,0 +1,53 @@
+ <aside id="sidebar" class="hidden md:flex md:w-72 bg-white border-r border-gray-100 flex-col flex-shrink-0">
+      <div class="px-5 py-4 flex items-center gap-3">
+        <img src="../images/estm.png" alt="Logo" class="h-10 w-10 rounded-full"/>
+        <div>
+          <div class="font-extrabold text-primary leading-tight">EFA SMART FINANCE</div>
+          <div class="text-xs text-gray-500 -mt-0.5">Tontines individuelles</div>
+        </div>
+      </div>
+      
+      <div class="px-4 py-3 border-y border-gray-100">
+        <div class="flex items-center gap-3">
+          <div class="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <div>
+            <div class="font-semibold text-sm">Bienvenue, <span id="userName">Utilisateur</span></div>
+            <div class="text-xs text-gray-500">Complet depuis 2024</div>
+          </div>
+        </div>
+      </div>
+      
+      <nav class="mt-2 px-3 pb-4 space-y-1 flex-1 overflow-y-auto">
+        <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg bg-primary/5 text-primary font-medium touch-target">
+          <i class="fa-solid fa-gauge w-6"></i><span>Tableau de bord</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
+          <i class="fa-solid fa-coins w-6"></i><span>Mes tontines</span>
+          <span id="tontineCount" class="ml-auto text-xs bg-primary text-white rounded-full h-5 w-5 flex items-center justify-center">0</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
+          <i class="fa-solid fa-calendar-check w-6"></i><span>Échéances</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
+          <i class="fa-solid fa-chart-line w-6"></i><span>Statistiques</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
+          <i class="fa-solid fa-credit-card w-6"></i><span>Paiements</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
+          <i class="fa-solid fa-gear w-6"></i><span>Paramètres</span>
+        </a>
+        <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
+          <i class="fa-solid fa-circle-question w-6"></i><span>Aide & Support</span>
+        </a>
+      </nav>
+      
+      <div class="p-4 border-t border-gray-100 flex-shrink-0">
+        <a href="index.php" class="w-full inline-flex items-center justify-center gap-2 px-3 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 touch-target">
+          <i class="fa-solid fa-right-from-bracket"></i> <span>Se déconnecter</span>
+        </a>
+        <p class="text-xs text-gray-400 text-center mt-3">© <span id="year"></span> EFA SMART FINANCE</p>
+      </div>
+    </aside>

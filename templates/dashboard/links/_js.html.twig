@@ -1,0 +1,414 @@
+ <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script>
+    // Données de démonstration
+    const demoData = {
+      user: {
+        name: "John Doe",
+        email: "john.doe@example.com",
+        joinDate: "2024-01-15",
+        verified: true
+      },
+      tontines: [
+        {
+          id: 1,
+          name: "Épargne vacances",
+          period: "monthly",
+          amount: 25000,
+          startDate: "2024-09-01",
+          nextPayment: "2024-10-01",
+          progress: 25,
+          status: "active",
+          totalMonths: 12,
+          paidMonths: 3
+        },
+        {
+          id: 2,
+          name: "Projet voiture",
+          period: "weekly",
+          amount: 5000,
+          startDate: "2024-08-15",
+          nextPayment: "2024-10-08",
+          progress: 60,
+          status: "active",
+          totalWeeks: 52,
+          paidWeeks: 31
+        },
+        {
+          id: 3,
+          name: "Fonds d'urgence",
+          period: "monthly",
+          amount: 75000,
+          startDate: "2024-01-01",
+          nextPayment: "2024-10-01",
+          progress: 75,
+          status: "active",
+          totalQuarters: 8,
+          paidQuarters: 6
+        }
+      ],
+      stats: {
+        totalBalance: 385000,
+        activeTontines: 3,
+        completedTontines: 2,
+        monthlySavings: 55000,
+        latePayments: 1,
+        lateAmount: 25000
+      }
+    };
+
+    // Initialisation
+    document.addEventListener('DOMContentLoaded', function() {
+      // Années
+      const currentYear = new Date().getFullYear();
+      document.getElementById('year').textContent = currentYear;
+      document.getElementById('year2').textContent = currentYear;
+      document.getElementById('currentYear').textContent = currentYear;
+      
+      // Données utilisateur
+      document.getElementById('userName').textContent = demoData.user.name;
+      document.getElementById('userDisplayName').textContent = demoData.user.name;
+      document.getElementById('welcomeUserName').textContent = demoData.user.name;
+      
+      // Mise à jour des statistiques
+      updateStatistics();
+      
+      // Mise à jour des tontines
+      updateTontinesTable();
+      
+      // Mise à jour des échéances
+      updateUpcomingPayments();
+      
+      // Initialisation des graphiques
+      initCharts();
+      
+      // Gestion du menu utilisateur
+      initUserMenu();
+      
+      // Gestion du drawer mobile
+      initMobileDrawer();
+    });
+
+    // Gestion du drawer mobile
+    function initMobileDrawer() {
+      const openDrawerBtn = document.getElementById('openDrawer');
+      const drawer = document.getElementById('drawer');
+      const drawerBackdrop = document.getElementById('drawerBackdrop');
+
+      openDrawerBtn?.addEventListener('click', () => {
+        drawer.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+      });
+      
+      drawerBackdrop?.addEventListener('click', () => {
+        drawer.classList.add('hidden');
+        document.body.style.overflow = '';
+      });
+      
+      // Fermer avec Escape
+      document.addEventListener('keydown', (e) => { 
+        if (e.key === 'Escape') {
+          drawer.classList.add('hidden');
+          document.body.style.overflow = '';
+        }
+      });
+    }
+
+    // Mise à jour des statistiques
+    function updateStatistics() {
+      const stats = demoData.stats;
+      
+      // KPI
+      document.getElementById('totalBalance').textContent = formatCurrency(stats.totalBalance);
+      document.getElementById('activeTontinesCount').textContent = stats.activeTontines;
+      document.getElementById('completedTontines').textContent = stats.completedTontines;
+      document.getElementById('totalTontines').textContent = stats.activeTontines + stats.completedTontines;
+      
+      // Calcul du pourcentage de progression
+      const totalTontines = stats.activeTontines + stats.completedTontines;
+      const progress = totalTontines > 0 ? (stats.completedTontines / totalTontines) * 100 : 0;
+      document.getElementById('activeTontinesProgress').style.width = `${progress}%`;
+      
+      // Épargne mensuelle
+      document.getElementById('monthlySavings').textContent = formatCurrency(stats.monthlySavings);
+      document.getElementById('savingsChange').innerHTML = '<i class="fa-solid fa-arrow-trend-up"></i> +12%';
+      
+      // Prochain paiement
+      if (demoData.tontines.length > 0) {
+        const nextTontine = demoData.tontines[0];
+        document.getElementById('nextPaymentAmount').textContent = formatCurrency(nextTontine.amount);
+        document.getElementById('nextPaymentDate').textContent = formatDate(nextTontine.nextPayment);
+        document.getElementById('nextPaymentTontine').textContent = nextTontine.name;
+      }
+      
+      // Retards
+      document.getElementById('latePaymentsCount').textContent = stats.latePayments;
+      document.getElementById('latePaymentsAmount').textContent = formatCurrency(stats.lateAmount);
+      document.getElementById('latePaymentsProgress').style.width = stats.latePayments > 0 ? '60%' : '0%';
+      
+      // Compteur de tontines
+      document.getElementById('tontineCount').textContent = demoData.tontines.length;
+    }
+
+    // Mise à jour du tableau des tontines - Version mobile optimisée
+    function updateTontinesTable() {
+      const tbody = document.getElementById('tontinesTableBody');
+      
+      if (demoData.tontines.length === 0) {
+        return; // Garder le message par défaut
+      }
+      
+      // Vider le tableau
+      tbody.innerHTML = '';
+      
+      // Ajouter chaque tontine
+      demoData.tontines.forEach(tontine => {
+        const row = document.createElement('tr');
+        row.className = 'hover:bg-gray-50';
+        
+        // Formatage des données
+        const periodText = {
+          'weekly': 'Hebdo',
+          'monthly': 'Mensuel',
+          'daily': 'Quotidien'
+        }[tontine.period] || tontine.period;
+        
+        const status = tontine.status === 'active' ? 
+          '<span class="px-2 py-1 text-xs rounded-full bg-emerald-50 text-emerald-700 whitespace-nowrap">Active</span>' :
+          '<span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-700 whitespace-nowrap">Terminée</span>';
+        
+        // Barre de progression
+        const progressBar = `
+          <div class="flex items-center gap-1 min-w-[80px]">
+            <div class="flex-1 h-2 bg-gray-100 rounded-full overflow-hidden">
+              <div class="h-full bg-primary rounded-full" style="width: ${tontine.progress}%"></div>
+            </div>
+            <span class="text-xs font-medium whitespace-nowrap">${tontine.progress}%</span>
+          </div>
+        `;
+        
+        row.innerHTML = `
+          <td class="py-3 pr-2">
+            <div class="font-medium text-sm truncate max-w-[120px]">${tontine.name}</div>
+            <div class="text-xs text-gray-500 sm:hidden">${periodText}</div>
+          </td>
+          <td class="py-3 pr-2 hidden sm:table-cell whitespace-nowrap">${periodText}</td>
+          <td class="py-3 pr-2 font-semibold whitespace-nowrap">${formatCurrency(tontine.amount)}</td>
+          <td class="py-3 pr-2 hidden md:table-cell">
+            <div class="font-medium whitespace-nowrap">${formatDate(tontine.nextPayment)}</div>
+            <div class="text-xs text-gray-500">Dans ${daysUntil(tontine.nextPayment)} jours</div>
+          </td>
+          <td class="py-3 pr-2">
+            ${progressBar}
+            <div class="text-xs text-gray-500 md:hidden mt-1">${formatDate(tontine.nextPayment)}</div>
+          </td>
+          <td class="py-3 pr-2">${status}</td>
+          <td class="py-3">
+            <div class="flex items-center gap-1">
+              <button onclick="viewTontine(${tontine.id})" class="p-1 hover:bg-gray-100 rounded touch-target" title="Voir">
+                <i class="fa-solid fa-eye text-gray-600 text-sm"></i>
+              </button>
+              <button onclick="payTontine(${tontine.id})" class="p-1 hover:bg-gray-100 rounded touch-target" title="Payer">
+                <i class="fa-solid fa-credit-card text-primary text-sm"></i>
+              </button>
+            </div>
+          </td>
+        `;
+        
+        tbody.appendChild(row);
+      });
+    }
+
+    // Mise à jour des échéances à venir
+    function updateUpcomingPayments() {
+      const container = document.getElementById('upcomingPayments');
+      
+      if (demoData.tontines.length === 0) {
+        return; // Garder le message par défaut
+      }
+      
+      // Trier par date d'échéance
+      const sortedTontines = [...demoData.tontines].sort((a, b) => 
+        new Date(a.nextPayment) - new Date(b.nextPayment)
+      );
+      
+      // Prendre les 4 prochaines échéances
+      const upcoming = sortedTontines.slice(0, 4);
+      
+      container.innerHTML = '';
+      
+      upcoming.forEach(tontine => {
+        const days = daysUntil(tontine.nextPayment);
+        const urgencyClass = days <= 3 ? 'border-warning' : 'border-gray-200';
+        
+        const card = document.createElement('div');
+        card.className = 'border rounded-xl p-3 hover:shadow-sm transition-shadow ' + urgencyClass;
+        
+        card.innerHTML = `
+          <div class="flex justify-between items-start mb-2">
+            <div class="min-w-0 flex-1">
+              <div class="font-semibold text-sm truncate">${tontine.name}</div>
+              <div class="text-xs text-gray-500">${formatDate(tontine.nextPayment)}</div>
+            </div>
+            ${days <= 3 ? '<span class="px-2 py-1 text-xs rounded-full bg-warning/10 text-warning flex-shrink-0 ml-2">Urgent</span>' : ''}
+          </div>
+          <div class="text-lg font-bold text-primary mb-3 truncate">${formatCurrency(tontine.amount)}</div>
+          <div class="flex justify-between items-center">
+            <div class="text-sm">
+              <span class="text-gray-600">Dans</span>
+              <span class="font-bold ml-1">${days} jour${days > 1 ? 's' : ''}</span>
+            </div>
+            <button onclick="payTontine(${tontine.id})" class="px-3 py-1.5 text-sm bg-primary text-white rounded-lg hover:bg-green-700 touch-target whitespace-nowrap">
+              Payer
+            </button>
+          </div>
+        `;
+        
+        container.appendChild(card);
+      });
+    }
+
+    // Initialisation des graphiques
+    function initCharts() {
+      const ctx = document.getElementById('savingsChart')?.getContext('2d');
+      if (!ctx) return;
+      
+      // Données de démonstration
+      const months = ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Jun', 'Jul', 'Aoû', 'Sep'];
+      const savingsData = [0, 50000, 120000, 180000, 250000, 320000, 385000, 385000, 385000];
+      
+      const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: months,
+          datasets: [{
+            label: 'Épargne cumulée',
+            data: savingsData,
+            borderWidth: 2,
+            borderColor: '#10B981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            fill: true,
+            tension: 0.4,
+            pointRadius: window.innerWidth < 640 ? 2 : 3,
+            pointHoverRadius: window.innerWidth < 640 ? 4 : 5,
+          }]
+        },
+        options: {
+          plugins: { 
+            legend: { display: false },
+            tooltip: {
+              mode: 'index',
+              intersect: false,
+              callbacks: {
+                label: function(context) {
+                  return `Épargne: ${formatCurrency(context.raw)}`;
+                }
+              },
+              titleFont: {
+                size: window.innerWidth < 640 ? 12 : 14
+              },
+              bodyFont: {
+                size: window.innerWidth < 640 ? 11 : 13
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                display: false
+              },
+              ticks: {
+                maxRotation: 0,
+                font: {
+                  size: window.innerWidth < 640 ? 10 : 12
+                }
+              }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: function(value) {
+                  if (value >= 1000000) return (value / 1000000) + 'M';
+                  if (value >= 1000) return (value / 1000) + 'k';
+                  return value;
+                },
+                font: {
+                  size: window.innerWidth < 640 ? 10 : 12
+                }
+              }
+            }
+          },
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: {
+            intersect: false,
+            mode: 'index',
+          }
+        }
+      });
+      
+      // Redimensionner le graphique quand la fenêtre change
+      window.addEventListener('resize', function() {
+        chart.resize();
+      });
+    }
+
+    // Gestion du menu utilisateur
+    function initUserMenu() {
+      const menuButton = document.getElementById('userMenuButton');
+      const menu = document.getElementById('userMenu');
+      
+      if (!menuButton || !menu) return;
+      
+      menuButton.addEventListener('click', (e) => {
+        e.stopPropagation();
+        menu.classList.toggle('hidden');
+      });
+      
+      // Fermer le menu en cliquant ailleurs
+      document.addEventListener('click', () => {
+        menu.classList.add('hidden');
+      });
+      
+      // Empêcher la fermeture en cliquant dans le menu
+      menu.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+    }
+
+    // Fonctions utilitaires
+    function formatCurrency(amount) {
+      return new Intl.NumberFormat('fr-FR').format(amount) + ' FCFA';
+    }
+    
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('fr-FR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    }
+    
+    function daysUntil(dateString) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const targetDate = new Date(dateString);
+      targetDate.setHours(0, 0, 0, 0);
+      const diff = targetDate - today;
+      return Math.ceil(diff / (1000 * 60 * 60 * 24));
+    }
+
+    // Fonctions d'action (simulées)
+    function viewTontine(id) {
+      alert(`Voir les détails de la tontine #${id}`);
+    }
+    
+    function editTontine(id) {
+      alert(`Modifier la tontine #${id}`);
+    }
+    
+    function payTontine(id) {
+      alert(`Effectuer un paiement pour la tontine #${id}`);
+    }
+  </script>

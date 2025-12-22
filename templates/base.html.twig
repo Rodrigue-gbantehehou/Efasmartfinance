@@ -4,14 +4,35 @@
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+       <title>EFA SMART FINANCE — Tontines & Épargne</title>
+        <meta name="description" content="Gérez vos tontines et vos plans d’épargne (hebdo, mensuel, trimestriel, semestriel) en toute simplicité. Paiement Mobile Money, virement, carte bancaire. Calendrier et rappels intégrés." />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        {% include 'links/_links_css.html.twig' %}
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
+       <script>
+            tailwind.config = {
+            theme: {
+                extend: {
+                colors: {
+                    primary: '#1a4d2e',    // vert foncé
+                    secondary: '#f6c90e',  // jaune
+                    accent: '#2e7d32',     // vert moyen
+                    light: '#f8f9fa',      // fond clair
+                }
+                }
+            }
+            }
+        </script>
+      
+
     </head>
-    <body>
+    <body class="bg-gray-50 font-sans">
+        {% include 'partials/header.html.twig' %}
         {% block body %}{% endblock %}
+        {% include 'partials/menumobile.html.twig' %}
+        {% include 'partials/footer.html.twig' %}
+        {% include 'links/_links_js.html.twig' %}
     </body>
+
 </html>

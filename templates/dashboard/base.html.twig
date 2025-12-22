@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>EFA SMART FINANCE — Tableau de bord Tontines</title>
+  <meta name="description" content="Tableau de bord des tontines individuelles pour la gestion de vos épargnes." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#10B981',
+            secondary: '#FBBF24',
+            accent: '#059669',
+            warning: '#F59E0B',
+            danger: '#EF4444',
+            light: '#f8f9fa',
+          },
+          screens: {
+            'xs': '475px',
+            'xxs': '375px',
+          }
+        }
+      }
+    }
+  </script>
+ {% include 'dashboard/links/_css.html.twig' %}
+</head>
+<body class="bg-gray-50 text-gray-800 h-full">
+  <!-- App Shell -->
+  <div class="h-full flex flex-col md:flex-row">
+    
+    <!-- Mobile Header -->
+    {% include "dashboard/partiales/mobileheader.html.twig" %}
+
+    <!-- Desktop Sidebar -->
+    {% include "dashboard/partiales/sidebardesktop.html.twig" %}
+
+    <!-- Main Content -->
+    <main class="flex-1 min-w-0 flex flex-col h-full">
+      <!-- Desktop Topbar -->
+     {% block contentdashboard %}
+     {% endblock %}
+    </main>
+  </div>
+ <!-- Mobile Drawer -->
+  {% include "dashboard/partiales/mobiledrawer.html.twig" %}
+ 
+  <!-- Bottom Navigation Mobile -->
+  {% include "dashboard/partiales/bottom_nav_mobile.html.twig" %}
+
+{% include "dashboard/links/_js.html.twig" %}
+ 
+</body>
+</html>

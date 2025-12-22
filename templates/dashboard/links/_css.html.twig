@@ -1,0 +1,67 @@
+ <style>
+    @media (max-width: 640px) {
+      html {
+        font-size: 15px;
+      }
+    }
+    
+    @media (max-width: 475px) {
+      html {
+        font-size: 14px;
+      }
+    }
+    
+    /* Améliorations pour le tactile */
+    button, a, input, select {
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .touch-target {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    
+    /* Empêcher le zoom sur les inputs iOS */
+    input[type="number"], input[type="text"], input[type="date"] {
+      font-size: 16px !important;
+    }
+    
+    /* Smooth scrolling */
+    * {
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Optimisations pour les cartes */
+    .card {
+      border-radius: 12px;
+      transition: all 0.2s ease;
+    }
+    
+    .card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+    }
+    
+    /* Améliorations pour le tableau mobile */
+    .table-responsive {
+      display: block;
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Safe area pour iPhone X+ */
+    .safe-top {
+      padding-top: env(safe-area-inset-top);
+    }
+    
+    .safe-bottom {
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+    
+    /* Fix pour le scroll */
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+  </style>

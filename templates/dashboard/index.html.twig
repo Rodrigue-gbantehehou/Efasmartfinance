@@ -1,0 +1,285 @@
+{% extends "dashboard/base.html.twig" %}
+{% block contentdashboard %}
+ <header class="hidden md:block bg-white border-b border-gray-100 sticky top-0 z-30 flex-shrink-0">
+        <div class="max-w-[1400px] mx-auto px-4 md:px-6 py-3 flex items-center gap-3">
+          <!-- Quick Actions -->
+          <div class="flex items-center gap-2 flex-1">
+            <a href="tontine_nouvelle.php" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-white hover:bg-green-700 transition-colors font-medium touch-target">
+              <i class="fa-solid fa-plus"></i> Nouvelle tontine
+            </a>
+            <a href="#" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-gray-200 hover:bg-gray-50 touch-target">
+              <i class="fa-solid fa-rotate"></i> Recharger
+            </a>
+          </div>
+          
+          <div class="flex items-center gap-3 ml-auto">
+            <!-- Notifications -->
+            <div class="relative">
+              <button class="relative h-10 w-10 rounded-lg hover:bg-gray-100 flex items-center justify-center touch-target">
+                <i class="fa-regular fa-bell text-gray-700"></i>
+                <span id="notificationCount" class="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-warning text-white text-xs flex items-center justify-center">3</span>
+              </button>
+            </div>
+            
+            <!-- User Menu -->
+            <div class="flex items-center gap-3">
+              <div class="text-right hidden md:block">
+                <div class="font-semibold leading-4" id="userDisplayName">John Doe</div>
+                <div class="text-xs text-gray-500">Compte vérifié</div>
+              </div>
+              <div class="relative">
+                <button id="userMenuButton" class="h-10 w-10 rounded-full bg-primary/10 text-primary flex items-center justify-center hover:bg-primary/20 touch-target">
+                  <i class="fa-solid fa-user"></i>
+                </button>
+                <div id="userMenu" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden z-50">
+                  <a href="#" class="block px-4 py-3 hover:bg-gray-50"><i class="fa-solid fa-user mr-3"></i> Mon profil</a>
+                  <a href="#" class="block px-4 py-3 hover:bg-gray-50"><i class="fa-solid fa-lock mr-3"></i> Sécurité</a>
+                  <div class="border-t border-gray-200"></div>
+                  <a href="index.php" class="block px-4 py-3 text-red-600 hover:bg-gray-50"><i class="fa-solid fa-right-from-bracket mr-3"></i> Déconnexion</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+      
+      <!-- Content Area - CORRECTION ICI -->
+      <div class="flex-1 overflow-y-auto h-0 min-h-0">
+        <div class="max-w-[1400px] mx-auto px-3 xs:px-4 md:px-6 py-4 md:py-6 space-y-4 md:space-y-6">
+          
+          <!-- Welcome Banner -->
+          <div class="bg-gradient-to-r from-primary to-accent text-white rounded-2xl p-4 md:p-6 card">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div class="flex-1">
+                <h1 class="text-xl md:text-2xl font-bold mb-2">Bonjour, <span id="welcomeUserName">Utilisateur</span> !</h1>
+                <p class="opacity-90 text-sm md:text-base">Gérez vos tontines individuelles et suivez votre épargne en temps réel.</p>
+                <div class="mt-4 flex flex-wrap gap-2">
+                  <div class="bg-white/20 px-3 py-1 rounded-full text-xs md:text-sm">
+                    <i class="fa-solid fa-shield-alt mr-1"></i> Sécurisé à 100%
+                  </div>
+                  <div class="bg-white/20 px-3 py-1 rounded-full text-xs md:text-sm">
+                    <i class="fa-solid fa-bolt mr-1"></i> Automatisé
+                  </div>
+                </div>
+              </div>
+              <div class="text-center md:text-right">
+                <div class="text-2xl xs:text-3xl md:text-4xl font-bold mb-1" id="totalBalance">0 FCFA</div>
+                <div class="text-xs md:text-sm opacity-90">Capital total épargné</div>
+                <a href="#" class="inline-block mt-3 px-4 py-2 bg-white text-primary rounded-lg font-medium hover:bg-gray-100 text-sm touch-target">
+                  Voir le détail
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- KPI Cards - Grille responsive -->
+          <section class="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+            <!-- Tontines actives -->
+            <div class="bg-white rounded-xl p-4 border border-gray-100 card">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-xs uppercase tracking-wide text-gray-500">Tontines actives</p>
+                  <p id="activeTontinesCount" class="text-xl xs:text-2xl font-extrabold text-primary mt-1">0</p>
+                </div>
+                <span class="h-10 w-10 xs:h-12 xs:w-12 rounded-lg bg-primary/10 text-primary flex items-center justify-center">
+                  <i class="fa-solid fa-piggy-bank text-lg xs:text-xl"></i>
+                </span>
+              </div>
+              <div class="mt-3">
+                <div class="h-1.5 xs:h-2 bg-gray-100 rounded-full">
+                  <div id="activeTontinesProgress" class="h-1.5 xs:h-2 bg-primary rounded-full" style="width:0%"></div>
+                </div>
+                <p class="text-xs text-gray-500 mt-1"><span id="completedTontines">0</span> terminées sur <span id="totalTontines">0</span></p>
+              </div>
+            </div>
+
+            <!-- Épargne mensuelle -->
+            <div class="bg-white rounded-xl p-4 border border-gray-100 card">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-xs uppercase tracking-wide text-gray-500">Épargne mensuelle</p>
+                  <p id="monthlySavings" class="text-xl xs:text-2xl font-extrabold text-primary mt-1">0 FCFA</p>
+                </div>
+                <span class="h-10 w-10 xs:h-12 xs:w-12 rounded-lg bg-secondary/20 text-primary flex items-center justify-center">
+                  <i class="fa-solid fa-chart-line text-lg xs:text-xl"></i>
+                </span>
+              </div>
+              <p class="text-xs text-gray-500 mt-3">
+                <span id="savingsChange" class="text-emerald-600">
+                  <i class="fa-solid fa-arrow-trend-up"></i> +0%
+                </span> vs mois dernier
+              </p>
+            </div>
+
+            <!-- Prochain paiement -->
+            <div class="bg-white rounded-xl p-4 border border-gray-100 card">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-xs uppercase tracking-wide text-gray-500">Prochain paiement</p>
+                  <p id="nextPaymentAmount" class="text-xl xs:text-2xl font-extrabold text-primary mt-1">0 FCFA</p>
+                </div>
+                <span class="h-10 w-10 xs:h-12 xs:w-12 rounded-lg bg-warning/10 text-warning flex items-center justify-center">
+                  <i class="fa-solid fa-calendar-day text-lg xs:text-xl"></i>
+                </span>
+              </div>
+              <p class="text-xs text-gray-500 mt-3">
+                <span id="nextPaymentDate">--/--/----</span> • 
+                <span id="nextPaymentTontine">Aucune</span>
+              </p>
+            </div>
+
+            <!-- Retards -->
+            <div class="bg-white rounded-xl p-4 border border-gray-100 card">
+              <div class="flex items-center justify-between">
+                <div>
+                  <p class="text-xs uppercase tracking-wide text-gray-500">Paiements en retard</p>
+                  <p id="latePaymentsCount" class="text-xl xs:text-2xl font-extrabold text-danger mt-1">0</p>
+                </div>
+                <span class="h-10 w-10 xs:h-12 xs:w-12 rounded-lg bg-danger/10 text-danger flex items-center justify-center">
+                  <i class="fa-solid fa-clock text-lg xs:text-xl"></i>
+                </span>
+              </div>
+              <div class="mt-3">
+                <div class="h-1.5 xs:h-2 bg-gray-100 rounded-full">
+                  <div id="latePaymentsProgress" class="h-1.5 xs:h-2 bg-danger rounded-full" style="width:0%"></div>
+                </div>
+                <p class="text-xs text-gray-500 mt-1">Montant: <span id="latePaymentsAmount">0 FCFA</span></p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Charts & Quick Actions -->
+          <section class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <!-- Graphique d'évolution -->
+            <div class="lg:col-span-2 bg-white rounded-xl p-4 md:p-5 border border-gray-100 card">
+              <div class="flex flex-col xs:flex-row xs:items-center justify-between mb-3 gap-2">
+                <h3 class="font-semibold text-gray-800 text-base md:text-lg">Évolution de l'épargne</h3>
+                <div class="flex items-center gap-2">
+                  <button class="text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary touch-target">6 mois</button>
+                  <button class="text-xs px-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-50 touch-target">1 an</button>
+                </div>
+              </div>
+              <div class="relative" style="height: 180px">
+                <canvas id="savingsChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Actions rapides -->
+            <div class="bg-white rounded-xl p-4 md:p-5 border border-gray-100 card">
+              <h3 class="font-semibold text-gray-800 mb-4 text-base md:text-lg">Actions rapides</h3>
+              <div class="space-y-2">
+                <a href="tontine_nouvelle.php" class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-primary/5 hover:border-primary transition-colors touch-target">
+                  <div class="h-10 w-10 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-plus"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <div class="font-medium text-sm md:text-base truncate">Créer une tontine</div>
+                    <div class="text-xs text-gray-500 truncate">Lancer une nouvelle épargne</div>
+                  </div>
+                </a>
+                
+                <a href="#" class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-primary/5 hover:border-primary transition-colors touch-target">
+                  <div class="h-10 w-10 rounded-lg bg-secondary/10 text-primary flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-money-bill-transfer"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <div class="font-medium text-sm md:text-base truncate">Effectuer un paiement</div>
+                    <div class="text-xs text-gray-500 truncate">Cotiser à une tontine</div>
+                  </div>
+                </a>
+                
+                <a href="#" class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-primary/5 hover:border-primary transition-colors touch-target">
+                  <div class="h-10 w-10 rounded-lg bg-accent/10 text-accent flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-chart-pie"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <div class="font-medium text-sm md:text-base truncate">Statistiques détaillées</div>
+                    <div class="text-xs text-gray-500 truncate">Analyser vos performances</div>
+                  </div>
+                </a>
+                
+                <a href="#" class="flex items-center gap-3 p-3 rounded-lg border border-gray-200 hover:bg-primary/5 hover:border-primary transition-colors touch-target">
+                  <div class="h-10 w-10 rounded-lg bg-warning/10 text-warning flex items-center justify-center flex-shrink-0">
+                    <i class="fa-solid fa-bell"></i>
+                  </div>
+                  <div class="min-w-0">
+                    <div class="font-medium text-sm md:text-base truncate">Gérer les rappels</div>
+                    <div class="text-xs text-gray-500 truncate">Configurer les notifications</div>
+                  </div>
+                </a>
+              </div>
+            </div>
+          </section>
+
+          <!-- Mes tontines -->
+          <section class="bg-white rounded-xl p-4 md:p-5 border border-gray-100 card">
+            <div class="flex flex-col xs:flex-row xs:items-center justify-between mb-4 gap-2">
+              <h3 class="font-semibold text-gray-800 text-base md:text-lg">Mes tontines</h3>
+              <div class="flex items-center gap-3">
+                <a href="#" class="text-sm text-primary hover:text-accent flex items-center gap-1 touch-target">
+                  <i class="fa-solid fa-list"></i> <span class="hidden xs:inline">Toutes</span>
+                </a>
+                <div class="h-4 w-px bg-gray-200"></div>
+                <a href="#" class="text-sm text-primary hover:text-accent flex items-center gap-1 touch-target">
+                  <i class="fa-solid fa-filter"></i> <span class="hidden xs:inline">Filtrer</span>
+                </a>
+              </div>
+            </div>
+            
+            <!-- Tableau des tontines - Version mobile friendly -->
+            <div class="table-responsive">
+              <table class="min-w-full text-sm">
+                <thead>
+                  <tr class="text-left text-gray-500 border-b">
+                    <th class="py-3 pr-2">Tontine</th>
+                    <th class="py-3 pr-2 hidden sm:table-cell">Périodicité</th>
+                    <th class="py-3 pr-2">Montant</th>
+                    <th class="py-3 pr-2 hidden md:table-cell">Échéance</th>
+                    <th class="py-3 pr-2">Progression</th>
+                    <th class="py-3 pr-2">Statut</th>
+                    <th class="py-3">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="tontinesTableBody" class="divide-y">
+                  <!-- Les tontines seront ajoutées dynamiquement ici -->
+                  <tr>
+                    <td colspan="7" class="py-8 text-center text-gray-500">
+                      <i class="fa-solid fa-piggy-bank text-3xl text-gray-300 mb-3 block"></i>
+                      <p>Aucune tontine créée pour le moment</p>
+                      <a href="tontine_nouvelle.php" class="inline-block mt-3 px-4 py-2 bg-primary text-white rounded-lg hover:bg-green-700 text-sm touch-target">
+                        Créer ma première tontine
+                      </a>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <!-- Échéances à venir - Version mobile -->
+          <section class="bg-white rounded-xl p-4 md:p-5 border border-gray-100 card">
+            <div class="flex flex-col xs:flex-row xs:items-center justify-between mb-4 gap-2">
+              <h3 class="font-semibold text-gray-800 text-base md:text-lg">Échéances à venir</h3>
+              <a href="#" class="text-sm text-primary hover:text-accent flex items-center gap-1 touch-target">
+                <i class="fa-solid fa-calendar-alt"></i> <span class="hidden xs:inline">Voir calendrier</span>
+              </a>
+            </div>
+            
+            <div class="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-3" id="upcomingPayments">
+              <!-- Les échéances seront ajoutées dynamiquement ici -->
+              <div class="col-span-full py-8 text-center text-gray-500">
+                <i class="fa-solid fa-calendar-check text-3xl text-gray-300 mb-3 block"></i>
+                <p>Aucune échéance à venir</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Footer -->
+          <div class="text-center text-xs text-gray-400 py-4">
+            <p class="mb-1">EFA SMART FINANCE • Sécurisé avec cryptage bancaire</p>
+            <p>Support: support@efasmartfinance.com</p>
+            <p class="mt-2">© <span id="currentYear"></span> Tous droits réservés</p>
+          </div>
+        </div>
+      </div>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Vérification d'email - EFA Smart Finance{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card">
+                    <div class="card-body p-5 text-center">
+                        <div class="mb-4">
+                            <i class="fas fa-envelope-open-text text-primary" style="font-size: 4rem;"></i>
+                        </div>
+                        <h1 class="h3 mb-4">Vérification d'email requise</h1>
+                        
+                        <div class="alert alert-info text-start">
+                            <p class="mb-0">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Un email de vérification a été envoyé à votre adresse email. 
+                                Veuillez cliquer sur le lien dans cet email pour activer votre compte.
+                            </p>
+                        </div>
+
+                        <div class="mt-4">
+                            <p class="text-muted mb-4">
+                                Vous n'avez pas reçu l'email ?
+                                <a href="{{ path('app_resend_verification') }}" class="ms-1">
+                                    Renvoyer l'email de vérification
+                                </a>
+                            </p>
+                            
+                            <a href="{{ path('app_home') }}" class="btn btn-outline-primary">
+                                <i class="fas fa-home me-2"></i>Retour à l'accueil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,464 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}Tontine - {{ tontine.name }}{% endblock %}
+
+{% block contentdashboard %}
+<!-- Main Content -->
+<main class="flex-1 min-w-0 flex flex-col h-full">
+    <!-- Desktop Topbar -->
+    <header class="hidden md:block bg-white border-b border-gray-100 sticky top-0 z-30 flex-shrink-0">
+        <div class="max-w-[1400px] mx-auto px-4 md:px-6 py-3 flex items-center gap-3">
+            <!-- Breadcrumb -->
+            <div class="flex items-center gap-2 text-sm text-gray-500">
+                <a href="{{ path('app_dashboard') }}" class="hover:text-primary">Tableau de bord</a>
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+                <a href="{{ path('app_tontines_index') }}" class="hover:text-primary">Mes tontines</a>
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+                <span class="text-primary font-medium">{{ tontine.name }}</span>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="flex items-center gap-2 ml-auto">
+                {% if tontine.statut == 'active' %}
+                    <a href="{{ path('app_tontines_payment', {'id': tontine.id}) }}" 
+                       class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-white hover:bg-green-700 transition-colors font-medium touch-target">
+                        <i class="fa-solid fa-credit-card"></i> Effectuer un paiement
+                    </a>
+                {% endif %}
+                <a href="{{ path('app_tontines_edit', {'id': tontine.id}) }}" 
+                   class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-primary text-primary hover:bg-primary/5 transition-colors font-medium touch-target">
+                    <i class="fa-solid fa-edit"></i> Modifier
+                </a>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Content Area -->
+    <div class="flex-1 overflow-y-auto h-0 min-h-0">
+        <div class="max-w-[1400px] mx-auto px-3 xs:px-4 md:px-6 py-4 md:py-6 space-y-4 md:space-y-6">
+            
+            <!-- Header Section -->
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">{{ tontine.name }}</h1>
+                        <span class="px-3 py-1 rounded-full {{ tontine.statut == 'active' ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-700' }} text-sm font-medium">
+                            {{ tontine.statut == 'active' ? 'Active' : 'Terminée' }}
+                        </span>
+                    </div>
+                    <p class="text-gray-600">{{ tontine.tontineCode }}</p>
+                </div>
+                
+                <!-- Stats Summary -->
+                <div class="flex flex-wrap gap-3">
+                    <div class="bg-white rounded-lg p-3 border border-gray-200 min-w-[120px]">
+                        <div class="text-xs text-gray-500">Montant/point</div>
+                        <div class="text-lg font-bold text-primary">{{ tontine.amountPerPoint|number_format(0, ',', ' ') }} FCFA</div>
+                    </div>
+                    <div class="bg-white rounded-lg p-3 border border-gray-200 min-w-[120px]">
+                        <div class="text-xs text-gray-500">Points totaux</div>
+                        <div class="text-lg font-bold text-accent">{{ tontine.totalPoints }}</div>
+                    </div>
+                    <div class="bg-white rounded-lg p-3 border border-gray-200 min-w-[120px]">
+                        <div class="text-xs text-gray-500">Fréquence</div>
+                        <div class="text-lg font-bold text-info">
+                            {% if tontine.frequency == 'daily' %}Quotidienne
+                            {% elseif tontine.frequency == 'weekly' %}Hebdomadaire
+                            {% elseif tontine.frequency == 'monthly' %}Mensuelle
+                            {% else %}{{ tontine.frequency }}
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informations Principales -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Card 1: Détails de la tontine -->
+                <div class="bg-white rounded-xl border border-gray-100 p-6">
+                    <h3 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-info-circle text-primary"></i> Informations générales
+                    </h3>
+                    <div class="space-y-4">
+                        <div>
+                            <div class="text-sm text-gray-500">Date de début</div>
+                            <div class="font-medium">{{ tontine.startDate ? tontine.startDate|date('d/m/Y') : 'Non définie' }}</div>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500">Prochaine échéance</div>
+                            <div class="font-medium {{ tontine.nextDueDate and tontine.nextDueDate|date('U') < 'now'|date('U') ? 'text-red-600' : '' }}">
+                                {{ tontine.nextDueDate ? tontine.nextDueDate|date('d/m/Y') : 'Aucune' }}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="text-sm text-gray-500">Total à épargner</div>
+                            <div class="font-bold text-primary text-lg">
+                                {{ (tontine.amountPerPoint * tontine.totalPoints)|number_format(0, ',', ' ') }} FCFA
+                            </div>
+                        </div>
+                        {% if tontine.reminderEnabled %}
+                            <div class="flex items-center gap-2 text-sm text-info">
+                                <i class="fa-solid fa-bell"></i>
+                                <span>Rappels activés</span>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Card 2: Progression -->
+                <div class="bg-white rounded-xl border border-gray-100 p-6">
+                    <h3 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-line text-primary"></i> Progression globale
+                    </h3>
+                    
+                    {% set totalToSave = tontine.amountPerPoint * tontine.totalPoints %}
+                    {% set savedAmount = tontine.amountPerPoint * (tontine.paidPoints|default(0)) %}
+                    {% set progress = totalToSave > 0 ? (savedAmount / totalToSave * 100)|round : 0 %}
+                    
+                    <!-- Barre de progression -->
+                    <div class="mb-4">
+                        <div class="flex justify-between text-sm mb-2">
+                            <span class="text-gray-600">Progression</span>
+                            <span class="font-semibold">{{ progress }}%</span>
+                        </div>
+                        <div class="h-3 bg-gray-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-primary rounded-full" style="width: {{ progress }}%"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats -->
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-3 bg-emerald-50 rounded-lg">
+                            <div>
+                                <div class="text-sm text-gray-600">Épargné</div>
+                                <div class="font-bold text-emerald-700">{{ savedAmount|number_format(0, ',', ' ') }} FCFA</div>
+                            </div>
+                            <i class="fa-solid fa-check-circle text-emerald-500 text-xl"></i>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
+                            <div>
+                                <div class="text-sm text-gray-600">Restant</div>
+                                <div class="font-bold text-blue-700">{{ (totalToSave - savedAmount)|number_format(0, ',', ' ') }} FCFA</div>
+                            </div>
+                            <i class="fa-solid fa-clock text-blue-500 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Prochain paiement -->
+                <div class="bg-white rounded-xl border border-gray-100 p-6">
+                    <h3 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-check text-primary"></i> Prochain paiement
+                    </h3>
+                    
+                    {% if tontine.statut == 'active' and tontine.nextDueDate %}
+                        {% set daysRemaining = date(tontine.nextDueDate).diff(date('now')).days %}
+                        
+                        <div class="text-center p-4 bg-yellow-50 rounded-lg mb-4">
+                            <div class="text-2xl font-bold text-primary mb-2">
+                                {{ tontine.amountPerPoint|number_format(0, ',', ' ') }} FCFA
+                            </div>
+                            <div class="font-medium text-gray-900">{{ tontine.nextDueDate|date('d/m/Y') }}</div>
+                            <div class="text-sm text-gray-600 mt-1">
+                                {% if daysRemaining < 0 %}
+                                    <span class="text-red-600">En retard de {{ -daysRemaining }} jour(s)</span>
+                                {% elseif daysRemaining == 0 %}
+                                    <span class="text-warning">Aujourd'hui</span>
+                                {% elseif daysRemaining <= 3 %}
+                                    <span class="text-warning">Dans {{ daysRemaining }} jour(s)</span>
+                                {% else %}
+                                    Dans {{ daysRemaining }} jours
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <a href="{{ path('app_tontines_payment', {'id': tontine.id}) }}" 
+                           class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-primary text-white rounded-lg hover:bg-green-700 transition-colors font-medium touch-target">
+                            <i class="fa-solid fa-credit-card"></i> Payer maintenant
+                        </a>
+                    {% else %}
+                        <div class="text-center p-4 bg-gray-50 rounded-lg">
+                            <i class="fa-solid fa-check-circle text-3xl text-gray-400 mb-3"></i>
+                            <div class="text-gray-600">Aucun paiement en attente</div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Section: Carte de pointage -->
+            <div class="bg-white rounded-xl border border-gray-100 overflow-hidden">
+                <div class="p-6 border-b border-gray-100">
+                    <h3 class="font-semibold text-gray-900 flex items-center gap-2">
+                        <i class="fa-solid fa-clipboard-check text-primary"></i> Carte de pointage
+                    </h3>
+                    <p class="text-sm text-gray-600 mt-1">Suivez vos paiements et votre progression point par point</p>
+                </div>
+                
+                <div class="p-6">
+                    <!-- Filtres et informations -->
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                        <div class="text-sm text-gray-600">
+                            <span class="font-medium">{{ tontine.paidPoints|default(0) }}</span> points payés sur 
+                            <span class="font-medium">{{ tontine.totalPoints }}</span> points totaux
+                        </div>
+                        
+                        <div class="flex gap-2">
+                            <button class="px-3 py-1.5 rounded-full bg-primary text-white text-sm touch-target">
+                                Tous les points
+                            </button>
+                            <button class="px-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-50 text-sm touch-target">
+                                Payés
+                            </button>
+                            <button class="px-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-50 text-sm touch-target">
+                                En attente
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Grille des points -->
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        {% for point in 1..tontine.totalPoints %}
+                            {% set isPaid = point <= (tontine.paidPoints|default(0)) %}
+                            {% set isDue = tontine.nextDueDate and date(tontine.startDate).modify('+' ~ (point-1) ~ ' ' ~ tontine.frequency) <= date('now') %}
+                            
+                            <div class="relative group">
+                                <div class="aspect-square rounded-xl border-2 {{ isPaid ? 'border-emerald-500 bg-emerald-50' : (isDue and not isPaid) ? 'border-red-500 bg-red-50' : 'border-gray-200 bg-gray-50' }} 
+                                          flex flex-col items-center justify-center p-4 transition-all duration-200 hover:shadow-md cursor-pointer"
+                                     onclick="showPointDetails({{ point }})">
+                                    
+                                    <!-- Numéro du point -->
+                                    <div class="text-lg font-bold {{ isPaid ? 'text-emerald-700' : (isDue and not isPaid) ? 'text-red-700' : 'text-gray-700' }}">
+                                        #{{ point }}
+                                    </div>
+                                    
+                                    <!-- Statut -->
+                                    <div class="text-sm mt-2 {{ isPaid ? 'text-emerald-600' : (isDue and not isPaid) ? 'text-red-600' : 'text-gray-600' }}">
+                                        {% if isPaid %}
+                                            <i class="fa-solid fa-check-circle"></i> Payé
+                                        {% elseif isDue and not isPaid %}
+                                            <i class="fa-solid fa-exclamation-circle"></i> En retard
+                                        {% else %}
+                                            <i class="fa-solid fa-clock"></i> En attente
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Montant -->
+                                    <div class="text-sm font-medium mt-1 text-gray-900">
+                                        {{ tontine.amountPerPoint|number_format(0, ',', ' ') }} FCFA
+                                    </div>
+                                    
+                                    <!-- Date estimée -->
+                                    {% set estimatedDate = date(tontine.startDate).modify('+' ~ (point-1) ~ ' ' ~ tontine.frequency) %}
+                                    <div class="text-xs text-gray-500 mt-2 text-center">
+                                        {{ estimatedDate|date('d/m/Y') }}
+                                    </div>
+                                </div>
+                                
+                                <!-- Badge d'échéance actuelle -->
+                                {% if point == (tontine.paidPoints|default(0)) + 1 and tontine.statut == 'active' %}
+                                    <div class="absolute -top-2 -right-2 bg-warning text-white text-xs px-2 py-1 rounded-full">
+                                        Actuel
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Légende -->
+                    <div class="flex flex-wrap gap-4 mt-6 pt-6 border-t border-gray-100">
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 rounded-full bg-emerald-500"></div>
+                            <span class="text-sm text-gray-600">Point payé</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 rounded-full bg-red-500"></div>
+                            <span class="text-sm text-gray-600">Point en retard</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 rounded-full bg-gray-300"></div>
+                            <span class="text-sm text-gray-600">Point à venir</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-4 h-4 rounded-full bg-warning"></div>
+                            <span class="text-sm text-gray-600">Échéance actuelle</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                <a href="{{ path('app_tontines_index') }}" 
+                   class="inline-flex items-center justify-center gap-2 px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium touch-target">
+                    <i class="fa-solid fa-arrow-left"></i> Retour à la liste
+                </a>
+                
+                {% if tontine.statut == 'active' %}
+                    <a href="{{ path('app_tontines_payment', {'id': tontine.id}) }}" 
+                       class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-green-700 transition-colors font-medium touch-target">
+                        <i class="fa-solid fa-credit-card"></i> Effectuer un paiement
+                    </a>
+                {% endif %}
+                
+                <a href="{{ path('app_tontines_edit', {'id': tontine.id}) }}" 
+                   class="inline-flex items-center justify-center gap-2 px-6 py-3 border border-primary text-primary rounded-lg hover:bg-primary/5 transition-colors font-medium touch-target">
+                    <i class="fa-solid fa-edit"></i> Modifier la tontine
+                </a>
+                
+                <button onclick="confirmDelete()" 
+                        class="inline-flex items-center justify-center gap-2 px-6 py-3 border border-red-300 text-red-600 rounded-lg hover:bg-red-50 transition-colors font-medium touch-target">
+                    <i class="fa-solid fa-trash"></i> Supprimer
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Modal de détails du point -->
+<div id="pointDetailModal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/50" onclick="closePointModal()"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl w-full max-w-md max-h-[90vh] overflow-hidden">
+            <!-- Modal content will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // Afficher les détails d'un point
+    function showPointDetails(pointNumber) {
+        const modal = document.getElementById('pointDetailModal');
+        const modalContent = modal.querySelector('.bg-white');
+        
+        // Calculer la date estimée pour ce point
+        const startDate = new Date('{{ tontine.startDate|date("Y-m-d") }}');
+        const frequency = '{{ tontine.frequency }}';
+        const amount = {{ tontine.amountPerPoint }};
+        
+        let estimatedDate = new Date(startDate);
+        if (frequency === 'daily') {
+            estimatedDate.setDate(startDate.getDate() + (pointNumber - 1));
+        } else if (frequency === 'weekly') {
+            estimatedDate.setDate(startDate.getDate() + ((pointNumber - 1) * 7));
+        } else if (frequency === 'monthly') {
+            estimatedDate.setMonth(startDate.getMonth() + (pointNumber - 1));
+        }
+        
+        // Vérifier si le point est payé ou en retard
+        const isPaid = pointNumber <= {{ tontine.paidPoints|default(0) }};
+        const isDue = estimatedDate <= new Date() && !isPaid;
+        
+        modalContent.innerHTML = `
+            <div class="p-6">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <h3 class="text-xl font-bold text-gray-900">Point #${pointNumber}</h3>
+                        <div class="flex items-center gap-2 mt-2">
+                            <span class="px-3 py-1 rounded-full ${isPaid ? 'bg-emerald-100 text-emerald-700' : isDue ? 'bg-red-100 text-red-700' : 'bg-gray-100 text-gray-700'} text-sm">
+                                ${isPaid ? 'Payé' : isDue ? 'En retard' : 'À venir'}
+                            </span>
+                        </div>
+                    </div>
+                    <button onclick="closePointModal()" class="h-8 w-8 rounded-full hover:bg-gray-100 flex items-center justify-center touch-target">
+                        <i class="fa-solid fa-times text-gray-500"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <div class="p-4 ${isPaid ? 'bg-emerald-50' : isDue ? 'bg-red-50' : 'bg-gray-50'} rounded-lg">
+                        <div class="text-sm text-gray-600 mb-1">Montant à payer</div>
+                        <div class="text-2xl font-bold text-primary">${amount.toLocaleString('fr-FR')} FCFA</div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-3 bg-gray-50 rounded-lg">
+                            <div class="text-sm text-gray-600">Date estimée</div>
+                            <div class="font-medium">${estimatedDate.toLocaleDateString('fr-FR')}</div>
+                        </div>
+                        <div class="p-3 bg-gray-50 rounded-lg">
+                            <div class="text-sm text-gray-600">Fréquence</div>
+                            <div class="font-medium">
+                                ${frequency === 'daily' ? 'Quotidienne' : 
+                                  frequency === 'weekly' ? 'Hebdomadaire' : 
+                                  frequency === 'monthly' ? 'Mensuelle' : frequency}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    ${!isPaid ? `
+                        <div class="mt-6 pt-4 border-t border-gray-200">
+                            <button onclick="payThisPoint(${pointNumber})" 
+                                    class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-primary text-white rounded-lg hover:bg-green-700 transition-colors font-medium touch-target">
+                                <i class="fa-solid fa-credit-card"></i> Payer ce point
+                            </button>
+                        </div>
+                    ` : ''}
+                </div>
+            </div>
+        `;
+        
+        modal.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closePointModal() {
+        const modal = document.getElementById('pointDetailModal');
+        modal.classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    function payThisPoint(pointNumber) {
+        // Rediriger vers la page de paiement avec le point spécifié
+        window.location.href = '{{ path("app_tontines_payment", {"id": tontine.id}) }}?point=' + pointNumber;
+    }
+
+    function confirmDelete() {
+        if (confirm('Êtes-vous sûr de vouloir supprimer cette tontine ? Cette action est irréversible.')) {
+            // Soumettre le formulaire de suppression
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '{{ path("app_tontines_delete", {"id": tontine.id}) }}';
+            
+            const csrfToken = document.createElement('input');
+            csrfToken.type = 'hidden';
+            csrfToken.name = '_token';
+            csrfToken.value = '{{ csrf_token("delete" ~ tontine.id) }}';
+            
+            form.appendChild(csrfToken);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    }
+
+    // Fermer le modal avec Escape
+    document.addEventListener('keydown', (e) => { 
+        if (e.key === 'Escape') closePointModal();
+    });
+</script>
+
+<style>
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        line-height: 1.25rem;
+    }
+    
+    .touch-target {
+        min-height: 44px;
+        min-width: 44px;
+    }
+    
+    .card {
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.2s ease;
+    }
+    
+    .card:hover {
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
