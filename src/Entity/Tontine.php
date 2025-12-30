@@ -19,11 +19,11 @@ class Tontine
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $tontineCode = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $amountPerPoint = null;
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $amountPerPoint = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $totalPoints = null;
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $totalPoints = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $frequency = null;
@@ -55,7 +55,7 @@ class Tontine
     /**
      * @var Collection<int, TontinePoint>
      */
-    #[ORM\OneToMany(targetEntity: TontinePoint::class, mappedBy: 'tontine')]
+    #[ORM\OneToMany(targetEntity: TontinePoint::class, mappedBy: 'tontine', cascade: ['persist'], orphanRemoval: true)]
     private Collection $tontinePoints;
 
     /**
@@ -66,6 +66,9 @@ class Tontine
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
+
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $totalPay = 0;
 
     public function __construct()
     {
@@ -91,24 +94,24 @@ class Tontine
         return $this;
     }
 
-    public function getAmountPerPoint(): ?string
+    public function getAmountPerPoint(): ?int
     {
         return $this->amountPerPoint;
     }
 
-    public function setAmountPerPoint(?string $amountPerPoint): static
+    public function setAmountPerPoint(?int $amountPerPoint): static
     {
         $this->amountPerPoint = $amountPerPoint;
 
         return $this;
     }
 
-    public function getTotalPoints(): ?string
+    public function getTotalPoints(): ?int
     {
         return $this->totalPoints;
     }
 
-    public function setTotalPoints(?string $totalPoints): static
+    public function setTotalPoints(?int $totalPoints): static
     {
         $this->totalPoints = $totalPoints;
 
@@ -299,5 +302,100 @@ class Tontine
         $this->name = $name;
 
         return $this;
+    }
+
+    public function getTotalPay(): ?int
+    {
+        return $this->totalPay;
+    }
+
+    public function setTotalPay(?int $totalPay): static
+    {
+        $this->totalPay = $totalPay;
+
+        return $this;
+    }
+
+
+    public function updateNextDueDate(): void
+    {
+        if (!$this->frequency) {
+            throw new \LogicException('La fréquence de la tontine est manquante');
+        }
+
+        $baseDate = $this->nextDueDate
+            ?? $this->startDate
+            ?? new \DateTime();
+
+        $baseDate = \DateTimeImmutable::createFromMutable($baseDate);
+
+        switch ($this->frequency) {
+            case 'daily':
+                $next = $baseDate->modify('+1 day');
+                break;
+
+            case 'weekly':
+                $next = $baseDate->modify('+1 week');
+                break;
+
+            case 'monthly':
+                $next = $baseDate->modify('+1 month');
+                break;
+
+            default:
+                throw new \LogicException('Fréquence invalide : ' . $this->frequency);
+        }
+
+        $this->nextDueDate = \DateTime::createFromImmutable($next);
+    }
+    public function applyPayment(
+        int $amount,
+        ?Transaction $transaction = null,
+        string $method = 'unknown'
+    ): void {
+        if ($amount <= 0) {
+            throw new \InvalidArgumentException('Montant invalide');
+        }
+
+        if ($this->statut === 'completed') {
+            throw new \LogicException('Tontine déjà terminée');
+        }
+
+        $previousPaidPoints = $this->getPaidPoints();
+
+        // 1️⃣ Total payé
+        $this->totalPay += $amount;
+
+        $newPaidPoints = $this->getPaidPoints();
+        $pointsToCreate = $newPaidPoints - $previousPaidPoints;
+
+        // 2️⃣ Créer les nouveaux points
+        for ($i = 1; $i <= $pointsToCreate; $i++) {
+
+            $pointNumber = $previousPaidPoints + $i;
+
+            $point = new TontinePoint();
+            $point->setPointNumber($pointNumber);
+            $point->setAmount($this->amountPerPoint);
+            $point->setMethod($method);
+            $point->setPointedAt(new \DateTimeImmutable());
+            $point->setTontine($this);
+            $point->setTransaction($transaction);
+
+            $this->tontinePoints[] = $point;
+        }
+
+        // 3️⃣ Clôture ou prochaine échéance
+        if ($newPaidPoints >= $this->totalPoints) {
+            $this->statut = 'completed';
+            $this->nextDueDate = null;
+            return;
+        }
+
+        $this->updateNextDueDate();
+    }
+    public function getPaidPoints(): int
+    {
+        return intdiv($this->totalPay, $this->amountPerPoint);
     }
 }

@@ -1,0 +1,908 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}Aide & Support - EFA SMART FINANCE{% endblock %}
+
+{% block contentdashboard %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200 px-4 py-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Aide & Support</h1>
+                    <p class="text-gray-600 mt-1">Trouvez rapidement des réponses à vos questions</p>
+                </div>
+                <div class="flex gap-2 mt-3 md:mt-0">
+                    <button onclick="openContactModal()"
+                            class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-green-700 transition-colors touch-target">
+                        <i class="fa-solid fa-headset mr-2"></i>
+                        Contacter le support
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recherche rapide -->
+    <div class="max-w-7xl mx-auto px-4 py-6">
+        <div class="bg-gradient-to-r from-primary to-green-600 rounded-2xl p-6 md:p-8 text-white">
+            <div class="text-center max-w-2xl mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold mb-4">Comment pouvons-nous vous aider ?</h2>
+                <p class="text-white/90 mb-6">Recherchez dans notre base de connaissances ou contactez notre équipe</p>
+                
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-search text-gray-400"></i>
+                    </div>
+                    <input type="text" 
+                           id="help-search"
+                           placeholder="Rechercher une question, un problème..."
+                           class="w-full pl-12 pr-4 py-4 bg-white text-gray-900 rounded-xl border-0 focus:ring-2 focus:ring-white/20 focus:outline-none shadow-lg touch-target">
+                </div>
+                
+                <div class="flex flex-wrap justify-center gap-2 mt-4">
+                    <span class="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-sm">
+                        <i class="fa-solid fa-wallet mr-1"></i> Portefeuille
+                    </span>
+                    <span class="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-sm">
+                        <i class="fa-solid fa-credit-card mr-1"></i> Paiements
+                    </span>
+                    <span class="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-sm">
+                        <i class="fa-solid fa-users mr-1"></i> Tontines
+                    </span>
+                    <span class="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-sm">
+                        <i class="fa-solid fa-shield-alt mr-1"></i> Sécurité
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section principale -->
+    <div class="max-w-7xl mx-auto px-4 py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Catégories FAQ -->
+            <div class="lg:col-span-2">
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-question text-primary"></i>
+                        Questions fréquentes
+                    </h2>
+                    
+                    <div class="space-y-4">
+                        <!-- FAQ Portefeuille -->
+                        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                            <button onclick="toggleFAQ(1)"
+                                    class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors touch-target">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                                        <i class="fa-solid fa-wallet text-blue-600"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <h3 class="font-semibold text-gray-900">Portefeuille & Transactions</h3>
+                                        <p class="text-sm text-gray-500">Gestion de votre argent</p>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-chevron-down text-gray-400 transition-transform" id="faq-icon-1"></i>
+                            </button>
+                            <div id="faq-content-1" class="hidden px-6 pb-4">
+                                <div class="space-y-4 pt-2">
+                                    <div class="faq-item" data-search="comment alimenter portefeuille dépôt">
+                                        <h4 class="font-medium text-gray-900 mb-2">Comment alimenter mon portefeuille ?</h4>
+                                        <p class="text-gray-600 text-sm">Pour alimenter votre portefeuille, rendez-vous dans la section "Portefeuille" et cliquez sur "Alimenter". Vous pouvez choisir entre Mobile Money, carte bancaire ou virement.</p>
+                                    </div>
+                                    <div class="faq-item" data-search="retirer argent retrait portefeuille">
+                                        <h4 class="font-medium text-gray-900 mb-2">Comment retirer de l'argent ?</h4>
+                                        <p class="text-gray-600 text-sm">Les retraits sont actuellement en développement. Pour l'instant, contactez le support pour toute demande de retrait.</p>
+                                    </div>
+                                    <div class="faq-item" data-search="transaction échouée paiement échoué">
+                                        <h4 class="font-medium text-gray-900 mb-2">Que faire si une transaction échoue ?</h4>
+                                        <p class="text-gray-600 text-sm">Si une transaction échoue, vérifiez d'abord votre solde. Si le problème persiste, contactez notre support avec le numéro de transaction.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- FAQ Tontines -->
+                        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                            <button onclick="toggleFAQ(2)"
+                                    class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors touch-target">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
+                                        <i class="fa-solid fa-users text-green-600"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <h3 class="font-semibold text-gray-900">Tontines & Épargne</h3>
+                                        <p class="text-sm text-gray-500">Gestion de vos tontines</p>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-chevron-down text-gray-400 transition-transform" id="faq-icon-2"></i>
+                            </button>
+                            <div id="faq-content-2" class="hidden px-6 pb-4">
+                                <div class="space-y-4 pt-2">
+                                    <div class="faq-item" data-search="créer tontine nouvelle tontine">
+                                        <h4 class="font-medium text-gray-900 mb-2">Comment créer une tontine ?</h4>
+                                        <p class="text-gray-600 text-sm">Dans le tableau de bord, cliquez sur "Créer une tontine". Définissez le montant par point, la fréquence et le nombre total de points.</p>
+                                    </div>
+                                    <div class="faq-item" data-search="payer tontine paiement point">
+                                        <h4 class="font-medium text-gray-900 mb-2">Comment payer ma tontine ?</h4>
+                                        <p class="text-gray-600 text-sm">Vous pouvez payer manuellement dans la section "Mes tontines" ou activer le paiement automatique depuis votre portefeuille.</p>
+                                    </div>
+                                    <div class="faq-item" data-search="retard paiement tontine retard">
+                                        <h4 class="font-medium text-gray-900 mb-2">Que faire en cas de retard de paiement ?</h4>
+                                        <p class="text-gray-600 text-sm">En cas de retard, vous pouvez toujours effectuer le paiement. Le système mettra à jour automatiquement votre pointage.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- FAQ Sécurité -->
+                        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                            <button onclick="toggleFAQ(3)"
+                                    class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors touch-target">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                                        <i class="fa-solid fa-shield-alt text-purple-600"></i>
+                                    </div>
+                                    <div class="text-left">
+                                        <h3 class="font-semibold text-gray-900">Sécurité & Confidentialité</h3>
+                                        <p class="text-sm text-gray-500">Protection de vos données</p>
+                                    </div>
+                                </div>
+                                <i class="fa-solid fa-chevron-down text-gray-400 transition-transform" id="faq-icon-3"></i>
+                            </button>
+                            <div id="faq-content-3" class="hidden px-6 pb-4">
+                                <div class="space-y-4 pt-2">
+                                    <div class="faq-item" data-search="sécurité données protection">
+                                        <h4 class="font-medium text-gray-900 mb-2">Mes données sont-elles sécurisées ?</h4>
+                                        <p class="text-gray-600 text-sm">Oui, nous utilisons un chiffrement de niveau bancaire et respectons les normes les plus strictes en matière de protection des données.</p>
+                                    </div>
+                                    <div class="faq-item" data-search="changer mot de passe sécurité compte">
+                                        <h4 class="font-medium text-gray-900 mb-2">Comment changer mon mot de passe ?</h4>
+                                        <p class="text-gray-600 text-sm">Rendez-vous dans "Paramètres du compte" puis "Sécurité". Vous pourrez y modifier votre mot de passe.</p>
+                                    </div>
+                                    <div class="faq-item" data-search="supprimer compte données personnelles">
+                                        <h4 class="font-medium text-gray-900 mb-2">Comment supprimer mon compte ?</h4>
+                                        <p class="text-gray-600 text-sm">Contactez notre support pour toute demande de suppression de compte. Nous traiterons votre demande sous 48h.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Guide rapide -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open text-primary"></i>
+                        Guide rapide
+                    </h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <a href="#" class="group p-4 border border-gray-200 rounded-lg hover:border-primary hover:shadow-sm transition-all">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-lg bg-blue-50 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
+                                    <i class="fa-solid fa-video text-blue-500"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-gray-900 group-hover:text-primary">Tutoriels vidéo</h3>
+                                    <p class="text-sm text-gray-500">Apprenez à utiliser la plateforme</p>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="group p-4 border border-gray-200 rounded-lg hover:border-primary hover:shadow-sm transition-all">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-lg bg-green-50 flex items-center justify-center group-hover:bg-green-100 transition-colors">
+                                    <i class="fa-solid fa-file-pdf text-green-500"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-gray-900 group-hover:text-primary">Documentation PDF</h3>
+                                    <p class="text-sm text-gray-500">Guide d'utilisation complet</p>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="group p-4 border border-gray-200 rounded-lg hover:border-primary hover:shadow-sm transition-all">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-lg bg-purple-50 flex items-center justify-center group-hover:bg-purple-100 transition-colors">
+                                    <i class="fa-solid fa-graduation-cap text-purple-500"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-gray-900 group-hover:text-primary">Formation en ligne</h3>
+                                    <p class="text-sm text-gray-500">Cours sur l'épargne digitale</p>
+                                </div>
+                            </div>
+                        </a>
+                        
+                        <a href="#" class="group p-4 border border-gray-200 rounded-lg hover:border-primary hover:shadow-sm transition-all">
+                            <div class="flex items-center gap-3">
+                                <div class="w-12 h-12 rounded-lg bg-amber-50 flex items-center justify-center group-hover:bg-amber-100 transition-colors">
+                                    <i class="fa-solid fa-newspaper text-amber-500"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-medium text-gray-900 group-hover:text-primary">Blog & Actualités</h3>
+                                    <p class="text-sm text-gray-500">Conseils et nouveautés</p>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Sidebar -->
+            <div class="space-y-6">
+                <!-- Contact rapide -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6">
+                    <h3 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-headset text-primary"></i>
+                        Contact rapide
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:border-primary transition-colors cursor-pointer touch-target" onclick="openLiveChat()">
+                            <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
+                                <i class="fa-solid fa-comment-dots text-green-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900">Chat en direct</div>
+                                <div class="text-xs text-gray-500">Réponse immédiate</div>
+                            </div>
+                            <div class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-medium">
+                                En ligne
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:border-primary transition-colors cursor-pointer touch-target" onclick="sendEmail()">
+                            <div class="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
+                                <i class="fa-solid fa-envelope text-blue-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900">support@efasmartfinance.com</div>
+                                <div class="text-xs text-gray-500">Réponse sous 24h</div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center gap-3 p-3 border border-gray-200 rounded-lg hover:border-primary transition-colors cursor-pointer touch-target" onclick="callSupport()">
+                            <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                                <i class="fa-solid fa-phone text-purple-600"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900">+225 27 22 44 55 66</div>
+                                <div class="text-xs text-gray-500">Lun-Ven, 8h-18h</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statut des services -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6">
+                    <h3 class="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-server text-primary"></i>
+                        Statut des services
+                    </h3>
+                    
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                                    <i class="fa-solid fa-check text-emerald-600 text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-900">Plateforme</div>
+                                    <div class="text-xs text-gray-500">Tous systèmes opérationnels</div>
+                                </div>
+                            </div>
+                            <div class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-medium">
+                                En ligne
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center">
+                                    <i class="fa-solid fa-check text-emerald-600 text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-900">Paiements</div>
+                                    <div class="text-xs text-gray-500">Transactions normales</div>
+                                </div>
+                            </div>
+                            <div class="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-full text-xs font-medium">
+                                En ligne
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center">
+                                    <i class="fa-solid fa-exclamation text-amber-600 text-xs"></i>
+                                </div>
+                                <div>
+                                    <div class="font-medium text-gray-900">Maintenance</div>
+                                    <div class="text-xs text-gray-500">Planifiée ce soir 22h-23h</div>
+                                </div>
+                            </div>
+                            <div class="px-2 py-1 bg-amber-100 text-amber-700 rounded-full text-xs font-medium">
+                                Info
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 pt-4 border-t border-gray-200">
+                        <div class="text-center">
+                            <a href="#" class="text-primary hover:text-green-700 text-sm font-medium">
+                                Voir tous les statuts <i class="fa-solid fa-arrow-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Ressources -->
+                <div class="bg-gradient-to-r from-primary/10 to-blue-50 rounded-xl border border-primary/20 p-6">
+                    <h3 class="font-semibold text-gray-900 mb-4">Ressources utiles</h3>
+                    
+                    <div class="space-y-2">
+                        <a href="#" class="flex items-center gap-3 p-3 hover:bg-white/50 rounded-lg transition-colors">
+                            <i class="fa-solid fa-file-contract text-primary"></i>
+                            <span class="text-sm text-gray-700">Conditions d'utilisation</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 p-3 hover:bg-white/50 rounded-lg transition-colors">
+                            <i class="fa-solid fa-lock text-primary"></i>
+                            <span class="text-sm text-gray-700">Politique de confidentialité</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 p-3 hover:bg-white/50 rounded-lg transition-colors">
+                            <i class="fa-solid fa-scale-balanced text-primary"></i>
+                            <span class="text-sm text-gray-700">Mentions légales</span>
+                        </a>
+                        <a href="#" class="flex items-center gap-3 p-3 hover:bg-white/50 rounded-lg transition-colors">
+                            <i class="fa-solid fa-hand-holding-dollar text-primary"></i>
+                            <span class="text-sm text-gray-700">Tarifs et frais</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section communauté -->
+    <div class="max-w-7xl mx-auto px-4 py-6">
+        <div class="bg-white rounded-xl border border-gray-200 p-6">
+            <div class="text-center max-w-2xl mx-auto">
+                <h2 class="text-2xl font-bold text-gray-900 mb-3">Rejoignez notre communauté</h2>
+                <p class="text-gray-600 mb-6">Échangez avec d'autres utilisateurs et partagez vos expériences</p>
+                
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="#" class="inline-flex items-center gap-2 px-5 py-3 bg-[#1877F2] text-white rounded-lg hover:bg-[#166FE5] transition-colors touch-target">
+                        <i class="fa-brands fa-facebook-f text-lg"></i>
+                        <span>Facebook</span>
+                    </a>
+                    <a href="#" class="inline-flex items-center gap-2 px-5 py-3 bg-[#1DA1F2] text-white rounded-lg hover:bg-[#1A8CD8] transition-colors touch-target">
+                        <i class="fa-brands fa-twitter text-lg"></i>
+                        <span>Twitter</span>
+                    </a>
+                    <a href="#" class="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCB045] text-white rounded-lg hover:opacity-90 transition-opacity touch-target">
+                        <i class="fa-brands fa-instagram text-lg"></i>
+                        <span>Instagram</span>
+                    </a>
+                    <a href="#" class="inline-flex items-center gap-2 px-5 py-3 bg-[#0A66C2] text-white rounded-lg hover:bg-[#004182] transition-colors touch-target">
+                        <i class="fa-brands fa-linkedin-in text-lg"></i>
+                        <span>LinkedIn</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de contact -->
+<div id="contactModal" class="hidden fixed inset-0 bg-black/50 z-50">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-gray-900">Contacter le support</h3>
+                    <button onclick="closeContactModal()" 
+                            class="p-2 hover:bg-gray-100 rounded-lg transition-colors touch-target">
+                        <i class="fa-solid fa-times text-gray-500"></i>
+                    </button>
+                </div>
+                
+                <form id="supportForm" onsubmit="submitSupportForm(event)">
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Sujet
+                            </label>
+                            <select name="subject"
+                                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary touch-target">
+                                <option value="">Choisir un sujet</option>
+                                <option value="technical">Problème technique</option>
+                                <option value="payment">Problème de paiement</option>
+                                <option value="account">Problème de compte</option>
+                                <option value="tontine">Question sur les tontines</option>
+                                <option value="security">Question de sécurité</option>
+                                <option value="other">Autre</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Description
+                            </label>
+                            <textarea name="message"
+                                      rows="4"
+                                      class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary touch-target"
+                                      placeholder="Décrivez votre problème ou question en détail..."></textarea>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Fichier joint (optionnel)
+                            </label>
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-primary transition-colors">
+                                <i class="fa-solid fa-cloud-arrow-up text-3xl text-gray-400 mb-2"></i>
+                                <div class="text-sm text-gray-600">
+                                    <label for="file-upload" class="text-primary cursor-pointer hover:text-green-700">
+                                        Cliquez pour téléverser
+                                    </label>
+                                    <input id="file-upload" type="file" class="hidden">
+                                </div>
+                                <div class="text-xs text-gray-500 mt-1">Max. 5MB (images, PDF, documents)</div>
+                            </div>
+                        </div>
+                        
+                        <div class="pt-4">
+                            <button type="submit"
+                                    class="w-full px-6 py-3 bg-primary text-white rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center justify-center gap-2 touch-target">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                Envoyer la demande
+                            </button>
+                            <div class="text-center text-xs text-gray-500 mt-3">
+                                <i class="fa-solid fa-clock mr-1"></i>
+                                Réponse généralement sous 24h
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal chat en direct -->
+<div id="liveChatModal" class="hidden fixed inset-0 bg-black/50 z-50">
+    <div class="min-h-screen flex items-end md:items-center justify-center p-0 md:p-4">
+        <div class="bg-white rounded-t-2xl md:rounded-xl w-full md:max-w-md h-[80vh] md:h-[70vh] flex flex-col">
+            <!-- Header -->
+            <div class="p-4 border-b border-gray-200 bg-primary text-white rounded-t-2xl md:rounded-t-xl">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
+                            <i class="fa-solid fa-headset"></i>
+                        </div>
+                        <div>
+                            <div class="font-semibold">Chat en direct</div>
+                            <div class="text-xs opacity-90">Réponse immédiate</div>
+                        </div>
+                    </div>
+                    <button onclick="closeLiveChat()" 
+                            class="p-2 hover:bg-white/10 rounded-lg transition-colors touch-target">
+                        <i class="fa-solid fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Messages -->
+            <div class="flex-1 overflow-y-auto p-4 space-y-4" id="chatMessages">
+                <!-- Message du support -->
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                        <i class="fa-solid fa-headset text-gray-600 text-sm"></i>
+                    </div>
+                    <div class="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-2 max-w-[80%]">
+                        <div class="text-sm text-gray-800">Bonjour ! Comment pouvons-nous vous aider aujourd'hui ?</div>
+                        <div class="text-xs text-gray-500 mt-1">Support • Maintenant</div>
+                    </div>
+                </div>
+                
+                <!-- Message automatique -->
+                <div class="text-center">
+                    <div class="inline-block px-3 py-1 bg-gray-100 rounded-full text-xs text-gray-600">
+                        Aujourd'hui • 14:30
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Input -->
+            <div class="p-4 border-t border-gray-200">
+                <div class="flex gap-2">
+                    <input type="text" 
+                           id="chatInput"
+                           placeholder="Tapez votre message..."
+                           class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary touch-target">
+                    <button onclick="sendChatMessage()"
+                            class="px-4 py-2 bg-primary text-white rounded-lg hover:bg-green-700 transition-colors touch-target">
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+                </div>
+                <div class="text-xs text-gray-500 mt-2 text-center">
+                    <i class="fa-solid fa-circle text-emerald-500 text-[8px] mr-1"></i>
+                    En ligne • Réponse immédiate
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialiser la recherche
+    const searchInput = document.getElementById('help-search');
+    const faqItems = document.querySelectorAll('.faq-item');
+    
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            faqItems.forEach(item => {
+                const searchData = item.getAttribute('data-search').toLowerCase();
+                const parentSection = item.closest('.faq-item').parentElement.parentElement;
+                
+                if (searchTerm === '' || searchData.includes(searchTerm)) {
+                    item.style.display = 'block';
+                    parentSection.style.display = 'block';
+                    
+                    // Ouvrir la section parent si elle contient des résultats
+                    const sectionId = parentSection.id.replace('faq-content-', '');
+                    openFAQ(sectionId);
+                } else {
+                    item.style.display = 'none';
+                    
+                    // Vérifier si toute la section est vide
+                    const visibleItems = parentSection.querySelectorAll('.faq-item[style="display: block"]');
+                    if (visibleItems.length === 0) {
+                        parentSection.style.display = 'none';
+                    }
+                }
+            });
+        });
+        
+        // Focus sur la recherche au chargement
+        searchInput.focus();
+    }
+});
+
+// Gestion des FAQ
+function toggleFAQ(id) {
+    const content = document.getElementById('faq-content-' + id);
+    const icon = document.getElementById('faq-icon-' + id);
+    
+    if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        icon.classList.add('rotate-180');
+    } else {
+        content.classList.add('hidden');
+        icon.classList.remove('rotate-180');
+    }
+}
+
+function openFAQ(id) {
+    const content = document.getElementById('faq-content-' + id);
+    const icon = document.getElementById('faq-icon-' + id);
+    
+    content.classList.remove('hidden');
+    icon.classList.add('rotate-180');
+}
+
+// Modales
+function openContactModal() {
+    document.getElementById('contactModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeContactModal() {
+    document.getElementById('contactModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+function openLiveChat() {
+    document.getElementById('liveChatModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    
+    // Focus sur l'input du chat
+    setTimeout(() => {
+        document.getElementById('chatInput').focus();
+    }, 100);
+}
+
+function closeLiveChat() {
+    document.getElementById('liveChatModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+// Actions de contact
+function sendEmail() {
+    window.location.href = 'mailto:support@efasmartfinance.com?subject=Support%20EFA%20Smart%20Finance';
+}
+
+function callSupport() {
+    if (confirm('Appeler le support au +225 27 22 44 55 66 ?')) {
+        window.location.href = 'tel:+2252722445566';
+    }
+}
+
+// Gestion du formulaire
+function submitSupportForm(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const subject = form.querySelector('[name="subject"]').value;
+    const message = form.querySelector('[name="message"]').value;
+    
+    if (!subject) {
+        showNotification('Veuillez sélectionner un sujet', 'error');
+        return;
+    }
+    
+    if (!message.trim()) {
+        showNotification('Veuillez décrire votre problème', 'error');
+        return;
+    }
+    
+    // Simulation d'envoi
+    showNotification('Envoi de votre demande en cours...', 'info');
+    
+    setTimeout(() => {
+        closeContactModal();
+        showNotification('Demande envoyée ! Notre équipe vous répondra sous 24h.', 'success');
+        form.reset();
+    }, 1500);
+}
+
+// Chat en direct
+function sendChatMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    
+    if (!message) return;
+    
+    const chatMessages = document.getElementById('chatMessages');
+    
+    // Ajouter le message de l'utilisateur
+    const userMessage = document.createElement('div');
+    userMessage.className = 'flex items-start gap-3 justify-end';
+    userMessage.innerHTML = `
+        <div class="bg-primary text-white rounded-2xl rounded-tr-none px-4 py-2 max-w-[80%]">
+            <div class="text-sm">${escapeHtml(message)}</div>
+            <div class="text-xs opacity-90 mt-1 text-right">Vous • Maintenant</div>
+        </div>
+        <div class="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-user text-primary text-sm"></i>
+        </div>
+    `;
+    chatMessages.appendChild(userMessage);
+    
+    // Vider l'input
+    input.value = '';
+    
+    // Scroll vers le bas
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    // Simulation de réponse automatique
+    setTimeout(() => {
+        const autoReplies = [
+            "Merci pour votre message. Un conseiller vous répondra dans quelques instants.",
+            "Nous avons bien reçu votre demande. Notre équipe la traite actuellement.",
+            "Pouvez-vous nous donner plus de détails sur votre problème ?",
+            "Vérifiez que vous avez la dernière version de l'application.",
+            "Avez-vous déjà essayé de vous déconnecter et reconnecter ?"
+        ];
+        
+        const reply = autoReplies[Math.floor(Math.random() * autoReplies.length)];
+        
+        const botMessage = document.createElement('div');
+        botMessage.className = 'flex items-start gap-3';
+        botMessage.innerHTML = `
+            <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-headset text-gray-600 text-sm"></i>
+            </div>
+            <div class="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-2 max-w-[80%]">
+                <div class="text-sm text-gray-800">${reply}</div>
+                <div class="text-xs text-gray-500 mt-1">Support • Maintenant</div>
+            </div>
+        `;
+        chatMessages.appendChild(botMessage);
+        
+        // Scroll vers le bas
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }, 1000);
+}
+
+// Utilitaires
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+function showNotification(message, type = 'info') {
+    // Supprimer les notifications existantes
+    document.querySelectorAll('.notification-toast').forEach(el => el.remove());
+    
+    const notification = document.createElement('div');
+    notification.className = `notification-toast fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg flex items-center transform translate-x-full transition-transform duration-300 ${
+        type === 'success' ? 'bg-emerald-500 text-white' :
+        type === 'error' ? 'bg-red-500 text-white' :
+        type === 'info' ? 'bg-blue-500 text-white' :
+        'bg-gray-800 text-white'
+    }`;
+    
+    const icon = type === 'success' ? 'fa-check-circle' :
+                 type === 'error' ? 'fa-times-circle' :
+                 type === 'info' ? 'fa-info-circle' :
+                 'fa-bell';
+    
+    notification.innerHTML = `
+        <i class="fa-solid ${icon} mr-2"></i>
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()" class="ml-4 text-white/80 hover:text-white">
+            <i class="fa-solid fa-times"></i>
+        </button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animation d'entrée
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 10);
+    
+    // Auto-suppression
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => notification.remove(), 300);
+    }, 5000);
+}
+
+// Fermer les modales en cliquant à l'extérieur
+document.getElementById('contactModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeContactModal();
+    }
+});
+
+document.getElementById('liveChatModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeLiveChat();
+    }
+});
+
+// Raccourci clavier pour la recherche
+document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === '/') {
+        e.preventDefault();
+        document.getElementById('help-search').focus();
+    }
+});
+
+// Envoyer le message du chat avec Enter
+document.getElementById('chatInput')?.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendChatMessage();
+    }
+});
+</script>
+
+<style>
+.touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Animations */
+.rotate-180 {
+    transform: rotate(180deg);
+    transition: transform 0.3s ease;
+}
+
+/* FAQ animations */
+.faq-item {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Chat animations */
+#chatMessages > div {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Notifications */
+.notification-toast {
+    animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #liveChatModal > div {
+        height: 90vh;
+        border-radius: 1rem 1rem 0 0;
+    }
+    
+    .faq-content {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+
+/* Scrollbar stylisée */
+#chatMessages::-webkit-scrollbar {
+    width: 6px;
+}
+
+#chatMessages::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+#chatMessages::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+#chatMessages::-webkit-scrollbar-thumb:hover {
+    background: #a1a1a1;
+}
+
+/* Améliorer la lisibilité */
+.text-shadow {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover effects */
+.hover-lift:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease;
+}
+
+/* Gradient borders */
+.gradient-border {
+    border: 2px solid transparent;
+    background: linear-gradient(white, white) padding-box,
+                linear-gradient(135deg, #10b981, #3b82f6) border-box;
+}
+</style>
+{% endblock %}

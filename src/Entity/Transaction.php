@@ -45,9 +45,19 @@ class Transaction
     #[ORM\OneToMany(targetEntity: TontinePoint::class, mappedBy: 'transaction')]
     private Collection $tontinePoints;
 
+    /**
+     * @var Collection<int, WalletTransactions>
+     */
+    #[ORM\OneToMany(targetEntity: WalletTransactions::class, mappedBy: 'transactions')]
+    private Collection $walletTransactions;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $isDeleted = null;
+
     public function __construct()
     {
         $this->tontinePoints = new ArrayCollection();
+        $this->walletTransactions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -177,6 +187,48 @@ class Transaction
                 $tontinePoint->setTransaction(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, WalletTransactions>
+     */
+    public function getWalletTransactions(): Collection
+    {
+        return $this->walletTransactions;
+    }
+
+    public function addWalletTransaction(WalletTransactions $walletTransaction): static
+    {
+        if (!$this->walletTransactions->contains($walletTransaction)) {
+            $this->walletTransactions->add($walletTransaction);
+            $walletTransaction->setTransactions($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWalletTransaction(WalletTransactions $walletTransaction): static
+    {
+        if ($this->walletTransactions->removeElement($walletTransaction)) {
+            // set the owning side to null (unless already changed)
+            if ($walletTransaction->getTransactions() === $this) {
+                $walletTransaction->setTransactions(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isDeleted(): ?bool
+    {
+        return $this->isDeleted;
+    }
+
+    public function setIsDeleted(?bool $isDeleted): static
+    {
+        $this->isDeleted = $isDeleted;
 
         return $this;
     }

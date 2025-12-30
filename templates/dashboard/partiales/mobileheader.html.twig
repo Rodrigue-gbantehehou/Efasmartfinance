@@ -6,7 +6,7 @@
             <i class="fa-solid fa-bars text-gray-700"></i>
           </button>
           <div class="flex items-center gap-2">
-            <img src="../images/estm.png" alt="Logo" class="h-8 w-8 rounded-full"/>
+            <img src="{{asset ('assets/images/estm.png')}}" alt="Logo" class="h-8 w-8 rounded-full"/>
             <div>
               <div class="font-bold text-primary text-sm leading-tight">EFA SMART FINANCE</div>
             </div>
@@ -14,7 +14,7 @@
         </div>
         
         <div class="flex items-center gap-2">
-          <a href="tontine_nouvelle.php" class="h-10 w-10 rounded-lg bg-primary text-white hover:bg-green-700 flex items-center justify-center touch-target" title="Nouvelle tontine">
+          <a href="{{path('app_tontine')}}" class="h-10 w-10 rounded-lg bg-primary text-white hover:bg-green-700 flex items-center justify-center touch-target" title="Nouvelle tontine">
             <i class="fa-solid fa-plus"></i>
           </a>
           <button class="relative h-10 w-10 rounded-lg hover:bg-gray-100 flex items-center justify-center touch-target">

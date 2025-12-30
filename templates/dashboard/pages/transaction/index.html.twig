@@ -1,0 +1,883 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}Gestion des Transactions - EFA SMART FINANCE{% endblock %}
+
+{% block contentdashboard %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200 px-4 py-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Tableau de bord Transactions</h1>
+                    <p class="text-gray-600 mt-1">Statistiques et gestion des transactions</p>
+                </div>
+                <div class="flex gap-2 mt-3 md:mt-0">
+                    <button onclick="refreshData()" 
+                            class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors touch-target">
+                        <i class="fa-solid fa-rotate-right mr-2"></i>
+                        Actualiser
+                    </button>
+                    <button onclick="exportTransactions()" 
+                            class="inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-green-700 transition-colors touch-target">
+                        <i class="fa-solid fa-file-export mr-2"></i>
+                        Exporter
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistiques détaillées -->
+    <div class="max-w-7xl mx-auto px-4 py-6">
+        <div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
+           
+            <!-- Transactions réussies -->
+            <div class="bg-white rounded-xl border border-gray-200 p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <div class="text-sm text-gray-500">Paiements réussis</div>
+                        {% set completedCount = transactions|filter(t => t.statut == 'completed')|length %}
+                        <div class="text-2xl font-bold text-emerald-700 mt-1">{{ completedCount }}</div>
+                    </div>
+                    <div class="p-3 bg-emerald-50 rounded-lg">
+                        <i class="fa-solid fa-check-circle text-emerald-500 text-xl"></i>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-emerald-600">
+                        {% set completedAmount = 0 %}
+                        {% for transaction in transactions|filter(t => t.statut == 'completed') %}
+                            {% set completedAmount = completedAmount + transaction.amount %}
+                        {% endfor %}
+                        {{ completedAmount|number_format(0, ',', ' ') }} FCFA
+                    </div>
+                    <div class="text-xs font-medium px-2 py-1 bg-emerald-100 text-emerald-800 rounded-full">
+                        {{ transactions|length > 0 ? (completedCount / transactions|length * 100)|round(1) }}%
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Transactions échouées -->
+            <div class="bg-white rounded-xl border border-gray-200 p-5">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <div class="text-sm text-gray-500">Paiements échoués</div>
+                        {% set failedCount = transactions|filter(t => t.statut == 'failed' and t.isDeleted == false)|length %}
+                        <div class="text-2xl font-bold text-red-700 mt-1">{{ failedCount }}</div>
+                    </div>
+                    <div class="p-3 bg-red-50 rounded-lg">
+                        <i class="fa-solid fa-times-circle text-red-500 text-xl"></i>
+                    </div>
+                </div>
+                <div class="flex items-center justify-between">
+                    <div class="text-sm text-red-600">
+                        {% set failedAmount = 0 %}
+                        {% for transaction in transactions|filter(t => t.statut == 'failed' and t.isDeleted == false) %}
+                            {% set failedAmount = failedAmount + transaction.amount %}
+                        {% endfor %}
+                        {{ failedAmount|number_format(0, ',', ' ') }} FCFA
+                    </div>
+                    <div class="text-xs font-medium px-2 py-1 bg-red-100 text-red-800 rounded-full">
+                        {{ transactions|length > 0 ? (failedCount / transactions|length * 100)|round(1) }}%
+                    </div>
+                </div>
+            </div>
+
+             <!-- En attente -->
+            <div class="bg-white rounded-xl border border-gray-200 p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <div class="text-sm text-gray-500">En attente</div>
+                        {% set pendingCount = transactions|filter(t => t.statut == 'pending' and t.isDeleted == false)|length %}
+                        <div class="text-xl font-bold text-amber-700 mt-1">{{ pendingCount }}</div>
+                    </div>
+                    <div class="p-2 bg-amber-50 rounded-lg">
+                        <i class="fa-solid fa-clock text-amber-500 text-lg"></i>
+                    </div>
+                </div>
+                <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div class="h-full bg-amber-500 rounded-full" 
+                         style="width: {{ transactions|length > 0 ? (pendingCount / transactions|length * 100) : 0 }}%"></div>
+                </div>
+            </div>
+            
+            <!-- Annulées -->
+            <div class="bg-white rounded-xl border border-gray-200 p-5">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <div class="text-sm text-gray-500">Annulées</div>
+                        {% set cancelledCount = transactions|filter(t => t.statut == 'cancelled' and t.isDeleted == false)|length %}
+                        <div class="text-xl font-bold text-gray-700 mt-1">{{ cancelledCount }}</div>
+                    </div>
+                    <div class="p-2 bg-gray-100 rounded-lg">
+                        <i class="fa-solid fa-ban text-gray-500 text-lg"></i>
+                    </div>
+                </div>
+                <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div class="h-full bg-gray-500 rounded-full" 
+                         style="width: {{ transactions|length > 0 ? (cancelledCount / transactions|length * 100) : 0 }}%"></div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Filtres et Recherche -->
+    <div class="max-w-7xl mx-auto px-4 py-4">
+        <div class="bg-white rounded-xl border border-gray-200 p-4">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <!-- Filtres Statut -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterTable('all')" 
+                            class="filter-btn active inline-flex items-center px-4 py-2 bg-primary text-white rounded-lg font-medium transition-colors touch-target">
+                        <i class="fa-solid fa-layer-group mr-2"></i>
+                        Toutes ({{ transactions|length }})
+                    </button>
+                    <button onclick="filterTable('completed')" 
+                            class="filter-btn inline-flex items-center px-4 py-2 bg-emerald-100 text-emerald-700 rounded-lg font-medium hover:bg-emerald-200 transition-colors touch-target">
+                        <i class="fa-solid fa-check-circle mr-2"></i>
+                        Réussies ({{ completedCount }})
+                    </button>
+                    <button onclick="filterTable('failed')" 
+                            class="filter-btn inline-flex items-center px-4 py-2 bg-red-100 text-red-700 rounded-lg font-medium hover:bg-red-200 transition-colors touch-target">
+                        <i class="fa-solid fa-times-circle mr-2"></i>
+                        Échouées ({{ failedCount }})
+                    </button>
+                    <button onclick="filterTable('pending')" 
+                            class="filter-btn inline-flex items-center px-4 py-2 bg-amber-100 text-amber-700 rounded-lg font-medium hover:bg-amber-200 transition-colors touch-target">
+                        <i class="fa-solid fa-clock mr-2"></i>
+                        En attente ({{ pendingCount }})
+                    </button>
+                </div>
+                
+                <!-- Recherche -->
+                <div class="relative flex-1 max-w-md">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-search text-gray-400"></i>
+                    </div>
+                    <input type="text" 
+                           id="search-input"
+                           placeholder="ID, référence, montant..."
+                           class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent touch-target"
+                           oninput="filterTable()">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tableau des transactions -->
+    <div class="max-w-7xl mx-auto px-4 py-4">
+        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <!-- En-tête du tableau -->
+            <div class="px-4 md:px-6 py-4 border-b border-gray-200 bg-gray-50">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                    <h2 class="text-lg font-semibold text-gray-900">Transactions récentes</h2>
+                    
+                    <!-- Tri et affichage -->
+                    <div class="flex items-center gap-3">
+                        <div class="text-sm text-gray-500 hidden md:block">
+                            {{ transactions|length }} transaction{{ transactions|length > 1 ? 's' : '' }}
+                        </div>
+                        <select onchange="sortTable(this.value)"
+                                class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary touch-target">
+                            <option value="date-desc">Plus récentes</option>
+                            <option value="date-asc">Plus anciennes</option>
+                            <option value="amount-desc">Montant (haut)</option>
+                            <option value="amount-asc">Montant (bas)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tableau (mobile-friendly) -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Transaction
+                            </th>
+                            <th scope="col" class="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Montant
+                            </th>
+                            <th scope="col" class="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Méthode
+                            </th>
+                            <th scope="col" class="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Statut
+                            </th>
+                            <th scope="col" class="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Date
+                            </th>
+                            <th scope="col" class="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200" id="transactions-body">
+                        {% for transaction in transactions %}
+                        {% if transaction.isDeleted == false %}            
+                        <tr class="transaction-row hover:bg-gray-50 transition-colors duration-150" 
+                            data-status="{{ transaction.statut|default('pending') }}"
+                            data-id="{{ transaction.id }}"
+                            data-search="{{ transaction.id }} {{ transaction.externalReference|default('') }} {{ transaction.amount }} {{ transaction.paymentMethod }}">
+                            <td class="px-4 md:px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="h-10 w-10 rounded-lg flex items-center justify-center mr-3 flex-shrink-0
+                                        {% if transaction.paymentMethod == 'kkiapay' %}bg-purple-100 text-purple-600
+                                        {% elseif transaction.paymentMethod == 'paypal' %}bg-blue-100 text-blue-600
+                                        {% elseif transaction.paymentMethod == 'fedapay' %}bg-green-100 text-green-600
+                                        {% elseif transaction.paymentMethod == 'cash' %}bg-yellow-100 text-yellow-600
+                                        {% else %}bg-gray-100 text-gray-600{% endif %}">
+                                        {% if transaction.paymentMethod == 'kkiapay' %}
+                                            <i class="fa-solid fa-mobile-screen"></i>
+                                        {% elseif transaction.paymentMethod == 'paypal' %}
+                                            <i class="fa-brands fa-paypal"></i>
+                                        {% elseif transaction.paymentMethod == 'fedapay' %}
+                                            <i class="fa-solid fa-credit-card"></i>
+                                        {% elseif transaction.paymentMethod == 'cash' %}
+                                            <i class="fa-solid fa-money-bill"></i>
+                                        {% else %}
+                                            <i class="fa-solid fa-wallet"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="min-w-0">
+                                        <div class="font-medium text-gray-900 truncate">#{{ transaction.id }}</div>
+                                        <div class="text-sm text-gray-500 truncate">
+                                            {{ transaction.externalReference|default('N/A')}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-4 md:px-6 py-4 whitespace-nowrap">
+                                <div class="text-base md:text-lg font-semibold text-gray-900">
+                                    {{ transaction.amount|number_format(0, ',', ' ') }} FCFA
+                                </div>
+                            </td>
+                            <td class="px-4 md:px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <span class="inline-flex items-center px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium 
+                                        {% if transaction.paymentMethod == 'kkiapay' %}bg-purple-100 text-purple-800
+                                        {% elseif transaction.paymentMethod == 'paypal' %}bg-blue-100 text-blue-800
+                                        {% elseif transaction.paymentMethod == 'fedapay' %}bg-green-100 text-green-800
+                                        {% elseif transaction.paymentMethod == 'cash' %}bg-yellow-100 text-yellow-800
+                                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                        {% if transaction.paymentMethod == 'kkiapay' %}Mobile
+                                        {% elseif transaction.paymentMethod == 'paypal' %}PayPal
+                                        {% elseif transaction.paymentMethod == 'fedapay' %}Carte
+                                        {% elseif transaction.paymentMethod == 'cash' %}Espèces
+                                        {% else %}{{ transaction.paymentMethod }}{% endif %}
+                                    </span>
+                                </div>
+                            </td>
+                            <td class="px-4 md:px-6 py-4 whitespace-nowrap">
+                                <span class="inline-flex items-center px-2 md:px-3 py-1 rounded-full text-xs md:text-sm font-medium
+                                    {% if transaction.statut == 'completed' %}bg-emerald-100 text-emerald-800
+                                    {% elseif transaction.statut == 'pending' %}bg-amber-100 text-amber-800
+                                    {% elseif transaction.statut == 'failed' %}bg-red-100 text-red-800
+                                    {% elseif transaction.statut == 'cancelled' %}bg-gray-100 text-gray-800
+                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                    <i class="fa-solid 
+                                        {% if transaction.statut == 'completed' %}fa-check-circle
+                                        {% elseif transaction.statut == 'pending' %}fa-clock
+                                        {% elseif transaction.statut == 'failed' %}fa-times-circle
+                                        {% elseif transaction.statut == 'cancelled' %}fa-ban
+                                        {% else %}fa-clock{% endif %} mr-1.5 text-xs md:text-sm"></i>
+                                    {{ transaction.statut|default('pending')|capitalize }}
+                                </span>
+                            </td>
+                            <td class="px-4 md:px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">
+                                    {{ transaction.createdAt ? transaction.createdAt|date('d/m/Y') : '' }}
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    {{ transaction.createdAt ? transaction.createdAt|date('H:i') : '' }}
+                                </div>
+                            </td>
+                            <td class="px-4 md:px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center space-x-2">
+                                    <a href="{{ path('app_transaction_show', {'id': transaction.id}) }}" 
+                                       class="text-primary hover:text-green-700 transition-colors relative group touch-target p-2 rounded-lg hover:bg-gray-100"
+                                       title="Voir détails">
+                                        <i class="fa-solid fa-eye"></i>
+                                        <span class="tooltip">Détails</span>
+                                    </a>
+                                    {% if transaction.statut == 'pending' %}
+                                        <button onclick="retryTransaction({{ transaction.id }})"
+                                                class="text-amber-600 hover:text-amber-700 transition-colors relative group touch-target p-2 rounded-lg hover:bg-amber-50"
+                                                title="Réessayer">
+                                            <i class="fa-solid fa-redo"></i>
+                                            <span class="tooltip">Réessayer</span>
+                                        </button>
+                                    {% endif %}
+                                     <button onclick="cancelTransaction({{ transaction.id }})" 
+                                       class="text-red-600 hover:text-red-700 transition-colors relative group touch-target p-2 rounded-lg hover:bg-red-50"
+                                       title="Supprimer">
+                                        <i class="fa-solid fa-trash"></i>
+                                        <span class="tooltip">Supprimer</span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="px-4 md:px-6 py-12 text-center">
+                                <div class="text-gray-500">
+                                    <i class="fa-solid fa-inbox text-4xl mb-4 text-gray-300"></i>
+                                    <p class="text-lg font-medium">Aucune transaction</p>
+                                    <p class="mt-2 text-sm">Commencez par créer une transaction</p>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 py-10">
+    </div>
+</div>
+
+<!-- Modal de confirmation annulation -->
+<div id="cancelModal" class="hidden fixed inset-0 bg-black/50 z-50">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-md">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-gray-900">Supprimer la transaction</h3>
+                    <button onclick="closeCancelModal()" 
+                            class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i class="fa-solid fa-times text-gray-500"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <p class="text-gray-600" id="cancelMessage">
+                        Êtes-vous sûr de vouloir supprimer cette transaction ?
+                    </p>
+                    
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <i class="fa-solid fa-exclamation-triangle text-red-500 mt-0.5"></i>
+                            <div class="text-sm text-red-700">
+                                <strong>Attention :</strong> Cette action est irréversible. La transaction sera définitivement supprimée.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-3 pt-4">
+                        <button onclick="closeCancelModal()"
+                                class="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                            Annuler
+                        </button>
+                        <button onclick="confirmCancel()"
+                                class="flex-1 px-4 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-medium">
+                            Supprimer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de confirmation réessai -->
+<div id="retryModal" class="hidden fixed inset-0 bg-black/50 z-50">
+    <div class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl w-full max-w-md">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-gray-900">Réessayer le paiement</h3>
+                    <button onclick="closeRetryModal()" 
+                            class="p-2 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i class="fa-solid fa-times text-gray-500"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-4">
+                    <p class="text-gray-600" id="retryMessage">
+                        Êtes-vous sûr de vouloir réessayer cette transaction ?
+                    </p>
+                    
+                    <div class="bg-amber-50 border border-amber-200 rounded-lg p-4">
+                        <div class="flex items-start gap-3">
+                            <i class="fa-solid fa-exclamation-triangle text-amber-500 mt-0.5"></i>
+                            <div class="text-sm text-amber-700">
+                                Cette action déclenchera une nouvelle tentative de paiement.
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-3 pt-4">
+                        <button onclick="closeRetryModal()"
+                                class="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
+                            Annuler
+                        </button>
+                        <button onclick="confirmRetry()"
+                                class="flex-1 px-4 py-2.5 bg-primary text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+                            Confirmer
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialiser les filtres
+    filterTable('all');
+});
+
+let currentFilter = 'all';
+let currentTransactionId = null;
+let currentTransactionType = null; // 'cancel' ou 'retry'
+
+function filterTable(filter = null) {
+    const searchInput = document.getElementById('search-input');
+    const searchTerm = searchInput.value.toLowerCase();
+    
+    if (filter) {
+        currentFilter = filter;
+        // Mettre à jour les boutons de filtre
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.classList.remove('active', 'bg-primary', 'text-white');
+            btn.classList.add('bg-gray-100', 'text-gray-700');
+        });
+        
+        const activeBtn = event?.target || document.querySelector(`.filter-btn[onclick*="${filter}"]`);
+        if (activeBtn) {
+            activeBtn.classList.remove('bg-gray-100', 'text-gray-700');
+            activeBtn.classList.add('active', 'bg-primary', 'text-white');
+        }
+    }
+    
+    const rows = document.querySelectorAll('.transaction-row');
+    let visibleCount = 0;
+    
+    rows.forEach(row => {
+        const status = row.getAttribute('data-status');
+        const searchData = row.getAttribute('data-search').toLowerCase();
+        
+        const matchesFilter = currentFilter === 'all' || status === currentFilter;
+        const matchesSearch = searchData.includes(searchTerm);
+        
+        row.style.display = matchesFilter && matchesSearch ? '' : 'none';
+        if (matchesFilter && matchesSearch) visibleCount++;
+    });
+    
+    // Mettre à jour le compteur
+    const counter = document.querySelector('h2 + .text-sm');
+    if (counter) {
+        counter.textContent = `${visibleCount} transaction${visibleCount !== 1 ? 's' : ''}`;
+    }
+}
+
+function sortTable(sortBy) {
+    const rows = Array.from(document.querySelectorAll('.transaction-row'));
+    const tbody = document.getElementById('transactions-body');
+    
+    rows.sort((a, b) => {
+        const aId = parseInt(a.getAttribute('data-id'));
+        const bId = parseInt(b.getAttribute('data-id'));
+        const aAmount = parseFloat(a.querySelector('.font-semibold').textContent.replace(/[^0-9]/g, ''));
+        const bAmount = parseFloat(b.querySelector('.font-semibold').textContent.replace(/[^0-9]/g, ''));
+        
+        switch(sortBy) {
+            case 'date-desc':
+                return bId - aId;
+            case 'date-asc':
+                return aId - bId;
+            case 'amount-desc':
+                return bAmount - aAmount;
+            case 'amount-asc':
+                return aAmount - bAmount;
+            default:
+                return bId - aId;
+        }
+    });
+    
+    // Réorganiser les lignes
+    rows.forEach(row => tbody.appendChild(row));
+}
+
+function refreshData() {
+    const btn = event?.target.closest('button');
+    if (btn) {
+        const originalHTML = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Chargement...';
+        btn.disabled = true;
+        
+        // Simuler un chargement
+        setTimeout(() => {
+            btn.innerHTML = originalHTML;
+            btn.disabled = false;
+            showNotification('Données actualisées', 'success');
+        }, 1000);
+    }
+}
+
+function exportTransactions() {
+    const btn = event?.target.closest('button');
+    const originalHTML = btn.innerHTML;
+    
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-2"></i> Export...';
+    btn.disabled = true;
+    
+    // Collecter les données visibles
+    const visibleRows = document.querySelectorAll('.transaction-row[style=""]');
+    let csvContent = "ID,Référence,Montant (FCFA),Méthode,Statut,Date\n";
+    
+    visibleRows.forEach(row => {
+        const cells = row.querySelectorAll('td');
+        const id = cells[0]?.querySelector('.font-medium')?.textContent.trim().replace('#', '') || '';
+        const reference = cells[0]?.querySelector('.text-sm')?.textContent.trim() || '';
+        const amount = cells[1]?.textContent.trim().replace(' FCFA', '').replace(/\s/g, '') || '';
+        const method = cells[2]?.textContent.trim() || '';
+        const status = cells[3]?.textContent.trim() || '';
+        const date = cells[4]?.textContent.trim() || '';
+        
+        csvContent += `"${id}","${reference}","${amount}","${method}","${status}","${date}"\n`;
+    });
+    
+    // Créer et télécharger le CSV
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `transactions_${new Date().toISOString().slice(0,10)}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    setTimeout(() => {
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+        showNotification('Export réussi ! Fichier téléchargé.', 'success');
+    }, 500);
+}
+
+// Fonctions pour les modales
+function retryTransaction(id) {
+    currentTransactionId = id;
+    currentTransactionType = 'retry';
+    const row = document.querySelector(`.transaction-row[data-id="${id}"]`);
+    const amount = row.querySelector('.font-semibold')?.textContent || '';
+    
+    document.getElementById('retryMessage').innerHTML = 
+        `Réessayer le paiement de <strong>${amount}</strong> ?`;
+    document.getElementById('retryModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function cancelTransaction(id) {
+    currentTransactionId = id;
+    currentTransactionType = 'cancel';
+    const row = document.querySelector(`.transaction-row[data-id="${id}"]`);
+    const amount = row.querySelector('.font-semibold')?.textContent || '';
+    const status = row.getAttribute('data-status');
+    
+    document.getElementById('cancelMessage').innerHTML = 
+        `Supprimer la transaction <strong>#${id}</strong> d'un montant de <strong>${amount}</strong> (Statut: ${status}) ?`;
+    document.getElementById('cancelModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeRetryModal() {
+    document.getElementById('retryModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    currentTransactionId = null;
+    currentTransactionType = null;
+}
+
+function closeCancelModal() {
+    document.getElementById('cancelModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    currentTransactionId = null;
+    currentTransactionType = null;
+}
+
+function confirmRetry() {
+    if (!currentTransactionId) return;
+    
+    showNotification('Tentative de paiement en cours...', 'info');
+    
+    // Simulation d'appel API
+    setTimeout(() => {
+        closeRetryModal();
+        showNotification('Paiement réessayé avec succès', 'success');
+        
+        // Mettre à jour le statut dans le tableau
+        const row = document.querySelector(`.transaction-row[data-id="${currentTransactionId}"]`);
+        const statusBadge = row.querySelector('span[class*="bg-"]');
+        if (statusBadge) {
+            statusBadge.className = 'inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800';
+            statusBadge.innerHTML = '<i class="fa-solid fa-clock mr-1.5"></i>Pending';
+            row.setAttribute('data-status', 'pending');
+        }
+        
+        currentTransactionId = null;
+        currentTransactionType = null;
+    }, 1500);
+}
+
+function confirmCancel() {
+    if (!currentTransactionId) return;
+    
+    showNotification('Suppression en cours...', 'info');
+    
+    // Appel API pour supprimer la transaction
+    fetch('/dashboard/transaction/' + currentTransactionId + '/cancel', {
+        method: 'POST',
+        headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            closeCancelModal();
+            showNotification('Transaction supprimée avec succès', 'success');
+            
+            // Supprimer la ligne du tableau
+            const row = document.querySelector(`.transaction-row[data-id="${currentTransactionId}"]`);
+            if (row) {
+                row.remove();
+                updateStatsAfterDelete();
+            }
+        } else {
+            showNotification(data.message || 'Erreur lors de la suppression', 'error');
+        }
+    })
+    .catch(error => {
+        showNotification('Erreur réseau', 'error');
+    })
+    .finally(() => {
+        currentTransactionId = null;
+        currentTransactionType = null;
+    });
+}
+
+function updateStatsAfterDelete() {
+    // Recalculer les statistiques après suppression
+    const rows = document.querySelectorAll('.transaction-row:not([style*="display: none"])');
+    
+    // Compter les transactions par statut
+    let completedCount = 0;
+    let pendingCount = 0;
+    let failedCount = 0;
+    let cancelledCount = 0;
+    
+    rows.forEach(row => {
+        const status = row.getAttribute('data-status');
+        if (status === 'completed') completedCount++;
+        else if (status === 'pending') pendingCount++;
+        else if (status === 'failed') failedCount++;
+        else if (status === 'cancelled') cancelledCount++;
+    });
+    
+    // Mettre à jour les compteurs dans l'interface
+    const totalCount = rows.length;
+    
+    // Mettre à jour les compteurs dans les cartes
+    const updateCounter = (selector, count) => {
+        const element = document.querySelector(selector);
+        if (element) {
+            element.textContent = count;
+        }
+    };
+    
+    updateCounter('.total-transactions', totalCount);
+    updateCounter('.completed-count', completedCount);
+    updateCounter('.pending-count', pendingCount);
+    updateCounter('.failed-count', failedCount);
+    updateCounter('.cancelled-count', cancelledCount);
+    
+    const updatePercentage = (selector, count, total) => {
+        const element = document.querySelector(selector);
+        if (element) {
+            const percentage = total > 0 ? Math.round((count / total) * 100) : 0;
+            element.textContent = `(${percentage}%)`;
+        }
+    };
+    
+    updatePercentage('.completed-percent', completedCount, totalCount);
+    updatePercentage('.pending-percent', pendingCount, totalCount);
+    updatePercentage('.failed-percent', failedCount, totalCount);
+    updatePercentage('.cancelled-percent', cancelledCount, totalCount);
+    
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+        const text = btn.textContent;
+        if (text.includes('Toutes')) {
+            btn.innerHTML = btn.innerHTML.replace(/\(\d+\)/, `(${totalCount})`);
+        } else if (text.includes('Réussies')) {
+            btn.innerHTML = btn.innerHTML.replace(/\(\d+\)/, `(${completedCount})`);
+        } else if (text.includes('Échouées')) {
+            btn.innerHTML = btn.innerHTML.replace(/\((\d+)\)/, `(${failedCount})`);
+        } else if (text.includes('En attente')) {
+            btn.innerHTML = btn.innerHTML.replace(/\((\d+)\)/, `(${pendingCount})`);
+        }
+    });
+}
+
+function showNotification(message, type = 'info') {
+    // Supprimer les notifications existantes
+    document.querySelectorAll('.notification-toast').forEach(el => el.remove());
+    
+    const notification = document.createElement('div');
+    notification.className = `notification-toast fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg flex items-center transform translate-x-full transition-transform duration-300 ${
+        type === 'success' ? 'bg-emerald-500 text-white' :
+        type === 'error' ? 'bg-red-500 text-white' :
+        type === 'info' ? 'bg-blue-500 text-white' :
+        'bg-gray-800 text-white'
+    }`;
+    
+    const icon = type === 'success' ? 'fa-check-circle' :
+                 type === 'error' ? 'fa-times-circle' :
+                 type === 'info' ? 'fa-info-circle' :
+                 'fa-bell';
+    
+    notification.innerHTML = `
+        <i class="fa-solid ${icon} mr-2"></i>
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()" class="ml-4 text-white/80 hover:text-white">
+            <i class="fa-solid fa-times"></i>
+        </button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animation d'entrée
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 10);
+    
+    // Auto-suppression
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => notification.remove(), 300);
+    }, 5000);
+}
+
+// Fermer les modales en cliquant à l'extérieur
+document.getElementById('retryModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeRetryModal();
+    }
+});
+
+document.getElementById('cancelModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeCancelModal();
+    }
+});
+
+// Raccourci clavier pour la recherche
+document.addEventListener('keydown', function(e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+        e.preventDefault();
+        document.getElementById('search-input').focus();
+    }
+});
+</script>
+
+<style>
+.touch-target {
+    min-height: 44px;
+    min-width: 44px;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.filter-btn {
+    transition: all 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.filter-btn.active {
+    border-color: #10b981;
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.1);
+}
+
+.filter-btn:hover:not(.active) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.tooltip {
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #374151;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    pointer-events: none;
+}
+
+.group:hover .tooltip {
+    opacity: 1;
+    visibility: visible;
+    top: -35px;
+}
+
+.notification-toast {
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .transaction-row td {
+        padding: 12px 8px;
+    }
+    
+    .filter-btn {
+        padding: 8px 12px;
+        font-size: 14px;
+    }
+}
+
+/* Améliorer la lisibilité */
+.font-semibold {
+    font-weight: 600;
+}
+
+/* Styles pour les statuts */
+.bg-emerald-100 { background-color: #d1fae5; }
+.bg-red-100 { background-color: #fee2e2; }
+.bg-amber-100 { background-color: #fef3c7; }
+.bg-purple-100 { background-color: #e9d5ff; }
+.bg-blue-100 { background-color: #dbeafe; }
+.bg-green-100 { background-color: #dcfce7; }
+.bg-yellow-100 { background-color: #fef9c3; }
+
+.text-emerald-800 { color: #065f46; }
+.text-red-800 { color: #991b1b; }
+.text-amber-800 { color: #92400e; }
+.text-purple-800 { color: #5b21b6; }
+.text-blue-800 { color: #1e40af; }
+.text-green-800 { color: #166534; }
+.text-yellow-800 { color: #854d0e; }
+</style>
+{% endblock %}

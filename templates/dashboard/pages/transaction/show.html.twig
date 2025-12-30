@@ -1,0 +1,409 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}Détails Transaction #{{ transaction.id }} - EFA SMART FINANCE{% endblock %}
+
+{% block contentdashboard %}
+<div class="min-h-screen bg-gray-50">
+    <!-- Header -->
+    <div class="bg-white border-b border-gray-200 px-4 py-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                <div>
+                    <div class="flex items-center">
+                        <a href="{{ path('app_transaction_index') }}" 
+                           class="mr-4 text-gray-400 hover:text-gray-600 transition-colors">
+                            <i class="fa-solid fa-arrow-left text-xl"></i>
+                        </a>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-900">Détails Transaction</h1>
+                            <p class="text-gray-600 mt-1">ID: #{{ transaction.id }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-4 md:mt-0 flex items-center space-x-3">
+                    <a href="{{ path('app_transaction_edit', {'id': transaction.id}) }}" 
+                       class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                        <i class="fa-solid fa-pencil mr-2"></i>
+                        Modifier
+                    </a>
+                    <a href="{{ path('app_transaction_index') }}" 
+                       class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                        <i class="fa-solid fa-list mr-2"></i>
+                        Retour à la liste
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 py-6">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Column: Transaction Details -->
+            <div class="lg:col-span-2">
+                <!-- Main Card -->
+                <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                    <!-- Card Header -->
+                    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-lg font-semibold text-gray-900">Informations Transaction</h2>
+                            <span class="status-badge 
+                                {% if transaction.statut == 'completed' %}bg-green-100 text-green-800
+                                {% elseif transaction.statut == 'pending' %}bg-yellow-100 text-yellow-800
+                                {% elseif transaction.statut == 'failed' %}bg-red-100 text-red-800
+                                {% elseif transaction.statut == 'cancelled' %}bg-gray-100 text-gray-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                <i class="fa-solid 
+                                    {% if transaction.statut == 'completed' %}fa-check-circle
+                                    {% elseif transaction.statut == 'pending' %}fa-clock
+                                    {% elseif transaction.statut == 'failed' %}fa-times-circle
+                                    {% elseif transaction.statut == 'cancelled' %}fa-ban
+                                    {% else %}fa-circle{% endif %} mr-1.5"></i>
+                                {{ transaction.statut|default('pending')|capitalize }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Transaction Details -->
+                    <div class="p-6">
+                        <div class="space-y-6">
+                            <!-- Amount Card -->
+                            <div class="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 border border-green-100">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <div class="text-sm font-medium text-gray-500 mb-1">Montant</div>
+                                        <div class="text-4xl font-bold text-gray-900">
+                                            {{ transaction.amount|number_format(0, ',', ' ') }} FCFA
+                                        </div>
+                                    </div>
+                                    <div class="h-16 w-16 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center">
+                                        <i class="fa-solid fa-money-bill-wave text-white text-2xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Details Grid -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <!-- Payment Method -->
+                                <div class="bg-gray-50 rounded-lg p-4">
+                                    <div class="flex items-center mb-2">
+                                        <div class="h-10 w-10 rounded-lg flex items-center justify-center mr-3
+                                            {% if transaction.paymentMethod == 'kkiapay' %}bg-purple-100 text-purple-600
+                                            {% elseif transaction.paymentMethod == 'paypal' %}bg-blue-100 text-blue-600
+                                            {% elseif transaction.paymentMethod == 'fedapay' %}bg-green-100 text-green-600
+                                            {% elseif transaction.paymentMethod == 'cash' %}bg-yellow-100 text-yellow-600
+                                            {% else %}bg-gray-100 text-gray-600{% endif %}">
+                                            {% if transaction.paymentMethod == 'kkiapay' %}
+                                                <i class="fa-solid fa-mobile-screen"></i>
+                                            {% elseif transaction.paymentMethod == 'paypal' %}
+                                                <i class="fa-brands fa-paypal"></i>
+                                            {% elseif transaction.paymentMethod == 'fedapay' %}
+                                                <i class="fa-solid fa-credit-card"></i>
+                                            {% elseif transaction.paymentMethod == 'cash' %}
+                                                <i class="fa-solid fa-money-bill"></i>
+                                            {% else %}
+                                                <i class="fa-solid fa-wallet"></i>
+                                            {% endif %}
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-500">Méthode de paiement</div>
+                                            <div class="font-semibold text-gray-900">
+                                                {% if transaction.paymentMethod == 'kkiapay' %}Mobile Money
+                                                {% elseif transaction.paymentMethod == 'paypal' %}PayPal
+                                                {% elseif transaction.paymentMethod == 'fedapay' %}Carte bancaire
+                                                {% elseif transaction.paymentMethod == 'cash' %}Espèces
+                                                {% else %}{{ transaction.paymentMethod }}{% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Provider -->
+                                <div class="bg-gray-50 rounded-lg p-4">
+                                    <div class="flex items-center mb-2">
+                                        <div class="h-10 w-10 rounded-lg bg-indigo-100 flex items-center justify-center mr-3">
+                                            <i class="fa-solid fa-building text-indigo-600"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-500">Fournisseur</div>
+                                            <div class="font-semibold text-gray-900">{{ transaction.provider|default('N/A') }}</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- External Reference -->
+                                <div class="bg-gray-50 rounded-lg p-4 md:col-span-2">
+                                    <div class="flex items-center mb-2">
+                                        <div class="h-10 w-10 rounded-lg bg-gray-100 flex items-center justify-center mr-3">
+                                            <i class="fa-solid fa-hashtag text-gray-600"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="text-sm font-medium text-gray-500">Référence externe</div>
+                                            <div class="font-semibold text-gray-900 font-mono">
+                                                {{ transaction.externalReference|default('N/A') }}
+                                            </div>
+                                        </div>
+                                        {% if transaction.externalReference %}
+                                        <button onclick="copyReference()" 
+                                                class="ml-2 px-3 py-1 bg-gray-200 text-gray-700 rounded text-sm hover:bg-gray-300 transition-colors">
+                                            <i class="fa-solid fa-copy"></i>
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Date & Time -->
+                                <div class="bg-gray-50 rounded-lg p-4">
+                                    <div class="flex items-center mb-2">
+                                        <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
+                                            <i class="fa-solid fa-calendar text-blue-600"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-500">Date</div>
+                                            <div class="font-semibold text-gray-900">
+                                                {{ transaction.createdAt ? transaction.createdAt|date('d/m/Y') : '' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Time -->
+                                <div class="bg-gray-50 rounded-lg p-4">
+                                    <div class="flex items-center mb-2">
+                                        <div class="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center mr-3">
+                                            <i class="fa-solid fa-clock text-purple-600"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-500">Heure</div>
+                                            <div class="font-semibold text-gray-900">
+                                                {{ transaction.createdAt ? transaction.createdAt|date('H:i:s') : '' }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Transaction Timeline -->
+                            <div class="border-t border-gray-200 pt-6">
+                                <h3 class="text-lg font-semibold text-gray-900 mb-4">Historique</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-start">
+                                        <div class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center mr-4 mt-1">
+                                            <i class="fa-solid fa-plus text-green-600 text-sm"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="font-medium text-gray-900">Transaction créée</div>
+                                            <div class="text-sm text-gray-500">{{ transaction.createdAt ? transaction.createdAt|date('d/m/Y à H:i:s') : '' }}</div>
+                                        </div>
+                                    </div>
+                                    {% if transaction.statut == 'completed' %}
+                                    <div class="flex items-start">
+                                        <div class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center mr-4 mt-1">
+                                            <i class="fa-solid fa-check text-green-600 text-sm"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="font-medium text-gray-900">Paiement confirmé</div>
+                                            <div class="text-sm text-gray-500">Statut : Completé</div>
+                                        </div>
+                                    </div>
+                                    {% elseif transaction.statut == 'failed' %}
+                                    <div class="flex items-start">
+                                        <div class="h-8 w-8 rounded-full bg-red-100 flex items-center justify-center mr-4 mt-1">
+                                            <i class="fa-solid fa-times text-red-600 text-sm"></i>
+                                        </div>
+                                        <div class="flex-1">
+                                            <div class="font-medium text-gray-900">Paiement échoué</div>
+                                            <div class="text-sm text-gray-500">Statut : Échoué</div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Actions & Metadata -->
+            <div class="space-y-6">
+                <!-- Actions Card -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Actions</h3>
+                    <div class="space-y-3">
+                        <a href="{{ path('app_transaction_edit', {'id': transaction.id}) }}" 
+                           class="w-full flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                            <i class="fa-solid fa-pencil mr-3"></i>
+                            Modifier cette transaction
+                        </a>
+                        <a href="{{ path('app_transaction_index') }}" 
+                           class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                            <i class="fa-solid fa-list mr-3"></i>
+                            Voir toutes les transactions
+                        </a>
+                        {% if transaction.statut == 'pending' %}
+                        <button onclick="cancelTransaction()" 
+                                class="w-full flex items-center justify-center px-4 py-3 border border-red-300 text-red-700 rounded-lg font-medium hover:bg-red-50 transition-colors">
+                            <i class="fa-solid fa-ban mr-3"></i>
+                            Annuler la transaction
+                        </button>
+                        {% endif %}
+                        <button onclick="printReceipt()" 
+                                class="w-full flex items-center justify-center px-4 py-3 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors">
+                            <i class="fa-solid fa-print mr-3"></i>
+                            Imprimer le reçu
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Metadata Card -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Métadonnées</h3>
+                    <div class="space-y-3">
+                        <div>
+                            <div class="text-sm font-medium text-gray-500 mb-1">ID Transaction</div>
+                            <div class="font-mono text-gray-900">#{{ transaction.id }}</div>
+                        </div>
+                        <div>
+                            <div class="text-sm font-medium text-gray-500 mb-1">Date de création</div>
+                            <div class="text-gray-900">{{ transaction.createdAt ? transaction.createdAt|date('d/m/Y H:i:s') : '' }}</div>
+                        </div>
+                       
+                    </div>
+                </div>
+
+                <!-- Delete Card -->
+                <div class="bg-white rounded-xl border border-red-200 p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="h-10 w-10 rounded-full bg-red-100 flex items-center justify-center mr-3">
+                            <i class="fa-solid fa-trash text-red-600"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-red-900">Zone de danger</h3>
+                            <p class="text-sm text-red-600">Cette action est irréversible</p>
+                        </div>
+                    </div>
+                    
+                    {{ include('dashboard/pages/transaction/_delete_form.html.twig') }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Print Styles -->
+<style media="print">
+    @media print {
+        body * {
+            visibility: hidden;
+        }
+        .max-w-6xl, .max-w-6xl * {
+            visibility: visible;
+        }
+        .max-w-6xl {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            background: white;
+        }
+        .bg-gray-50, .bg-white {
+            background: white !important;
+        }
+        .border {
+            border: 1px solid #e5e7eb !important;
+        }
+        .rounded-xl {
+            border-radius: 0 !important;
+        }
+        button, .space-y-3, .space-y-6, .bg-red-200, .border-red-200 {
+            display: none !important;
+        }
+    }
+</style>
+
+<script>
+function copyReference() {
+    const reference = "{{ transaction.externalReference|default('') }}";
+    if (reference) {
+        navigator.clipboard.writeText(reference).then(() => {
+            showNotification('Référence copiée !', 'success');
+        }).catch(err => {
+            showNotification('Erreur lors de la copie', 'error');
+        });
+    }
+}
+
+function cancelTransaction() {
+    if (confirm('Êtes-vous sûr de vouloir annuler cette transaction ? Cette action ne peut pas être annulée.')) {
+        fetch('/transaction/{{ transaction.id }}/cancel', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                showNotification('Transaction annulée avec succès', 'success');
+                setTimeout(() => location.reload(), 1500);
+            } else {
+                showNotification(data.message || 'Erreur lors de l\'annulation', 'error');
+            }
+        })
+        .catch(error => {
+            showNotification('Erreur réseau', 'error');
+        });
+    }
+}
+
+function printReceipt() {
+    window.print();
+}
+
+function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg flex items-center transform translate-x-full transition-transform duration-300 ${
+        type === 'success' ? 'bg-green-500 text-white' :
+        type === 'error' ? 'bg-red-500 text-white' :
+        'bg-blue-500 text-white'
+    }`;
+    
+    const icon = type === 'success' ? 'fa-check-circle' :
+                 type === 'error' ? 'fa-times-circle' :
+                 'fa-info-circle';
+    
+    notification.innerHTML = `
+        <i class="fa-solid ${icon} mr-2"></i>
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()" class="ml-4 text-white/80 hover:text-white">
+            <i class="fa-solid fa-times"></i>
+        </button>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 10);
+    
+    // Auto remove
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => notification.remove(), 300);
+    }, 5000);
+}
+
+// Confirm delete
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteForm = document.querySelector('form[action*="delete"]');
+    if (deleteForm) {
+        deleteForm.addEventListener('submit', function(e) {
+            if (!confirm('⚠️ Êtes-vous ABSOLUMENT sûr de vouloir supprimer cette transaction ? Cette action est permanente et irréversible.')) {
+                e.preventDefault();
+            }
+        });
+    }
+});
+</script>
+{% endblock %}

@@ -1,438 +1,376 @@
-{% extends "dashboard/base.html.twig" %}
+﻿{% extends "dashboard/base.html.twig" %}
 
 {% block title %}Mes Tontines{% endblock %}
 
 {% block contentdashboard %}
-<!-- Main Content -->
-<main class="flex-1 min-w-0 flex flex-col h-full">
-    <!-- Desktop Topbar -->
-    <header class="hidden md:block bg-white border-b border-gray-100 sticky top-0 z-30 flex-shrink-0">
-        <div class="max-w-[1400px] mx-auto px-4 md:px-6 py-3 flex items-center gap-3">
-            <!-- Breadcrumb -->
-            <div class="flex items-center gap-2 text-sm text-gray-500">
-                <a href="{{ path('app_dashboard') }}" class="hover:text-primary">Tableau de bord</a>
-                <i class="fa-solid fa-chevron-right text-xs"></i>
-                <span class="text-primary font-medium">Mes tontines</span>
-            </div>
-            
-            <!-- Quick Actions -->
-            <div class="flex items-center gap-2 ml-auto">
-                <a href="{{ path('app_tontine_create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-white hover:bg-green-700 transition-colors font-medium touch-target">
-                    <i class="fa-solid fa-plus"></i> Nouvelle tontine
-                </a>
-                <button id="filterButton" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-gray-200 hover:bg-gray-50 touch-target">
-                    <i class="fa-solid fa-filter"></i> Filtrer
-                </button>
+<div class="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50/50">
+    <!-- Header Minimaliste -->
+    <header class="sticky top-0 z-40 bg-white/80 backdrop-blur-lg border-b border-gray-100">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo/Brand -->
+                <div class="flex items-center gap-3">
+                    <div class="relative">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
+                            <i class="fa-solid fa-piggy-bank text-primary text-lg"></i>
+                        </div>
+                        <div class="absolute -top-1 -right-1 w-4 h-4 bg-emerald-400 rounded-full border-2 border-white"></div>
+                    </div>
+                    <h1 class="text-xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
+                        Mes Tontines
+                    </h1>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-3">
+                    <!-- Search (Desktop) -->
+                    <div class="hidden md:block relative group">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-search text-gray-400 text-sm"></i>
+                        </div>
+                        <input type="text" 
+                               placeholder="Rechercher..."
+                               class="pl-9 pr-4 py-2 w-56 bg-gray-100/80 border border-gray-200 rounded-xl focus:bg-white focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition-all duration-200 text-sm">
+                    </div>
+
+                    <!-- Add Button -->
+                    <a href="{{ path('app_tontine_create') }}" 
+                       class="relative group">
+                        <div class="absolute inset-0 bg-gradient-to-r from-primary to-primary-dark rounded-xl blur opacity-75 group-hover:opacity-100 transition-opacity"></div>
+                        <div class="relative px-4 py-2.5 bg-white rounded-xl border border-gray-200 group-hover:border-transparent transition-all duration-200">
+                            <span class="bg-gradient-to-r from-primary to-primary-dark bg-clip-text text-transparent font-semibold text-sm flex items-center gap-2">
+                                <i class="fa-solid fa-plus"></i>
+                                <span class="hidden sm:inline">Nouvelle</span>
+                            </span>
+                        </div>
+                    </a>
+                </div>
             </div>
         </div>
     </header>
-    
-    <!-- Content Area -->
-    <div class="flex-1 overflow-y-auto h-0 min-h-0">
-        <div class="max-w-[1400px] mx-auto px-3 xs:px-4 md:px-6 py-4 md:py-6 space-y-4 md:space-y-6">
-            
-            <!-- Header Section -->
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Mes Tontines</h1>
-                    <p class="text-gray-600 mt-1">Gérez toutes vos épargnes en un seul endroit</p>
-                </div>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Quick Filters -->
+        <div class="mb-8">
+            <div class="inline-flex items-center bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-100 p-1 shadow-sm">
+                <button class="px-5 py-2.5 bg-primary text-white rounded-xl text-sm font-medium transition-all duration-200 hover:shadow-md">
+                    Toutes
+                    <span class="ml-2 px-1.5 py-0.5 bg-white/20 rounded-md text-xs">{{ tontines|length }}</span>
+                </button>
+                <button class="px-5 py-2.5 text-gray-600 hover:text-gray-900 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
+                    <div class="w-2 h-2 bg-emerald-500 rounded-full"></div>
+                    Actives
+                </button>
+                <button class="px-5 py-2.5 text-gray-600 hover:text-gray-900 rounded-xl text-sm font-medium transition-colors flex items-center gap-2">
+                    <div class="w-2 h-2 bg-gray-400 rounded-full"></div>
+                    Terminées
+                </button>
+            </div>
+        </div>
+
+        <!-- Tontines Grid - Nouveau Design -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for tontine in tontines %}
+                {% set savedAmount = tontine.amountPerPoint * (tontine.paidPoints|default(0)) %}
+                {% set totalAmount = tontine.amountPerPoint * tontine.totalPoints %}
+                {% set progress = tontine.progress|default(0) %}
+                {% set isActive = tontine.statut == 'active' %}
                 
-                <!-- Stats Summary -->
-                <div class="flex flex-wrap gap-3">
-                    <div class="bg-white rounded-lg p-3 border border-gray-200 min-w-[120px]">
-                        <div class="text-xs text-gray-500">Total épargné</div>
-                        <div class="text-lg font-bold text-primary">{{ totalSaved|default(0)|number_format(0, ',', ' ') }} FCFA</div>
-                    </div>
-                    <div class="bg-white rounded-lg p-3 border border-gray-200 min-w-[120px]">
-                        <div class="text-xs text-gray-500">Tontines actives</div>
-                        <div class="text-lg font-bold text-accent">{{ activeCount|default(0) }}</div>
-                    </div>
-                    <div class="bg-white rounded-lg p-3 border border-gray-200 min-w-[120px]">
-                        <div class="text-xs text-gray-500">Progression moyenne</div>
-                        <div class="text-lg font-bold text-info">{{ averageProgress|default(0) }}%</div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Filter Bar -->
-            <div class="bg-white rounded-xl p-4 border border-gray-100 card">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="flex flex-wrap gap-2">
-                        <button class="px-3 py-1.5 rounded-full bg-primary text-white text-sm touch-target">
-                            Toutes
-                        </button>
-                        <button class="px-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-50 text-sm touch-target">
-                            Actives
-                        </button>
-                        <button class="px-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-50 text-sm touch-target">
-                            Terminées
-                        </button>
-                        <button class="px-3 py-1.5 rounded-full border border-gray-200 hover:bg-gray-50 text-sm touch-target">
-                            En retard
-                        </button>
-                    </div>
+                <div class="group relative">
+                    <!-- Background Gradient Effect -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-white to-gray-50 rounded-3xl border border-gray-100 shadow-sm transition-all duration-300 group-hover:shadow-xl group-hover:border-primary/20 group-hover:scale-[1.02]"></div>
                     
-                    <div class="flex items-center gap-3">
-                        <div class="relative">
-                            <input type="text" 
-                                   placeholder="Rechercher une tontine..." 
-                                   class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none w-full md:w-64">
-                            <i class="fa-solid fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <!-- Card Content -->
+                    <div class="relative p-6 h-full flex flex-col">
+                        <!-- Status Badge -->
+                        <div class="absolute top-4 right-4">
+                            <span class="px-3 py-1.5 rounded-full text-xs font-medium {{ isActive ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-gray-100 text-gray-700 border border-gray-200' }} flex items-center gap-1.5">
+                                <div class="w-1.5 h-1.5 rounded-full {{ isActive ? 'bg-emerald-500 animate-pulse' : 'bg-gray-400' }}"></div>
+                                {{ isActive ? 'Active' : 'Terminée' }}
+                            </span>
                         </div>
-                        <button class="p-2 hover:bg-gray-100 rounded-lg touch-target" title="Vue en grille">
-                            <i class="fa-solid fa-grid text-gray-600"></i>
-                        </button>
-                        <button class="p-2 hover:bg-gray-100 rounded-lg touch-target" title="Vue en liste">
-                            <i class="fa-solid fa-list text-primary"></i>
-                        </button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Tontines Grid -->
-            <div id="tontinesContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {% if tontines|length > 0 %}
-                    {% for tontine in tontines %}
-                        {% set colorClass = cycle(['blue', 'green', 'purple', 'red', 'orange'], loop.index0) %}
-                        {% set statusText = tontine.statut == 'active' ? 'Active' : 'Terminée' %}
-                        {% set statusClass = tontine.statut == 'active' ? 'bg-emerald-50 text-emerald-700' : 'bg-gray-100 text-gray-700' %}
-                        {% set progress = tontine.progress|default(0) %}
-                        {% set daysRemaining = tontine.daysUntilNextPayment|default(0) %}
-                        
-                        <div class="bg-white rounded-xl border border-gray-100 card overflow-hidden">
-                            <!-- Header avec couleur -->
-                            <div class="{{ colorClass == 'blue' ? 'bg-blue-500' : colorClass == 'green' ? 'bg-green-500' : colorClass == 'purple' ? 'bg-purple-500' : colorClass == 'red' ? 'bg-red-500' : 'bg-orange-500' }} h-2"></div>
-                            
-                            <div class="p-5">
-                                <!-- Header -->
-                                <div class="flex justify-between items-start mb-4">
-                                    <div class="flex-1 min-w-0">
-                                        <h3 class="font-bold text-gray-900 text-lg truncate">{{ tontine.name }}</h3>
-                                        <p class="text-sm text-gray-500">{{ tontine.tontineCode }} • {{ tontine.frequency|trans }}</p>
-                                    </div>
-                                    <span class="status-badge {{ statusClass }}">{{ statusText }}</span>
-                                </div>
-                                
-                                <!-- Montant et progression -->
-                                <div class="mb-6">
-                                    <div class="flex justify-between items-center mb-2">
-                                        <span class="text-gray-600">Montant par versement</span>
-                                        <span class="font-bold text-primary">{{ tontine.amountPerPoint|number_format(0, ',', ' ') }} FCFA</span>
-                                    </div>
-                                    
-                                    <!-- Barre de progression -->
-                                    <div class="mb-2">
-                                        <div class="flex justify-between text-sm mb-1">
-                                            <span>Progression</span>
-                                            <span class="font-semibold">{{ progress }}%</span>
-                                        </div>
-                                        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
-                                            <div class="h-full bg-primary rounded-full" style="width: {{ progress }}%"></div>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Stats -->
-                                    {% set totalToSave = tontine.amountPerPoint * tontine.totalPoints %}
-                                    {% set savedAmount = tontine.amountPerPoint * (tontine.paidPoints|default(0)) %}
-                                    {% set remainingAmount = totalToSave - savedAmount %}
-                                    
-                                    <div class="grid grid-cols-2 gap-3 mt-4">
-                                        <div class="text-center p-2 bg-gray-50 rounded-lg">
-                                            <div class="text-xs text-gray-500">Épargné</div>
-                                            <div class="font-bold text-primary">{{ savedAmount|number_format(0, ',', ' ') }} FCFA</div>
-                                        </div>
-                                        <div class="text-center p-2 bg-gray-50 rounded-lg">
-                                            <div class="text-xs text-gray-500">Restant</div>
-                                            <div class="font-bold text-accent">{{ remainingAmount|number_format(0, ',', ' ') }} FCFA</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            
-                                <!-- Prochaine échéance -->
-                                <div class="border-t border-gray-100 pt-4">
-                                    <div class="flex justify-between items-center mb-3">
-                                        <div>
-                                            <div class="text-sm text-gray-500">Prochaine échéance</div>
-                                            <div class="font-medium">{{ tontine.nextDueDate |date('d/m/Y') }}</div>
-                                        </div>
-                                        {% if daysRemaining <= 3 and tontine.statut == 'active' %}
-                                            <span class="px-2 py-1 text-xs rounded-full bg-warning/10 text-warning">
-                                                {{ daysRemaining }} jour{{ daysRemaining > 1 ? 's' : '' }}
-                                            </span>
-                                        {% elseif tontine.statut == 'active' %}
-                                            <span class="text-sm text-gray-500">
-                                                Dans {{ daysRemaining }} jour{{ daysRemaining > 1 ? 's' : '' }}
-                                            </span>
-                                        {% endif %}
-                                    </div>
-                                    
-                                    <!-- Actions -->
-                                    <div class="flex gap-2">
-                                        <a href="{{path('app_tontines_show', {'id': tontine.id}) }}" 
-                                                class="flex-1 px-3 py-2 bg-primary text-white rounded-lg hover:bg-green-700 text-sm touch-target">
-                                            <i class="fa-solid fa-eye mr-2"></i> Détails
-                                        </a>
-                                        {% if tontine.statut == 'active' %}
-                                            <button onclick="payTontine('{{ tontine.id }}')" 
-                                                    class="flex-1 px-3 py-2 border border-primary text-primary rounded-lg hover:bg-primary/5 text-sm touch-target">
-                                                <i class="fa-solid fa-credit-card mr-2"></i> Payer
-                                            </button>
-                                        {% endif %}
-                                    </div>
+                        <!-- Tontine Icon & Name -->
+                        <div class="mb-6">
+                            <div class="w-14 h-14 rounded-2xl bg-gradient-to-br {{ isActive ? 'from-primary/10 to-primary/5' : 'from-gray-100 to-gray-50' }} flex items-center justify-center mb-4">
+                                <i class="fa-solid {{ isActive ? 'fa-wallet text-primary' : 'fa-check-circle text-gray-400' }} text-xl"></i>
+                            </div>
+                            <h3 class="font-bold text-lg text-gray-900 mb-1 group-hover:text-primary transition-colors">{{ tontine.name }}</h3>
+                            <p class="text-sm text-gray-500">{{ tontine.tontineCode }}</p>
+                        </div>
+
+                        <!-- Visual Progress Circle -->
+                        <div class="mb-6 relative flex justify-center">
+                            <div class="relative w-24 h-24">
+                                <!-- Background Circle -->
+                                <svg class="w-full h-full transform -rotate-90">
+                                    <circle cx="48" cy="48" r="40" stroke-width="4" 
+                                            stroke="#f3f4f6" fill="none"/>
+                                    <!-- Progress Circle -->
+                                    <circle cx="48" cy="48" r="40" stroke-width="4" 
+                                            stroke="{{ isActive ? '#10b981' : '#9ca3af' }}" 
+                                            stroke-linecap="round"
+                                            fill="none"
+                                            stroke-dasharray="251.2"
+                                            stroke-dashoffset="{{ 251.2 * (1 - progress / 100) }}"/>
+                                </svg>
+                                <!-- Percentage -->
+                                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                                    <span class="text-2xl font-bold {{ isActive ? 'text-primary' : 'text-gray-700' }}">{{ progress }}%</span>
+                                    <span class="text-xs text-gray-500 mt-0.5">complété</span>
                                 </div>
                             </div>
                         </div>
-                    {% endfor %}
-                {% else %}
-                    <!-- Empty State -->
-                    <div class="col-span-full text-center py-12">
-                        <div class="h-24 w-24 rounded-full bg-primary/10 text-primary flex items-center justify-center mx-auto mb-4">
-                            <i class="fa-solid fa-piggy-bank text-3xl"></i>
+
+                        <!-- Key Metrics -->
+                        <div class="space-y-3 mb-6">
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Versement</span>
+                                <span class="font-semibold text-gray-900">{{ tontine.amountPerPoint|number_format(0, ',', ' ') }} FCFA</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Épargné</span>
+                                <span class="font-semibold text-emerald-600">{{ savedAmount|number_format(0, ',', ' ') }} FCFA</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <span class="text-sm text-gray-600">Fréquence</span>
+                                <span class="font-semibold text-gray-900">
+                                    {% if tontine.frequency == 'daily' %}Quotidienne
+                                    {% elseif tontine.frequency == 'weekly' %}Hebdomadaire
+                                    {% elseif tontine.frequency == 'monthly' %}Mensuelle
+                                    {% else %}{{ tontine.frequency }}
+                                    {% endif %}
+                                </span>
+                            </div>
                         </div>
-                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Aucune tontine créée</h3>
-                        <p class="text-gray-600 mb-6">Commencez votre première épargne dès maintenant</p>
-                        <a href="{{ path('app_tontine_create') }}" class="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-green-700 font-medium touch-target">
-                            <i class="fa-solid fa-plus"></i> Créer ma première tontine
-                        </a>
+
+                        <!-- Next Payment / Status -->
+                        {% if isActive %}
+                            <div class="mb-6 p-3 rounded-xl bg-gradient-to-r from-blue-50 to-blue-100/50 border border-blue-200/50">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-xs text-blue-600 font-medium mb-0.5">Prochain paiement</p>
+                                        <p class="text-sm font-semibold text-gray-900">{{ tontine.nextDueDate|date('d/m/Y') }}</p>
+                                    </div>
+                                    {% set daysLeft = tontine.daysUntilNextPayment|default(0) %}
+                                    <span class="px-2.5 py-1 rounded-lg text-xs font-medium {{ daysLeft <= 3 ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700' }}">
+                                        {{ daysLeft <= 0 ? '⚠️ En retard' : daysLeft ~ ' jours' }}
+                                    </span>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <!-- Action Buttons -->
+                        <div class="mt-auto flex gap-2">
+                            <a href="{{ path('app_tontines_show', {'id': tontine.id}) }}" 
+                               class="flex-1 px-4 py-2.5 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl text-sm font-medium hover:shadow-md transition-all duration-200 text-center group/btn">
+                                <i class="fa-solid fa-arrow-right mr-2 group-hover/btn:translate-x-1 transition-transform"></i>
+                                Ouvrir
+                            </a>
+                            
+                            {% if isActive %}
+                                <a href="{{ path('app_tontine_payment', {'id': tontine.id}) }}"
+                                   class="px-4 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-xl text-sm font-medium hover:border-primary hover:bg-primary/5 hover:text-primary transition-all duration-200 flex items-center justify-center">
+                                    <i class="fa-solid fa-credit-card"></i>
+                                </a>
+                            {% endif %}
+                        </div>
                     </div>
-                {% endif %}
-            </div>
-
-            <!-- Pagination -->
-            {% if tontines|length > 6 %}
-                <div class="flex justify-center items-center gap-2 pt-4">
-                    <button class="px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 touch-target disabled:opacity-50 disabled:cursor-not-allowed">
-                        <i class="fa-solid fa-chevron-left"></i>
-                    </button>
-                    <button class="px-3 py-2 rounded-lg bg-primary text-white touch-target">1</button>
-                    <button class="px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 touch-target">2</button>
-                    <button class="px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 touch-target">3</button>
-                    <span class="px-2">...</span>
-                    <button class="px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 touch-target">5</button>
-                    <button class="px-3 py-2 rounded-lg border border-gray-200 hover:bg-gray-50 touch-target">
-                        <i class="fa-solid fa-chevron-right"></i>
-                    </button>
                 </div>
-            {% endif %}
-        </div>
-    </div>
-</main>
+            {% endfor %}
 
-<!-- Tontine Detail Modal -->
-<div id="tontineDetailModal" class="fixed inset-0 z-50 hidden">
-    <div id="modalBackdrop" class="absolute inset-0 bg-black/50"></div>
-    <div class="absolute inset-0 flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-hidden">
-            <!-- Modal content will be loaded here -->
+            <!-- Add New Tontine Card -->
+            <a href="{{ path('app_tontine_create') }}" 
+               class="group relative">
+                <div class="absolute inset-0 bg-gradient-to-br from-gray-50 to-gray-100/50 rounded-3xl border-2 border-dashed border-gray-300 group-hover:border-primary group-hover:bg-primary/5 transition-all duration-300"></div>
+                
+                <div class="relative p-6 h-full flex flex-col items-center justify-center min-h-[400px]">
+                    <div class="w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 group-hover:from-primary/20 group-hover:to-primary/10 transition-all duration-300 flex items-center justify-center mb-4">
+                        <i class="fa-solid fa-plus text-primary text-2xl group-hover:scale-110 transition-transform"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-primary transition-colors">
+                        Nouvelle tontine
+                    </h3>
+                    <p class="text-sm text-gray-500 text-center mb-6">
+                        Créez une nouvelle tontine pour commencer à épargner
+                    </p>
+                    <span class="px-4 py-2 bg-gradient-to-r from-primary to-primary-dark text-white rounded-xl text-sm font-medium shadow-sm group-hover:shadow-md transition-all">
+                        Commencer
+                    </span>
+                </div>
+            </a>
         </div>
-    </div>
+
+        {% if tontines|length == 0 %}
+            <!-- Empty State -->
+            <div class="text-center py-16">
+                <div class="w-32 h-32 mx-auto mb-8 relative">
+                    <!-- Animated Background -->
+                    <div class="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/5 rounded-full animate-pulse"></div>
+                    <!-- Icon -->
+                    <div class="relative w-full h-full rounded-full bg-gradient-to-br from-white to-gray-50 border border-gray-200 flex items-center justify-center">
+                        <i class="fa-solid fa-piggy-bank text-primary text-4xl"></i>
+                    </div>
+                </div>
+                
+                <h3 class="text-2xl font-bold text-gray-900 mb-3">
+                    Aucune tontine pour le moment
+                </h3>
+                <p class="text-gray-600 max-w-md mx-auto mb-8">
+                    Créez votre première tontine pour commencer votre voyage d'épargne
+                </p>
+                
+                <a href="{{ path('app_tontine_create') }}" 
+                   class="inline-flex items-center gap-3 px-8 py-3.5 bg-gradient-to-r from-primary to-primary-dark text-white rounded-xl hover:shadow-lg hover:scale-[1.02] transition-all duration-200 font-semibold shadow-md">
+                    <i class="fa-solid fa-plus"></i>
+                    Créer ma première tontine
+                </a>
+            </div>
+        {% endif %}
+
+        <!-- View Toggle (Optional) -->
+        <div class="fixed bottom-6 right-6 z-30">
+            <div class="flex items-center bg-white rounded-xl border border-gray-200 shadow-lg p-1">
+                <button class="p-2 text-gray-600 hover:text-primary rounded-lg">
+                    <i class="fa-solid fa-grid-2 text-lg"></i>
+                </button>
+                <button class="p-2 text-primary bg-primary/5 rounded-lg">
+                    <i class="fa-solid fa-list text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </main>
 </div>
 
+<style>
+/* Custom Animations */
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+}
+
+@keyframes shimmer {
+    0% { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+
+/* Progress Circle Animation */
+circle[stroke="#10b981"] {
+    animation: progress-fill 1s ease-out;
+}
+
+@keyframes progress-fill {
+    from { stroke-dashoffset: 251.2; }
+}
+
+/* Hover Effects */
+.group:hover .group-hover\:animate-float {
+    animation: float 2s ease-in-out infinite;
+}
+
+/* Gradient Text */
+.gradient-text {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 3s linear infinite;
+}
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #10b981, #059669);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(to bottom, #059669, #047857);
+}
+</style>
+
 <script>
-    // Initialisation
-    document.addEventListener('DOMContentLoaded', function() {
-        // Gestion du modal
-        initModal();
+document.addEventListener('DOMContentLoaded', function() {
+    // Add hover effects to cards
+    const cards = document.querySelectorAll('.group');
+    
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            const bg = this.querySelector('[class*="absolute inset-0"]');
+            if (bg) {
+                bg.style.transform = 'scale(1.02)';
+            }
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            const bg = this.querySelector('[class*="absolute inset-0"]');
+            if (bg) {
+                bg.style.transform = 'scale(1)';
+            }
+        });
     });
 
-    // Voir les détails d'une tontine
-    function viewTontineDetail(id) {
-        // Envoyer une requête pour obtenir les détails
-        fetch('/api/tontines/' + id + '/details')
-            .then(response => response.json())
-            .then(tontine => {
-                const modal = document.getElementById('tontineDetailModal');
-                const modalContent = modal.querySelector('.bg-white > div') || modal.querySelector('.bg-white');
-                
-                // Calculer les statistiques
-                const totalToSave = tontine.amountPerPoint * tontine.totalPoints;
-                const savedAmount = tontine.amountPerPoint * tontine.paidPoints;
-                const remainingAmount = totalToSave - savedAmount;
-                const percentagePaid = Math.round((savedAmount / totalToSave) * 100);
-                
-                // Traduction de la fréquence
-                const frequencyText = {
-                    'daily': 'Quotidienne',
-                    'weekly': 'Hebdomadaire',
-                    'monthly': 'Mensuelle'
-                }[tontine.frequency] || tontine.frequency;
-                
-                // Détail de la période
-                const periodDetail = tontine.frequency === 'daily' ? `${tontine.totalPoints} jours` :
-                                   tontine.frequency === 'weekly' ? `${Math.ceil(tontine.totalPoints / 4)} semaines` :
-                                   `${tontine.totalPoints} mois`;
-                
-                // Calcul des jours restants
-                const nextPaymentDate = new Date(tontine.nextPaymentDate);
-                const today = new Date();
-                const daysRemaining = Math.ceil((nextPaymentDate - today) / (1000 * 60 * 60 * 24));
-                
-                modalContent.innerHTML = `
-                    <!-- Header -->
-                    <div class="p-6 border-b border-gray-100">
-                        <div class="flex justify-between items-start">
-                            <div>
-                                <h2 class="text-xl font-bold text-gray-900">${tontine.name}</h2>
-                                <p class="text-gray-500">${tontine.tontineCode}</p>
-                            </div>
-                            <button onclick="closeModal()" class="h-8 w-8 rounded-full hover:bg-gray-100 flex items-center justify-center touch-target">
-                                <i class="fa-solid fa-times text-gray-500"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Content -->
-                    <div class="p-6 overflow-y-auto max-h-[60vh]">
-                        <!-- Stats Overview -->
-                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <div class="text-sm text-gray-500">Statut</div>
-                                <div class="font-bold ${tontine.statut === 'active' ? 'text-emerald-600' : 'text-gray-700'}">
-                                    ${tontine.statut === 'active' ? 'Active' : 'Terminée'}
-                                </div>
-                            </div>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <div class="text-sm text-gray-500">Périodicité</div>
-                                <div class="font-bold text-gray-900">${frequencyText}</div>
-                            </div>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <div class="text-sm text-gray-500">Montant/versement</div>
-                                <div class="font-bold text-primary">${formatCurrency(tontine.amountPerPoint)}</div>
-                            </div>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <div class="text-sm text-gray-500">Durée totale</div>
-                                <div class="font-bold text-gray-900">${periodDetail}</div>
-                            </div>
-                        </div>
-                        
-                        <!-- Progression -->
-                        <div class="mb-6">
-                            <h3 class="font-semibold text-gray-900 mb-3">Progression globale</h3>
-                            <div class="bg-gray-50 p-4 rounded-lg">
-                                <div class="flex justify-between text-sm mb-2">
-                                    <span>${percentagePaid}% complété</span>
-                                    <span>${formatCurrency(savedAmount)} / ${formatCurrency(totalToSave)}</span>
-                                </div>
-                                <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
-                                    <div class="h-full bg-primary rounded-full" style="width: ${percentagePaid}%"></div>
-                                </div>
-                                <div class="flex justify-between text-xs text-gray-500 mt-2">
-                                    <span>Début: ${formatDate(tontine.startDate)}</span>
-                                    <span>Fin: ${tontine.estimatedEndDate ? formatDate(tontine.estimatedEndDate) : 'En cours'}</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Détails financiers -->
-                        <div class="mb-6">
-                            <h3 class="font-semibold text-gray-900 mb-3">Détails financiers</h3>
-                            <div class="space-y-3">
-                                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                                    <span class="text-gray-600">Total à épargner</span>
-                                    <span class="font-bold text-gray-900">${formatCurrency(totalToSave)}</span>
-                                </div>
-                                <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
-                                    <span class="text-gray-600">Déjà épargné</span>
-                                    <span class="font-bold text-green-700">${formatCurrency(savedAmount)}</span>
-                                </div>
-                                <div class="flex justify-between items-center p-3 bg-blue-50 rounded-lg">
-                                    <span class="text-gray-600">Reste à épargner</span>
-                                    <span class="font-bold text-blue-700">${formatCurrency(remainingAmount)}</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Prochain paiement -->
-                        <div class="mb-6">
-                            <h3 class="font-semibold text-gray-900 mb-3">Prochain paiement</h3>
-                            <div class="bg-yellow-50 p-4 rounded-lg">
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <div class="font-medium">${formatDate(tontine.nextPaymentDate)}</div>
-                                        <div class="text-sm text-gray-600">Dans ${daysRemaining} jour${daysRemaining > 1 ? 's' : ''}</div>
-                                    </div>
-                                    <div class="text-right">
-                                        <div class="font-bold text-xl text-primary">${formatCurrency(tontine.amountPerPoint)}</div>
-                                        ${tontine.statut === 'active' ? `
-                                            <button onclick="payTontine('${tontine.id}')" class="text-sm text-primary hover:text-green-700">
-                                                Payer maintenant →
-                                            </button>
-                                        ` : ''}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Actions -->
-                        <div class="flex gap-3 pt-4 border-t border-gray-100">
-                            ${tontine.statut === 'active' ? `
-                                <button onclick="payTontine('${tontine.id}')" 
-                                        class="flex-1 px-4 py-3 bg-primary text-white rounded-lg hover:bg-green-700 font-medium touch-target">
-                                    <i class="fa-solid fa-credit-card mr-2"></i> Effectuer un paiement
-                                </button>
-                            ` : ''}
-                            <button onclick="editTontine('${tontine.id}')" 
-                                    class="px-4 py-3 border border-gray-300 rounded-lg hover:bg-gray-50 touch-target">
-                                <i class="fa-solid fa-gear"></i>
-                            </button>
-                        </div>
-                    </div>
-                `;
-                
-                modal.classList.remove('hidden');
-                document.body.style.overflow = 'hidden';
-            })
-            .catch(error => {
-                console.error('Erreur:', error);
-                alert('Impossible de charger les détails de la tontine');
+    // Animate progress circles on scroll
+    const observerOptions = {
+        threshold: 0.3,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const progressCircle = entry.target.querySelector('circle[stroke="#10b981"], circle[stroke="#9ca3af"]');
+                if (progressCircle) {
+                    progressCircle.style.animation = 'progress-fill 1s ease-out';
+                }
+            }
+        });
+    }, observerOptions);
+
+    // Observe all tontine cards
+    document.querySelectorAll('.group.relative').forEach(card => {
+        observer.observe(card);
+    });
+
+    // View toggle functionality
+    const viewButtons = document.querySelectorAll('.fixed button');
+    const gridContainer = document.querySelector('.grid');
+    
+    viewButtons.forEach((button, index) => {
+        button.addEventListener('click', function() {
+            // Update active state
+            viewButtons.forEach(btn => {
+                btn.classList.remove('text-primary', 'bg-primary/5');
+                btn.classList.add('text-gray-600');
             });
-    }
-
-    // Gestion du modal
-    function initModal() {
-        const modal = document.getElementById('tontineDetailModal');
-        const backdrop = document.getElementById('modalBackdrop');
-        
-        if (backdrop) {
-            backdrop.addEventListener('click', closeModal);
-        }
-        
-        // Fermer avec Escape
-        document.addEventListener('keydown', (e) => { 
-            if (e.key === 'Escape') closeModal();
+            this.classList.add('text-primary', 'bg-primary/5');
+            this.classList.remove('text-gray-600');
+            
+            // Change layout (simplified example)
+            if (index === 0) {
+                gridContainer.classList.remove('grid-cols-1');
+                gridContainer.classList.add('md:grid-cols-2', 'lg:grid-cols-3');
+            } else {
+                gridContainer.classList.remove('md:grid-cols-2', 'lg:grid-cols-3');
+                gridContainer.classList.add('grid-cols-1');
+            }
         });
-    }
-
-    function closeModal() {
-        const modal = document.getElementById('tontineDetailModal');
-        modal.classList.add('hidden');
-        document.body.style.overflow = '';
-    }
-
-    // Fonctions utilitaires
-    function formatCurrency(amount) {
-        return new Intl.NumberFormat('fr-FR').format(amount) + ' FCFA';
-    }
-    
-    function formatDate(dateString) {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('fr-FR', {
-            day: '2-digit',
-            month: 'long',
-            year: 'numeric'
-        });
-    }
-
-    // Fonctions d'action
-    function payTontine(id) {
-        // Rediriger vers la page de paiement
-        window.location.href = '/paiement/create?tontine=' + id;
-    }
-    
-    function editTontine(id) {
-        // Rediriger vers la page d'édition
-        window.location.href = '/tontine/edit/' + id;
-    }
+    });
+});
 </script>
 {% endblock %}

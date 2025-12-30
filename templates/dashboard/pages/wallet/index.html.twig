@@ -1,0 +1,887 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}Mon Portefeuille - TontinePro{% endblock %}
+
+{% block contentdashboard %}
+<!-- Main Content -->
+<main class="flex-1 min-w-0 flex flex-col h-full">
+    <!-- Mobile Header -->
+    <div class="md:hidden bg-white border-b border-gray-100 sticky top-0 z-40 p-4">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <button onclick="history.back()" 
+                        class="p-2 hover:bg-gray-100 rounded-lg transition-colors touch-target">
+                    <i class="fa-solid fa-arrow-left text-gray-600"></i>
+                </button>
+                <h1 class="text-lg font-bold text-gray-900">Portefeuille</h1>
+            </div>
+            <button onclick="showDepositModal()"
+                    class="p-2 rounded-lg bg-primary text-white hover:bg-green-700 transition-colors touch-target">
+                <i class="fa-solid fa-plus"></i>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Desktop Topbar -->
+    <header class="hidden md:block bg-white border-b border-gray-100 sticky top-0 z-30 flex-shrink-0">
+        <div class="max-w-[1400px] mx-auto px-4 md:px-6 py-3 flex items-center gap-3">
+            <!-- Breadcrumb -->
+            <div class="flex items-center gap-2 text-sm text-gray-500">
+                <a href="{{ path('app_dashboard') }}" class="hover:text-primary">Tableau de bord</a>
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+                <span class="text-primary font-medium">Mon Portefeuille</span>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="flex items-center gap-2 ml-auto">
+                <button onclick="showDepositModal()"
+                        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-white hover:bg-green-700 transition-colors font-medium touch-target">
+                    <i class="fa-solid fa-plus"></i> Alimenter
+                </button>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Content Area -->
+    <div class="flex-1 overflow-y-auto h-0 min-h-0">
+        <div class="max-w-[1400px] mx-auto px-3 xs:px-4 md:px-6 py-3 md:py-6 space-y-4 md:space-y-6">
+            
+            <!-- Section Solde Principal (Mobile Optimized) -->
+            <div class="bg-gradient-to-r from-primary to-green-600 rounded-xl md:rounded-2xl p-4 md:p-6 text-white">
+                <div class="flex flex-col gap-4 md:gap-6">
+                    <div>
+                        <div class="text-xs md:text-sm opacity-90">Solde disponible</div>
+                        <div class="text-2xl md:text-4xl font-bold mt-1 md:mt-2">
+                            {{ wallet.balance|default(0)|number_format(0, ',', ' ') }} FCFA
+                        </div>
+                        <div class="flex flex-wrap gap-1 md:gap-2 mt-2 md:mt-3">
+                            <div class="px-2 py-1 md:px-3 md:py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs">
+                                <i class="fa-solid fa-shield-alt mr-1"></i> Sécurisé
+                            </div>
+                            <div class="px-2 py-1 md:px-3 md:py-1 bg-white/20 backdrop-blur-sm rounded-full text-xs">
+                                <i class="fa-solid fa-user mr-1"></i> Votre argent
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2 md:gap-3">
+                        <button onclick="showDepositModal()"
+                                class="flex-1 inline-flex items-center justify-center gap-1 md:gap-2 px-3 md:px-6 py-2.5 md:py-3 bg-white text-primary rounded-lg hover:bg-gray-50 transition-colors font-medium touch-target text-sm md:text-base">
+                            <i class="fa-solid fa-plus text-xs md:text-sm"></i> Alimenter
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section Fonctionnalités du Wallet -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+                <!-- Auto-paiement -->
+                <div class="bg-white rounded-xl border border-gray-200 p-4 md:p-6">
+                    <div class="flex items-center justify-between mb-3 md:mb-4">
+                        <h3 class="font-semibold text-gray-900 text-sm md:text-base flex items-center gap-2">
+                            <i class="fa-solid fa-bolt text-primary text-sm md:text-base"></i> 
+                            Paiement automatique
+                        </h3>
+                        {% set autoPayEnabled = wallet.autoPayEnabled ?? false %}
+                        <label class="relative inline-flex items-center cursor-pointer touch-target">
+                            <input type="checkbox" 
+                                   id="autoPayToggle" 
+                                   class="sr-only peer"
+                                   {% if autoPayEnabled %}checked{% endif %}
+                                   onchange="toggleAutoPay(this.checked)">
+                            <div class="w-10 h-5 md:w-11 md:h-6 bg-gray-200 peer-focus:outline-none rounded-full peer 
+                                        peer-checked:after:translate-x-full peer-checked:after:border-white 
+                                        after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
+                                        after:bg-white after:border-gray-300 after:border after:rounded-full 
+                                        after:h-4 after:w-4 md:after:h-5 md:after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                        </label>
+                    </div>
+                    
+                    <p class="text-gray-600 text-xs md:text-sm mb-3 md:mb-4">
+                        Activez pour payer automatiquement vos tontines.
+                    </p>
+                    
+                    <div class="space-y-2 md:space-y-3">
+                        <div class="flex items-start gap-2 md:gap-3 p-2 md:p-3 bg-gray-50 rounded-lg">
+                            <i class="fa-solid fa-check text-green-500 mt-0.5 text-xs md:text-sm"></i>
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900 text-xs md:text-sm">Plus de retard</div>
+                                <div class="text-gray-600 text-xs">Paiements automatiques</div>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-2 md:gap-3 p-2 md:p-3 bg-gray-50 rounded-lg">
+                            <i class="fa-solid fa-check text-green-500 mt-0.5 text-xs md:text-sm"></i>
+                            <div class="flex-1">
+                                <div class="font-medium text-gray-900 text-xs md:text-sm">Gain de temps</div>
+                                <div class="text-gray-600 text-xs">Pas besoin de payer manuellement</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 md:mt-4 p-2 md:p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                        <div class="flex items-start gap-2">
+                            <i class="fa-solid fa-info-circle text-blue-500 text-xs md:text-sm mt-0.5"></i>
+                            <div class="text-xs md:text-sm text-blue-700">
+                                <strong>Important :</strong> L'argent reste votre propriété.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statistiques -->
+                <div class="bg-white rounded-xl border border-gray-200 p-4 md:p-6">
+                    <h3 class="font-semibold text-gray-900 mb-3 md:mb-4 flex items-center gap-2 text-sm md:text-base">
+                        <i class="fa-solid fa-chart-pie text-primary text-sm md:text-base"></i> 
+                        Statistiques
+                    </h3>
+                    
+                    <div class="space-y-3 md:space-y-4">
+                        <div>
+                            <div class="flex justify-between text-xs md:text-sm mb-1">
+                                <span class="text-gray-600">Total déposé</span>
+                                <span class="font-medium text-green-600">
+                                    {{ totalDeposited|default(0)|number_format(0, ',', ' ') }} FCFA
+                                </span>
+                            </div>
+                            <div class="h-1.5 md:h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-green-500 rounded-full" style="width: 100%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between text-xs md:text-sm mb-1">
+                                <span class="text-gray-600">Paiements tontines</span>
+                                <span class="font-medium text-blue-600">
+                                    {{ tontinePayments|default(0)|number_format(0, ',', ' ') }} FCFA
+                                </span>
+                            </div>
+                            <div class="h-1.5 md:h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-blue-500 rounded-full" 
+                                     style="width: {{ totalDeposited > 0 ? (tontinePayments|default(0) / totalDeposited * 100) : 0 }}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <div class="flex justify-between text-xs md:text-sm mb-1">
+                                <span class="text-gray-600">Solde disponible</span>
+                                <span class="font-medium text-primary">
+                                    {{ wallet.balance|default(0)|number_format(0, ',', ' ') }} FCFA
+                                </span>
+                            </div>
+                            <div class="h-1.5 md:h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div class="h-full bg-primary rounded-full" 
+                                     style="width: {{ totalDeposited > 0 ? (wallet.balance|default(0) / totalDeposited * 100) : 0 }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Répartition -->
+                    <div class="mt-4 md:mt-6 pt-3 md:pt-4 border-t border-gray-200">
+                        <h4 class="font-medium text-gray-900 mb-2 md:mb-3 text-xs md:text-sm">Répartition</h4>
+                        <div class="grid grid-cols-2 gap-2 md:gap-3">
+                            <div class="text-center p-2 md:p-3 bg-green-50 rounded-lg">
+                                <div class="text-base md:text-lg font-bold text-green-700">
+                                    {{ tontinePayments|default(0)|number_format(0, ',', ' ') }}
+                                </div>
+                                <div class="text-xs text-gray-600">Tontines payées</div>
+                            </div>
+                            <div class="text-center p-2 md:p-3 bg-blue-50 rounded-lg">
+                                <div class="text-base md:text-lg font-bold text-blue-700">
+                                    {{ wallet.balance|default(0)|number_format(0, ',', ' ') }}
+                                </div>
+                                <div class="text-xs text-gray-600">Disponible</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions rapides -->
+            <div class="md:hidden bg-white rounded-xl border border-gray-200 p-4">
+                <h3 class="font-semibold text-gray-900 mb-3 text-sm">Actions rapides</h3>
+                <div class="grid grid-cols-4 gap-2">
+                    <button onclick="showDepositModal()"
+                            class="flex flex-col items-center p-2 border border-gray-200 rounded-lg hover:border-primary hover:shadow-sm transition-all touch-target">
+                        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mb-1">
+                            <i class="fa-solid fa-plus text-primary text-xs"></i>
+                        </div>
+                        <span class="text-xs text-gray-900">Alimenter</span>
+                    </button>
+                    
+                    <button onclick="toggleAutoPay(!{{ wallet.autoPayEnabled ? 'true' : 'false' }})"
+                            class="flex flex-col items-center p-2 border border-gray-200 rounded-lg hover:border-primary hover:shadow-sm transition-all touch-target">
+                        <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mb-1">
+                            <i class="fa-solid fa-bolt text-purple-500 text-xs"></i>
+                        </div>
+                        <span class="text-xs text-gray-900">Auto-pay</span>
+                    </button>
+                    
+                    <button onclick="showHistory()"
+                            class="flex flex-col items-center p-2 border border-gray-200 rounded-lg hover:border-primary hover:shadow-sm transition-all touch-target">
+                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mb-1">
+                            <i class="fa-solid fa-history text-blue-500 text-xs"></i>
+                        </div>
+                        <span class="text-xs text-gray-900">Historique</span>
+                    </button>
+                    
+                    <button onclick="showHelp()"
+                            class="flex flex-col items-center p-2 border border-gray-200 rounded-lg hover:border-primary hover:shadow-sm transition-all touch-target">
+                        <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mb-1">
+                            <i class="fa-solid fa-question text-gray-500 text-xs"></i>
+                        </div>
+                        <span class="text-xs text-gray-900">Aide</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Section Transactions -->
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <!-- En-tête -->
+                <div class="p-4 md:p-6 border-b border-gray-100">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-base md:text-lg font-semibold text-gray-900">
+                            <i class="fa-solid fa-receipt text-primary mr-2"></i> 
+                            Transactions récentes
+                        </h2>
+                        <div class="text-xs md:text-sm text-gray-500">
+                            {{ transactionCount|default(0) }} trx
+                        </div>
+                    </div>
+                    
+                    <!-- Filtres Mobile -->
+                    <div class="mt-3 md:mt-4 overflow-x-auto">
+                        <div class="flex gap-1 md:gap-2 min-w-max">
+                            <button class="px-3 py-1.5 md:px-4 md:py-2 bg-primary text-white rounded-lg text-xs md:text-sm font-medium touch-target">
+                                Toutes
+                            </button>
+                            <button class="px-3 py-1.5 md:px-4 md:py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg text-xs md:text-sm font-medium touch-target">
+                                Dépôts
+                            </button>
+                            <button class="px-3 py-1.5 md:px-4 md:py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg text-xs md:text-sm font-medium touch-target">
+                                Paiements
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Liste des transactions -->
+                <div class="divide-y divide-gray-100 max-h-[400px] md:max-h-none overflow-y-auto">
+                    {% for transaction in recentTransactions|default([]) %}
+                        <div class="p-3 md:p-4 hover:bg-gray-50 transition-colors touch-target active:bg-gray-100">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
+                                    <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center flex-shrink-0
+                                        {{ transaction.type == 'deposit' ? 'bg-green-100 text-green-600' : 
+                                           transaction.type == 'tontine_payment' ? 'bg-blue-100 text-blue-600' : 
+                                           'bg-gray-100 text-gray-600' }}">
+                                        {% if transaction.type == 'deposit' %}
+                                            <i class="fa-solid fa-arrow-down text-xs md:text-sm"></i>
+                                        {% elseif transaction.type == 'tontine_payment' %}
+                                            <i class="fa-solid fa-users text-xs md:text-sm"></i>
+                                        {% else %}
+                                            <i class="fa-solid fa-exchange-alt text-xs md:text-sm"></i>
+                                        {% endif %}
+                                    </div>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="font-medium text-gray-900 text-sm md:text-base truncate">
+                                            {{ transaction.amount }}
+                                        </div>
+                                        <div class="flex items-center gap-1 md:gap-2 text-xs text-gray-500 mt-0.5">
+                                            <span>{{ transaction.createdAt|date('d/m H:i') }}</span>
+                                            {% if transaction.isAutomatic %}
+                                                <span class="px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded-full text-xs">
+                                                    <i class="fa-solid fa-bolt text-[8px] md:text-xs mr-0.5"></i> Auto
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right flex-shrink-0 ml-2">
+                                    <div class="font-bold {{ transaction.type == 'deposit' ? 'text-green-600' : 'text-red-600' }} text-sm md:text-base">
+                                        {{ transaction.type == 'deposit' ? '+' : '-' }}
+                                        {{ transaction.amount|number_format(0, ',', ' ') }}
+                                    </div>
+                                    <div class="text-xs text-gray-500 mt-0.5 hidden md:block">
+                                        Solde: {{ transaction.newBalance|number_format(0, ',', ' ') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <!-- État vide -->
+                        <div class="p-8 md:p-12 text-center">
+                            <div class="w-12 h-12 md:w-16 md:h-16 mx-auto mb-3 md:mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+                                <i class="fa-solid fa-wallet text-gray-400 text-lg md:text-2xl"></i>
+                            </div>
+                            <h3 class="text-base md:text-lg font-medium text-gray-900 mb-2">Aucune transaction</h3>
+                            <p class="text-gray-500 text-sm md:text-base mb-4">Votre historique apparaîtra ici.</p>
+                            <button onclick="showDepositModal()"
+                                    class="inline-flex items-center gap-1 md:gap-2 px-4 md:px-6 py-2 md:py-2.5 bg-primary text-white rounded-lg hover:bg-green-700 transition-colors text-sm md:text-base touch-target">
+                                <i class="fa-solid fa-plus text-xs md:text-sm"></i> Premier dépôt
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Voir tout -->
+                {% if recentTransactions|length > 0 %}
+                    <div class="p-3 md:p-4 border-t border-gray-100">
+                        <a href="{{ path('app_wallet_transactions') }}" 
+                           class="block text-center text-primary hover:text-green-700 font-medium text-sm md:text-base touch-target py-2">
+                            Voir tout l'historique <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Section Informations (Mobile Stacked) -->
+            <div class="space-y-4 md:space-y-6">
+                <!-- Votre argent -->
+                <div class="bg-white rounded-xl border border-gray-200 p-4 md:p-6">
+                    <h3 class="font-semibold text-gray-900 mb-3 md:mb-4 flex items-center gap-2 text-sm md:text-base">
+                        <i class="fa-solid fa-hand-holding-usd text-primary text-sm md:text-base"></i> 
+                        Votre argent
+                    </h3>
+                    <p class="text-gray-600 text-xs md:text-sm mb-3 md:mb-4">
+                        L'argent dans ce portefeuille est <strong>100% votre propriété</strong>.
+                    </p>
+                    <div class="space-y-1.5 md:space-y-2">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs md:text-sm"></i>
+                            <span class="text-gray-600 text-xs md:text-sm">Vous pouvez retirer à tout moment</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs md:text-sm"></i>
+                            <span class="text-gray-600 text-xs md:text-sm">Aucun frais de garde</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-check text-green-500 text-xs md:text-sm"></i>
+                            <span class="text-gray-600 text-xs md:text-sm">Sécurité bancaire</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Comment ça marche -->
+                <div class="bg-white rounded-xl border border-gray-200 p-4 md:p-6">
+                    <h3 class="font-semibold text-gray-900 mb-3 md:mb-4 flex items-center gap-2 text-sm md:text-base">
+                        <i class="fa-solid fa-question-circle text-primary text-sm md:text-base"></i> 
+                        Comment ça marche ?
+                    </h3>
+                    <div class="space-y-2 md:space-y-3">
+                        <div class="flex items-start gap-2 md:gap-3">
+                            <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+                                1
+                            </div>
+                            <div class="text-gray-600 text-xs md:text-sm">Alimentez votre portefeuille</div>
+                        </div>
+                        <div class="flex items-start gap-2 md:gap-3">
+                            <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+                                2
+                            </div>
+                            <div class="text-gray-600 text-xs md:text-sm">Activez le paiement automatique</div>
+                        </div>
+                        <div class="flex items-start gap-2 md:gap-3">
+                            <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+                                3
+                            </div>
+                            <div class="text-gray-600 text-xs md:text-sm">Vos tontines sont payées auto</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Modal d'alimentation (Mobile Optimized) -->
+<div id="depositModal" class="hidden fixed inset-0 bg-black/50 z-50">
+    <div class="min-h-screen flex items-end md:items-center justify-center p-0 md:p-4">
+        <div class="bg-white rounded-t-2xl md:rounded-xl w-full md:max-w-md md:max-h-[90vh] overflow-y-auto">
+            <!-- Mobile Header -->
+            <div class="sticky top-0 bg-white border-b border-gray-200 p-4 flex items-center justify-between md:hidden">
+                <h3 class="text-lg font-bold text-gray-900">Alimenter</h3>
+                <button onclick="closeDepositModal()" 
+                        class="p-2 hover:bg-gray-100 rounded-lg transition-colors touch-target">
+                    <i class="fa-solid fa-times text-gray-500"></i>
+                </button>
+            </div>
+            
+            <div class="p-4 md:p-6">
+                <div class="hidden md:flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-gray-900">Alimenter mon portefeuille</h3>
+                    <button onclick="closeDepositModal()" 
+                            class="p-2 hover:bg-gray-100 rounded-lg transition-colors touch-target">
+                        <i class="fa-solid fa-times text-gray-500"></i>
+                    </button>
+                </div>
+                
+                <form id="depositForm" action="{{ path('app_wallet_deposit') }}" method="POST">
+                    <div class="space-y-4">
+                        <!-- Montant -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Montant (FCFA)
+                            </label>
+                            <div class="relative">
+                                <input type="number" 
+                                       name="amount"
+                                       id="depositAmount"
+                                       required
+                                       min="500"
+                                       max="1000000"
+                                       inputmode="numeric"
+                                       pattern="[0-9]*"
+                                       class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary touch-target"
+                                       placeholder="Ex: 10000">
+                                <div class="absolute right-3 top-3 text-gray-500">FCFA</div>
+                            </div>
+                            <div class="text-xs text-gray-500 mt-2">
+                                Min: 500 FCFA • Max: 1M FCFA
+                            </div>
+                        </div>
+                        
+                        <!-- Suggestions rapides (Mobile) -->
+                        <div class="md:hidden">
+                            <div class="text-xs text-gray-700 mb-2">Montants rapides:</div>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" onclick="setAmount(5000)" class="px-3 py-2 border border-gray-300 rounded-lg hover:border-primary text-sm touch-target">
+                                    5 000
+                                </button>
+                                <button type="button" onclick="setAmount(10000)" class="px-3 py-2 border border-gray-300 rounded-lg hover:border-primary text-sm touch-target">
+                                    10 000
+                                </button>
+                                <button type="button" onclick="setAmount(25000)" class="px-3 py-2 border border-gray-300 rounded-lg hover:border-primary text-sm touch-target">
+                                    25 000
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Méthode de paiement -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Méthode de paiement
+                            </label>
+                            <div class="space-y-2">
+                                <label class="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-primary cursor-pointer touch-target">
+                                    <input type="radio" name="paymentMethod" value="orange_money" class="text-primary" checked>
+                                    <i class="fa-solid fa-mobile-alt text-orange-500 text-lg"></i>
+                                    <span class="flex-1 text-sm md:text-base">Orange Money</span>
+                                    <i class="fa-solid fa-check-circle text-primary"></i>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-primary cursor-pointer touch-target">
+                                    <input type="radio" name="paymentMethod" value="mtn_money" class="text-primary">
+                                    <i class="fa-solid fa-mobile-alt text-yellow-500 text-lg"></i>
+                                    <span class="flex-1 text-sm md:text-base">MTN Mobile Money</span>
+                                    <i class="fa-regular fa-circle"></i>
+                                </label>
+                                <label class="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-primary cursor-pointer touch-target">
+                                    <input type="radio" name="paymentMethod" value="wave" class="text-primary">
+                                    <i class="fa-solid fa-wave-square text-blue-500 text-lg"></i>
+                                    <span class="flex-1 text-sm md:text-base">Wave</span>
+                                    <i class="fa-regular fa-circle"></i>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <!-- Numéro de téléphone -->
+                        <div id="phoneNumberField" class="hidden">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">
+                                Numéro de téléphone
+                            </label>
+                            <input type="tel" 
+                                   name="phoneNumber"
+                                   inputmode="tel"
+                                   class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary touch-target"
+                                   placeholder="+225 07 00 00 00 00">
+                        </div>
+                        
+                        <!-- Résumé -->
+                        <div class="pt-4 border-t border-gray-200">
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span class="text-gray-600 text-sm">Montant à déposer</span>
+                                    <span id="depositSummary" class="font-bold">0 FCFA</span>
+                                </div>
+                                <div class="flex justify-between text-sm text-gray-500">
+                                    <span>Frais de service</span>
+                                    <span id="depositFees">0 FCFA</span>
+                                </div>
+                                <div class="flex justify-between text-sm text-gray-500 pt-2 border-t border-gray-100">
+                                    <span class="font-medium">Total à payer</span>
+                                    <span id="depositTotal" class="font-bold text-primary">0 FCFA</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Bouton de soumission -->
+                        <div class="mt-4 md:mt-6">
+                            <button type="submit"
+                                    class="w-full px-6 py-4 bg-primary text-white rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center justify-center gap-2 text-base touch-target">
+                                <i class="fa-solid fa-lock"></i> 
+                                <span>Payer maintenant</span>
+                            </button>
+                            <div class="text-center text-xs text-gray-500 mt-3">
+                                <i class="fa-solid fa-shield-alt mr-1"></i>
+                                Transaction sécurisée
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Variables globales
+const walletBalance = {{ wallet.balance|default(0) }};
+
+// Modal d'alimentation
+function showDepositModal() {
+    document.getElementById('depositModal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    updateDepositSummary();
+}
+
+function closeDepositModal() {
+    document.getElementById('depositModal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+}
+
+// Fermer la modal en cliquant à l'extérieur (mobile)
+document.getElementById('depositModal')?.addEventListener('click', function(e) {
+    if (e.target === this) {
+        closeDepositModal();
+    }
+});
+
+// Toggle auto-pay
+function toggleAutoPay(enabled) {
+    showNotification('Chargement...', 'info');
+    
+    fetch('{{ path("app_wallet_toggle_autopay") }}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({ enabled: enabled })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            showNotification(
+                enabled ? '✅ Auto-pay activé' : '⏸️ Auto-pay désactivé', 
+                'success'
+            );
+        } else {
+            document.getElementById('autoPayToggle').checked = !enabled;
+            showNotification('❌ ' + (data.message || 'Erreur'), 'error');
+        }
+    })
+    .catch(error => {
+        document.getElementById('autoPayToggle').checked = !enabled;
+        showNotification('❌ Erreur de connexion', 'error');
+    });
+}
+
+// Mise à jour des montants en temps réel
+document.addEventListener('DOMContentLoaded', function() {
+    const depositInput = document.getElementById('depositAmount');
+    const paymentMethods = document.querySelectorAll('input[name="paymentMethod"]');
+    
+    if (depositInput) {
+        depositInput.addEventListener('input', updateDepositSummary);
+        depositInput.addEventListener('touchstart', function() {
+            this.focus();
+        });
+    }
+    
+    // Afficher/masquer le champ numéro de téléphone
+    paymentMethods.forEach(method => {
+        method.addEventListener('change', function() {
+            const phoneField = document.getElementById('phoneNumberField');
+            if (this.value === 'orange_money' || this.value === 'mtn_money') {
+                phoneField.classList.remove('hidden');
+            } else {
+                phoneField.classList.add('hidden');
+            }
+            updateDepositSummary();
+        });
+    });
+    
+    // Initialiser le calcul
+    updateDepositSummary();
+});
+
+function updateDepositSummary() {
+    const amount = parseFloat(document.getElementById('depositAmount').value) || 0;
+    const method = document.querySelector('input[name="paymentMethod"]:checked').value;
+    
+    // Calcul des frais selon la méthode
+    let fees = 0;
+    if (amount > 0) {
+        if (method === 'orange_money' || method === 'mtn_money') {
+            fees = Math.max(100, amount * 0.01); // 1% minimum 100 FCFA
+        } else if (method === 'wave') {
+            fees = Math.max(50, amount * 0.0075); // 0.75% minimum 50 FCFA
+        }
+    }
+    
+    const total = amount + fees;
+    
+    // Mettre à jour l'affichage
+    document.getElementById('depositSummary').textContent = 
+        formatMoney(amount);
+    document.getElementById('depositFees').textContent = 
+        formatMoney(fees);
+    document.getElementById('depositTotal').textContent = 
+        formatMoney(total);
+}
+
+// Formater l'argent
+function formatMoney(amount) {
+    return amount.toLocaleString('fr-FR') + ' FCFA';
+}
+
+// Définir rapidement un montant
+function setAmount(amount) {
+    document.getElementById('depositAmount').value = amount;
+    updateDepositSummary();
+}
+
+// Gestion du formulaire de dépôt
+document.getElementById('depositForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const amount = parseFloat(document.getElementById('depositAmount').value);
+    if (!amount || amount < 500 || amount > 1000000) {
+        showNotification('Montant invalide. Min: 500 FCFA, Max: 1M FCFA', 'error');
+        return;
+    }
+    
+    showNotification('Redirection vers le paiement...', 'info');
+    
+    // Simulation
+    setTimeout(() => {
+        closeDepositModal();
+        showNotification('✅ Dépôt initié avec succès !', 'success');
+        // this.submit(); // Décommentez pour soumettre le formulaire
+    }, 1000);
+});
+
+// Fonction de notification mobile-friendly
+function showNotification(message, type) {
+    // Supprimer les notifications existantes
+    const existingNotifications = document.querySelectorAll('.mobile-notification');
+    existingNotifications.forEach(n => n.remove());
+    
+    // Créer l'élément de notification
+    const notification = document.createElement('div');
+    notification.className = `mobile-notification fixed top-4 left-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 ${
+        type === 'success' ? 'bg-green-500 text-white' : 
+        type === 'error' ? 'bg-red-500 text-white' : 
+        'bg-blue-500 text-white'
+    }`;
+    notification.innerHTML = `
+        <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i class="fa-solid ${type === 'success' ? 'fa-check-circle' : type === 'error' ? 'fa-exclamation-circle' : 'fa-info-circle'}"></i>
+                <span class="text-sm">${message}</span>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" 
+                    class="p-1 hover:bg-white/20 rounded">
+                <i class="fa-solid fa-times text-xs"></i>
+            </button>
+        </div>
+    `;
+    
+    // Ajouter au DOM
+    document.body.appendChild(notification);
+    
+    // Supprimer après 3 secondes
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 3000);
+}
+
+// Fonctions d'aide
+function showHistory() {
+    window.location.href = '{{ path("app_wallet_transactions") }}';
+}
+
+function showHelp() {
+    // Ici vous pouvez ajouter une modal d'aide ou rediriger vers FAQ
+    alert('Centre d\'aide - Bientôt disponible');
+}
+
+// Détecter si on est sur mobile
+function isMobile() {
+    return window.innerWidth <= 768;
+}
+
+// Adapter le comportement pour mobile
+if (isMobile()) {
+    // Empêcher le zoom sur les inputs
+    document.addEventListener('touchstart', function(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+            e.target.style.fontSize = '16px'; // Prévenir le zoom iOS
+        }
+    });
+    
+    // Optimiser les interactions tactiles
+    document.addEventListener('touchmove', function(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') {
+            e.preventDefault();
+        }
+    }, { passive: false });
+}
+</script>
+
+<style>
+/* Styles optimisés pour mobile */
+.touch-target {
+    min-height: 44px !important;
+    min-width: 44px !important;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Améliorer la lisibilité sur mobile */
+@media (max-width: 768px) {
+    body {
+        -webkit-text-size-adjust: 100%;
+        -webkit-font-smoothing: antialiased;
+    }
+    
+    input, select, textarea, button {
+        font-size: 16px !important; /* Empêcher le zoom iOS */
+    }
+    
+    /* Améliorer le scrolling */
+    .overflow-y-auto {
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Modal mobile */
+    #depositModal > div {
+        max-height: 85vh;
+    }
+    
+    /* Masquer la scrollbar sur mobile */
+    .overflow-y-auto::-webkit-scrollbar {
+        width: 0;
+        background: transparent;
+    }
+}
+
+/* Animation pour les modales mobiles */
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 768px) {
+    #depositModal > div {
+        animation: slideUp 0.3s ease-out;
+    }
+}
+
+/* Styles pour le toggle */
+input:checked + div {
+    background-color: #10b981;
+}
+
+/* Améliorer les inputs numériques */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+/* Styles pour les radio buttons */
+input[type="radio"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #d1d5db;
+    border-radius: 50%;
+    outline: none;
+    cursor: pointer;
+    position: relative;
+    flex-shrink: 0;
+}
+
+input[type="radio"]:checked {
+    border-color: #10b981;
+}
+
+input[type="radio"]:checked::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    background-color: #10b981;
+    border-radius: 50%;
+}
+
+/* Styles pour les notifications mobiles */
+.mobile-notification {
+    animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Améliorer la sélection tactile */
+* {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+input, textarea {
+    -webkit-user-select: text;
+    user-select: text;
+}
+
+/* Prévenir les actions de zoom sur iOS */
+@media (max-width: 768px) {
+    input, select, textarea {
+        font-size: 16px;
+    }
+    
+    .touch-target:active {
+        opacity: 0.7;
+        transform: scale(0.98);
+    }
+}
+
+/* Améliorer les performances de scrolling */
+.overflow-y-auto {
+    will-change: transform;
+    contain: content;
+}
+</style>
+{% endblock %}

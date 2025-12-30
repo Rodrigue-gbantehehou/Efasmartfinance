@@ -1,5 +1,9 @@
 twig:
     file_name_pattern: '*.twig'
+    globals:
+        fedapay_public_key: '%env(FEDAPAY_PUBLIC_KEY)%'
+        kkiapay_public_key: '%env(KKIAPAY_PUBLIC_KEY)%'
+        paypal_public_key: '%env(PAYPAL_CLIENT_ID)%'
 
 when@test:
     twig:

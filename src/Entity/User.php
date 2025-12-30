@@ -69,11 +69,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?bool $isVerified = null;
 
+    /**
+     * @var Collection<int, Wallets>
+     */
+    #[ORM\OneToMany(targetEntity: Wallets::class, mappedBy: 'utilisateur')]
+    private Collection $wallets;
+
     public function __construct()
     {
         $this->tontines = new ArrayCollection();
         $this->transactions = new ArrayCollection();
         $this->isVerified = false;
+        $this->wallets = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -297,6 +304,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setIsVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Wallets>
+     */
+    public function getWallets(): Collection
+    {
+        return $this->wallets;
+    }
+
+    public function addWallet(Wallets $wallet): static
+    {
+        if (!$this->wallets->contains($wallet)) {
+            $this->wallets->add($wallet);
+            $wallet->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWallet(Wallets $wallet): static
+    {
+        if ($this->wallets->removeElement($wallet)) {
+            // set the owning side to null (unless already changed)
+            if ($wallet->getUtilisateur() === $this) {
+                $wallet->setUtilisateur(null);
+            }
+        }
 
         return $this;
     }

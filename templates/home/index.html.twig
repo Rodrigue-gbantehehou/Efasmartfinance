@@ -1,338 +1,490 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} Accueil {% endblock %}
+{% block title %} Épargnez ensemble, pointage après pointage {% endblock %}
 
 {% block body %}
-  <!-- Hero -->
-  <section id="accueil" class="gradient-bg text-white py-12 md:py-20 relative overflow-hidden">
-    <div class="absolute -top-24 -left-24 w-[30rem] h-[30rem] bg-white/10 rounded-full blur-3xl"></div>
-    <div class="absolute -bottom-24 -right-24 w-[30rem] h-[30rem] bg-white/10 rounded-full blur-3xl"></div>
-
-    <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center relative">
-      <div class="md:w-1/2 mb-10 md:mb-0">
-        <h1 class="text-3xl md:text-5xl font-bold mb-4 leading-tight">Gère tes tontines et ton épargne en toute simplicité</h1>
-        <p class="text-lg/relaxed mb-6 opacity-95">
-          Plateforme sécurisée pour organiser et suivre tes tontines et plans d’épargne. Paiements via Mobile Money, virement ou carte bancaire — où que tu sois.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-3">
-          <a href="dashbord/index.php" class="bg-secondary text-primary font-bold px-6 py-3 rounded-lg hover:bg-yellow-500 transition shadow-lg pulse-animation">
-            <i class="fas fa-plus mr-2"></i> Créer une tontine
-          </a>
-          <a href="#plans" class="bg-white text-primary font-bold px-6 py-3 rounded-lg hover:bg-gray-100 transition shadow-lg">
-            <i class="fas fa-piggy-bank mr-2"></i> Découvrir l’épargne
-          </a>
-        </div>
-      </div>
-
-      <div class="md:w-1/2 flex justify-center">
-        <div class="relative">
-          <div class="bg-white rounded-xl p-4 shadow-custom w-64 h-80 rotate-3 absolute -right-4 -bottom-4"></div>
-          <div class="bg-white rounded-xl p-6 shadow-custom w-64 h-80 relative z-10">
-            <div class="text-center mb-6">
-              <div class="bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
-                <i class="fas fa-coins text-2xl"></i>
-              </div>
-              <h3 class="font-bold text-primary">Tontine du mois</h3>
-            </div>
-            <div class="space-y-3 text-sm">
-              <div class="flex justify-between">
-                <span class="text-gray-600">Montant&nbsp;:</span>
-                <span class="font-bold">25 000 FCFA</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-600">Prochain tour&nbsp;:</span>
-                <span class="font-bold">15/10/2025</span>
-              </div>
-              <div class="flex justify-between">
-                <span class="text-gray-600">Membres&nbsp;:</span>
-                <span class="font-bold">12/15</span>
-              </div>
-              <div class="pt-2">
-                <div class="h-2 bg-gray-200 rounded-full">
-                  <div class="h-2 bg-secondary rounded-full" style="width:80%"></div>
-                </div>
-                <p class="text-xs text-gray-500 mt-1">80% complété</p>
-              </div>
-            </div>
-            <a href="#tontines" class="mt-4 inline-flex items-center justify-center w-full text-primary font-semibold hover:text-accent">
-              Voir les détails <i class="fa-solid fa-arrow-right ml-2"></i>
+  <!-- 1️⃣ HERO SECTION - Clair et humain -->
+  <section id="accueil" class="relative overflow-hidden bg-gradient-to-br from-primary/10 via-white to-accent/10 py-16 md:py-24">
+    <!-- Décorations douces -->
+    <div class="absolute -top-20 -left-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
+    <div class="absolute bottom-0 right-0 w-80 h-80 bg-accent/5 rounded-full blur-3xl"></div>
+    
+    <div class="max-w-6xl mx-auto px-4 relative z-10">
+      <div class="flex flex-col lg:flex-row items-center gap-12">
+        <!-- Texte principal -->
+        <div class="lg:w-1/2">
+          <!-- Titre principal - SIMPLE ET CLAIR -->
+          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+            Épargnez ensemble,<br>
+            <span class="text-primary">pointage après pointage.</span>
+          </h1>
+          
+          <!-- Sous-titre - EXPLICATION IMMÉDIATE -->
+          <p class="text-xl text-gray-600 mb-8 leading-relaxed">
+            Payez votre tontine par pointage, suivez vos contributions en temps réel
+            et gardez le contrôle total de votre argent.
+          </p>
+          
+          <!-- Boutons CTA - HIÉRARCHIE CLAIRE -->
+          <div class="flex flex-col sm:flex-row gap-4">
+            <!-- Bouton principal -->
+            <a href="dashbord/index.php" 
+               class="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 text-center flex items-center justify-center gap-3">
+              <i class="fas fa-plus-circle"></i>
+              Créer une tontine
+            </a>
+            
+            <!-- Bouton secondaire -->
+            <a href="#comment-ca-marche" 
+               class="bg-white hover:bg-gray-50 text-primary border-2 border-primary font-semibold px-8 py-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 text-center flex items-center justify-center gap-3">
+              <i class="fas fa-sign-in-alt"></i>
+              Rejoindre une tontine
             </a>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Fonctionnalités -->
-  <section class="py-12 bg-light">
-    <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center text-primary mb-12">Nos fonctionnalités</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="bg-white p-6 rounded-xl shadow-custom hover:shadow-xl transition">
-          <div class="bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center mb-4">
-            <i class="fas fa-shield-alt"></i>
+          
+          <!-- Indicateurs de confiance -->
+          <div class="mt-12 flex flex-wrap items-center gap-8 text-gray-600">
+            <div class="flex items-center gap-2">
+              <i class="fas fa-shield-check text-green-500 text-lg"></i>
+              <span>Sécurisé</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="fas fa-mobile-alt text-blue-500 text-lg"></i>
+              <span>Mobile Money</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <i class="fas fa-eye text-purple-500 text-lg"></i>
+              <span>Transparent</span>
+            </div>
           </div>
-          <h3 class="text-xl font-bold text-primary mb-2">Sécurisé</h3>
-          <p class="text-gray-600">Transactions chiffrées, conformité, historisation des opérations.</p>
         </div>
-        <div class="bg-white p-6 rounded-xl shadow-custom hover:shadow-xl transition">
-          <div class="bg-secondary text-primary rounded-full w-12 h-12 flex items-center justify-center mb-4">
-            <i class="fas fa-mobile-alt"></i>
-          </div>
-          <h3 class="text-xl font-bold text-primary mb-2">Mobile</h3>
-          <p class="text-gray-600">Participe depuis ton smartphone, à tout moment.</p>
-        </div>
-        <div class="bg-white p-6 rounded-xl shadow-custom hover:shadow-xl transition">
-          <div class="bg-accent text-white rounded-full w-12 h-12 flex items-center justify-center mb-4">
-            <i class="fas fa-chart-line"></i>
-          </div>
-          <h3 class="text-xl font-bold text-primary mb-2">Suivi en temps réel</h3>
-          <p class="text-gray-600">Statistiques, rapports et alertes en direct.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Tontines: Comment ça marche -->
-  <section id="tontines" class="py-12 bg-white">
-    <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center text-primary mb-12">Tontines — Comment ça marche</h2>
-      <div class="flex flex-col md:flex-row items-center">
-        <div class="md:w-1/2 mb-8 md:mb-0">
-          <img src="{{ asset('assets/images/537.jpg') }}" alt="" class="rounded-lg shadow-lg w-full max-w-xl mx-auto" />
-        </div>
-        <div class="md:w-1/2 md:pl-12">
-          <div class="space-y-8">
-            <div class="flex">
-              <div class="flex-shrink-0">
-                <div class="flex items-center justify-center bg-primary text-white rounded-full w-10 h-10 font-bold">1</div>
+        
+        <!-- Visuel de la carte de pointage -->
+        <div class="lg:w-1/2">
+          <div class="relative">
+            <!-- Fond décoratif -->
+            <div class="absolute -inset-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl blur-xl"></div>
+            
+            <!-- Carte de pointage -->
+            <div class="relative bg-white rounded-2xl shadow-2xl p-6 border border-gray-100">
+              <!-- En-tête -->
+              <div class="flex items-center justify-between mb-6">
+                <div class="flex items-center gap-3">
+                  <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <i class="fas fa-calendar-check text-primary text-xl"></i>
+                  </div>
+                  <div>
+                    <h3 class="font-bold text-gray-900">Tontine Mensuelle</h3>
+                    <p class="text-sm text-gray-500">Groupe "Solidarité"</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div class="text-xs text-gray-500">Actif</div>
+                  <div class="w-3 h-3 bg-green-500 rounded-full inline-block"></div>
+                </div>
               </div>
-              <div class="ml-4">
-                <h3 class="text-lg font-bold text-primary">Crée une tontine, commence ton épargne</h3>
-                <p class="text-gray-600 mt-1">En quelques clics, crée ton compte et commence à éparger.</p>
+              
+              <!-- Barre de progression -->
+              <div class="mb-6">
+                <div class="flex justify-between text-sm text-gray-600 mb-2">
+                  <span>Progression du mois</span>
+                  <span>67%</span>
+                </div>
+                <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+                  <div class="h-full bg-gradient-to-r from-primary to-accent rounded-full" style="width: 67%"></div>
+                </div>
+              </div>
+              
+              <!-- Pointages visuels -->
+              <div class="mb-6">
+                <p class="text-sm text-gray-600 mb-3">Pointages d'octobre :</p>
+                <div class="flex flex-wrap gap-2">
+                  {% for i in 1..12 %}
+                    <div class="w-10 h-10 rounded-lg flex items-center justify-center font-medium
+                      {% if i <= 8 %}bg-green-100 text-green-800 border border-green-300{% else %}bg-gray-100 text-gray-500 border border-gray-300{% endif %}">
+                      {{ i }}
+                    </div>
+                  {% endfor %}
+                </div>
+              </div>
+              
+              <!-- Informations claires -->
+              <div class="space-y-3 text-sm">
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                  <span class="text-gray-600">Prochain pointage :</span>
+                  <span class="font-bold text-gray-900">15 octobre</span>
+                </div>
+                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                  <span class="text-gray-600">Montant par pointage :</span>
+                  <span class="font-bold text-gray-900">5 000 FCFA</span>
+                </div>
+              </div>
+              
+              <!-- Légende -->
+              <div class="mt-4 text-center">
+                <p class="text-xs text-gray-500">
+                  <i class="fas fa-circle text-green-500 mr-1"></i>Pointé 
+                  <i class="fas fa-circle text-gray-300 ml-3 mr-1"></i>À venir
+                </p>
               </div>
             </div>
-            <div class="flex">
-              <div class="flex-shrink-0">
-                <div class="flex items-center justify-center bg-secondary text-primary rounded-full w-10 h-10 font-bold">2</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2️⃣ SECTION « COMMENT ÇA MARCHE » - 3 cartes ultra visuelles -->
+  <section id="comment-ca-marche" class="py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          Comment ça marche
+        </h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          Simple comme 1, 2, 3. La tontine digitale, sans complication.
+        </p>
+      </div>
+      
+      <!-- 3 cartes visuelles -->
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Carte 1 - Créez ou rejoignez -->
+        <div class="group relative bg-gradient-to-b from-white to-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100">
+          <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <i class="fas fa-users text-blue-600 text-xl"></i>
+            </div>
+          </div>
+          <div class="text-center pt-4">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Créez ou rejoignez</h3>
+            <p class="text-gray-600 leading-relaxed">
+              Choisissez une tontine adaptée à votre rythme
+              (quotidien, hebdomadaire ou mensuel)
+            </p>
+          </div>
+          <div class="mt-6 text-center">
+            <span class="inline-block px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
+              Aucun engagement
+            </span>
+          </div>
+        </div>
+        
+        <!-- Carte 2 - Payez par pointage -->
+        <div class="group relative bg-gradient-to-b from-white to-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100">
+          <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <i class="fas fa-calendar-alt text-green-600 text-xl"></i>
+            </div>
+          </div>
+          <div class="text-center pt-4">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Payez par pointage</h3>
+            <p class="text-gray-600 leading-relaxed">
+              Chaque paiement correspond à un pointage clair.
+              Pas de confusion, pas d'avance obligatoire.
+            </p>
+          </div>
+          <div class="mt-6 text-center">
+            <span class="inline-block px-4 py-2 bg-green-50 text-green-700 rounded-full text-sm font-medium">
+              Quand vous voulez
+            </span>
+          </div>
+        </div>
+        
+        <!-- Carte 3 - Suivez tout -->
+        <div class="group relative bg-gradient-to-b from-white to-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100">
+          <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+            <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center group-hover:scale-110 transition-transform">
+              <i class="fas fa-chart-line text-purple-600 text-xl"></i>
+            </div>
+          </div>
+          <div class="text-center pt-4">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">Suivez tout</h3>
+            <p class="text-gray-600 leading-relaxed">
+              Consultez votre carte de pointage
+              et votre solde à tout moment.
+            </p>
+          </div>
+          <div class="mt-6 text-center">
+            <span class="inline-block px-4 py-2 bg-purple-50 text-purple-700 rounded-full text-sm font-medium">
+              24h/24
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3️⃣ SECTION RASSURANCE - Votre argent, vos règles -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          Votre argent, vos règles.
+        </h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          La confiance, c'est notre priorité. Voici nos engagements :
+        </p>
+      </div>
+      
+      <!-- Messages de confiance SIMPLES -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Message 1 -->
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-100">
+          <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-4">
+            <i class="fas fa-lock text-red-500 text-xl"></i>
+          </div>
+          <h3 class="font-bold text-gray-900 mb-2">Aucun argent bloqué</h3>
+          <p class="text-gray-600 text-sm">
+            Vos fonds ne sont jamais immobilisés sans votre accord préalable.
+          </p>
+        </div>
+        
+        <!-- Message 2 -->
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-100">
+          <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mb-4">
+            <i class="fas fa-search text-blue-500 text-xl"></i>
+          </div>
+          <h3 class="font-bold text-gray-900 mb-2">Chaque paiement traçable</h3>
+          <p class="text-gray-600 text-sm">
+            Suivez chaque contribution de manière transparente.
+          </p>
+        </div>
+        
+        <!-- Message 3 -->
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-100">
+          <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center mb-4">
+            <i class="fas fa-eye text-green-500 text-xl"></i>
+          </div>
+          <h3 class="font-bold text-gray-900 mb-2">Transparence totale</h3>
+          <p class="text-gray-600 text-sm">
+            Vous voyez exactement où va votre argent, en temps réel.
+          </p>
+        </div>
+        
+        <!-- Message 4 -->
+        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-100">
+          <div class="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center mb-4">
+            <i class="fas fa-shield-alt text-orange-500 text-xl"></i>
+          </div>
+          <h3 class="font-bold text-gray-900 mb-2">Paiement sécurisé</h3>
+          <p class="text-gray-600 text-sm">
+            Mobile Money & cartes bancaires, tout est sécurisé.
+          </p>
+        </div>
+      </div>
+      
+      <!-- Témoignage rapide -->
+      <div class="mt-12 bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl p-8 border border-primary/10">
+        <div class="flex items-center gap-4">
+          <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
+            <i class="fas fa-quote-left text-primary text-2xl"></i>
+          </div>
+          <div>
+            <p class="text-lg text-gray-700 italic">
+              "Enfin une tontine où je vois tout, tout le temps. Plus de stress, juste de la transparence."
+            </p>
+            <p class="mt-2 font-medium text-gray-900">— Aïcha D., Dakar</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4️⃣ SECTION « POUR QUI ? » - Cartes simples -->
+  <section class="py-16 bg-white">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          Pour qui ?
+        </h2>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+          La tontine digitale s'adapte à toutes vos situations.
+        </p>
+      </div>
+      
+      <!-- 4 cartes simples -->
+      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Familles & amis -->
+        <div class="text-center p-6 rounded-xl border-2 border-blue-100 bg-blue-50/30 hover:bg-blue-50/50 transition-colors">
+          <div class="text-4xl mb-4">👩‍👩‍👧</div>
+          <h3 class="font-bold text-gray-900 mb-2">Familles & amis</h3>
+          <p class="text-gray-600 text-sm">
+            Épargnez ensemble en toute confiance.
+          </p>
+        </div>
+        
+        <!-- Groupes communautaires -->
+        <div class="text-center p-6 rounded-xl border-2 border-green-100 bg-green-50/30 hover:bg-green-50/50 transition-colors">
+          <div class="text-4xl mb-4">🏘️</div>
+          <h3 class="font-bold text-gray-900 mb-2">Groupes communautaires</h3>
+          <p class="text-gray-600 text-sm">
+            Gérez vos cotisations collectives facilement.
+          </p>
+        </div>
+        
+        <!-- Associations & équipes -->
+        <div class="text-center p-6 rounded-xl border-2 border-purple-100 bg-purple-50/30 hover:bg-purple-50/50 transition-colors">
+          <div class="text-4xl mb-4">💼</div>
+          <h3 class="font-bold text-gray-900 mb-2">Associations & équipes</h3>
+          <p class="text-gray-600 text-sm">
+            Organisez vos caisses communes simplement.
+          </p>
+        </div>
+        
+        <!-- Épargne personnelle -->
+        <div class="text-center p-6 rounded-xl border-2 border-orange-100 bg-orange-50/30 hover:bg-orange-50/50 transition-colors">
+          <div class="text-4xl mb-4">🧍</div>
+          <h3 class="font-bold text-gray-900 mb-2">Épargne personnelle</h3>
+          <p class="text-gray-600 text-sm">
+            Discipline et suivi pour vos objectifs.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5️⃣ SECTION VISUELLE – CARTE DE POINTAGE -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          Une vraie carte de tontine, version digitale
+        </h2>
+        <p class="text-xl text-gray-600">
+          Comme la carte papier, mais sans perte ni erreur.
+        </p>
+      </div>
+      
+      <!-- Carte de pointage détaillée -->
+      <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
+        <!-- En-tête de la carte -->
+        <div class="bg-gradient-to-r from-primary to-accent p-6 text-white">
+          <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+              <h3 class="text-2xl font-bold">Tontine Solidarité 2024</h3>
+              <p class="opacity-90">12 membres • 5 000 FCFA par pointage</p>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-bold">8/12</div>
+              <div class="text-sm opacity-90">Pointages validés</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Corps de la carte -->
+        <div class="p-8">
+          <!-- Grille de pointages -->
+          <div class="mb-8">
+            <div class="grid grid-cols-6 md:grid-cols-12 gap-3">
+              {% for i in 1..12 %}
+                <div class="aspect-square rounded-xl flex flex-col items-center justify-center p-2
+                  {% if i <= 8 %}bg-green-100 border-2 border-green-300{% else %}bg-gray-100 border-2 border-gray-200{% endif %}">
+                  <div class="text-lg font-bold">{{ i }}</div>
+                  <div class="text-xs mt-1 {% if i <= 8 %}text-green-700{% else %}text-gray-500{% endif %}">
+                    {% if i <= 8 %}Pointé{% else %}À venir{% endif %}
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          
+          <!-- Informations clés -->
+          <div class="grid md:grid-cols-3 gap-6">
+            <div class="p-4 bg-gray-50 rounded-xl">
+              <div class="text-sm text-gray-600 mb-1">Prochain pointage</div>
+              <div class="text-xl font-bold text-gray-900">15 octobre</div>
+            </div>
+            <div class="p-4 bg-gray-50 rounded-xl">
+              <div class="text-sm text-gray-600 mb-1">Montant total</div>
+              <div class="text-xl font-bold text-gray-900">60 000 FCFA</div>
+            </div>
+            <div class="p-4 bg-gray-50 rounded-xl">
+              <div class="text-sm text-gray-600 mb-1">Statut</div>
+              <div class="text-xl font-bold text-green-600 flex items-center gap-2">
+                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                En cours
               </div>
-              <div class="ml-4">
-                <h3 class="text-lg font-bold text-primary">Paramètre la tontine</h3>
-                <p class="text-gray-600 mt-1">Montant, fréquence, ordre des tours, règles.</p>
-              </div>
             </div>
-            <div class="flex">
-              <div class="flex-shrink-0">
-                <div class="flex items-center justify-center bg-accent text-white rounded-full w-10 h-10 font-bold">3</div>
-              </div>
-              <div class="ml-4">
-                <h3 class="text-lg font-bold text-primary">Suis & encaisse</h3>
-                <p class="text-gray-600 mt-1">Paiements, bénéficiaires, reçus et relances automatisées.</p>
-              </div>
-            </div>
-            <a href="#" class="inline-flex items-center text-primary font-semibold hover:text-accent">Voir la démo<i class="fa-solid fa-arrow-right ml-2"></i></a>
           </div>
         </div>
+      </div>
+      
+      <!-- Texte explicatif -->
+      <div class="mt-8 text-center text-gray-600 max-w-2xl mx-auto">
+        <p class="text-lg">
+          Visualisez vos pointages comme sur une carte papier traditionnelle,
+          mais avec la fiabilité et la sécurité du numérique.
+        </p>
       </div>
     </div>
   </section>
 
-  <!-- Plans d'Épargne -->
-  <section id="plans" class="py-12 bg-light">
-    <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center text-primary mb-12">Plans d’épargne</h2>
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <!-- Hebdomadaire -->
-        <div class="bg-white rounded-xl shadow-custom p-6 hover:shadow-xl transition">
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="text-lg font-bold text-primary">Hebdomadaire</h3>
-            <span class="text-xs bg-secondary text-primary px-2 py-1 rounded">Souple</span>
-          </div>
-          <p class="text-gray-600 text-sm mb-4">Cotisation chaque semaine.</p>
-          <ul class="space-y-2 text-sm text-gray-700">
-            <li><i class="fa-regular fa-circle-check mr-2 text-accent"></i>Rappels automatiques</li>
-            <li><i class="fa-regular fa-circle-check mr-2 text-accent"></i>Calendrier intégré</li>
-          </ul>
-          <a href="#" class="mt-4 inline-block w-full text-center bg-primary text-white py-2 rounded-lg hover:bg-accent">Commencer</a>
-        </div>
-        <!-- Mensuel -->
-        <div class="bg-white rounded-xl shadow-custom p-6 ring-2 ring-secondary/40 hover:shadow-xl transition">
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="text-lg font-bold text-primary">Mensuel</h3>
-            <span class="text-xs bg-secondary text-primary px-2 py-1 rounded">Populaire</span>
-          </div>
-          <p class="text-gray-600 text-sm mb-4">Versement chaque mois.</p>
-          <ul class="space-y-2 text-sm text-gray-700">
-            <li><i class="fa-regular fa-circle-check mr-2 text-accent"></i>Jusqu’à <strong>1%/mois</strong>*</li>
-            <li><i class="fa-regular fa-circle-check mr-2 text-accent"></i>Preuve de paiement</li>
-          </ul>
-          <a href="#" class="mt-4 inline-block w-full text-center bg-primary text-white py-2 rounded-lg hover:bg-accent">Épargner</a>
-        </div>
-        <!-- Trimestriel -->
-        <div class="bg-white rounded-xl shadow-custom p-6 hover:shadow-xl transition">
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="text-lg font-bold text-primary">Trimestriel</h3>
-            <span class="text-xs bg-secondary text-primary px-2 py-1 rounded">Discipline</span>
-          </div>
-          <p class="text-gray-600 text-sm mb-4">Idéal pour objectifs à court terme.</p>
-          <ul class="space-y-2 text-sm text-gray-700">
-            <li><i class="fa-regular fa-circle-check mr-2 text-accent"></i>Verrouillage optionnel</li>
-            <li><i class="fa-regular fa-circle-check mr-2 text-accent"></i>Alertes d’échéance</li>
-          </ul>
-          <a href="#" class="mt-4 inline-block w-full text-center bg-primary text-white py-2 rounded-lg hover:bg-accent">Choisir</a>
-        </div>
-        <!-- Semestriel -->
-        <div class="bg-white rounded-xl shadow-custom p-6 hover:shadow-xl transition">
-          <div class="flex items-center justify-between mb-2">
-            <h3 class="text-lg font-bold text-primary">Semestriel</h3>
-            <span class="text-xs bg-secondary text-primary px-2 py-1 rounded">Objectifs</span>
-          </div>
-          <p class="text-gray-600 text-sm mb-4">Deux fois par an, sans stress.</p>
-          <ul class="space-y-2 text-sm text-gray-700">
-            <li><i class="fa-regular fa-circle-check mr-2 text-accent"></i>Suivi visuel</li>
-            <li><i class="fa-regular fa-circle-check mr-2 text-accent"></i>Historique exportable</li>
-          </ul>
-          <a href="#" class="mt-4 inline-block w-full text-center bg-primary text-white py-2 rounded-lg hover:bg-accent">Souscrire</a>
-        </div>
-      </div>
-      <p class="text-xs text-gray-500 mt-4">* Exemple indicatif. Les rendements et conditions réels sont communiqués dans ton espace client.</p>
-    </div>
-  </section>
-
-  <!-- Calendrier & Rappels -->
-  <section class="py-12 bg-white">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-        <div>
-          <h2 class="text-3xl font-bold text-primary mb-4">Calendrier & Rappels</h2>
-          <p class="text-gray-600 mb-4">Visualise tes dates de versement, coche les paiements effectués et reçois des rappels automatiques par SMS/Email.</p>
-          <ul class="space-y-2 text-gray-700">
-            <li><i class="fa-regular fa-calendar-check mr-2 text-accent"></i>Vue mensuelle/semaine</li>
-            <li><i class="fa-regular fa-bell mr-2 text-accent"></i>Notifications personnalisables</li>
-            <li><i class="fa-regular fa-file-lines mr-2 text-accent"></i>Reçus & export PDF</li>
-          </ul>
-        </div>
-        <div class="bg-light border border-gray-200 rounded-xl p-6">
-          <div class="grid grid-cols-7 gap-2 text-center text-sm">
-            <div class="font-semibold">L</div><div class="font-semibold">M</div><div class="font-semibold">M</div><div class="font-semibold">J</div><div class="font-semibold">V</div><div class="font-semibold">S</div><div class="font-semibold">D</div>
-            <!-- calendrier fictif -->
-            <div class="py-2">1</div><div class="py-2">2</div><div class="py-2">3</div><div class="py-2">4</div><div class="py-2">5</div><div class="py-2 bg-secondary/40 rounded">6</div><div class="py-2">7</div>
-            <div class="py-2">8</div><div class="py-2">9</div><div class="py-2">10</div><div class="py-2">11</div><div class="py-2">12</div><div class="py-2 bg-secondary/40 rounded">13</div><div class="py-2">14</div>
-            <!-- ... -->
-          </div>
-          <p class="text-xs text-gray-500 mt-4"><i class="fa-solid fa-circle mr-1 text-secondary"></i>Jours de prélèvement</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Moyens de retrait -->
-  <section class="py-12 bg-light">
-    <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center text-primary mb-12">Moyens de retrait</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white rounded-xl shadow-custom p-6">
-          <i class="fa-solid fa-building-columns text-primary text-2xl"></i>
-          <h3 class="text-lg font-bold text-primary mt-3">Virement bancaire</h3>
-          <p class="text-gray-600 text-sm">Renseigne ton RIB pour recevoir tes fonds.</p>
-        </div>
-        <div class="bg-white rounded-xl shadow-custom p-6">
-          <i class="fa-solid fa-mobile-screen text-primary text-2xl"></i>
-          <h3 class="text-lg font-bold text-primary mt-3">Mobile Money</h3>
-          <p class="text-gray-600 text-sm">Retraits rapides vers ton numéro mobile.</p>
-        </div>
-        <div class="bg-white rounded-xl shadow-custom p-6">
-          <i class="fa-solid fa-money-check-dollar text-primary text-2xl"></i>
-          <h3 class="text-lg font-bold text-primary mt-3">Chèque</h3>
-          <p class="text-gray-600 text-sm">Disponible selon conditions de ton plan.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Sécurité & KYC -->
-  <section id="securite" class="py-12 bg-white">
-    <div class="max-w-7xl mx-auto px-4">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-        <div>
-          <h2 class="text-3xl font-bold text-primary mb-4">Sécurité & Conformité (KYC)</h2>
-          <p class="text-gray-600 mb-4">Pour protéger la communauté, l’inscription requiert une pièce d’identité valide. Tes données sont chiffrées et traitées de manière confidentielle.</p>
-          <ul class="space-y-2 text-gray-700">
-            <li><i class="fa-regular fa-id-card mr-2 text-accent"></i>Vérification d’identité</li>
-            <li><i class="fa-solid fa-lock mr-2 text-accent"></i>Chiffrement des données</li>
-            <li><i class="fa-solid fa-user-shield mr-2 text-accent"></i>Contrôles anti-fraude</li>
-          </ul>
-        </div>
-        <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-custom">
-          <h3 class="text-lg font-semibold text-primary mb-3">Frais de résiliation</h3>
-          <p class="text-gray-600 text-sm">En cas de résiliation anticipée, une pénalité s’applique (ex. équivalent à <strong>un jour de rendement par période restante</strong>). Les détails exacts sont affichés lors de la souscription.</p>
-          <div class="mt-4 text-xs text-gray-500">Lis attentivement les conditions spécifiques à ton plan avant de confirmer.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Témoignages -->
-  <section class="py-12 bg-light">
-    <div class="max-w-7xl mx-auto px-4">
-      <h2 class="text-3xl font-bold text-center text-primary mb-12">Témoignages</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="bg-white p-6 rounded-xl shadow-custom">
-          <div class="flex items-center mb-4">
-            <div class="bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center">
-              <img src="{{ asset('assets/images/30075.jpg') }}">
-            </div>
-            <div class="ml-3">
-              <h4 class="font-bold">Amadou B.</h4>
-              <p class="text-sm text-gray-500">Membre depuis 2025</p>
-            </div>
-          </div>
-          <p class="text-gray-600">“EFA SMART FINANCE a révolutionné notre façon de gérer nos tontines.”</p>
-          <div class="flex mt-3 text-secondary"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-        </div>
-        <div class="bg-white p-6 rounded-xl shadow-custom">
-          <div class="flex items-center mb-4">
-            <div class="bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center">
-              <img src="{{ asset('assets/images/102075.jpg') }}">
-            </div>
-            <div class="ml-3">
-              <h4 class="font-bold">Fatou D.</h4>
-              <p class="text-sm text-gray-500">Membre depuis 2025</p>
-            </div>
-          </div>
-          <p class="text-gray-600">“Même en voyage, je participe à ma tontine. La plateforme est intuitive.”</p>
-          <div class="flex mt-3 text-secondary"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
-        </div>
-        <div class="bg-white p-6 rounded-xl shadow-custom">
-          <div class="flex items-center mb-4">
-            <div class="bg-primary text-white rounded-full w-10 h-10 flex items-center justify-center">
-              <img src="{{ asset('assets/images/128899.jpg') }}">
-            </div>
-            <div class="ml-3">
-              <h4 class="font-bold">Jérémie K.</h4>
-              <p class="text-sm text-gray-500">Membre depuis 2025</p>
-            </div>
-          </div>
-          <p class="text-gray-600">“En tant que gestionnaire, j’ai gagné un temps fou avec les rapports.”</p>
-          <div class="flex mt-3 text-secondary"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="py-16 bg-primary text-white">
-    <div class="max-w-7xl mx-auto px-4 text-center">
-      <h2 class="text-3xl font-bold mb-6">Prêt à simplifier ta gestion financière&nbsp;?</h2>
-      <p class="text-xl mb-8 max-w-2xl mx-auto">Rejoins des milliers d’utilisateurs qui gèrent tontines et épargne en toute transparence.</p>
+  <!-- 6️⃣ CTA FINAL - Simple et direct -->
+  <section class="py-16 bg-gradient-to-r from-primary to-accent">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
+        Prêt à commencer votre tontine ?
+      </h2>
+      <p class="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
+        Rejoignez des milliers de personnes qui épargnent ensemble en toute confiance.
+      </p>
+      
       <div class="flex flex-col sm:flex-row justify-center gap-4">
-        <a href="dashbord/index.php" class="bg-secondary text-primary font-bold px-8 py-3 rounded-lg hover:bg-yellow-500 transition shadow-lg">
-          <i class="fas fa-download mr-2"></i> Commence ton épargne
+        <!-- Bouton principal -->
+        <a href="dashbord/index.php" 
+           class="bg-white hover:bg-gray-50 text-primary font-bold px-8 py-4 rounded-xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1 text-lg">
+          <i class="fas fa-plus-circle mr-2"></i>
+          Créer ma tontine
         </a>
-        <a href="#" class="bg-white text-primary font-bold px-8 py-3 rounded-lg hover:bg-gray-100 transition shadow-lg">
-          <i class="fas fa-play-circle mr-2"></i> Voir la démo
+        
+        <!-- Bouton secondaire -->
+        <a href="#accueil" 
+           class="bg-transparent hover:bg-white/10 text-white border-2 border-white font-bold px-8 py-4 rounded-xl transition-all duration-300 text-lg">
+          <i class="fas fa-play-circle mr-2"></i>
+          Voir une démo
         </a>
+      </div>
+      
+      <!-- Garantie -->
+      <div class="mt-8 text-white/80 text-sm">
+        <p>⚡ Création en 2 minutes • Aucun frais caché • Essai gratuit</p>
       </div>
     </div>
   </section>
+
+  <!-- 7️⃣ FOOTER - Message fort -->
+  <footer class="bg-gray-900 text-white py-12">
+    <div class="max-w-6xl mx-auto px-4">
+      <div class="text-center">
+        <!-- Message fort -->
+        <p class="text-2xl font-light italic mb-8 max-w-2xl mx-auto leading-relaxed">
+          "La tontine, ce n'est pas déposer de l'argent.<br>
+          C'est honorer ses engagements, pointage après pointage."
+        </p>
+        
+        <!-- Informations légères -->
+        <div class="border-t border-gray-800 pt-8">
+          <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="text-gray-400">
+              © 2024 Tontine Digitale. Tous droits réservés.
+            </div>
+            <div class="flex gap-6">
+              <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                Confidentialité
+              </a>
+              <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                Conditions
+              </a>
+              <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                Contact
+              </a>
+            </div>
+            <div class="text-gray-400 text-sm">
+              Conçu avec ❤️ pour les tontiniers d'Afrique et du monde
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
 {% endblock %}

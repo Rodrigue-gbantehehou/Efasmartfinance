@@ -1,0 +1,85 @@
+                    <!-- ÉTAPE 3 : Validation -->
+                    <div id="step3" class="wizard-step" style="display: none;">
+                        <div class="mb-8">
+                            <h2 class="text-xl font-bold text-primary mb-2">Récapitulatif</h2>
+                            <p class="text-gray-600">Vérifiez les informations avant de confirmer</p>
+                        </div>
+
+                        <div class="space-y-6">
+                            <!-- Carte de récapitulatif -->
+                            <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-gray-900" id="recapName">-</h3>
+                                        <p class="text-sm text-gray-500 mt-1">
+                                            <span id="recapRhythm">-</span> • 
+                                            <span id="recapAmount">-</span> FCFA
+                                        </p>
+                                    </div>
+                                    <span class="px-2.5 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
+                                        Nouvelle
+                                    </span>
+                                </div>
+
+                                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="p-4 bg-gray-50 rounded-lg">
+                                        <p class="text-xs text-gray-500">Date de début</p>
+                                        <p class="font-medium text-gray-900" id="recapStartDate">-</p>
+                                    </div>
+                                    <div class="p-4 bg-gray-50 rounded-lg">
+                                        <p class="text-xs text-gray-500">Durée</p>
+                                        <p class="font-medium text-gray-900" id="recapDuration">-</p>
+                                    </div>
+                                    <div class="p-4 bg-gray-50 rounded-lg">
+                                        <p class="text-xs text-gray-500">Fréquence</p>
+                                        <p class="font-medium text-gray-900" id="recapFrequency">-</p>
+                                    </div>
+                                    <div class="p-4 bg-gray-50 rounded-lg">
+                                        <p class="text-xs text-gray-500">Total épargné</p>
+                                        <p class="font-bold text-lg text-primary" id="recapTotal">- FCFA</p>
+                                    </div>
+                                </div>
+
+                                <!-- Nom de la tontine -->
+                                <div class="mt-6">
+                                    <label for="tontineName" class="block text-sm font-medium text-gray-700 mb-1">
+                                        Nom de la tontine <span class="text-red-500">*</span>
+                                    </label>
+                                    <input type="text" id="tontineName" name="tontineName" required
+                                           class="focus:ring-primary focus:border-primary block w-full sm:text-sm border-gray-300 rounded-lg py-2.5 px-3 border"
+                                           placeholder="Ex: Épargne vacances 2023"
+                                           oninput="document.getElementById('recapName').textContent = this.value || '-'">
+                                    <p class="mt-1 text-sm text-gray-500">Donnez un nom à votre tontine pour la retrouver facilement</p>
+                                </div>
+                            </div>
+
+                            <!-- Conditions générales -->
+                            <div class="flex items-start">
+                                <div class="flex items-center h-5">
+                                    <input id="terms" name="terms" type="checkbox" required
+                                           class="focus:ring-primary h-4 w-4 text-primary border-gray-300 rounded">
+                                </div>
+                                <div class="ml-3 text-sm">
+                                    <label for="terms" class="font-medium text-gray-700">J'accepte les <a href="#" class="text-primary hover:text-green-700">conditions générales</a></label>
+                                    <p class="text-gray-500">En cochant cette case, vous acceptez nos conditions d'utilisation et notre politique de confidentialité.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between pt-6 border-t border-gray-200 mt-8">
+                            <button type="button" id="backToStep2" class="px-6 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors font-medium">
+                                <i class="fa-solid fa-arrow-left mr-2"></i>Retour
+                            </button>
+                            <div class="space-x-3">
+                                <button type="button" onclick="closeTontineModal()" class="px-6 py-2.5 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors font-medium">
+                                    Annuler
+                                </button>
+                                <button type="submit" id="submitTontine" class="px-6 py-2.5 rounded-lg bg-primary text-white font-semibold hover:bg-green-700 transition-colors">
+                                    <span id="submitButtonText">Créer ma tontine</span>
+                                    <span id="submitButtonSpinner" class="hidden ml-2">
+                                        <i class="fa-solid fa-spinner fa-spin"></i>
+                                    </span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>

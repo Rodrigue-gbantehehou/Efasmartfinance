@@ -1,6 +1,6 @@
  <aside id="sidebar" class="hidden md:flex md:w-72 bg-white border-r border-gray-100 flex-col flex-shrink-0">
       <div class="px-5 py-4 flex items-center gap-3">
-        <img src="../images/estm.png" alt="Logo" class="h-10 w-10 rounded-full"/>
+        <img src="{{asset('assets/images/estm.png')}}" alt="Logo" class="h-10 w-10 rounded-full"/>
         <div>
           <div class="font-extrabold text-primary leading-tight">EFA SMART FINANCE</div>
           <div class="text-xs text-gray-500 -mt-0.5">Tontines individuelles</div>
@@ -20,21 +20,15 @@
       </div>
       
       <nav class="mt-2 px-3 pb-4 space-y-1 flex-1 overflow-y-auto">
-        <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg bg-primary/5 text-primary font-medium touch-target">
+        <a href="{{path('app_dashboard')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg bg-primary/5 text-primary font-medium touch-target">
           <i class="fa-solid fa-gauge w-6"></i><span>Tableau de bord</span>
         </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
+        <a href="{{path ('app_tontines_index')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
           <i class="fa-solid fa-coins w-6"></i><span>Mes tontines</span>
           <span id="tontineCount" class="ml-auto text-xs bg-primary text-white rounded-full h-5 w-5 flex items-center justify-center">0</span>
         </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
-          <i class="fa-solid fa-calendar-check w-6"></i><span>Échéances</span>
-        </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
-          <i class="fa-solid fa-chart-line w-6"></i><span>Statistiques</span>
-        </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
-          <i class="fa-solid fa-credit-card w-6"></i><span>Paiements</span>
+        <a href="{{path ('app_transaction_index')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
+          <i class="fa-solid fa-credit-card w-6"></i><span>Transactions</span>
         </a>
         <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
           <i class="fa-solid fa-gear w-6"></i><span>Paramètres</span>

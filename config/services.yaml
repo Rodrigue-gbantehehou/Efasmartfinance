@@ -21,3 +21,27 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Configuration des services de paiement
+    App\Service\Payment\FedaPayService:
+        lazy: true
+        arguments:
+            $publicKey: '%env(FEDAPAY_PUBLIC_KEY)%'
+            $privateKey: '%env(FEDAPAY_SECRET_KEY)%'
+            $webhookSecret: '%env(FEDAPAY_WEBHOOK_SECRET)%'
+
+    App\Service\Payment\KkiaPayService:
+        lazy: true
+        arguments:
+            $publicKey: '%env(KKIAPAY_PUBLIC_KEY)%'
+            $privateKey: '%env(KKIAPAY_PRIVATE_KEY)%'
+            $secretKey: '%env(KKIAPAY_SECRET_KEY)%'
+            $logger: '@logger'
+            $sandbox: '%env(bool:KKIAPAY_SANDBOX)%'
+
+    App\Service\Payment\PayPalService:
+        lazy: true
+        arguments:
+            $clientId: '%env(PAYPAL_CLIENT_ID)%'
+            $clientSecret: '%env(PAYPAL_CLIENT_SECRET)%'
+            $environment: '%env(PAYPAL_ENVIRONMENT)%'

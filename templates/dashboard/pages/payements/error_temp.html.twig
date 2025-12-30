@@ -1,0 +1,31 @@
+{# templates/payment/callback_error.html.twig #}
+{% extends 'dashboard/base.html.twig' %}
+
+{% block contentdashboard %}
+<div class="min-h-screen bg-gray-50 flex items-center justify-center">
+    <div class="max-w-md w-full bg-white rounded-xl shadow-lg p-6">
+        <div class="text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
+                <i class="fa-solid fa-circle-xmark text-red-600 text-xl"></i>
+            </div>
+            <h2 class="mt-4 text-2xl font-bold text-gray-900">Erreur de Paiement</h2>
+            <p class="mt-2 text-gray-600">
+                Une erreur est survenue lors du traitement de votre paiement.
+                Veuillez réessayer ou contacter le support.
+            </p>
+            <div class="mt-6 space-y-3">
+                <a href="{{ path('app_tontines_index') }}" 
+                   class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-green-700">
+                    <i class="fa-solid fa-arrow-left mr-2"></i>
+                    Retour aux tontines
+                </a>
+                <a href="{{ path('app_dashboard') }}" 
+                   class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50">
+                    <i class="fa-solid fa-home mr-2"></i>
+                    Retour au tableau de bord
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
