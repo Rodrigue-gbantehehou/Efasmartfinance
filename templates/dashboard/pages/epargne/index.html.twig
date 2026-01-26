@@ -1,0 +1,100 @@
+{% extends '@Dashboard/layouts/main.html.twig' %}
+
+{% block title %}Mon épargne - {{ parent() }}{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h1 class="text-2xl font-bold text-gray-800 mb-6">Mon épargne</h1>
+        
+        <!-- Carte du solde -->
+        <div class="bg-green-50 rounded-lg p-6 mb-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="text-gray-600">Solde disponible</p>
+                    <h2 class="text-3xl font-bold text-gray-800">{{ wallet.balance|number_format(2, ',', ' ') }} FCFA</h2>
+                </div>
+                <div class="bg-green-100 p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions rapides -->
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <a href="{{ path('app_payment') }}" class="bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-4 rounded-lg text-center transition-colors">
+                <div class="flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                    </svg>
+                    Alimenter
+                </div>
+            </a>
+            <a href="{{ path('app_withdrawals_new') }}" class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-medium py-3 px-4 rounded-lg text-center transition-colors">
+                <div class="flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                    Retirer
+                </div>
+            </a>
+        </div>
+
+        <!-- Dernières transactions -->
+        <div>
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold text-gray-800">Historique des transactions</h3>
+                <a href="#" class="text-sm text-green-600 hover:underline">Voir tout</a>
+            </div>
+            
+            {% if transactions|length > 0 %}
+                <div class="space-y-4">
+                    {% for transaction in transactions %}
+                        <div class="bg-white border border-gray-100 rounded-lg p-4 hover:shadow-md transition-shadow">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center">
+                                    <div class="p-2 rounded-full {{ transaction.type == 'deposit' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600' }}">
+                                        {% if transaction.type == 'deposit' %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                            </svg>
+                                        {% else %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                                            </svg>
+                                        {% endif %}
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="font-medium text-gray-800">
+                                            {{ transaction.reason|default(transaction.type == 'deposit' ? 'Dépôt' : 'Retrait') }}
+                                        </p>
+                                        <p class="text-sm text-gray-500">
+                                            {{ transaction.createdAt|date('d/m/Y H:i') }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-semibold {{ transaction.type == 'deposit' ? 'text-green-600' : 'text-red-600' }}">
+                                        {{ transaction.type == 'deposit' ? '+' : '-' }}{{ transaction.amount|number_format(0, ',', ' ') }} FCFA
+                                    </p>
+                                    <p class="text-xs text-gray-500">Solde: {{ transaction.newBalance|number_format(0, ',', ' ') }} FCFA</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="text-center py-8">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    <p class="mt-2 text-gray-500">Aucune transaction pour le moment</p>
+                    <p class="text-sm text-gray-400">Effectuez votre première opération pour commencer</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

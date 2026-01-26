@@ -10,8 +10,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+#[IsGranted('ROLE_USER')]
 #[Route('/dashboard')]
 final class APIController extends AbstractController
 {
@@ -44,7 +46,11 @@ final class APIController extends AbstractController
         // Calculer les jours restants
         $today = new \DateTime();
         $nextDueDate = $tontine->getNextDueDate();
-        $interval = $today->diff($nextDueDate);
+        if ($nextDueDate === null) {
+            $interval = $tontine->getStartDate()->diff($today);
+        } else {
+            $interval = $today->diff($nextDueDate) ;
+        }
         $daysRemaining = $interval->days;
 
         // Calculer la progression

@@ -1,0 +1,269 @@
+{# templates/dashboard/pages/withdrawals/success.html.twig #}
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}Demande de retrait confirmée{% endblock %}
+
+{% block contentdashboard %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <!-- En-tête -->
+        <div class="mb-8 text-center">
+            <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-3">Demande de retrait confirmée !</h1>
+            <p class="text-gray-600">
+                Votre demande de retrait a été enregistrée avec succès.
+            </p>
+        </div>
+
+        <!-- Carte de résumé -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-6 pb-4 border-b">Résumé de votre demande</h2>
+            
+            <div class="space-y-6">
+                <!-- Informations de la tontine -->
+                <div>
+                    <h3 class="text-sm font-medium text-gray-500 mb-3">Tontine</h3>
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center mr-4">
+                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-gray-800">{{ withdrawal.tontine.name }}</p>
+                            <p class="text-sm text-gray-600">Tontine active</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Informations du retrait -->
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <p class="text-sm text-gray-500 mb-2">Montant du retrait</p>
+                        <p class="text-2xl font-bold text-green-600">
+                            {{ withdrawal.amount|number_format(0, ',', ' ') }} FCFA
+                        </p>
+                    </div>
+                    
+                    <div>
+                        <p class="text-sm text-gray-500 mb-2">Statut</p>
+                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium 
+                            {% if withdrawal.statut == 'pending' %}bg-yellow-100 text-yellow-800
+                            {% elseif withdrawal.statut == 'approved' %}bg-green-100 text-green-800
+                            {% elseif withdrawal.statut == 'completed' %}bg-blue-100 text-blue-800
+                            {% elseif withdrawal.statut == 'rejected' %}bg-red-100 text-red-800
+                            {% else %}bg-gray-100 text-gray-800{% endif %}">
+                            {% if withdrawal.statut == 'pending' %}
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                En attente
+                            {% elseif withdrawal.statut == 'approved' %}
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                </svg>
+                                Approuvé
+                            {% elseif withdrawal.statut == 'completed' %}
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                                </svg>
+                                Traité
+                            {% elseif withdrawal.statut == 'rejected' %}
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                </svg>
+                                Rejeté
+                            {% else %}
+                                {{ withdrawal.statut|capitalize }}
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+                
+                <!-- Détails supplémentaires -->
+                <div class="pt-6 border-t">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Date de la demande</p>
+                            <p class="font-medium text-gray-800">
+                                {{ withdrawal.requestedAt|date('d/m/Y à H:i') }}
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <p class="text-sm text-gray-500 mb-1">Méthode de retrait</p>
+                            <p class="font-medium text-gray-800">
+                                {% if withdrawal.method == 'mobile_money' %}
+                                    Mobile Money
+                                    {% if withdrawal.phoneNumber %}
+                                        <br><span class="text-sm text-gray-600">({{ withdrawal.phoneNumber }})</span>
+                                    {% endif %}
+                                {% elseif withdrawal.method == 'bank_transfer' %}
+                                    Virement bancaire
+                                {% elseif withdrawal.method == 'agence' %}
+                                    Retrait en agence
+                                {% else %}
+                                    {{ withdrawal.method|capitalize }}
+                                {% endif %}
+                            </p>
+                        </div>
+                        
+                        {% if withdrawal.feePaid %}
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">Frais payés</p>
+                                <p class="font-medium text-green-600">
+                                    Oui
+                                    {% if withdrawal.feePaymentDate %}
+                                        <br><span class="text-sm text-gray-600">le {{ withdrawal.feePaymentDate|date('d/m/Y') }}</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        {% endif %}
+                        
+                        {% if withdrawal.transactionId %}
+                            <div>
+                                <p class="text-sm text-gray-500 mb-1">ID Transaction</p>
+                                <p class="font-medium text-gray-800 text-sm break-all">
+                                    {{ withdrawal.transactionId }}
+                                </p>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <!-- Raison si disponible -->
+                {% if withdrawal.reason %}
+                    <div class="pt-6 border-t">
+                        <p class="text-sm text-gray-500 mb-2">Motif du retrait</p>
+                        <p class="text-gray-700 bg-gray-50 rounded-lg p-4">
+                            {{ withdrawal.reason }}
+                        </p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Prochaines étapes -->
+        <div class="bg-blue-50 border border-blue-100 rounded-xl p-6 mb-8">
+            <h3 class="text-lg font-semibold text-blue-800 mb-4">Prochaines étapes</h3>
+            
+            <div class="space-y-4">
+                {% if withdrawal.statut == 'pending' %}
+                    <div class="flex items-start">
+                        <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                            <span class="text-sm font-semibold text-blue-600">1</span>
+                        </div>
+                        <div>
+                            <p class="font-medium text-blue-800">Vérification en cours</p>
+                            <p class="text-sm text-blue-700">Notre équipe vérifie votre demande de retrait.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                            <span class="text-sm font-semibold text-blue-600">2</span>
+                        </div>
+                        <div>
+                            <p class="font-medium text-blue-800">Traitement</p>
+                            <p class="text-sm text-blue-700">Une fois approuvée, le traitement prendra 24 à 48 heures.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-start">
+                        <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                            <span class="text-sm font-semibold text-blue-600">3</span>
+                        </div>
+                        <div>
+                            <p class="font-medium text-blue-800">Réception des fonds</p>
+                            <p class="text-sm text-blue-700">
+                                {% if withdrawal.method == 'mobile_money' %}
+                                    Vous recevrez les fonds sur votre compte mobile money.
+                                {% elseif withdrawal.method == 'agence' %}
+                                    Vous pourrez retirer les fonds dans l'une de nos agences.
+                                {% else %}
+                                    Vous recevrez les fonds selon la méthode choisie.
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                {% elseif withdrawal.statut == 'approved' %}
+                    <div class="flex items-start">
+                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="font-medium text-green-800">Demande approuvée</p>
+                            <p class="text-sm text-green-700">Votre demande a été approuvée. Les fonds seront traités sous peu.</p>
+                        </div>
+                    </div>
+                {% elseif withdrawal.statut == 'completed' %}
+                    <div class="flex items-start">
+                        <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                            <svg class="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="font-medium text-green-800">Retrait traité</p>
+                            <p class="text-sm text-green-700">Le retrait a été traité avec succès. Les fonds ont été envoyés.</p>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <div class="flex flex-col sm:flex-row gap-4">
+            <a href="{{ path('app_tontines_show', {id: withdrawal.tontine.id}) }}" 
+               class="flex-1 bg-white border border-gray-300 text-gray-700 font-semibold py-3 px-6 rounded-xl hover:bg-gray-50 transition-colors text-center">
+                Retour à la tontine
+            </a>
+            
+            <a href="{{ path('app_withdrawals_index') }}" 
+               class="flex-1 bg-green-600 text-white font-semibold py-3 px-6 rounded-xl hover:bg-green-700 transition-colors text-center">
+                Voir mes retraits
+            </a>
+            
+            <a href="{{ path('app_dashboard') }}" 
+               class="flex-1 bg-gray-100 text-gray-700 font-semibold py-3 px-6 rounded-xl hover:bg-gray-200 transition-colors text-center">
+                Tableau de bord
+            </a>
+        </div>
+
+        <!-- Information de contact -->
+        <div class="mt-8 text-center">
+            <p class="text-sm text-gray-500">
+                Des questions ? Contactez notre support au 
+                <a href="tel:+22500000000" class="text-green-600 hover:text-green-700">+225 00 00 00 00</a>
+                ou par email à 
+                <a href="mailto:support@efasmartfinance.com" class="text-green-600 hover:text-green-700">support@efasmartfinance.com</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('✅ Page de succès chargée');
+    
+    // Animation d'entrée
+    const elements = document.querySelectorAll('.container > *');
+    elements.forEach((el, index) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+            el.style.opacity = '1';
+            el.style.transform = 'translateY(0)';
+        }, 100 * index);
+    });
+});
+</script>
+{% endblock %}

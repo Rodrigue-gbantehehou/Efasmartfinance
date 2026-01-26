@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Facture #{{ payment.id }}</title>
+    <style>
+        @page { margin: 2cm; }
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            overflow: hidden;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #4a86e8;
+            padding-bottom: 20px;
+        }
+        .header-left {
+            float: left;
+            width: 50%;
+        }
+        .header-right {
+            float: right;
+            width: 45%;
+            text-align: right;
+        }
+        .logo {
+            max-width: 200px;
+            margin-bottom: 20px;
+        }
+        .invoice-info {
+            text-align: right;
+        }
+        h1 {
+            color: #4a86e8;
+            margin: 0 0 20px 0;
+            font-size: 24px;
+        }
+        .client-info, .company-info {
+            width: 45%;
+            margin-bottom: 30px;
+        }
+        .client-info {
+            float: left;
+        }
+        .company-info {
+            float: right;
+            text-align: right;
+        }
+        .clearfix::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+        .info-label {
+            font-weight: bold;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .info-value {
+            margin-bottom: 15px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            page-break-inside: auto;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background-color: #f5f5f5;
+            text-align: left;
+        }
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
+        .text-right {
+            text-align: right;
+        }
+        .total {
+            margin-top: 20px;
+            text-align: right;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 11px;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            page-break-after: always;
+        }
+        .status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 1px;
+        }
+        .status-paid {
+            background-color: #d4edda;
+            color: #155724;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-left">
+            <h1>FACTURE</h1>
+            <div class="info-label">N° Facture</div>
+            <div class="info-value">#{{ payment.id }}-{{ payment.createdAt|date('Y') }}</div>
+            
+            <div class="info-label">Date</div>
+            <div class="info-value">{{ payment.createdAt|date('d/m/Y') }}</div>
+            
+            <div class="info-label">Statut</div>
+            <div class="info-value">
+                <span class="status status-{{ payment.statut }}">
+                    {% if payment.statut == 'completed' %}Payé{% else %}{{ payment.statut }}{% endif %}
+                </span>
+            </div>
+        </div>
+        <div class="header-right">
+            <div>EFASMART FINANCE</div>
+            <div>123 Avenue de la Tontine</div>
+            <div>75000 Paris, France</div>
+            <div>Tél: +33 1 23 45 67 89</div>
+            <div>Email: contact@efasmartfinance.com</div>
+        </div>
+    </div>
+
+    <div class="clearfix">
+        <div class="client-info">
+            <div class="info-label">Facturé à</div>
+            <div class="info-value">
+                <strong>{{ payment.utilisateur.nomComplet ?? payment.utilisateur.email }}</strong><br>
+                {% if payment.utilisateur.telephone %}
+                    {{ payment.utilisateur.telephone }}<br>
+                {% endif %}
+                {{ payment.utilisateur.email }}
+            </div>
+            
+            <div class="info-label">Tontine</div>
+            <div class="info-value">
+                {{ payment.tontine.nom }}<br>
+                Montant par point: {{ payment.tontine.amountPerPoint|number_format(0, ',', ' ') }} FCFA<br>
+                Période: {{ payment.tontine.periode }}
+            </div>
+        </div>
+    </div>
+
+    <div style="page-break-inside: avoid;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th class="text-right">Montant</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        Paiement pour la tontine "{{ payment.tontine.nom }}"<br>
+                        <small>Méthode: {{ payment.paymentMethod|capitalize }} - Ref: {{ payment.externalReference }}</small>
+                    </td>
+                    <td class="text-right">{{ payment.amount|number_format(0, ',', ' ') }} FCFA</td>
+                </tr>
+                <tr>
+                    <td class="text-right"><strong>Total TTC</strong></td>
+                    <td class="text-right"><strong>{{ payment.amount|number_format(0, ',', ' ') }} FCFA</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>Merci pour votre confiance. En cas de question, n'hésitez pas à nous contacter à contact@efasmartfinance.com</p>
+        <p>EFASMART FINANCE - SAS au capital de 10 000 € - RCS Paris 123 456 789 - TVA FR12 3456789012</p>
+    </div>
+</body>
+</html>

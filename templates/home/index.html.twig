@@ -1,490 +1,698 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} Épargnez ensemble, pointage après pointage {% endblock %}
+{% block title %}
+	Épargnez ensemble, pointage après pointage
+{% endblock %}
 
 {% block body %}
-  <!-- 1️⃣ HERO SECTION - Clair et humain -->
-  <section id="accueil" class="relative overflow-hidden bg-gradient-to-br from-primary/10 via-white to-accent/10 py-16 md:py-24">
-    <!-- Décorations douces -->
-    <div class="absolute -top-20 -left-20 w-64 h-64 bg-primary/5 rounded-full blur-3xl"></div>
-    <div class="absolute bottom-0 right-0 w-80 h-80 bg-accent/5 rounded-full blur-3xl"></div>
-    
-    <div class="max-w-6xl mx-auto px-4 relative z-10">
-      <div class="flex flex-col lg:flex-row items-center gap-12">
-        <!-- Texte principal -->
-        <div class="lg:w-1/2">
-          <!-- Titre principal - SIMPLE ET CLAIR -->
-          <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-            Épargnez ensemble,<br>
-            <span class="text-primary">pointage après pointage.</span>
-          </h1>
-          
-          <!-- Sous-titre - EXPLICATION IMMÉDIATE -->
-          <p class="text-xl text-gray-600 mb-8 leading-relaxed">
-            Payez votre tontine par pointage, suivez vos contributions en temps réel
-            et gardez le contrôle total de votre argent.
-          </p>
-          
-          <!-- Boutons CTA - HIÉRARCHIE CLAIRE -->
-          <div class="flex flex-col sm:flex-row gap-4">
-            <!-- Bouton principal -->
-            <a href="dashbord/index.php" 
-               class="bg-primary hover:bg-primary-dark text-white font-semibold px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 text-center flex items-center justify-center gap-3">
-              <i class="fas fa-plus-circle"></i>
-              Créer une tontine
-            </a>
-            
-            <!-- Bouton secondaire -->
-            <a href="#comment-ca-marche" 
-               class="bg-white hover:bg-gray-50 text-primary border-2 border-primary font-semibold px-8 py-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 text-center flex items-center justify-center gap-3">
-              <i class="fas fa-sign-in-alt"></i>
-              Rejoindre une tontine
-            </a>
-          </div>
-          
-          <!-- Indicateurs de confiance -->
-          <div class="mt-12 flex flex-wrap items-center gap-8 text-gray-600">
-            <div class="flex items-center gap-2">
-              <i class="fas fa-shield-check text-green-500 text-lg"></i>
-              <span>Sécurisé</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <i class="fas fa-mobile-alt text-blue-500 text-lg"></i>
-              <span>Mobile Money</span>
-            </div>
-            <div class="flex items-center gap-2">
-              <i class="fas fa-eye text-purple-500 text-lg"></i>
-              <span>Transparent</span>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Visuel de la carte de pointage -->
-        <div class="lg:w-1/2">
-          <div class="relative">
-            <!-- Fond décoratif -->
-            <div class="absolute -inset-4 bg-gradient-to-r from-primary/10 to-accent/10 rounded-2xl blur-xl"></div>
-            
-            <!-- Carte de pointage -->
-            <div class="relative bg-white rounded-2xl shadow-2xl p-6 border border-gray-100">
-              <!-- En-tête -->
-              <div class="flex items-center justify-between mb-6">
-                <div class="flex items-center gap-3">
-                  <div class="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center">
-                    <i class="fas fa-calendar-check text-primary text-xl"></i>
-                  </div>
-                  <div>
-                    <h3 class="font-bold text-gray-900">Tontine Mensuelle</h3>
-                    <p class="text-sm text-gray-500">Groupe "Solidarité"</p>
-                  </div>
-                </div>
-                <div class="text-right">
-                  <div class="text-xs text-gray-500">Actif</div>
-                  <div class="w-3 h-3 bg-green-500 rounded-full inline-block"></div>
-                </div>
-              </div>
-              
-              <!-- Barre de progression -->
-              <div class="mb-6">
-                <div class="flex justify-between text-sm text-gray-600 mb-2">
-                  <span>Progression du mois</span>
-                  <span>67%</span>
-                </div>
-                <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
-                  <div class="h-full bg-gradient-to-r from-primary to-accent rounded-full" style="width: 67%"></div>
-                </div>
-              </div>
-              
-              <!-- Pointages visuels -->
-              <div class="mb-6">
-                <p class="text-sm text-gray-600 mb-3">Pointages d'octobre :</p>
-                <div class="flex flex-wrap gap-2">
-                  {% for i in 1..12 %}
-                    <div class="w-10 h-10 rounded-lg flex items-center justify-center font-medium
-                      {% if i <= 8 %}bg-green-100 text-green-800 border border-green-300{% else %}bg-gray-100 text-gray-500 border border-gray-300{% endif %}">
-                      {{ i }}
-                    </div>
-                  {% endfor %}
-                </div>
-              </div>
-              
-              <!-- Informations claires -->
-              <div class="space-y-3 text-sm">
-                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <span class="text-gray-600">Prochain pointage :</span>
-                  <span class="font-bold text-gray-900">15 octobre</span>
-                </div>
-                <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <span class="text-gray-600">Montant par pointage :</span>
-                  <span class="font-bold text-gray-900">5 000 FCFA</span>
-                </div>
-              </div>
-              
-              <!-- Légende -->
-              <div class="mt-4 text-center">
-                <p class="text-xs text-gray-500">
-                  <i class="fas fa-circle text-green-500 mr-1"></i>Pointé 
-                  <i class="fas fa-circle text-gray-300 ml-3 mr-1"></i>À venir
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+	<!-- 1️⃣ HERO SECTION -->
+	<section
+		id="accueil" class="bg-gradient-to-br from-green-900 via-green-800 to-green-900 text-white pt-9 md:pt-10 pb-16 md:pb-20 relative overflow-hidden">
+		<!-- Arrière-plan géométrique -->
+		<div class="absolute inset-0 overflow-hidden">
+			<div class="absolute top-1/4 left-1/4 w-64 h-64 md:w-96 md:h-96 bg-green-600/30 rounded-full blur-3xl"></div>
+			<div class="absolute bottom-1/4 right-1/4 w-64 h-64 md:w-96 md:h-96 bg-green-500/30 rounded-full blur-3xl"></div>
+			<div class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(5, 22, 9, 0.4)_0%,transparent_70%)]"></div>
+		</div>
 
-  <!-- 2️⃣ SECTION « COMMENT ÇA MARCHE » - 3 cartes ultra visuelles -->
-  <section id="comment-ca-marche" class="py-16 bg-white">
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-          Comment ça marche
-        </h2>
-        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-          Simple comme 1, 2, 3. La tontine digitale, sans complication.
-        </p>
-      </div>
-      
-      <!-- 3 cartes visuelles -->
-      <div class="grid md:grid-cols-3 gap-8">
-        <!-- Carte 1 - Créez ou rejoignez -->
-        <div class="group relative bg-gradient-to-b from-white to-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100">
-          <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
-            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <i class="fas fa-users text-blue-600 text-xl"></i>
-            </div>
-          </div>
-          <div class="text-center pt-4">
-            <h3 class="text-xl font-bold text-gray-900 mb-4">Créez ou rejoignez</h3>
-            <p class="text-gray-600 leading-relaxed">
-              Choisissez une tontine adaptée à votre rythme
-              (quotidien, hebdomadaire ou mensuel)
-            </p>
-          </div>
-          <div class="mt-6 text-center">
-            <span class="inline-block px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-sm font-medium">
-              Aucun engagement
-            </span>
-          </div>
-        </div>
-        
-        <!-- Carte 2 - Payez par pointage -->
-        <div class="group relative bg-gradient-to-b from-white to-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100">
-          <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
-            <div class="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <i class="fas fa-calendar-alt text-green-600 text-xl"></i>
-            </div>
-          </div>
-          <div class="text-center pt-4">
-            <h3 class="text-xl font-bold text-gray-900 mb-4">Payez par pointage</h3>
-            <p class="text-gray-600 leading-relaxed">
-              Chaque paiement correspond à un pointage clair.
-              Pas de confusion, pas d'avance obligatoire.
-            </p>
-          </div>
-          <div class="mt-6 text-center">
-            <span class="inline-block px-4 py-2 bg-green-50 text-green-700 rounded-full text-sm font-medium">
-              Quand vous voulez
-            </span>
-          </div>
-        </div>
-        
-        <!-- Carte 3 - Suivez tout -->
-        <div class="group relative bg-gradient-to-b from-white to-gray-50 rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 border border-gray-100">
-          <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
-            <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-              <i class="fas fa-chart-line text-purple-600 text-xl"></i>
-            </div>
-          </div>
-          <div class="text-center pt-4">
-            <h3 class="text-xl font-bold text-gray-900 mb-4">Suivez tout</h3>
-            <p class="text-gray-600 leading-relaxed">
-              Consultez votre carte de pointage
-              et votre solde à tout moment.
-            </p>
-          </div>
-          <div class="mt-6 text-center">
-            <span class="inline-block px-4 py-2 bg-purple-50 text-purple-700 rounded-full text-sm font-medium">
-              24h/24
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+		<!-- Grid de points -->
+		<div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiMzNzM3MzcwMCIvPjwvc3ZnPg==')] opacity-20"></div>
 
-  <!-- 3️⃣ SECTION RASSURANCE - Votre argent, vos règles -->
-  <section class="py-16 bg-gray-50">
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-          Votre argent, vos règles.
-        </h2>
-        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-          La confiance, c'est notre priorité. Voici nos engagements :
-        </p>
-      </div>
-      
-      <!-- Messages de confiance SIMPLES -->
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Message 1 -->
-        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-100">
-          <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-4">
-            <i class="fas fa-lock text-red-500 text-xl"></i>
-          </div>
-          <h3 class="font-bold text-gray-900 mb-2">Aucun argent bloqué</h3>
-          <p class="text-gray-600 text-sm">
-            Vos fonds ne sont jamais immobilisés sans votre accord préalable.
-          </p>
-        </div>
-        
-        <!-- Message 2 -->
-        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-100">
-          <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mb-4">
-            <i class="fas fa-search text-blue-500 text-xl"></i>
-          </div>
-          <h3 class="font-bold text-gray-900 mb-2">Chaque paiement traçable</h3>
-          <p class="text-gray-600 text-sm">
-            Suivez chaque contribution de manière transparente.
-          </p>
-        </div>
-        
-        <!-- Message 3 -->
-        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-100">
-          <div class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center mb-4">
-            <i class="fas fa-eye text-green-500 text-xl"></i>
-          </div>
-          <h3 class="font-bold text-gray-900 mb-2">Transparence totale</h3>
-          <p class="text-gray-600 text-sm">
-            Vous voyez exactement où va votre argent, en temps réel.
-          </p>
-        </div>
-        
-        <!-- Message 4 -->
-        <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-100">
-          <div class="w-12 h-12 rounded-full bg-orange-50 flex items-center justify-center mb-4">
-            <i class="fas fa-shield-alt text-orange-500 text-xl"></i>
-          </div>
-          <h3 class="font-bold text-gray-900 mb-2">Paiement sécurisé</h3>
-          <p class="text-gray-600 text-sm">
-            Mobile Money & cartes bancaires, tout est sécurisé.
-          </p>
-        </div>
-      </div>
-      
-      <!-- Témoignage rapide -->
-      <div class="mt-12 bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl p-8 border border-primary/10">
-        <div class="flex items-center gap-4">
-          <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
-            <i class="fas fa-quote-left text-primary text-2xl"></i>
-          </div>
-          <div>
-            <p class="text-lg text-gray-700 italic">
-              "Enfin une tontine où je vois tout, tout le temps. Plus de stress, juste de la transparence."
-            </p>
-            <p class="mt-2 font-medium text-gray-900">— Aïcha D., Dakar</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+			<div
+				class="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 xl:gap-20">
+				<!-- Contenu texte -->
+				<div class="lg:w-1/2 w-full text-center lg:text-left">
+					<h1 class="text-2xl sm:text-4xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 leading-tight">
+						<span class="bg-gradient-to-r from-white via-gray-100 to-gray-300 bg-clip-text text-transparent">
+							Gestion de tontines
+						</span>
+						<br>
+						<span class="text-green-300 text-2xl sm:text-3xl md:text-4xl lg:text-5xl">
+							digitalisée & sécurisée
+						</span>
+					</h1>
 
-  <!-- 4️⃣ SECTION « POUR QUI ? » - Cartes simples -->
-  <section class="py-16 bg-white">
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-          Pour qui ?
-        </h2>
-        <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-          La tontine digitale s'adapte à toutes vos situations.
-        </p>
-      </div>
-      
-      <!-- 4 cartes simples -->
-      <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Familles & amis -->
-        <div class="text-center p-6 rounded-xl border-2 border-blue-100 bg-blue-50/30 hover:bg-blue-50/50 transition-colors">
-          <div class="text-4xl mb-4">👩‍👩‍👧</div>
-          <h3 class="font-bold text-gray-900 mb-2">Familles & amis</h3>
-          <p class="text-gray-600 text-sm">
-            Épargnez ensemble en toute confiance.
-          </p>
-        </div>
-        
-        <!-- Groupes communautaires -->
-        <div class="text-center p-6 rounded-xl border-2 border-green-100 bg-green-50/30 hover:bg-green-50/50 transition-colors">
-          <div class="text-4xl mb-4">🏘️</div>
-          <h3 class="font-bold text-gray-900 mb-2">Groupes communautaires</h3>
-          <p class="text-gray-600 text-sm">
-            Gérez vos cotisations collectives facilement.
-          </p>
-        </div>
-        
-        <!-- Associations & équipes -->
-        <div class="text-center p-6 rounded-xl border-2 border-purple-100 bg-purple-50/30 hover:bg-purple-50/50 transition-colors">
-          <div class="text-4xl mb-4">💼</div>
-          <h3 class="font-bold text-gray-900 mb-2">Associations & équipes</h3>
-          <p class="text-gray-600 text-sm">
-            Organisez vos caisses communes simplement.
-          </p>
-        </div>
-        
-        <!-- Épargne personnelle -->
-        <div class="text-center p-6 rounded-xl border-2 border-orange-100 bg-orange-50/30 hover:bg-orange-50/50 transition-colors">
-          <div class="text-4xl mb-4">🧍</div>
-          <h3 class="font-bold text-gray-900 mb-2">Épargne personnelle</h3>
-          <p class="text-gray-600 text-sm">
-            Discipline et suivi pour vos objectifs.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+					<p class="text-base sm:text-lg md:text-xl text-gray-300 leading-relaxed mb-6 md:mb-8 max-w-2xl mx-auto lg:mx-0">
+						Une plateforme professionnelle pour organiser, suivre et sécuriser vos tontines.
+						<span class="text-white font-medium">Transparence totale, paiements traçables, sécurité bancaire.</span>
+					</p>
 
-  <!-- 5️⃣ SECTION VISUELLE – CARTE DE POINTAGE -->
-  <section class="py-16 bg-gray-50">
-    <div class="max-w-4xl mx-auto px-4">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-          Une vraie carte de tontine, version digitale
-        </h2>
-        <p class="text-xl text-gray-600">
-          Comme la carte papier, mais sans perte ni erreur.
-        </p>
-      </div>
-      
-      <!-- Carte de pointage détaillée -->
-      <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-200">
-        <!-- En-tête de la carte -->
-        <div class="bg-gradient-to-r from-primary to-accent p-6 text-white">
-          <div class="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div>
-              <h3 class="text-2xl font-bold">Tontine Solidarité 2024</h3>
-              <p class="opacity-90">12 membres • 5 000 FCFA par pointage</p>
-            </div>
-            <div class="text-center">
-              <div class="text-3xl font-bold">8/12</div>
-              <div class="text-sm opacity-90">Pointages validés</div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- Corps de la carte -->
-        <div class="p-8">
-          <!-- Grille de pointages -->
-          <div class="mb-8">
-            <div class="grid grid-cols-6 md:grid-cols-12 gap-3">
-              {% for i in 1..12 %}
-                <div class="aspect-square rounded-xl flex flex-col items-center justify-center p-2
-                  {% if i <= 8 %}bg-green-100 border-2 border-green-300{% else %}bg-gray-100 border-2 border-gray-200{% endif %}">
-                  <div class="text-lg font-bold">{{ i }}</div>
-                  <div class="text-xs mt-1 {% if i <= 8 %}text-green-700{% else %}text-gray-500{% endif %}">
-                    {% if i <= 8 %}Pointé{% else %}À venir{% endif %}
-                  </div>
-                </div>
-              {% endfor %}
-            </div>
-          </div>
-          
-          <!-- Informations clés -->
-          <div class="grid md:grid-cols-3 gap-6">
-            <div class="p-4 bg-gray-50 rounded-xl">
-              <div class="text-sm text-gray-600 mb-1">Prochain pointage</div>
-              <div class="text-xl font-bold text-gray-900">15 octobre</div>
-            </div>
-            <div class="p-4 bg-gray-50 rounded-xl">
-              <div class="text-sm text-gray-600 mb-1">Montant total</div>
-              <div class="text-xl font-bold text-gray-900">60 000 FCFA</div>
-            </div>
-            <div class="p-4 bg-gray-50 rounded-xl">
-              <div class="text-sm text-gray-600 mb-1">Statut</div>
-              <div class="text-xl font-bold text-green-600 flex items-center gap-2">
-                <div class="w-3 h-3 bg-green-500 rounded-full"></div>
-                En cours
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Texte explicatif -->
-      <div class="mt-8 text-center text-gray-600 max-w-2xl mx-auto">
-        <p class="text-lg">
-          Visualisez vos pointages comme sur une carte papier traditionnelle,
-          mais avec la fiabilité et la sécurité du numérique.
-        </p>
-      </div>
-    </div>
-  </section>
+					<!-- Boutons CTA -->
+					<div class="grid grid-cols-2 gap-3 mb-8 md:mb-12 justify-center lg:justify-start">
+						<div>
+							<a href="{{path('app_tontine')}}" class="group relative overflow-hidden bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold px-6 py-3 sm:px-8 sm:py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] flex items-center justify-center">
+								<div class="absolute inset-0 bg-gradient-to-r from-green-700 to-green-800 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+								<span class="relative flex items-center gap-2 sm:gap-3">
+									<i class="fas fa-plus-circle text-base sm:text-lg"></i>
+									<span class="text-base sm:text-lg">Créer une tontine</span>
+								</span>
+							</a>
+						</div>
+						<div>
+							<a href="{{path('page_tontine')}}" class="group border-2 border-green-700 hover:border-green-500 bg-white/5 text-white font-semibold px-6 py-3 sm:px-8 sm:py-4 rounded-xl hover:shadow-lg transition-all duration-300 flex items-center justify-center">
+								<span class="flex items-center gap-2 sm:gap-3">
+									<i class="fas fa-info-circle text-green-300 text-base sm:text-lg opacity-70 group-hover:opacity-100 transition-opacity"></i>
+									<span class="text-base sm:text-lg">En savoir plus</span>
+								</span>
+							</a>
+						</div>
+					</div>
 
-  <!-- 6️⃣ CTA FINAL - Simple et direct -->
-  <section class="py-16 bg-gradient-to-r from-primary to-accent">
-    <div class="max-w-4xl mx-auto px-4 text-center">
-      <h2 class="text-3xl md:text-4xl font-bold text-white mb-6">
-        Prêt à commencer votre tontine ?
-      </h2>
-      <p class="text-xl text-white/90 mb-8 max-w-2xl mx-auto">
-        Rejoignez des milliers de personnes qui épargnent ensemble en toute confiance.
-      </p>
-      
-      <div class="flex flex-col sm:flex-row justify-center gap-4">
-        <!-- Bouton principal -->
-        <a href="dashbord/index.php" 
-           class="bg-white hover:bg-gray-50 text-primary font-bold px-8 py-4 rounded-xl shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1 text-lg">
-          <i class="fas fa-plus-circle mr-2"></i>
-          Créer ma tontine
-        </a>
-        
-        <!-- Bouton secondaire -->
-        <a href="#accueil" 
-           class="bg-transparent hover:bg-white/10 text-white border-2 border-white font-bold px-8 py-4 rounded-xl transition-all duration-300 text-lg">
-          <i class="fas fa-play-circle mr-2"></i>
-          Voir une démo
-        </a>
-      </div>
-      
-      <!-- Garantie -->
-      <div class="mt-8 text-white/80 text-sm">
-        <p>⚡ Création en 2 minutes • Aucun frais caché • Essai gratuit</p>
-      </div>
-    </div>
-  </section>
+					<!-- Points de confiance -->
+					<div class="mt-6 md:mt-8 flex flex-wrap justify-center lg:justify-start gap-2 sm:gap-3 md:gap-4 text-white">
+						<div class="flex items-center gap-1 sm:gap-2 bg-green-800/50 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm md:text-base">
+							<i class="fas fa-shield-check text-green-300 text-sm sm:text-base"></i>
+							<span>Sécurisé</span>
+						</div>
+						<div class="flex items-center gap-1 sm:gap-2 bg-green-800/50 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm md:text-base">
+							<i class="fas fa-mobile-alt text-green-300 text-sm sm:text-base"></i>
+							<span>Mobile Money</span>
+						</div>
+						<div class="flex items-center gap-1 sm:gap-2 bg-green-800/50 backdrop-blur-sm px-3 py-1.5 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm md:text-base">
+							<i class="fas fa-eye text-green-300 text-sm sm:text-base"></i>
+							<span>Transparent</span>
+						</div>
+					</div>
+				</div>
 
-  <!-- 7️⃣ FOOTER - Message fort -->
-  <footer class="bg-gray-900 text-white py-12">
-    <div class="max-w-6xl mx-auto px-4">
-      <div class="text-center">
-        <!-- Message fort -->
-        <p class="text-2xl font-light italic mb-8 max-w-2xl mx-auto leading-relaxed">
-          "La tontine, ce n'est pas déposer de l'argent.<br>
-          C'est honorer ses engagements, pointage après pointage."
-        </p>
-        
-        <!-- Informations légères -->
-        <div class="border-t border-gray-800 pt-8">
-          <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-            <div class="text-gray-400">
-              © 2024 Tontine Digitale. Tous droits réservés.
-            </div>
-            <div class="flex gap-6">
-              <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                Confidentialité
-              </a>
-              <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                Conditions
-              </a>
-              <a href="#" class="text-gray-400 hover:text-white transition-colors">
-                Contact
-              </a>
-            </div>
-            <div class="text-gray-400 text-sm">
-              Conçu avec ❤️ pour les tontiniers d'Afrique et du monde
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </footer>
+				<!-- Image du téléphone -->
+				<div class="lg:w-1/2 w-full flex justify-center mt-8 lg:mt-0">
+					<div
+						class="relative w-full max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg">
+						<!-- Carte financière flottante -->
+						<div class="hidden sm:block absolute -left-4 sm:-left-6 md:-left-8 top-4 sm:top-6 md:top-8 bg-gradient-to-br from-green-700 to-green-900 border border-green-500 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 shadow-lg sm:shadow-xl md:shadow-2xl w-40 sm:w-48 md:w-56 lg:w-64 z-20">
+							<div class="flex items-center justify-between mb-2 sm:mb-3 md:mb-4">
+								<div class="text-xs text-green-300">Solde disponible</div>
+								<i class="fas fa-ellipsis-h text-green-400 text-xs sm:text-sm"></i>
+							</div>
+							<div class="text-lg sm:text-xl md:text-2xl font-bold text-white mb-3 sm:mb-4 md:mb-6">125,400 FCFA</div>
+							<div class="flex items-center justify-between">
+								<div></div>
+								<div class="w-8 h-5 sm:w-10 sm:h-6 bg-gradient-to-r from-green-500 to-green-600 rounded"></div>
+							</div>
+						</div>
+
+						<!-- Téléphone principal -->
+						<div class="relative z-10">
+							<div class="relative transform -rotate-3 hover:-rotate-2 transition-transform duration-500">
+								<div class="relative mx-auto w-56 sm:w-64 md:w-17 lg:w-18">
+									<img src="{{ asset('assets/images/demophone.png') }}" alt="Application Tontine Digitale sur mobile" class="w-full h-auto object-contain drop-shadow-xl" loading="eager"/>
+									<div class="absolute inset-0 bg-gradient-to-r from-transparent via-green-500/5 to-transparent pointer-events-none rounded-[2rem] sm:rounded-[2.5rem]"></div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Carte de transaction flottante -->
+						<div class="hidden sm:block absolute -right-4 sm:-right-6 md:-right-8 bottom-4 sm:bottom-6 md:bottom-8 bg-gradient-to-br from-green-600 to-green-800 border border-green-500 rounded-lg sm:rounded-xl md:rounded-2xl p-3 sm:p-4 shadow-lg sm:shadow-xl md:shadow-2xl w-36 sm:w-44 md:w-52 lg:w-56 z-20">
+							<div class="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+								<div class="w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+									<i class="fas fa-exchange-alt text-green-300 text-sm sm:text-base"></i>
+								</div>
+								<div>
+									<div class="text-xs sm:text-sm font-semibold text-white">Transaction</div>
+									<div class="text-xs text-green-300">Il y a 2h</div>
+								</div>
+							</div>
+							<div class="text-right">
+								<div class="text-lg sm:text-xl md:text-2xl font-bold text-white">+5,000 FCFA</div>
+								<div class="text-xs text-green-300">Pointage #4</div>
+							</div>
+						</div>
+
+						<!-- Éléments décoratifs -->
+						<div class="absolute -top-4 -left-4 sm:-top-6 sm:-left-6 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-green-600/20 rounded-full blur-xl"></div>
+						<div class="absolute -bottom-4 -right-4 sm:-bottom-6 sm:-right-6 w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 bg-green-500/20 rounded-full blur-xl"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 2️⃣ SECTION « COMMENT ÇA MARCHE » -->
+	<section id="comment-ca-marche" class="py-12 md:py-16 bg-gradient-to-b from-white to-green-50/30">
+		<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="text-center mb-8 md:mb-12">
+				<div class="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full mb-4">
+					<i class="fas fa-play-circle"></i>
+					<span class="text-sm font-medium">Tutoriel en 3 étapes</span>
+				</div>
+				<h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4">
+					Comment ça marche
+				</h2>
+				<p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
+					Simple comme 1, 2, 3. La tontine digitale, sans complication.
+				</p>
+			</div>
+
+			<!-- 3 cartes visuelles -->
+			<div
+				class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+				<!-- Carte 1 -->
+				<div class="group relative bg-gradient-to-b from-white to-white rounded-xl md:rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl md:hover:shadow-2xl transition-all duration-500 border border-green-100 hover:border-green-300">
+					<div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+						<div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-r from-green-100 to-green-50 flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+							<span class="text-green-800 font-bold text-lg">1</span>
+						</div>
+					</div>
+					<div class="text-center pt-6">
+						<div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-green-50 flex items-center justify-center">
+							<i class="fas fa-users text-green-600 text-2xl"></i>
+						</div>
+						<h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3 md:mb-4">Créez
+						</h3>
+						<p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+							Choisissez une tontine adaptée à votre rythme
+																					              (quotidien, hebdomadaire ou mensuel)
+						</p>
+					</div>
+					<div class="mt-6 text-center">
+						<span class="inline-block px-3 py-1.5 sm:px-4 sm:py-2 bg-green-50 text-green-700 rounded-full text-xs sm:text-sm font-medium border border-green-200">
+							Aucun engagement
+						</span>
+					</div>
+				</div>
+
+				<!-- Carte 2 -->
+				<div class="group relative bg-gradient-to-b from-white to-white rounded-xl md:rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl md:hover:shadow-2xl transition-all duration-500 border border-green-100 hover:border-green-300">
+					<div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+						<div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-r from-green-100 to-green-50 flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+							<span class="text-green-800 font-bold text-lg">2</span>
+						</div>
+					</div>
+					<div class="text-center pt-6">
+						<div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-green-50 flex items-center justify-center">
+							<i class="fas fa-calendar-alt text-green-600 text-2xl"></i>
+						</div>
+						<h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3 md:mb-4">Payez par pointage</h3>
+						<p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+							Chaque paiement correspond à un pointage clair.
+																					              Pas de confusion, pas d'avance obligatoire.
+						</p>
+					</div>
+					<div class="mt-6 text-center">
+						<span class="inline-block px-3 py-1.5 sm:px-4 sm:py-2 bg-green-50 text-green-700 rounded-full text-xs sm:text-sm font-medium border border-green-200">
+							Quand vous voulez
+						</span>
+					</div>
+				</div>
+
+				<!-- Carte 3 -->
+				<div class="group relative bg-gradient-to-b from-white to-white rounded-xl md:rounded-2xl p-6 md:p-8 shadow-lg hover:shadow-xl md:hover:shadow-2xl transition-all duration-500 border border-green-100 hover:border-green-300">
+					<div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+						<div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-gradient-to-r from-green-100 to-green-50 flex items-center justify-center group-hover:scale-110 transition-transform shadow-md">
+							<span class="text-green-800 font-bold text-lg">3</span>
+						</div>
+					</div>
+					<div class="text-center pt-6">
+						<div class="w-16 h-16 mx-auto mb-4 rounded-xl bg-green-50 flex items-center justify-center">
+							<i class="fas fa-chart-line text-green-600 text-2xl"></i>
+						</div>
+						<h3 class="text-lg sm:text-xl font-bold text-gray-900 mb-3 md:mb-4">Suivez tout</h3>
+						<p class="text-gray-600 leading-relaxed text-sm sm:text-base">
+							Consultez votre carte de pointage
+																					              et votre solde à tout moment.
+						</p>
+					</div>
+					<div class="mt-6 text-center">
+						<span class="inline-block px-3 py-1.5 sm:px-4 sm:py-2 bg-green-50 text-green-700 rounded-full text-xs sm:text-sm font-medium border border-green-200">
+							24h/24
+						</span>
+					</div>
+				</div>
+			</div>
+
+			<!-- Vidéo démo 
+						<div class="mt-12 text-center">
+							<a href="#" class="inline-flex items-center gap-2 text-green-700 hover:text-green-800 font-medium">
+								<i class="fas fa-play-circle"></i>
+								<span>Voir la démonstration vidéo</span>
+							</a>
+						</div>-->
+		</div>
+	</section>
+	<!-- 4️⃣ SECTION VISUELLE – CARTE DE POINTAGE -->
+
+	<section class="py-12 md:py-16 bg-gradient-to-b from-green-700 to-green-900">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="text-center mb-8 md:mb-12">
+				<div class="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full mb-4">
+					<i class="fas fa-chart-line"></i>
+					<span class="text-sm font-medium">Visualisation en temps réel</span>
+				</div>
+				<h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 md:mb-4">
+					Une vraie carte de tontine, version digitale
+				</h2>
+				<p class="text-base sm:text-lg md:text-xl text-white max-w-3xl mx-auto">
+					Comme la carte papier traditionnelle, mais avec la fiabilité et la sécurité du numérique.
+				</p>
+			</div>
+
+			<div
+				class="flex flex-col lg:flex-row items-center gap-8 md:gap-12">
+				<!-- Image à gauche -->
+				<div class="lg:w-1/2 w-full">
+					<div class="relative group">
+						<div class="absolute -inset-4 bg-gradient-to-r from-green-500/10 to-green-600/10 rounded-2xl blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
+						<div class="relative overflow-hidden rounded-xl md:rounded-2xl shadow-2xl transform group-hover:scale-[1.02] transition-transform duration-500 border-2 border-green-100">
+							<img src="{{ asset('assets/images/537.jpg') }}" alt="Carte de tontine digitale - Interface moderne de gestion" class="w-full h-auto object-cover" loading="lazy"/>
+
+							<div class="absolute inset-0 bg-gradient-to-t from-green-900/20 via-transparent to-transparent"></div>
+
+							<!-- Badge sur l'image -->
+							<div class="absolute top-4 right-4 bg-white/90 backdrop-blur-sm px-4 py-2 rounded-full shadow-lg border border-green-200">
+								<div class="flex items-center gap-2">
+									<div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+									<span class="text-sm font-semibold text-gray-800">En temps réel</span>
+								</div>
+							</div>
+						</div>
+
+						<!-- Légende de l'image -->
+						<div class="mt-4 text-center lg:text-left">
+							<p class="text-sm text-white italic">
+								Interface intuitive pour suivre vos pointages en temps réel
+							</p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Carte de pointage à droite -->
+				<div class="lg:w-1/2 w-full">
+					<div
+						class="bg-white rounded-xl md:rounded-2xl shadow-xl md:shadow-2xl overflow-hidden border border-green-100 transform hover:shadow-2xl transition-all duration-300">
+						<!-- En-tête de la carte -->
+						<div class="bg-gradient-to-r from-green-600 to-green-700 p-4 sm:p-6 text-white">
+							<div class="flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-4">
+								<div class="text-center md:text-left">
+									<h3 class="text-xl sm:text-2xl font-bold">Objectif : Achat de Voiture</h3>
+									<p class="opacity-90 text-sm sm:text-base">5 000 FCFA par pointage</p>
+								</div>
+								<div class="text-center">
+									<div class="text-2xl sm:text-3xl font-bold">8/12</div>
+									<div class="text-xs sm:text-sm opacity-90">Pointages validés</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- Corps de la carte -->
+						<div
+							class="p-4 sm:p-6 md:p-8">
+							<!-- Grille de pointages -->
+							<div class="mb-6 md:mb-8">
+								<div class="grid grid-cols-6 sm:grid-cols-6 md:grid-cols-6 gap-2 sm:gap-3">
+									{% for i in 1..12 %}
+										<div class="aspect-square rounded-lg sm:rounded-xl flex flex-col items-center justify-center p-1 sm:p-2
+																																				                      {% if i <= 8 %}bg-green-100 border-2 border-green-300{% else %}bg-gray-100 border-2 border-gray-200{% endif %}
+																																				                      transition-all duration-300 hover:scale-105 hover:shadow-md">
+											<div class="text-base sm:text-lg font-bold">{{ i }}</div>
+											<div class="text-xs mt-1 {% if i <= 8 %}text-green-700{% else %}text-gray-500{% endif %}">
+												{% if i <= 8 %}Pointé{% else %}À venir
+												{% endif %}
+											</div>
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+
+							<!-- Informations clés -->
+							<div class="grid grid-cols-3 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-6">
+								<div class="p-3 sm:p-4 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
+									<div class="text-xs sm:text-sm text-gray-600 mb-1">Prochain pointage</div>
+									<div class="text-lg sm:text-xl font-bold text-gray-900">15 octobre</div>
+								</div>
+								<div class="p-3 sm:p-4 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
+									<div class="text-xs sm:text-sm text-gray-600 mb-1">Montant total</div>
+									<div class="text-lg sm:text-xl font-bold text-gray-900">60 000 FCFA</div>
+								</div>
+								<div class="p-3 sm:p-4 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
+									<div class="text-xs sm:text-sm text-gray-600 mb-1">Statut</div>
+									<div class="text-lg sm:text-xl font-bold text-green-600 ">
+										En cours
+									</div>
+								</div>
+							</div>
+
+							<!-- Barre de progression -->
+							<div class="mt-6 md:mt-8">
+								<div class="flex items-center justify-between mb-2">
+									<span class="text-sm font-medium text-gray-700">Progression</span>
+									<span class="text-sm font-bold text-green-700">66%</span>
+								</div>
+								<div class="w-full bg-gray-200 rounded-full h-2.5">
+									<div class="bg-gradient-to-r from-green-500 to-green-600 h-2.5 rounded-full w-2/3"></div>
+								</div>
+							</div>
+						</div>
+
+
+					</div>
+
+					<!-- Avantages listés -->
+					<div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+						<div class="flex items-start gap-3 p-3 bg-green-50 rounded-lg border border-green-100">
+							<div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+								<i class="fas fa-bell text-green-600"></i>
+							</div>
+							<div>
+								<p class="font-medium text-gray-900 text-sm">Notifications automatiques</p>
+								<p class="text-xs text-gray-600">Rappels avant chaque pointage</p>
+							</div>
+						</div>
+
+						<div class="flex items-start gap-3 p-3 bg-green-50 rounded-lg border border-green-100">
+							<div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+								<i class="fas fa-history text-green-600"></i>
+							</div>
+							<div>
+								<p class="font-medium text-gray-900 text-sm">Historique complet</p>
+								<p class="text-xs text-gray-600">Toutes vos transactions archivées</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Section Options de paiement flexibles -->
+	<section class="py-16 bg-gradient-to-br from-green-50 to-white">
+		<div class="container mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="text-center mb-12">
+				<h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">Options de paiement flexibles</h2>
+				<p class="mt-4 text-lg text-gray-600">Choisissez la méthode qui vous convient le mieux</p>
+			</div>
+
+			<div
+				class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8">
+				<!-- Mobile Money -->
+				<div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+					<div class="w-14 h-14 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+						<i class="fas fa-mobile-alt text-2xl text-green-600"></i>
+					</div>
+					<h3 class="text-xl font-semibold text-gray-900 mb-2">Mobile Money</h3>
+					<p class="text-gray-600">Effectuez des paiements rapides et sécurisés via votre compte Mobile Money.</p>
+				</div>
+
+				<!-- Carte Bancaire -->
+				<div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+					<div class="w-14 h-14 bg-green-100 rounded-lg flex items-center justify-center mb-4">
+						<i class="far fa-credit-card text-2xl text-green-600"></i>
+					</div>
+					<h3 class="text-xl font-semibold text-gray-900 mb-2">Carte Bancaire</h3>
+					<p class="text-gray-600">Paiement sécurisé par carte bancaire avec cryptage des données.</p>
+				</div>
+
+				<!-- Paiement USSD -->
+				<div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+					<div class="w-14 h-14 bg-yellow-100 rounded-lg flex items-center justify-center mb-4">
+						<i class="fas fa-mobile text-2xl text-yellow-600"></i>
+					</div>
+					<h3 class="text-xl font-semibold text-gray-900 mb-2">Paiement USSD</h3>
+					<p class="text-gray-600">Payez sans internet en composant simplement le code USSD.</p>
+				</div>
+
+				<!-- Virement Bancaire -->
+				<div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300">
+					<div class="w-14 h-14 bg-indigo-100 rounded-lg flex items-center justify-center mb-4">
+						<i class="fas fa-university text-2xl text-indigo-600"></i>
+					</div>
+					<h3 class="text-xl font-semibold text-gray-900 mb-2">Virement Bancaire</h3>
+					<p class="text-gray-600">Effectuez des virements directs depuis votre compte bancaire.</p>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- 3️⃣ SECTION RASSURANCE -->
+	<section class="py-12 md:py-16 bg-gradient-to-b from-green-700 to-green-600">
+		<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="text-center mb-8 md:mb-12">
+				<div class="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full mb-4">
+					<i class="fas fa-shield-alt"></i>
+					<span class="text-sm font-medium">Nos engagements</span>
+				</div>
+				<h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 md:mb-4">
+					Votre argent, vos règles.
+				</h2>
+				<p class="text-base sm:text-lg md:text-xl text-white max-w-2xl mx-auto px-4">
+					La confiance, c'est notre priorité. Voici nos engagements :
+				</p>
+			</div>
+
+			<!-- Messages de confiance -->
+			<div
+				class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+				<!-- Message 1 -->
+				<div class="bg-white p-5 sm:p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-green-100 hover:border-green-300">
+					<div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-red-50 flex items-center justify-center mb-3 sm:mb-4">
+						<i class="fas fa-lock text-red-500 text-lg sm:text-xl"></i>
+					</div>
+					<h3 class="font-bold text-gray-900 mb-2 text-base sm:text-lg">Aucun argent bloqué</h3>
+					<p class="text-gray-600 text-xs sm:text-sm">
+						Vos fonds ne sont jamais immobilisés sans votre accord préalable.
+					</p>
+				</div>
+
+				<!-- Message 2 -->
+				<div class="bg-white p-5 sm:p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-green-100 hover:border-green-300">
+					<div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-50 flex items-center justify-center mb-3 sm:mb-4">
+						<i class="fas fa-search text-green-500 text-lg sm:text-xl"></i>
+					</div>
+					<h3 class="font-bold text-gray-900 mb-2 text-base sm:text-lg">Chaque paiement traçable</h3>
+					<p class="text-gray-600 text-xs sm:text-sm">
+						Suivez chaque contribution de manière transparente.
+					</p>
+				</div>
+
+				<!-- Message 3 -->
+				<div class="bg-white p-5 sm:p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-green-100 hover:border-green-300">
+					<div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-green-50 flex items-center justify-center mb-3 sm:mb-4">
+						<i class="fas fa-eye text-green-500 text-lg sm:text-xl"></i>
+					</div>
+					<h3 class="font-bold text-gray-900 mb-2 text-base sm:text-lg">Transparence totale</h3>
+					<p class="text-gray-600 text-xs sm:text-sm">
+						Vous voyez exactement où va votre argent, en temps réel.
+					</p>
+				</div>
+
+				<!-- Message 4 -->
+				<div class="bg-white p-5 sm:p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-green-100 hover:border-green-300">
+					<div class="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-yellow-50 flex items-center justify-center mb-3 sm:mb-4">
+						<i class="fas fa-shield-alt text-yellow-500 text-lg sm:text-xl"></i>
+					</div>
+					<h3 class="font-bold text-gray-900 mb-2 text-base sm:text-lg">Paiement sécurisé</h3>
+					<p class="text-gray-600 text-xs sm:text-sm">
+						Mobile Money & cartes bancaires, tout est sécurisé.
+					</p>
+				</div>
+			</div>
+
+			<!-- Témoignage rapide -->
+			<div class="mt-8 sm:mt-12 bg-gradient-to-r from-green-50 to-green-100/50 rounded-xl md:rounded-2xl p-6 md:p-8 border border-green-200">
+				<div class="flex flex-col sm:flex-row items-center gap-4 md:gap-6">
+					<div class="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-r from-green-100 to-green-50 flex items-center justify-center flex-shrink-0 shadow-md">
+						<i class="fas fa-quote-left text-green-600 text-xl sm:text-2xl"></i>
+					</div>
+					<div class="text-center sm:text-left">
+						<p class="text-base sm:text-lg text-gray-700 italic">
+							"Enfin une tontine où je vois tout, tout le temps. Plus de stress, juste de la transparence."
+						</p>
+						<div class="mt-4 flex items-center justify-center sm:justify-start gap-3">
+							<div class="w-10 h-10 rounded-full bg-green-200 flex items-center justify-center">
+								<span class="text-green-800 font-bold">AD</span>
+							</div>
+							<div>
+								<p class="font-medium text-gray-900 text-sm sm:text-base">Aïcha D.</p>
+								<p class="text-sm text-gray-600">Dakar, Sénégal</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- 5️⃣ SECTION « POUR VOS OBJECTIFS PERSONNELS » -->
+	<section class="py-12 md:py-16  bg-gradient-to-b from-green-50 to-white">
+		<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+			<div class="text-center mb-8 md:mb-12">
+				<div class="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full mb-4">
+					<i class="fas fa-user-circle"></i>
+					<span class="text-sm font-medium">Épargne personnelle</span>
+				</div>
+				<h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4">
+					Votre tontine individuelle, vos objectifs
+				</h2>
+				<p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
+					Une discipline d'épargne adaptée à vos projets personnels, sans dépendre des autres.
+				</p>
+			</div>
+
+			<!-- 4 cartes d'objectifs personnels -->
+			<div
+				class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+				<!-- Projet matériel -->
+				<div class="group text-center p-5 sm:p-6 rounded-xl border-2 border-green-100 bg-gradient-to-b from-white to-white transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
+					<div class="h-16 w-16 rounded-xl bg-gradient-to-br from-green-900 to-green-500 text-white flex items-center justify-center mx-auto mb-3">
+						<i class="fas fa-mobile-alt text-2xl"></i>
+					</div>
+					<h3 class="font-bold text-gray-900 mb-2 text-base sm:text-lg">Équipements & technologie</h3>
+					<p class="text-gray-600 text-xs sm:text-sm">
+						Téléphone, ordinateur, électroménager
+					</p>
+					<div class="mt-4">
+						<span class="inline-block px-3 py-1 bg-green-50 text-green-700 rounded-full text-xs font-medium">
+							50-500K FCFA
+						</span>
+					</div>
+				</div>
+
+				<!-- Voyages & loisirs -->
+				<div class="group text-center p-5 sm:p-6 rounded-xl border-2 border-green-100 bg-gradient-to-b from-white to-white transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
+					<div class="h-16 w-16 rounded-xl bg-gradient-to-br from-green-900 to-green-500 text-white flex items-center justify-center mx-auto mb-3">
+						<i class="fas fa-plane text-2xl"></i>
+					</div>
+					<h3 class="font-bold text-gray-900 mb-2 text-base sm:text-lg">Voyages & vacances</h3>
+					<p class="text-gray-600 text-xs sm:text-sm">
+						Week-ends, voyages, moments de détente
+					</p>
+					<div class="mt-4">
+						<span class="inline-block px-3 py-1 bg-yellow-50 text-green-700 rounded-full text-xs font-medium">
+							100K-1M FCFA
+						</span>
+					</div>
+				</div>
+
+				<!-- Formation & éducation -->
+				<div class="group text-center p-5 sm:p-6 rounded-xl border-2 border-green-100 bg-gradient-to-b from-white to-white transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
+					<div class="h-16 w-16 rounded-xl bg-gradient-to-br from-green-900 to-green-500 text-white flex items-center justify-center mx-auto mb-3">
+						<i class="fas fa-graduation-cap text-2xl"></i>
+					</div>
+					<h3 class="font-bold text-gray-900 mb-2 text-base sm:text-lg">Formation & développement</h3>
+					<p class="text-gray-600 text-xs sm:text-sm">
+						Cours, certifications, perfectionnement
+					</p>
+					<div class="mt-4">
+						<span class="inline-block px-3 py-1 bg-yellow-50 text-yellow-600 rounded-full text-xs font-medium">
+							200K-2M FCFA
+						</span>
+					</div>
+				</div>
+
+				<!-- Épargne précaution -->
+				<div class="group text-center p-5 sm:p-6 rounded-xl border-2 border-green-100 bg-gradient-to-b from-white to-white 	transition-all duration-300 hover:scale-[1.02] hover:shadow-lg">
+					<div class="h-16 w-16 rounded-xl bg-gradient-to-br from-green-900 to-green-500 text-white flex items-center justify-center mx-auto mb-3">
+						<i class="fas fa-shield-alt text-2xl"></i>
+					</div>
+					<h3 class="font-bold text-gray-900 mb-2 text-base sm:text-lg">Fonds d'urgence & sécurité</h3>
+					<p class="text-gray-600 text-xs sm:text-sm">
+						Épargne de précaution, dépenses imprévues
+					</p>
+					<div class="mt-4">
+						<span class="inline-block px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-xs font-medium">
+							Flexible
+						</span>
+					</div>
+				</div>
+			</div>
+
+
+			<!-- Statistiques individuelles 
+						        <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
+						            <div class="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200">
+						                <div class="text-2xl md:text-3xl font-bold text-green-800 mb-1">85%</div>
+						                <div class="text-sm text-gray-600">Objectifs atteints</div>
+						            </div>
+						            <div class="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200">
+						                <div class="text-2xl md:text-3xl font-bold text-green-800 mb-1">3x</div>
+						                <div class="text-sm text-gray-600">Plus d'épargne qu'en solo</div>
+						            </div>
+						            <div class="text-center p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl border border-yellow-200">
+						                <div class="text-2xl md:text-3xl font-bold text-yellow-800 mb-1">30%</div>
+						                <div class="text-sm text-gray-600">De discipline en plus</div>
+						            </div>
+						            <div class="text-center p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl border border-emerald-200">
+						                <div class="text-2xl md:text-3xl font-bold text-emerald-800 mb-1">24h</div>
+						                <div class="text-sm text-gray-600">Accès à vos fonds</div>
+						            </div>
+						        </div>-->
+
+			<!-- Témoignage individuel
+						        <div class="mt-12 bg-gradient-to-r from-green-50 to-green-50 rounded-2xl p-6 md:p-8 border border-green-200">
+						            <div class="flex flex-col md:flex-row items-center gap-6">
+						                <div class="w-20 h-20 rounded-full bg-gradient-to-r from-green-100 to-green-100 flex items-center justify-center flex-shrink-0">
+						                    <i class="fas fa-quote-right text-green-600 text-2xl"></i>
+						                </div>
+						                <div class="text-center md:text-left">
+						                    <p class="text-lg text-gray-700 italic">
+						                        "Grâce à la tontine individuelle, j'ai pu économiser pour mon premier ordinateur en seulement 4 mois. 
+						                        La discipline imposée par le système m'a permis d'atteindre mon objectif sans effort."
+						                    </p>
+						                    <div class="mt-4 flex items-center justify-center md:justify-start gap-3">
+						                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-green-200 to-green-300 flex items-center justify-center">
+						                            <span class="text-green-800 font-bold">SD</span>
+						                        </div>
+						                        <div>
+						                            <p class="font-medium text-gray-900 text-sm">Souleymane D.</p>
+						                            <p class="text-sm text-gray-600">Étudiant, Dakar</p>
+						                        </div>
+						                    </div>
+						                </div>
+						            </div>
+						        </div> -->
+		</div>
+	</section>
+
+
+	<!-- 6️⃣ CTA FINAL -->
+	<section class="py-12 md:py-16 bg-gradient-to-r from-green-700 via-green-600 to-green-700">
+		<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+			<div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
+				<i class="fas fa-rocket text-white"></i>
+				<span class="text-sm font-medium text-white">Prêt à commencer ?</span>
+			</div>
+
+			<h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 sm:mb-6">
+				Prêt à commencer votre tontine ?
+			</h2>
+			<p class="text-base sm:text-lg md:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl mx-auto">
+				Rejoignez des milliers de personnes qui épargnent en toute confiance.
+			</p>
+
+			<div
+				class="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
+				<!-- Bouton principal -->
+				<a href="{{path('app_tontine')}}" class="bg-white hover:bg-gray-50 text-green-700 font-bold px-6 py-3 sm:px-8 sm:py-4 rounded-xl shadow-lg sm:shadow-2xl hover:shadow-xl sm:hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg">
+					<i class="fas fa-plus-circle mr-2"></i>
+					Créer ma tontine
+				</a>
+
+				<!-- Bouton secondaire -->
+				<a href="#accueil" class="bg-transparent hover:bg-white/10 text-white border-2 border-white font-bold px-6 py-3 sm:px-8 sm:py-4 rounded-xl transition-all duration-300 text-base sm:text-lg">
+					<i class="fas fa-play-circle mr-2"></i>
+					Voir une démo
+				</a>
+			</div>
+
+			<!-- Garantie -->
+			<div class="mt-6 sm:mt-8 text-white/80 text-xs sm:text-sm">
+				<div class="flex flex-wrap justify-center gap-4">
+					<div class="flex items-center gap-2">
+						<i class="fas fa-bolt text-green-300"></i>
+						<span>Création en 2 minutes</span>
+					</div>
+					<div class="flex items-center gap-2">
+						<i class="fas fa-ban text-green-300"></i>
+						<span>Aucun frais caché</span>
+					</div>
+					<div class="flex items-center gap-2">
+						<i class="fas fa-gift text-green-300"></i>
+						<span>Essai gratuit</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+
 {% endblock %}

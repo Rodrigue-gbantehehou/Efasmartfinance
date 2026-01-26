@@ -1,0 +1,443 @@
+{% extends 'admin/base.html.twig' %}
+
+
+{% block title %}Gestion des Transactions - Administration{% endblock %}
+
+
+{% block contentadmin %}
+<div class="bg-white shadow rounded-lg p-6">
+    <!-- En-tête avec titre et bouton d'export -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900">Gestion des Transactions</h2>
+            <p class="mt-1 text-sm text-gray-600">Suivez et gérez toutes les transactions financières</p>
+        </div>
+        <div class="mt-4 md:mt-0 flex space-x-3">
+            <a href="#" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+                Exporter
+            </a>
+            <a href="#" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                </svg>
+                Nouvelle Transaction
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-6">
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
+                        <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Total des entrées</dt>
+                            <dd class="flex items-baseline">
+                                <div class="text-2xl font-semibold text-gray-900">{{ totalEntrees|number_format(0, ',', ' ') }} FCFA</div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-red-500 rounded-md p-3">
+                        <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Total des sorties</dt>
+                            <dd class="flex items-baseline">
+                                <div class="text-2xl font-semibold text-gray-900">{{ totalSorties|number_format(0, ',', ' ') }} FCFA</div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
+                        <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Solde total</dt>
+                            <dd class="flex items-baseline">
+                                <div class="text-2xl font-semibold text-gray-900">{{ (totalEntrees - totalSorties)|number_format(0, ',', ' ') }} FCFA</div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3">
+                        <svg class="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="ml-5 w-0 flex-1">
+                        <dl>
+                            <dt class="text-sm font-medium text-gray-500 truncate">Transactions ce mois</dt>
+                            <dd class="flex items-baseline">
+                                <div class="text-2xl font-semibold text-gray-900">{{ transactionsMois|length }}</div>
+                                <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
+                                    <span class="sr-only">Augmentation par rapport au mois dernier</span>
+                                    +8%
+                                </div>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filtres et recherche -->
+    <div class="mb-6 bg-gray-50 p-4 rounded-lg">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="col-span-1">
+                <label for="search" class="block text-sm font-medium text-gray-700">Recherche</label>
+                <div class="mt-1 relative rounded-md shadow-sm">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <input type="text" id="search-input" class="focus:ring-green-500 focus:border-green-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md" placeholder="ID, référence, montant...">
+                </div>
+            </div>
+            
+            <div>
+                <label for="type" class="block text-sm font-medium text-gray-700">Type</label>
+                <select id="type-filter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md">
+                    <option value="">Tous les types</option>
+                    <option value="depot">Dépôt</option>
+                    <option value="retrait">Retrait</option>
+                    <option value="transfert">Transfert</option>
+                    <option value="paiement">Paiement</option>
+                    <option value="remboursement">Remboursement</option>
+                </select>
+            </div>
+            
+            <div>
+                <label for="status" class="block text-sm font-medium text-gray-700">Statut</label>
+                <select id="status-filter" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md">
+                    <option value="">Tous les statuts</option>
+                    <option value="validee">Validée</option>
+                    <option value="en_attente">En attente</option>
+                    <option value="annulee">Annulée</option>
+                    <option value="refusee">Refusée</option>
+                </select>
+            </div>
+            
+            <div>
+                <label for="date-range" class="block text-sm font-medium text-gray-700">Période</label>
+                <div class="mt-1 relative rounded-md shadow-sm">
+                    <input type="text" id="date-range" class="focus:ring-green-500 focus:border-green-500 block w-full pl-3 pr-10 py-2 sm:text-sm border-gray-300 rounded-md" placeholder="Sélectionner une période">
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-4 flex justify-end space-x-3">
+            <button type="button" id="reset-filters" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                Réinitialiser
+            </button>
+            <button type="button" id="apply-filters" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                Appliquer les filtres
+            </button>
+        </div>
+    </div>
+
+    <!-- Tableau des transactions -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID / Référence</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Montant</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Source / Destinataire</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for transaction in transactions %}
+                <tr class="hover:bg-gray-50" 
+                    data-id="{{ transaction.id }}" 
+                    data-reference="{{ transaction.externalReference ?? transaction.id }}"
+                    data-type="{{ transaction.paymentMethod }}" 
+                    data-montant="{{ transaction.amount }}"
+                    data-statut="{{ transaction.statut ?? 'inconnu' }}"
+                    data-date="{{ transaction.createdAt ? transaction.createdAt|date('Y-m-d') : 'N/A' }}"
+                    data-source="{{ transaction.utilisateur ? transaction.utilisateur.email : 'Système' }}"
+                    data-destinataire="{{ transaction.Tontine ? transaction.Tontine.getName() : 'N/A' }}">
+                    
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-gray-900">
+                            #{{ loop.index }}
+                            {% if transaction.externalReference %}
+                                <span class="text-gray-500 text-xs block">{{ transaction.externalReference }}</span>
+                            {% endif %}
+                        </div>
+                    </td>
+                    
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {% set typeClasses = {
+                            'depot': 'bg-green-100 text-green-800',
+                            'retrait': 'bg-yellow-100 text-yellow-800',
+                            'transfert': 'bg-indigo-100 text-indigo-800',
+                            'paiement': 'bg-green-100 text-green-800',
+                            'remboursement': 'bg-yellow-100 text-yellow-800'
+                        } %}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {{ typeClasses[transaction.paymentMethod]|default('bg-gray-100 text-gray-800') }}">
+                            {{ transaction.paymentMethod|replace({'_': ' '})|title }}
+                        </span>
+                    </td>
+                    
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium {{ transaction.amount >= 0 ? 'text-green-600' : 'text-red-600' }}">
+                            {% if transaction.amount >= 0 %}+{% else %}-{% endif %}
+                            {{ transaction.amount|number_format(0, ',', ' ') }} FCFA
+                        </div>
+                    </td>
+                    
+                    <td class="px-6 py-4">
+                        <div class="text-sm text-gray-900">
+                            {% if transaction.paymentMethod == 'transfert' or transaction.paymentMethod == 'paiement' %}
+                                <span class="font-medium">De:</span> {{ transaction.utilisateur ? transaction.utilisateur.email : 'Système' }}
+                                <br>
+                                <span class="font-medium">À:</span> {{ transaction.Tontine ? transaction.Tontine.getName() : 'N/A' }}
+                            {% else %}
+                                {{ transaction.utilisateur ? transaction.utilisateur.email : 'Système' }}
+                            {% endif %}
+                        </div>
+                    </td>
+                    
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ transaction.createdAt ? transaction.createdAt|date('d/m/Y H:i') : 'N/A' }}
+                    </td>
+                    
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {% set statusClasses = {
+                            'validee': 'bg-green-100 text-green-800',
+                            'en_attente': 'bg-yellow-100 text-yellow-800',
+                            'annulee': 'bg-red-100 text-red-800',
+                            'refusee': 'bg-red-100 text-red-800',
+                            'en_cours': 'bg-green-100 text-green-800'
+                        } %}
+                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                            {{ transaction.statut == 'completed' or transaction.statut == 'validé' ? 'bg-green-100 text-green-800' : 
+                               transaction.statut == 'pending' or transaction.statut == 'en attente' ? 'bg-yellow-100 text-yellow-800' : 
+                               transaction.statut == 'failed' or transaction.statut == 'échoué' ? 'bg-red-100 text-red-800' :
+                               'bg-gray-100 text-gray-800' }}">
+                            {{ transaction.statut|default('inconnu')|capitalize }}
+                        </span>
+                    </td>
+                    <!-- 
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <div class="flex justify-end space-x-2">
+                            <a href="#" class="text-green-600 hover:text-green-900" title="Voir les détails">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            {% if transaction.statut == 'en_attente' %}
+                                <button type="button" class="text-green-600 hover:text-green-900" title="Valider">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                                <button type="button" class="text-red-600 hover:text-red-900" title="Refuser">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            {% endif %}
+                            <button type="button" class="text-yellow-600 hover:text-yellow-900" title="Télécharger le reçu">
+                                <i class="fas fa-download"></i>
+                            </button>
+                        </div>
+                    </td> -->
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-500">
+                        Aucune transaction trouvée
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6 mt-4">
+        <div class="flex-1 flex justify-between sm:hidden">
+            <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Précédent
+            </a>
+            <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                Suivant
+            </a>
+        </div>
+        <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+            <div>
+                <p class="text-sm text-gray-700">
+                    Affichage de <span class="font-medium">1</span> à <span class="font-medium">10</span> sur <span class="font-medium">{{ transactions|length }}</span> résultats
+                </p>
+            </div>
+            <div>
+                <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                    <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        <span class="sr-only">Précédent</span>
+                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                    <a href="#" aria-current="page" class="z-10 bg-green-50 border-green-500 text-green-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                        1
+                    </a>
+                    <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
+                        2
+                    </a>
+                    <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 hidden md:inline-flex relative items-center px-4 py-2 border text-sm font-medium">
+                        3
+                    </a>
+                    <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
+                        ...
+                    </span>
+                    <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 hidden md:inline-flex relative items-center px-4 py-2 border text-sm font-medium">
+                        8
+                    </a>
+                    <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                        <span class="sr-only">Suivant</span>
+                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script pour la recherche et le filtrage -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialisation du sélecteur de date
+    $('input[id="date-range"]').daterangepicker({
+        locale: {
+            format: 'DD/MM/YYYY',
+            applyLabel: 'Appliquer',
+            cancelLabel: 'Annuler',
+            fromLabel: 'Du',
+            toLabel: 'Au',
+            customRangeLabel: 'Personnalisé',
+            daysOfWeek: ['Di', 'Lu', 'Ma', 'Me', 'Je', 'Ve', 'Sa'],
+            monthNames: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+            firstDay: 1
+        },
+        startDate: moment().subtract(30, 'days'),
+        endDate: moment(),
+        ranges: {
+           'Aujourd\'hui': [moment(), moment()],
+           'Hier': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+           '7 derniers jours': [moment().subtract(6, 'days'), moment()],
+           '30 derniers jours': [moment().subtract(29, 'days'), moment()],
+           'Ce mois-ci': [moment().startOf('month'), moment().endOf('month')],
+           'Mois dernier': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        }
+    });
+
+    const searchInput = document.getElementById('search-input');
+    const typeFilter = document.getElementById('type-filter');
+    const statusFilter = document.getElementById('status-filter');
+    const resetFiltersBtn = document.getElementById('reset-filters');
+    const applyFiltersBtn = document.getElementById('apply-filters');
+    const rows = document.querySelectorAll('tbody tr[data-id]');
+
+    function filterRows() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedType = typeFilter.value;
+        const selectedStatus = statusFilter.value;
+        
+        // Récupérer la période sélectionnée
+        const dateRange = $('input[id="date-range"]').data('daterangepicker');
+        const startDate = dateRange ? dateRange.startDate.format('YYYY-MM-DD') : null;
+        const endDate = dateRange ? dateRange.endDate.format('YYYY-MM-DD') : null;
+
+        rows.forEach(row => {
+            const id = row.getAttribute('data-id').toLowerCase();
+            const reference = row.getAttribute('data-reference').toLowerCase();
+            const type = row.getAttribute('data-type');
+            const status = row.getAttribute('data-statut');
+            const date = row.getAttribute('data-date');
+            const source = row.getAttribute('data-source').toLowerCase();
+            const destinataire = row.getAttribute('data-destinataire').toLowerCase();
+            const montant = row.getAttribute('data-montant');
+            
+            const matchesSearch = searchTerm === '' || 
+                                id.includes(searchTerm) || 
+                                reference.includes(searchTerm) ||
+                                source.includes(searchTerm) ||
+                                destinataire.includes(searchTerm) ||
+                                montant.includes(searchTerm);
+                                
+            const matchesType = !selectedType || type === selectedType;
+            const matchesStatus = !selectedStatus || status === selectedStatus;
+            
+            // Vérifier si la date est dans la plage sélectionnée
+            let matchesDate = true;
+            if (startDate && endDate) {
+                const rowDate = new Date(date);
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                end.setDate(end.getDate() + 1); // Pour inclure le dernier jour
+                
+                matchesDate = rowDate >= start && rowDate <= end;
+            }
+            
+            if (matchesSearch && matchesType && matchesStatus && matchesDate) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    // Écouteurs d'événements
+    searchInput.addEventListener('input', filterRows);
+    typeFilter.addEventListener('change', filterRows);
+    statusFilter.addEventListener('change', filterRows);
+    
+    resetFiltersBtn.addEventListener('click', function() {
+        searchInput.value = '';
+        typeFilter.value = '';
+        statusFilter.value = '';
+        $('input[id="date-range"]').data('daterangepicker').setStartDate(moment().subtract(30, 'days'));
+        $('input[id="date-range"]').data('daterangepicker').setEndDate(moment());
+        filterRows();
+    });
+    
+    applyFiltersBtn.addEventListener('click', filterRows);
+});
+</script>
+{% endblock %}

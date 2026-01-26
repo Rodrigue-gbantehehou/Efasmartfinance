@@ -43,6 +43,9 @@ class Tontine
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\Column(type: Types::DATETIME_IMMUTABLE, nullable: true)]
+    private ?\DateTimeImmutable $endedAt = null;
+
     #[ORM\ManyToOne(inversedBy: 'tontines')]
     private ?User $utilisateur = null;
 
@@ -70,11 +73,22 @@ class Tontine
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $totalPay = 0;
 
+    /**
+     * @var Collection<int, Withdrawals>
+     */
+    #[ORM\OneToMany(targetEntity: Withdrawals::class, mappedBy: 'tontine')]
+    private Collection $withdrawals;
+
+    #[ORM\Column(type: 'boolean')]
+    private bool $fraisPreleves = false;
+
     public function __construct()
     {
         $this->transactions = new ArrayCollection();
         $this->tontinePoints = new ArrayCollection();
         $this->tontineReminders = new ArrayCollection();
+        $this->withdrawals = new ArrayCollection();
+        $this->fraisPreleves = false;
     }
 
     public function getId(): ?int
@@ -97,6 +111,49 @@ class Tontine
     public function getAmountPerPoint(): ?int
     {
         return $this->amountPerPoint;
+    }
+    
+    public function getAmount(): ?int
+    {
+        return $this->amountPerPoint * $this->totalPoints;
+    }
+    
+    public function getDuration(): ?int
+    {
+        if (!$this->startDate || !$this->nextDueDate) {
+            return null;
+        }
+        
+        $interval = $this->startDate->diff($this->nextDueDate);
+        return (int) $interval->format('%m'); // Retourne la durée en mois
+    }
+    
+    public function getAvailableBalance(): float
+    {
+        // Retourne le solde disponible pour retrait
+        // À adapter selon votre logique métier
+        return $this->getAmount() - $this->getTotalWithdrawn();
+    }
+    
+    public function setAvailableBalance(float $amount): self
+    {
+        // Cette méthode est un exemple, à adapter selon votre logique métier
+        // Dans une implémentation réelle, vous pourriez vouloir mettre à jour un champ spécifique
+        // ou effectuer d'autres opérations pour mettre à jour le solde disponible
+        
+        // Pour l'instant, nous allons simplement mettre à jour le montant par point
+        if ($this->totalPoints > 0) {
+            $this->amountPerPoint = (int) ($amount / $this->totalPoints);
+        }
+        
+        return $this;
+    }
+    
+    private function getTotalWithdrawn(): float
+    {
+        // Implémentez la logique pour obtenir le montant total retiré
+        // Par exemple, en faisant la somme des retraits approuvés
+        return 0.0; // Valeur par défaut à adapter
     }
 
     public function setAmountPerPoint(?int $amountPerPoint): static
@@ -186,6 +243,18 @@ class Tontine
     public function setCreatedAt(?\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getEndedAt(): ?\DateTimeImmutable
+    {
+        return $this->endedAt;
+    }
+
+    public function setEndedAt(\DateTimeImmutable $endedAt): static
+    {
+        $this->endedAt = $endedAt;
 
         return $this;
     }
@@ -317,37 +386,8 @@ class Tontine
     }
 
 
-    public function updateNextDueDate(): void
-    {
-        if (!$this->frequency) {
-            throw new \LogicException('La fréquence de la tontine est manquante');
-        }
 
-        $baseDate = $this->nextDueDate
-            ?? $this->startDate
-            ?? new \DateTime();
 
-        $baseDate = \DateTimeImmutable::createFromMutable($baseDate);
-
-        switch ($this->frequency) {
-            case 'daily':
-                $next = $baseDate->modify('+1 day');
-                break;
-
-            case 'weekly':
-                $next = $baseDate->modify('+1 week');
-                break;
-
-            case 'monthly':
-                $next = $baseDate->modify('+1 month');
-                break;
-
-            default:
-                throw new \LogicException('Fréquence invalide : ' . $this->frequency);
-        }
-
-        $this->nextDueDate = \DateTime::createFromImmutable($next);
-    }
     public function applyPayment(
         int $amount,
         ?Transaction $transaction = null,
@@ -366,24 +406,24 @@ class Tontine
         // 1️⃣ Total payé
         $this->totalPay += $amount;
 
-        $newPaidPoints = $this->getPaidPoints();
+        $newPaidPoints = (int)($transaction->getAmount() / $this->amountPerPoint);
         $pointsToCreate = $newPaidPoints - $previousPaidPoints;
 
         // 2️⃣ Créer les nouveaux points
-        for ($i = 1; $i <= $pointsToCreate; $i++) {
+        // for ($i = 1; $i <= $pointsToCreate; $i++) {
 
-            $pointNumber = $previousPaidPoints + $i;
+        // $pointNumber = $previousPaidPoints + $i;
 
-            $point = new TontinePoint();
-            $point->setPointNumber($pointNumber);
-            $point->setAmount($this->amountPerPoint);
-            $point->setMethod($method);
-            $point->setPointedAt(new \DateTimeImmutable());
-            $point->setTontine($this);
-            $point->setTransaction($transaction);
+        $point = new TontinePoint();
+        $point->setPointNumber($newPaidPoints);
+        $point->setAmount($this->amountPerPoint);
+        $point->setMethod($method);
+        $point->setPointedAt(new \DateTimeImmutable());
+        $point->setTontine($this);
+        $point->setTransaction($transaction);
 
-            $this->tontinePoints[] = $point;
-        }
+        $this->tontinePoints[] = $point;
+        //     }
 
         // 3️⃣ Clôture ou prochaine échéance
         if ($newPaidPoints >= $this->totalPoints) {
@@ -392,10 +432,173 @@ class Tontine
             return;
         }
 
-        $this->updateNextDueDate();
+        // $this->updateNextDueDate();
+        $frequency = $this->getFrequency();
+        $frequency = $this->getFrequency();
+
+        $intervalMap = [
+            'daily'   => 'day',
+            'weekly'  => 'week',
+            'monthly' => 'month',
+            'yearly'  => 'year',
+        ];
+
+        if (!array_key_exists($frequency, $intervalMap)) {
+            throw new \LogicException('Fréquence de tontine invalide');
+        }
+
+        $interval = sprintf('+%d %s', $newPaidPoints, $intervalMap[$frequency]);
+
+        // On part toujours de la prochaine échéance existante
+        if ($this->nextDueDate instanceof \DateTimeInterface) {
+            $this->nextDueDate = (clone $this->nextDueDate)->modify($interval);
+        } else {
+            // Cas rare : première échéance
+            $this->nextDueDate = (new \DateTime())->modify($interval);
+        }
     }
     public function getPaidPoints(): int
     {
         return intdiv($this->totalPay, $this->amountPerPoint);
+    }
+
+    /**
+     * Vérifie si un retrait partiel a été effectué sur la tontine
+     * 
+     * @return bool True si un retrait partiel a été effectué, false sinon
+     */
+    public function isPartiallyWithdrawn(): bool
+    {
+        $withdrawnAmount = $this->getWithdrawnAmount();
+        $totalPay = $this->getTotalPay();
+        
+        return $withdrawnAmount > 0 && $withdrawnAmount < $totalPay;
+    }
+
+    /**
+     * Calcule le montant total retiré de la tontine
+     */
+    /**
+     * Calcule le montant total déjà retiré de la tontine
+     */
+    public function getWithdrawnAmount(): int
+    {
+        return (int) array_sum(
+            $this->withdrawals
+                ->filter(fn($w) => $w->getStatut() === 'approved')
+                ->map(fn($w) => (int) $w->getAmount())
+                ->toArray()
+        );
+    }
+
+    /**
+     * Récupère le montant disponible pour retrait
+     */
+    public function getAvailableWithdrawalAmount(): int
+    {
+        return max(0, $this->getTotalPay() - $this->getWithdrawnAmount());
+    }
+    
+    /**
+     * Vérifie si la tontine est complète (tous les points payés ou date de fin dépassée)
+     */
+    public function isComplete(): bool
+    {
+        $now = new \DateTimeImmutable();
+        
+        // Vérifier si la date de fin est dépassée
+        if ($this->endedAt && $this->endedAt < $now) {
+            return true;
+        }
+        
+        // Vérifier si tous les points ont été payés
+        $paidPoints = $this->getPaidPoints();
+        if ($this->totalPoints && $paidPoints >= $this->totalPoints) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Effectue un retrait sur la tontine
+     * 
+     * @throws \RuntimeException Si le montant demandé dépasse le disponible
+     */
+    public function withdraw(int $amount): void
+    {
+        $available = $this->getAvailableWithdrawalAmount();
+        if ($amount > $available) {
+            throw new \RuntimeException(sprintf(
+                'Le montant demandé (%s FCFA) dépasse le montant disponible pour retrait (%s FCFA)',
+                number_format($amount, 0, ',', ' '),
+                number_format($available, 0, ',', ' ')
+            ));
+        }
+    }
+
+    /**
+     * Calcule le montant restant à retirer
+     */
+    public function getRemainingAmount(): int
+    {
+        return $this->getTotalPay() - $this->getWithdrawnAmount();
+    }
+
+    /**
+     * Vérifie si la tontine est entièrement retirée
+     */
+    public function isFullyWithdrawn(): bool
+    {
+        return $this->getRemainingAmount() === 0;
+    }
+
+    /**
+     * Vérifie si un retrait est possible
+     */
+    public function canWithdraw(): bool
+    {
+        return $this->getRemainingAmount() > 0;
+    }
+
+    /**
+     * @return Collection<int, Withdrawals>
+     */
+    public function getWithdrawals(): Collection
+    {
+        return $this->withdrawals;
+    }
+
+    public function addWithdrawal(Withdrawals $withdrawal): static
+    {
+        if (!$this->withdrawals->contains($withdrawal)) {
+            $this->withdrawals->add($withdrawal);
+            $withdrawal->setTontine($this);
+        }
+
+        return $this;
+    }
+
+    public function removeWithdrawal(Withdrawals $withdrawal): static
+    {
+        if ($this->withdrawals->removeElement($withdrawal)) {
+            // set the owning side to null (unless already changed)
+            if ($withdrawal->getTontine() === $this) {
+                $withdrawal->setTontine(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isFraisPreleves(): bool
+    {
+        return $this->fraisPreleves;
+    }
+
+    public function setFraisPreleves(bool $fraisPreleves): static
+    {
+        $this->fraisPreleves = $fraisPreleves;
+        return $this;
     }
 }

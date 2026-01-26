@@ -1,0 +1,292 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Nouvel Utilisateur - Administration{% endblock %}
+
+{% block contentadmin %}
+<div class="container mx-auto px-4 py-6 sm:py-8 max-w-6xl">
+    <!-- En-tête avec titre et bouton de retour -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-8 gap-4">
+        <div class="space-y-1">
+            <div class="flex items-center">
+                <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Nouvel Utilisateur</h1>
+                <span class="ml-3 px-3 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded-full">
+                    Administration
+                </span>
+            </div>
+            <p class="text-sm sm:text-base text-gray-600">Ajoutez un nouvel utilisateur à la plateforme</p>
+        </div>
+        <a href="{{ path('admin_users') }}" 
+           class="inline-flex items-center px-4 py-2.5 border border-gray-200 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 w-full sm:w-auto justify-center">
+            <i class="fas fa-arrow-left mr-2 text-green-600"></i>
+            Retour à la liste
+        </a>
+    </div>
+
+    <!-- Messages flash -->
+    {% for message in app.flashes('success') %}
+        <div class="mb-6 p-4 bg-green-50 border-l-4 border-green-500 rounded-r">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-check-circle text-green-500 mt-0.5"></i>
+                </div>
+                <div class="ml-3">
+                    <p class="text-sm text-green-700">{{ message }}</p>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <!-- Carte du formulaire -->
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-200 hover:shadow-md">
+        <!-- En-tête de la carte -->
+        <div class="px-6 py-5 border-b border-gray-100 bg-gray-50">
+            <div class="flex items-center">
+                <div class="p-2 rounded-lg bg-green-50 text-green-600 mr-4">
+                    <i class="fas fa-user-plus text-xl"></i>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        Informations de l'utilisateur
+                    </h3>
+                    <p class="text-sm text-gray-500 mt-1">
+                        Renseignez les informations de base du nouvel utilisateur.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Corps du formulaire -->
+        <div class="p-6 sm:p-8">
+            {{ form_start(form, {'attr': {'class': 'space-y-8'}}) }}
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-6">
+                    <!-- Prénom -->
+                    <div class="sm:col-span-3">
+                        {{ form_label(form.firstname, 'Prénom *', {'label_attr': {
+                            'class': 'block text-sm font-medium text-gray-700 mb-1.5 flex items-center'
+                        }}) }}
+                        <div class="relative mt-1">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
+                            {{ form_widget(form.firstname, {'attr': {
+                                'class': 'block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm transition duration-150',
+                                'placeholder': 'Prénom',
+                                'autocomplete': 'given-name'
+                            }}) }}
+                        </div>
+                        {% if form_errors(form.firstname) %}
+                            <p class="mt-2 text-sm text-red-600">
+                                <i class="fas fa-exclamation-circle mr-1"></i> {{ form_errors(form.firstname) }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Nom -->
+                    <div class="sm:col-span-3">
+                        {{ form_label(form.lastname, 'Nom *', {'label_attr': {
+                            'class': 'block text-sm font-medium text-gray-700 mb-1.5 flex items-center'
+                        }}) }}
+                        <div class="relative mt-1">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user text-gray-400"></i>
+                            </div>
+                            {{ form_widget(form.lastname, {'attr': {
+                                'class': 'block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm transition duration-150',
+                                'placeholder': 'Nom',
+                                'autocomplete': 'family-name'
+                            }}) }}
+                        </div>
+                        {% if form_errors(form.lastname) %}
+                            <p class="mt-2 text-sm text-red-600">
+                                <i class="fas fa-exclamation-circle mr-1"></i> {{ form_errors(form.lastname) }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Email -->
+                    <div class="sm:col-span-4">
+                        {{ form_label(form.email, 'Adresse email *', {'label_attr': {
+                            'class': 'block text-sm font-medium text-gray-700 mb-1.5 flex items-center'
+                        }}) }}
+                        <div class="relative mt-1">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-envelope text-gray-400"></i>
+                            </div>
+                            {{ form_widget(form.email, {'attr': {
+                                'class': 'block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm transition duration-150',
+                                'placeholder': 'email@exemple.com',
+                                'autocomplete': 'email'
+                            }}) }}
+                        </div>
+                        {% if form_errors(form.email) %}
+                            <p class="mt-2 text-sm text-red-600">
+                                <i class="fas fa-exclamation-circle mr-1"></i> {{ form_errors(form.email) }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Rôle -->
+                    <div class="sm:col-span-2">
+                        {{ form_label(form.roles, 'Rôle *', {'label_attr': {
+                            'class': 'block text-sm font-medium text-gray-700 mb-1.5 flex items-center'
+                        }}) }}
+                        <div class="relative mt-1">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-user-tag text-gray-400"></i>
+                            </div>
+                            {{ form_widget(form.roles, {'attr': {
+                                'class': 'block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg shadow-sm bg-white focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm transition duration-150 appearance-none'
+                            }}) }}
+                        </div>
+                        {% if form_errors(form.roles) %}
+                            <p class="mt-2 text-sm text-red-600">
+                                <i class="fas fa-exclamation-circle mr-1"></i> {{ form_errors(form.roles) }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Mot de passe -->
+                    <div class="sm:col-span-3">
+                        {{ form_label(form.plainPassword.first, 'Mot de passe *', {'label_attr': {
+                            'class': 'block text-sm font-medium text-gray-700 mb-1.5 flex items-center'
+                        }}) }}
+                        <div class="relative mt-1">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            {{ form_widget(form.plainPassword.first, {'attr': {
+                                'class': 'block w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm transition duration-150',
+                                'placeholder': '••••••••',
+                                'autocomplete': 'new-password'
+                            }}) }}
+                            <button type="button" 
+                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                                    onclick="togglePasswordVisibility('{{ form.plainPassword.first.vars.id }}')">
+                                <i class="far fa-eye text-lg"></i>
+                            </button>
+                        </div>
+                        <p class="mt-2 text-xs text-gray-500">Minimum 8 caractères, avec au moins une majuscule et un chiffre</p>
+                        {% if form_errors(form.plainPassword.first) %}
+                            <p class="mt-2 text-sm text-red-600">
+                                <i class="fas fa-exclamation-circle mr-1"></i> {{ form_errors(form.plainPassword.first) }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Confirmer le mot de passe -->
+                    <div class="sm:col-span-3">
+                        {{ form_label(form.plainPassword.second, 'Confirmer le mot de passe *', {'label_attr': {
+                            'class': 'block text-sm font-medium text-gray-700 mb-1.5 flex items-center'
+                        }}) }}
+                        <div class="relative mt-1">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-lock text-gray-400"></i>
+                            </div>
+                            {{ form_widget(form.plainPassword.second, {'attr': {
+                                'class': 'block w-full pl-10 pr-10 py-2.5 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 sm:text-sm transition duration-150',
+                                'placeholder': '••••••••',
+                                'autocomplete': 'new-password'
+                            }}) }}
+                            <button type="button" 
+                                    class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                                    onclick="togglePasswordVisibility('{{ form.plainPassword.second.vars.id }}')">
+                                <i class="far fa-eye text-lg"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Boutons d'action -->
+                <div class="pt-6 border-t border-gray-100">
+                    <div class="flex flex-col-reverse sm:flex-row justify-end gap-3">
+                        <a href="{{ path('admin_users') }}" 
+                           class="inline-flex justify-center items-center px-5 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 shadow-sm">
+                            Annuler
+                        </a>
+                        <button type="submit"
+                                class="inline-flex justify-center items-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200">
+                            <i class="fas fa-save mr-2"></i>
+                            Enregistrer l'utilisateur
+                        </button>
+                    </div>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 py-10 ">
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    // Fonction pour basculer la visibilité du mot de passe
+    function togglePasswordVisibility(fieldId) {
+        const field = document.getElementById(fieldId);
+        const icon = field.nextElementSibling.querySelector('i');
+        
+        if (field.type === 'password') {
+            field.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            field.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    // Amélioration de l'expérience utilisateur sur mobile
+    document.addEventListener('DOMContentLoaded', function() {
+        // Ajoute une classe au chargement pour les animations
+        document.body.classList.add('loaded');
+        
+        // Animation des champs du formulaire
+        const formInputs = document.querySelectorAll('input, select');
+        formInputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.classList.add('ring-2', 'ring-green-100');
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.classList.remove('ring-2', 'ring-green-100');
+            });
+        });
+    });
+</script>
+
+<style>
+    /* Animation de transition douce pour les champs du formulaire */
+    .transition-all {
+        transition-property: all;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 150ms;
+    }
+    
+    /* Amélioration de l'apparence des champs de sélection */
+    select {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1em;
+    }
+    
+    /* Style personnalisé pour les messages d'erreur */
+    .error-message {
+        @apply mt-1 text-sm text-red-600;
+    }
+    
+    /* Animation de chargement */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    body.loaded .bg-white {
+        animation: fadeIn 0.3s ease-out forwards;
+    }
+</style>
+{% endblock %}

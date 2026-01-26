@@ -33,6 +33,66 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    public function countThisMonth(): int
+    {
+        $startDate = new \DateTime('first day of this month');
+        $endDate = new \DateTime('last day of this month');
+
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.createdAt >= :startDate')
+            ->andWhere('u.createdAt <= :endDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+    
+    public function countLastMonth(): int
+    {
+        $startDate = new \DateTime('first day of last month');
+        $endDate = new \DateTime('last day of last month');
+
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.createdAt >= :startDate')
+            ->andWhere('u.createdAt <= :endDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+    
+    public function countNewUsersToday(): int
+    {
+        $today = new \DateTime('today');
+        $tomorrow = new \DateTime('tomorrow');
+        
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.createdAt >= :today')
+            ->andWhere('u.createdAt < :tomorrow')
+            ->setParameter('today', $today)
+            ->setParameter('tomorrow', $tomorrow)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+    
+    public function countNewUsersThisMonth(): int
+    {
+        $startDate = new \DateTime('first day of this month');
+        $endDate = new \DateTime('now');
+        
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->where('u.createdAt >= :startDate')
+            ->andWhere('u.createdAt <= :endDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('endDate', $endDate)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return User[] Returns an array of User objects
     //     */

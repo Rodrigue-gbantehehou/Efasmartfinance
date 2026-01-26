@@ -1,0 +1,469 @@
+{# templates/dashboard/admin/dashboard.html.twig #}
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Tableau de bord - Administration{% endblock %}
+
+{% block contentadmin %}
+<div class="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <!-- Header avec recherche et filtres -->
+    <div class="border-b border-gray-200 bg-white">
+        <div class="px-4 md:px-6 py-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Tableau de bord</h1>
+                    <p class="text-gray-600 mt-1 text-sm md:text-base">Vue d'ensemble de la plateforme EFA SMART FINANCE</p>
+                </div>
+             <!--   
+                <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                    <div class="relative flex-1 min-w-[200px]">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input 
+                            type="search" 
+                            placeholder="Rechercher..." 
+                            class="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-300 rounded-xl focus:ring-2 focus:ring-green-700 focus:border-green-700 outline-none transition-all bg-white"
+                        >
+                    </div>
+                    
+                    <div class="flex items-center gap-2">
+                        <button class="p-2.5 bg-white border border-gray-300 hover:border-gray-400 rounded-xl text-gray-700 hover:text-gray-900 transition-colors">
+                            <i class="fas fa-filter"></i>
+                        </button>
+                        <button class="p-2.5 bg-white border border-gray-300 hover:border-gray-400 rounded-xl text-gray-700 hover:text-gray-900 transition-colors">
+                            <i class="fas fa-download"></i>
+                        </button>
+                        <div class="relative">
+                            <button class="p-2.5 bg-green-700 text-white rounded-xl hover:bg-accent transition-colors">
+                                <i class="fas fa-cog"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>-->
+            </div>
+    
+        </div>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="p-4 md:p-6 space-y-6">
+        <!-- Statistiques principales -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Utilisateurs -->
+            <div class="stats-card bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 rounded-xl bg-emerald-50 text-emerald-600">
+                        <i class="fas fa-users text-xl"></i>
+                    </div>
+                    <div class="flex items-center text-sm font-medium text-emerald-700 bg-emerald-100 px-2 py-1 rounded-full">
+                        <i class="fas fa-arrow-up mr-1 text-xs"></i>
+                        {{ stats.user_growth|default('12.5') }}%
+                    </div>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-900">{{ stats.total_users|default(0)|number_format(0, ',', ' ') }}</h3>
+                <p class="text-gray-600 text-sm mt-1">Utilisateurs total</p>
+                <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                    <span class="text-xs text-gray-500">
+                        <i class="fas fa-user-plus mr-1"></i>
+                        {{ stats.new_users_today|default(0) }} nouveaux
+                    </span>
+                    <a href="{{ path('admin_users') }}" class="text-xs font-medium text-emerald-700 hover:text-emerald-800 flex items-center gap-1">
+                        <span>Voir</span>
+                        <i class="fas fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Tontines -->
+            <div class="stats-card bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 rounded-xl bg-green-50 text-green-600">
+                        <i class="fas fa-piggy-bank text-xl"></i>
+                    </div>
+                    <div class="flex items-center text-sm font-medium text-green-700 bg-green-100 px-2 py-1 rounded-full">
+                        {{ stats.active_tontines_percentage|default('78') }}% actives
+                    </div>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-900">{{ stats.active_tontines|default(0)|number_format(0, ',', ' ') }}</h3>
+                <p class="text-gray-600 text-sm mt-1">Tontines actives</p>
+                <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                    <span class="text-xs text-gray-500">
+                        <i class="fas fa-calendar-day mr-1"></i>
+                        {{ stats.tontines_today|default(0) }} aujourd'hui
+                    </span>
+                    <a href="{{ path('admin_tontines') }}" class="text-xs font-medium text-green-700 hover:text-green-800 flex items-center gap-1">
+                        <span>Voir</span>
+                        <i class="fas fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Transactions -->
+            <div class="stats-card bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 rounded-xl bg-violet-50 text-violet-600">
+                        <i class="fas fa-exchange-alt text-xl"></i>
+                    </div>
+                    <div class="flex items-center text-sm font-medium text-violet-700 bg-violet-100 px-2 py-1 rounded-full">
+                        <i class="fas fa-check mr-1 text-xs"></i>
+                        {{ stats.success_rate|default('98.7') }}%
+                    </div>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-900">{{ stats.total_transactions|default(0)|number_format(0, ',', ' ') }}</h3>
+                <p class="text-gray-600 text-sm mt-1">Transactions totales</p>
+                <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                    <span class="text-xs text-gray-500">
+                        <i class="fas fa-clock mr-1"></i>
+                        {{ stats.today_transactions|default(0) }} aujourd'hui
+                    </span>
+                    <a href="{{ path('admin_transactions') }}" class="text-xs font-medium text-violet-700 hover:text-violet-800 flex items-center gap-1">
+                        <span>Voir</span>
+                        <i class="fas fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Revenu -->
+            <div class="stats-card bg-white border border-gray-200 rounded-xl p-6 shadow-sm hover:shadow-md transition-shadow">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="p-3 rounded-xl bg-amber-50 text-amber-600">
+                        <i class="fas fa-money-bill-wave text-xl"></i>
+                    </div>
+                    <div class="flex items-center text-sm font-medium text-amber-700 bg-amber-100 px-2 py-1 rounded-full">
+                        <i class="fas fa-chart-line mr-1 text-xs"></i>
+                        {{ stats.revenue_growth|default('24.3') }}%
+                    </div>
+                </div>
+                <h3 class="text-3xl font-bold text-gray-900">{{ stats.total_revenue|default(0)|number_format(0, ',', ' ') }} FCFA</h3>
+                <p class="text-gray-600 text-sm mt-1">Revenu total</p>
+                <div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                    <span class="text-xs text-gray-500">
+                        <i class="fas fa-chart-bar mr-1"></i>
+                        Moyenne: {{ stats.avg_transaction|default(5000)|number_format(0, ',', ' ') }} FCFA
+                    </span>
+                    <a href="{{ path('admin_reports') }}" class="text-xs font-medium text-amber-700 hover:text-amber-800 flex items-center gap-1">
+                        <span>Voir</span>
+                        <i class="fas fa-arrow-right text-xs"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Graphiques et indicateurs -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Graphique revenus -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl border border-gray-200 p-5 md:p-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">Performance financière</h3>
+                            <p class="text-gray-600 text-sm mt-1">Revenus des 12 derniers mois</p>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button class="chart-period-btn active px-3 py-1.5 text-xs font-medium bg-green-700 text-white rounded-lg">
+                                Mensuel
+                            </button>
+                            <button class="chart-period-btn px-3 py-1.5 text-xs font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors">
+                                Trimestriel
+                            </button>
+                        </div>
+                    </div>
+                    <div class="h-72">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                    
+                    <!-- Script pour initialiser le graphique avec les données -->
+                    <script>
+                        // Données pour le graphique
+                        const chartData = {
+                            labels: {{ stats.revenue_chart.labels|json_encode|raw }},
+                            data: {{ stats.revenue_chart.data|json_encode|raw }}
+                        };
+                    </script>
+                </div>
+            </div>
+
+            <!-- Indicateurs clés -->
+            <div class="space-y-6">
+                <!-- Objectifs -->
+                <div class="bg-white rounded-2xl border border-gray-200 p-5 md:p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-4">Objectifs du mois</h3>
+                    <div class="space-y-4">
+                        {% set goals = [
+                            { label: 'Nouveaux utilisateurs', current: stats.new_users_month|default(45), target: 100, color: 'emerald' },
+                            { label: 'Tontines créées', current: stats.new_tontines_month|default(18), target: 30, color: 'green' },
+                            { label: 'Volume transactions', current: stats.transaction_volume_month|default(850000), target: 1500000, color: 'violet' },
+                            { label: 'Satisfaction client', current: stats.satisfaction_rate|default(92), target: 95, color: 'amber' }
+                        ] %}
+                        
+                        {% for goal in goals %}
+                        <div>
+                            <div class="flex justify-between text-sm mb-2">
+                                <span class="font-medium text-gray-700">{{ goal.label }}</span>
+                                <span class="font-bold text-gray-900">{{ goal.current }} / {{ goal.target }}</span>
+                            </div>
+                            <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                {% set percentage = min(goal.current / goal.target * 100, 100) %}
+                                <div 
+                                    class="h-full bg-{{ goal.color }}-500 rounded-full progress-fill"
+                                    style="width: {{ percentage }}%"
+                                ></div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            
+            </div>
+        </div>
+
+        <!-- Dernières activités et actions rapides -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Activités récentes -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-2xl border border-gray-200 p-5 md:p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <div>
+                            <h3 class="text-lg font-bold text-gray-900">Activités récentes</h3>
+                            <p class="text-gray-600 text-sm mt-1">Dernières actions sur la plateforme</p>
+                        </div>
+                        <a href="{{ path('admin_audit_logs') }}" class="text-sm font-medium text-green-700 hover:text-accent flex items-center gap-2">
+                            Voir tout
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        {% for activity in recent_activities|default([]) %}
+                        <div class="activity-item">
+                            <div class="flex items-center gap-3">
+                                <div class="activity-icon">
+                                    {% if activity.entityType == 'user' %}
+                                    <i class="fas fa-user-plus text-emerald-600"></i>
+                                    {% elseif activity.entityType == 'tontine' %}
+                                    <i class="fas fa-piggy-bank text-green-600"></i>
+                                    {% elseif activity.entityType == 'transaction' %}
+                                    <i class="fas fa-exchange-alt text-violet-600"></i>
+                                    {% else %}
+                                    <i class="fas fa-bell text-gray-600"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="flex-1">
+                                    <p class="text-sm font-medium text-gray-900">{{ activity.description }}</p>
+                                    <div class="flex items-center gap-3 mt-1.5">
+                                        <span class="text-xs text-gray-500">
+                                            <i class="fas fa-clock mr-1"></i>
+                                            {{ activity.createdAt|date('d/m/Y H:i') }}
+                                        </span>
+                                        {% if activity.utilisateur and activity.utilisateur.uuid is defined %}
+                                        <span class="text-xs text-gray-500">
+                                            <i class="fas fa-user mr-1"></i>
+                                            {% if activity.utilisateur.uuid is not empty %}{{ activity.utilisateur.uuid }}{% endif %}
+                                            {% if activity.utilisateur.lastname is defined and activity.utilisateur.lastname is not empty %}{{ activity.utilisateur.lastname }}{% endif %}
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <a href="{{ activity.link|default('#') }}" class="text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-external-link-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-8">
+                            <div class="h-16 w-16 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center mx-auto mb-4">
+                                <i class="fas fa-history text-2xl"></i>
+                            </div>
+                            <p class="text-gray-500">Aucune activité récente</p>
+                            <p class="text-sm text-gray-400 mt-1">Les activités apparaîtront ici</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions rapides et métriques -->
+            <div class="space-y-6">
+                <!-- Actions rapides -->
+                <div class="bg-white rounded-2xl border border-gray-200 p-5 md:p-6">
+                    <h3 class="text-lg font-bold text-gray-900 mb-6">Actions rapides</h3>
+                    <div class="space-y-3">
+                        {% set quickActions = [
+                            { icon: 'user-plus', color: 'emerald', title: 'Ajouter utilisateur', desc: 'Créer un nouveau compte', path: 'admin_user_create' },
+                            { icon: 'plus-circle', color: 'green', title: 'Créer tontine', desc: 'Lancer un nouveau groupe', path: 'admin_tontines' },
+                        ] %}
+                        
+                        {% for action in quickActions %}
+                        <a href="{{ path(action.path) }}" class="flex items-center justify-between p-3 rounded-xl border border-gray-200 hover:border-green-700 hover:bg-green-700/5 transition-all duration-300 group">
+                            <div class="flex items-center gap-3">
+                                <div class="p-2.5 rounded-lg bg-{{ action.color }}-50 text-{{ action.color }}-600">
+                                    <i class="fas fa-{{ action.icon }}"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-medium text-gray-900">{{ action.title }}</div>
+                                    <div class="text-xs text-gray-600 mt-0.5">{{ action.desc }}</div>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400 group-hover:text-{{ action.color }}-600"></i>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+           
+            </div>
+            
+        </div>
+    </div>
+</div>
+<div class="max-w-7xl mx-auto px-4 py-10 ">
+    </div>
+
+<!-- Scripts pour les graphiques -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Graphique revenus
+    const revenueCtx = document.getElementById('revenueChart');
+    if (revenueCtx && typeof chartData !== 'undefined') {
+        new Chart(revenueCtx.getContext('2d'), {
+            type: 'line',
+            data: {
+                labels: chartData.labels,
+                datasets: [{
+                    label: 'Revenus (FCFA)',
+                    data: chartData.data,
+                    borderColor: '#10B981',
+                    backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4,
+                    pointBackgroundColor: '#10B981',
+                    pointBorderColor: '#FFFFFF',
+                    pointBorderWidth: 2,
+                    pointRadius: 3,
+                    pointHoverRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return new Intl.NumberFormat('fr-FR').format(context.parsed.y) + ' FCFA';
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(229, 231, 235, 0.3)' },
+                        ticks: {
+                            callback: function(value) {
+                                return (value / 1000000).toFixed(0) + 'M';
+                            }
+                        }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+    }
+
+    // Boutons période graphique
+    document.querySelectorAll('.chart-period-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            document.querySelectorAll('.chart-period-btn').forEach(b => {
+                b.classList.remove('active', 'bg-green-700', 'text-white');
+                b.classList.add('text-gray-700', 'bg-gray-100');
+            });
+            this.classList.add('active', 'bg-green-700', 'text-white');
+            this.classList.remove('text-gray-700', 'bg-gray-100');
+        });
+    });
+
+    // Animation de progression
+    const progressBars = document.querySelectorAll('.progress-fill');
+    progressBars.forEach(bar => {
+        const width = bar.style.width;
+        bar.style.width = '0';
+        setTimeout(() => {
+            bar.style.width = width;
+        }, 100);
+    });
+});
+</script>
+
+<style>
+/* Styles spécifiques au dashboard admin */
+.stats-card {
+    @apply bg-white rounded-2xl border border-gray-200 p-5 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5;
+}
+
+.quick-action-btn {
+    @apply flex items-center justify-between p-3 rounded-xl border border-gray-200 hover:border-green-700 hover:bg-green-700/5 transition-all duration-300;
+}
+
+.activity-item {
+    @apply p-3 rounded-xl hover:bg-gray-50 transition-colors;
+}
+
+.activity-icon {
+    @apply h-10 w-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.stats-card {
+    animation: fadeInUp 0.3s ease-out;
+    animation-fill-mode: both;
+}
+
+.stats-card:nth-child(1) { animation-delay: 0.1s; }
+.stats-card:nth-child(2) { animation-delay: 0.2s; }
+.stats-card:nth-child(3) { animation-delay: 0.3s; }
+.stats-card:nth-child(4) { animation-delay: 0.4s; }
+
+/* Responsive */
+@media (max-width: 640px) {
+    .stats-card h3 {
+        @apply text-2xl;
+    }
+    
+    .quick-action-btn {
+        @apply py-2.5 px-3;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .bg-gradient-to-b {
+        background-image: linear-gradient(to bottom, #1a1a1a, #000000);
+    }
+    
+    .stats-card {
+        @apply bg-gray-900 border-gray-800 text-white;
+    }
+    
+    .stats-card h3 {
+        @apply text-white;
+    }
+    
+    .stats-card p {
+        @apply text-gray-400;
+    }
+}
+</style>
+{% endblock %}

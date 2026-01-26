@@ -3,6 +3,7 @@
 namespace App\Controller\Dashboard;
 
 use App\Entity\Tontine;
+use App\Entity\Utilisateur;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Response;
@@ -10,7 +11,9 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+#[IsGranted('ROLE_USER')]
 final class DashboardController extends AbstractController
 {
     public function __construct(
@@ -42,6 +45,24 @@ final class DashboardController extends AbstractController
         ]);
     }
 
+    #[Route('/carte-utilisateur', name: 'app_user_card')]
+    public function userCard(Security $security): Response
+    {
+        $user = $security->getUser();
+        $tontine = $this->entityManager->getRepository(Tontine::class)->findOneBy(['utilisateur' => $user]);
+        
+        // Generate QR code URL
+        $qrCodeUrl = $this->generateUrl('app_public_tontine_card', [
+            'code' => $tontine ? $tontine->getTontineCode() : ''
+        ], true);
+
+        return $this->render('dashboard/pages/user_card.html.twig', [
+            'user' => $user,
+            'tontine' => $tontine,
+            'qrCodeUrl' => $qrCodeUrl
+        ]);
+    }
+
     #[Route('/api/tontines', name: 'api_tontines', methods: ['GET'])]
     public function getTontines(): JsonResponse
     {
@@ -52,15 +73,24 @@ final class DashboardController extends AbstractController
 
         $tontines = $this->entityManager->getRepository(Tontine::class)->findBy(['utilisateur' => $user]);
         
+
+        
         // Formatage des données pour le frontend
+        
         $formattedTontines = array_map(function($tontine) {
+            $nextPayment=null;
+            if($tontine->getNextDueDate() !== null) {
+                $nextPayment = $tontine->getNextDueDate()->format('Y-m-d');
+            }else {
+                $nextPayment = $tontine->getStartDate()->format('Y-m-d');
+            }
             return [
                 'id' => $tontine->getId(),
                 'name' => $tontine->getTontineCode() ?? 'Tontine #' . $tontine->getId(),
-                'amount' => (float) $tontine->getAmountPerPoint() * (float) $tontine->getTotalPoints(),
+                'amount' => (float) $tontine->getAmountPerPoint() * (float) $tontine->getTotalPoints() - (float) $tontine->getTotalPay(),
                 'period' => $tontine->getFrequency() ?? 'monthly',
                 'startDate' => $tontine->getStartDate() ? $tontine->getStartDate()->format('Y-m-d') : null,
-                'nextPayment' => $tontine->getNextDueDate() ? $tontine->getNextDueDate()->format('Y-m-d') : null,
+                'nextPayment' => $nextPayment,
                 'progress' => $this->calculateProgress($tontine),
                 'status' => $tontine->getStatut() ?? 'active',
                 'totalPay'=>$tontine->getTotalPay(),
@@ -119,22 +149,17 @@ final class DashboardController extends AbstractController
 
     private function calculateProgress(Tontine $tontine): int
     {
-        $start = $tontine->getStartDate();
-        $nextDue = $tontine->getNextDueDate();
+        $totalPay = $tontine->getTotalPay() ?? 0;
+        $amountPerPoint = $tontine->getAmountPerPoint() ?? 0;
+        $totalPoints = $tontine->getTotalPoints() ?? 0;
         
-        if (!$start || !$nextDue) {
-            return 0;
-        }
-
-        $now = new \DateTime();
-        $total = $nextDue->diff($start)->days;
-        $elapsed = $now->diff($start)->days;
-        
-        if ($total <= 0) {
-            return 100;
+        if ($amountPerPoint > 0 && $totalPoints > 0) {
+            $totalAmount = $amountPerPoint * $totalPoints;
+            $progress = min(100, (int) (($totalPay / $totalAmount) * 100));
+        } else {
+            $progress = 0;
         }
         
-        $progress = min(100, (int) (($elapsed / $total) * 100));
         return $progress;
     }
 }

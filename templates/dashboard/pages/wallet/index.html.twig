@@ -16,7 +16,7 @@
                 <h1 class="text-lg font-bold text-gray-900">Portefeuille</h1>
             </div>
             <button onclick="showDepositModal()"
-                    class="p-2 rounded-lg bg-primary text-white hover:bg-green-700 transition-colors touch-target">
+                    class="p-2 rounded-lg bg-green-700 text-white hover:bg-green-700 transition-colors touch-target">
                 <i class="fa-solid fa-plus"></i>
             </button>
         </div>
@@ -27,15 +27,15 @@
         <div class="max-w-[1400px] mx-auto px-4 md:px-6 py-3 flex items-center gap-3">
             <!-- Breadcrumb -->
             <div class="flex items-center gap-2 text-sm text-gray-500">
-                <a href="{{ path('app_dashboard') }}" class="hover:text-primary">Tableau de bord</a>
+                <a href="{{ path('app_dashboard') }}" class="hover:text-green-700">Tableau de bord</a>
                 <i class="fa-solid fa-chevron-right text-xs"></i>
-                <span class="text-primary font-medium">Mon Portefeuille</span>
+                <span class="text-green-700 font-medium">Mon Portefeuille</span>
             </div>
             
             <!-- Quick Actions -->
             <div class="flex items-center gap-2 ml-auto">
                 <button onclick="showDepositModal()"
-                        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-primary text-white hover:bg-green-700 transition-colors font-medium touch-target">
+                        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-green-700 text-white hover:bg-green-700 transition-colors font-medium touch-target">
                     <i class="fa-solid fa-plus"></i> Alimenter
                 </button>
             </div>
@@ -47,7 +47,7 @@
         <div class="max-w-[1400px] mx-auto px-3 xs:px-4 md:px-6 py-3 md:py-6 space-y-4 md:space-y-6">
             
             <!-- Section Solde Principal (Mobile Optimized) -->
-            <div class="bg-gradient-to-r from-primary to-green-600 rounded-xl md:rounded-2xl p-4 md:p-6 text-white">
+            <div class="bg-gradient-to-r from-green-700 to-green-600 rounded-xl md:rounded-2xl p-4 md:p-6 text-white">
                 <div class="flex flex-col gap-4 md:gap-6">
                     <div>
                         <div class="text-xs md:text-sm opacity-90">Solde disponible</div>
@@ -66,7 +66,7 @@
                     
                     <div class="flex gap-2 md:gap-3">
                         <button onclick="showDepositModal()"
-                                class="flex-1 inline-flex items-center justify-center gap-1 md:gap-2 px-3 md:px-6 py-2.5 md:py-3 bg-white text-primary rounded-lg hover:bg-gray-50 transition-colors font-medium touch-target text-sm md:text-base">
+                                class="flex-1 inline-flex items-center justify-center gap-1 md:gap-2 px-3 md:px-6 py-2.5 md:py-3 bg-white text-green-700 rounded-lg hover:bg-gray-50 transition-colors font-medium touch-target text-sm md:text-base">
                             <i class="fa-solid fa-plus text-xs md:text-sm"></i> Alimenter
                         </button>
                     </div>
@@ -79,7 +79,7 @@
                 <div class="bg-white rounded-xl border border-gray-200 p-4 md:p-6">
                     <div class="flex items-center justify-between mb-3 md:mb-4">
                         <h3 class="font-semibold text-gray-900 text-sm md:text-base flex items-center gap-2">
-                            <i class="fa-solid fa-bolt text-primary text-sm md:text-base"></i> 
+                            <i class="fa-solid fa-bolt text-green-700 text-sm md:text-base"></i> 
                             Paiement automatique
                         </h3>
                         {% set autoPayEnabled = wallet.autoPayEnabled ?? false %}
@@ -93,7 +93,7 @@
                                         peer-checked:after:translate-x-full peer-checked:after:border-white 
                                         after:content-[''] after:absolute after:top-[2px] after:left-[2px] 
                                         after:bg-white after:border-gray-300 after:border after:rounded-full 
-                                        after:h-4 after:w-4 md:after:h-5 md:after:w-5 after:transition-all peer-checked:bg-primary"></div>
+                                        after:h-4 after:w-4 md:after:h-5 md:after:w-5 after:transition-all peer-checked:bg-green-700"></div>
                         </label>
                     </div>
                     
@@ -118,10 +118,10 @@
                         </div>
                     </div>
                     
-                    <div class="mt-3 md:mt-4 p-2 md:p-3 bg-blue-50 border border-blue-200 rounded-lg">
+                    <div class="mt-3 md:mt-4 p-2 md:p-3 bg-green-50 border border-green-200 rounded-lg">
                         <div class="flex items-start gap-2">
-                            <i class="fa-solid fa-info-circle text-blue-500 text-xs md:text-sm mt-0.5"></i>
-                            <div class="text-xs md:text-sm text-blue-700">
+                            <i class="fa-solid fa-info-circle text-green-500 text-xs md:text-sm mt-0.5"></i>
+                            <div class="text-xs md:text-sm text-green-700">
                                 <strong>Important :</strong> L'argent reste votre propriété.
                             </div>
                         </div>
@@ -131,7 +131,7 @@
                 <!-- Statistiques -->
                 <div class="bg-white rounded-xl border border-gray-200 p-4 md:p-6">
                     <h3 class="font-semibold text-gray-900 mb-3 md:mb-4 flex items-center gap-2 text-sm md:text-base">
-                        <i class="fa-solid fa-chart-pie text-primary text-sm md:text-base"></i> 
+                        <i class="fa-solid fa-chart-pie text-green-700 text-sm md:text-base"></i> 
                         Statistiques
                     </h3>
                     
@@ -151,12 +151,12 @@
                         <div>
                             <div class="flex justify-between text-xs md:text-sm mb-1">
                                 <span class="text-gray-600">Paiements tontines</span>
-                                <span class="font-medium text-blue-600">
+                                <span class="font-medium text-green-600">
                                     {{ tontinePayments|default(0)|number_format(0, ',', ' ') }} FCFA
                                 </span>
                             </div>
                             <div class="h-1.5 md:h-2 bg-gray-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-blue-500 rounded-full" 
+                                <div class="h-full bg-green-500 rounded-full" 
                                      style="width: {{ totalDeposited > 0 ? (tontinePayments|default(0) / totalDeposited * 100) : 0 }}%"></div>
                             </div>
                         </div>
@@ -164,12 +164,12 @@
                         <div>
                             <div class="flex justify-between text-xs md:text-sm mb-1">
                                 <span class="text-gray-600">Solde disponible</span>
-                                <span class="font-medium text-primary">
+                                <span class="font-medium text-green-700">
                                     {{ wallet.balance|default(0)|number_format(0, ',', ' ') }} FCFA
                                 </span>
                             </div>
                             <div class="h-1.5 md:h-2 bg-gray-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-primary rounded-full" 
+                                <div class="h-full bg-green-700 rounded-full" 
                                      style="width: {{ totalDeposited > 0 ? (wallet.balance|default(0) / totalDeposited * 100) : 0 }}%"></div>
                             </div>
                         </div>
@@ -185,8 +185,8 @@
                                 </div>
                                 <div class="text-xs text-gray-600">Tontines payées</div>
                             </div>
-                            <div class="text-center p-2 md:p-3 bg-blue-50 rounded-lg">
-                                <div class="text-base md:text-lg font-bold text-blue-700">
+                            <div class="text-center p-2 md:p-3 bg-green-50 rounded-lg">
+                                <div class="text-base md:text-lg font-bold text-green-700">
                                     {{ wallet.balance|default(0)|number_format(0, ',', ' ') }}
                                 </div>
                                 <div class="text-xs text-gray-600">Disponible</div>
@@ -201,31 +201,40 @@
                 <h3 class="font-semibold text-gray-900 mb-3 text-sm">Actions rapides</h3>
                 <div class="grid grid-cols-4 gap-2">
                     <button onclick="showDepositModal()"
-                            class="flex flex-col items-center p-2 border border-gray-200 rounded-lg hover:border-primary hover:shadow-sm transition-all touch-target">
-                        <div class="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center mb-1">
-                            <i class="fa-solid fa-plus text-primary text-xs"></i>
+                            class="flex flex-col items-center p-2 border border-gray-200 rounded-lg hover:border-green-700 hover:shadow-sm transition-all touch-target">
+                        <div class="w-8 h-8 rounded-full bg-green-700/10 flex items-center justify-center mb-1">
+                            <i class="fa-solid fa-plus text-green-700 text-xs"></i>
                         </div>
                         <span class="text-xs text-gray-900">Alimenter</span>
                     </button>
-                    
-                    <button onclick="toggleAutoPay(!{{ wallet.autoPayEnabled ? 'true' : 'false' }})"
-                            class="flex flex-col items-center p-2 border border-gray-200 rounded-lg hover:border-primary hover:shadow-sm transition-all touch-target">
-                        <div class="w-8 h-8 rounded-full bg-purple-100 flex items-center justify-center mb-1">
-                            <i class="fa-solid fa-bolt text-purple-500 text-xs"></i>
+                    {% if wallet ? 'enabled' : 'disabled' %}
+                    <button onclick="toggleAutoPay(false)"
+                            class="flex flex-col items-center p-2 border border-gray-200 rounded-lg hover:border-green-700 hover:shadow-sm transition-all touch-target">
+                        <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center mb-1">
+                            <i class="fa-solid fa-bolt text-yellow-500 text-xs"></i>
                         </div>
                         <span class="text-xs text-gray-900">Auto-pay</span>
                     </button>
+                    {% else %}
+                    <button onclick="toggleAutoPay(true)"
+                            class="flex flex-col items-center p-2 border border-gray-200 rounded-lg hover:border-green-700 hover:shadow-sm transition-all touch-target">
+                        <div class="w-8 h-8 rounded-full bg-yellow-100 flex items-center justify-center mb-1">
+                            <i class="fa-solid fa-bolt text-yellow-500 text-xs"></i>
+                        </div>
+                        <span class="text-xs text-gray-900">Auto-pay</span>
+                    </button>
+                    {% endif %}
                     
                     <button onclick="showHistory()"
-                            class="flex flex-col items-center p-2 border border-gray-200 rounded-lg hover:border-primary hover:shadow-sm transition-all touch-target">
-                        <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mb-1">
-                            <i class="fa-solid fa-history text-blue-500 text-xs"></i>
+                            class="flex flex-col items-center p-2 border border-gray-200 rounded-lg hover:border-green-700 hover:shadow-sm transition-all touch-target">
+                        <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mb-1">
+                            <i class="fa-solid fa-history text-green-500 text-xs"></i>
                         </div>
                         <span class="text-xs text-gray-900">Historique</span>
                     </button>
                     
                     <button onclick="showHelp()"
-                            class="flex flex-col items-center p-2 border border-gray-200 rounded-lg hover:border-primary hover:shadow-sm transition-all touch-target">
+                            class="flex flex-col items-center p-2 border border-gray-200 rounded-lg hover:border-green-700 hover:shadow-sm transition-all touch-target">
                         <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center mb-1">
                             <i class="fa-solid fa-question text-gray-500 text-xs"></i>
                         </div>
@@ -240,7 +249,7 @@
                 <div class="p-4 md:p-6 border-b border-gray-100">
                     <div class="flex items-center justify-between">
                         <h2 class="text-base md:text-lg font-semibold text-gray-900">
-                            <i class="fa-solid fa-receipt text-primary mr-2"></i> 
+                            <i class="fa-solid fa-receipt text-green-700 mr-2"></i> 
                             Transactions récentes
                         </h2>
                         <div class="text-xs md:text-sm text-gray-500">
@@ -251,7 +260,7 @@
                     <!-- Filtres Mobile -->
                     <div class="mt-3 md:mt-4 overflow-x-auto">
                         <div class="flex gap-1 md:gap-2 min-w-max">
-                            <button class="px-3 py-1.5 md:px-4 md:py-2 bg-primary text-white rounded-lg text-xs md:text-sm font-medium touch-target">
+                            <button class="px-3 py-1.5 md:px-4 md:py-2 bg-green-700 text-white rounded-lg text-xs md:text-sm font-medium touch-target">
                                 Toutes
                             </button>
                             <button class="px-3 py-1.5 md:px-4 md:py-2 bg-gray-100 text-gray-700 hover:bg-gray-200 rounded-lg text-xs md:text-sm font-medium touch-target">
@@ -272,7 +281,7 @@
                                 <div class="flex items-center gap-2 md:gap-3 flex-1 min-w-0">
                                     <div class="w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center flex-shrink-0
                                         {{ transaction.type == 'deposit' ? 'bg-green-100 text-green-600' : 
-                                           transaction.type == 'tontine_payment' ? 'bg-blue-100 text-blue-600' : 
+                                           transaction.type == 'tontine_payment' ? 'bg-green-100 text-green-600' : 
                                            'bg-gray-100 text-gray-600' }}">
                                         {% if transaction.type == 'deposit' %}
                                             <i class="fa-solid fa-arrow-down text-xs md:text-sm"></i>
@@ -289,7 +298,7 @@
                                         <div class="flex items-center gap-1 md:gap-2 text-xs text-gray-500 mt-0.5">
                                             <span>{{ transaction.createdAt|date('d/m H:i') }}</span>
                                             {% if transaction.isAutomatic %}
-                                                <span class="px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded-full text-xs">
+                                                <span class="px-1.5 py-0.5 bg-yellow-100 text-yellow-600 rounded-full text-xs">
                                                     <i class="fa-solid fa-bolt text-[8px] md:text-xs mr-0.5"></i> Auto
                                                 </span>
                                             {% endif %}
@@ -316,7 +325,7 @@
                             <h3 class="text-base md:text-lg font-medium text-gray-900 mb-2">Aucune transaction</h3>
                             <p class="text-gray-500 text-sm md:text-base mb-4">Votre historique apparaîtra ici.</p>
                             <button onclick="showDepositModal()"
-                                    class="inline-flex items-center gap-1 md:gap-2 px-4 md:px-6 py-2 md:py-2.5 bg-primary text-white rounded-lg hover:bg-green-700 transition-colors text-sm md:text-base touch-target">
+                                    class="inline-flex items-center gap-1 md:gap-2 px-4 md:px-6 py-2 md:py-2.5 bg-green-700 text-white rounded-lg hover:bg-green-700 transition-colors text-sm md:text-base touch-target">
                                 <i class="fa-solid fa-plus text-xs md:text-sm"></i> Premier dépôt
                             </button>
                         </div>
@@ -327,7 +336,7 @@
                 {% if recentTransactions|length > 0 %}
                     <div class="p-3 md:p-4 border-t border-gray-100">
                         <a href="{{ path('app_wallet_transactions') }}" 
-                           class="block text-center text-primary hover:text-green-700 font-medium text-sm md:text-base touch-target py-2">
+                           class="block text-center text-green-700 hover:text-green-700 font-medium text-sm md:text-base touch-target py-2">
                             Voir tout l'historique <i class="fa-solid fa-arrow-right ml-1"></i>
                         </a>
                     </div>
@@ -339,7 +348,7 @@
                 <!-- Votre argent -->
                 <div class="bg-white rounded-xl border border-gray-200 p-4 md:p-6">
                     <h3 class="font-semibold text-gray-900 mb-3 md:mb-4 flex items-center gap-2 text-sm md:text-base">
-                        <i class="fa-solid fa-hand-holding-usd text-primary text-sm md:text-base"></i> 
+                        <i class="fa-solid fa-hand-holding-usd text-green-700 text-sm md:text-base"></i> 
                         Votre argent
                     </h3>
                     <p class="text-gray-600 text-xs md:text-sm mb-3 md:mb-4">
@@ -364,24 +373,24 @@
                 <!-- Comment ça marche -->
                 <div class="bg-white rounded-xl border border-gray-200 p-4 md:p-6">
                     <h3 class="font-semibold text-gray-900 mb-3 md:mb-4 flex items-center gap-2 text-sm md:text-base">
-                        <i class="fa-solid fa-question-circle text-primary text-sm md:text-base"></i> 
+                        <i class="fa-solid fa-question-circle text-green-700 text-sm md:text-base"></i> 
                         Comment ça marche ?
                     </h3>
                     <div class="space-y-2 md:space-y-3">
                         <div class="flex items-start gap-2 md:gap-3">
-                            <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-green-700 text-white text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
                                 1
                             </div>
                             <div class="text-gray-600 text-xs md:text-sm">Alimentez votre portefeuille</div>
                         </div>
                         <div class="flex items-start gap-2 md:gap-3">
-                            <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-green-700 text-white text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
                                 2
                             </div>
                             <div class="text-gray-600 text-xs md:text-sm">Activez le paiement automatique</div>
                         </div>
                         <div class="flex items-start gap-2 md:gap-3">
-                            <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-primary text-white text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
+                            <div class="w-5 h-5 md:w-6 md:h-6 rounded-full bg-green-700 text-white text-xs flex items-center justify-center flex-shrink-0 mt-0.5">
                                 3
                             </div>
                             <div class="text-gray-600 text-xs md:text-sm">Vos tontines sont payées auto</div>
@@ -431,7 +440,7 @@
                                        max="1000000"
                                        inputmode="numeric"
                                        pattern="[0-9]*"
-                                       class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary touch-target"
+                                       class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-green-700 touch-target"
                                        placeholder="Ex: 10000">
                                 <div class="absolute right-3 top-3 text-gray-500">FCFA</div>
                             </div>
@@ -444,13 +453,13 @@
                         <div class="md:hidden">
                             <div class="text-xs text-gray-700 mb-2">Montants rapides:</div>
                             <div class="grid grid-cols-3 gap-2">
-                                <button type="button" onclick="setAmount(5000)" class="px-3 py-2 border border-gray-300 rounded-lg hover:border-primary text-sm touch-target">
+                                <button type="button" onclick="setAmount(5000)" class="px-3 py-2 border border-gray-300 rounded-lg hover:border-green-700 text-sm touch-target">
                                     5 000
                                 </button>
-                                <button type="button" onclick="setAmount(10000)" class="px-3 py-2 border border-gray-300 rounded-lg hover:border-primary text-sm touch-target">
+                                <button type="button" onclick="setAmount(10000)" class="px-3 py-2 border border-gray-300 rounded-lg hover:border-green-700 text-sm touch-target">
                                     10 000
                                 </button>
-                                <button type="button" onclick="setAmount(25000)" class="px-3 py-2 border border-gray-300 rounded-lg hover:border-primary text-sm touch-target">
+                                <button type="button" onclick="setAmount(25000)" class="px-3 py-2 border border-gray-300 rounded-lg hover:border-green-700 text-sm touch-target">
                                     25 000
                                 </button>
                             </div>
@@ -462,21 +471,21 @@
                                 Méthode de paiement
                             </label>
                             <div class="space-y-2">
-                                <label class="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-primary cursor-pointer touch-target">
-                                    <input type="radio" name="paymentMethod" value="orange_money" class="text-primary" checked>
-                                    <i class="fa-solid fa-mobile-alt text-orange-500 text-lg"></i>
-                                    <span class="flex-1 text-sm md:text-base">Orange Money</span>
-                                    <i class="fa-solid fa-check-circle text-primary"></i>
+                                <label class="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-green-700 cursor-pointer touch-target">
+                                    <input type="radio" name="paymentMethod" value="yellow_money" class="text-green-700" checked>
+                                    <i class="fa-solid fa-mobile-alt text-yellow-500 text-lg"></i>
+                                    <span class="flex-1 text-sm md:text-base">yellow Money</span>
+                                    <i class="fa-solid fa-check-circle text-green-700"></i>
                                 </label>
-                                <label class="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-primary cursor-pointer touch-target">
-                                    <input type="radio" name="paymentMethod" value="mtn_money" class="text-primary">
+                                <label class="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-green-700 cursor-pointer touch-target">
+                                    <input type="radio" name="paymentMethod" value="mtn_money" class="text-green-700">
                                     <i class="fa-solid fa-mobile-alt text-yellow-500 text-lg"></i>
                                     <span class="flex-1 text-sm md:text-base">MTN Mobile Money</span>
                                     <i class="fa-regular fa-circle"></i>
                                 </label>
-                                <label class="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-primary cursor-pointer touch-target">
-                                    <input type="radio" name="paymentMethod" value="wave" class="text-primary">
-                                    <i class="fa-solid fa-wave-square text-blue-500 text-lg"></i>
+                                <label class="flex items-center gap-3 p-3 border border-gray-300 rounded-lg hover:border-green-700 cursor-pointer touch-target">
+                                    <input type="radio" name="paymentMethod" value="wave" class="text-green-700">
+                                    <i class="fa-solid fa-wave-square text-green-500 text-lg"></i>
                                     <span class="flex-1 text-sm md:text-base">Wave</span>
                                     <i class="fa-regular fa-circle"></i>
                                 </label>
@@ -491,7 +500,7 @@
                             <input type="tel" 
                                    name="phoneNumber"
                                    inputmode="tel"
-                                   class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary touch-target"
+                                   class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-green-700 touch-target"
                                    placeholder="+225 07 00 00 00 00">
                         </div>
                         
@@ -508,7 +517,7 @@
                                 </div>
                                 <div class="flex justify-between text-sm text-gray-500 pt-2 border-t border-gray-100">
                                     <span class="font-medium">Total à payer</span>
-                                    <span id="depositTotal" class="font-bold text-primary">0 FCFA</span>
+                                    <span id="depositTotal" class="font-bold text-green-700">0 FCFA</span>
                                 </div>
                             </div>
                         </div>
@@ -516,7 +525,7 @@
                         <!-- Bouton de soumission -->
                         <div class="mt-4 md:mt-6">
                             <button type="submit"
-                                    class="w-full px-6 py-4 bg-primary text-white rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center justify-center gap-2 text-base touch-target">
+                                    class="w-full px-6 py-4 bg-green-700 text-white rounded-lg hover:bg-green-700 transition-colors font-medium flex items-center justify-center gap-2 text-base touch-target">
                                 <i class="fa-solid fa-lock"></i> 
                                 <span>Payer maintenant</span>
                             </button>
@@ -601,7 +610,7 @@ document.addEventListener('DOMContentLoaded', function() {
     paymentMethods.forEach(method => {
         method.addEventListener('change', function() {
             const phoneField = document.getElementById('phoneNumberField');
-            if (this.value === 'orange_money' || this.value === 'mtn_money') {
+            if (this.value === 'yellow_money' || this.value === 'mtn_money') {
                 phoneField.classList.remove('hidden');
             } else {
                 phoneField.classList.add('hidden');
@@ -621,7 +630,7 @@ function updateDepositSummary() {
     // Calcul des frais selon la méthode
     let fees = 0;
     if (amount > 0) {
-        if (method === 'orange_money' || method === 'mtn_money') {
+        if (method === 'yellow_money' || method === 'mtn_money') {
             fees = Math.max(100, amount * 0.01); // 1% minimum 100 FCFA
         } else if (method === 'wave') {
             fees = Math.max(50, amount * 0.0075); // 0.75% minimum 50 FCFA
@@ -681,7 +690,7 @@ function showNotification(message, type) {
     notification.className = `mobile-notification fixed top-4 left-4 right-4 px-4 py-3 rounded-lg shadow-lg z-50 transform transition-all duration-300 ${
         type === 'success' ? 'bg-green-500 text-white' : 
         type === 'error' ? 'bg-red-500 text-white' : 
-        'bg-blue-500 text-white'
+        'bg-green-500 text-white'
     }`;
     notification.innerHTML = `
         <div class="flex items-center justify-between">

@@ -3,34 +3,73 @@
 namespace App\Controller;
 
 use App\Entity\Tontine;
+use App\Entity\ActivityLog;
+use App\Service\ActivityLogger;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+#[IsGranted('ROLE_USER')]
 final class TontineController extends AbstractController
 {
+    public function __construct(
+        private ActivityLogger $activityLogger
+    ) {}
+
+    /**
+     * Affiche la page principale des tontines
+     */
+   
     #[Route('/tontine', name: 'app_tontine')]
-    public function index(): Response
+    public function index(EntityManagerInterface $em): Response
     {
+        // Vérifier le nombre de tontines actives
+        $nrbtontineactive = $em->getRepository(Tontine::class)->count(['statut' => 'active', 'utilisateur' => $this->getUser()]);
+        if ($nrbtontineactive >= 3) {
+            // Réponse message d'alerte
+            $this->addFlash('error', 'Vous avez atteint le nombre maximum de tontines actives.');
+            return $this->redirectToRoute('app_tontines_index');
+        }
         return $this->render('tontine/index.html.twig', [
             'controller_name' => 'TontineController',
         ]);
     }
-    #[Route('/api/tontine/create', name: 'app_tontine_create', methods: ['POST', 'GET'])]
+    #[Route('/api/tontine/create', name: 'app_tontine_create', methods: ['POST'])]
     public function createTontine(
         Request $request,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
     ): JsonResponse {
-
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
         $user = $this->getUser();
 
-        $data = json_decode($request->getContent(), true);
+        // Vérifier le nombre de tontines actives
+        $nrbtontineactive = $entityManager->getRepository(Tontine::class)->count([
+            'statut' => 'active', 
+            'utilisateur' => $user
+        ]);
+
+        if ($nrbtontineactive >= 3) {
+            error_log('Erreur : Nombre maximum de tontines actives atteint');
+            return $this->json([
+                'success' => false,
+                'message' => 'Vous avez atteint le nombre maximum de tontines actives (3).'
+            ], Response::HTTP_FORBIDDEN);
+        }
+
+        // Récupérer les données JSON de la requête
+        $content = $request->getContent();
+        $data = json_decode($content, true);
+
+        // Journalisation pour le débogage
+        error_log('Données reçues : ' . print_r($data, true));
+        error_log('Contenu brut : ' . $content);
 
         if (!$data) {
+            error_log('Erreur : Données JSON invalides');
             return $this->json([
                 'success' => false,
                 'message' => 'Données JSON invalides.'
@@ -86,19 +125,40 @@ final class TontineController extends AbstractController
 
         try {
             $tontine = new Tontine();
-            $tontine->setTontineCode($this->generateTontineCode());
-            $tontine->setAmountPerPoint((float) $data['amount']);
+            $tontine->setTontineCode($this->generateTontineCode($entityManager));
+            $tontine->setAmountPerPoint((int) $data['amount']); // Conversion en int car le champ est de type integer
             $tontine->setTotalPoints($totalPoints);
             $tontine->setFrequency($data['period']);
             $tontine->setStartDate($startDate);
             $tontine->setStatut('active');
             $tontine->setName($data['name']);
             $tontine->setCreatedAt(new \DateTimeImmutable());
+            // Ne pas définir endedAt à la création
+            // Ne pas définir retraitAt car cette méthode n'existe pas
             $tontine->setUtilisateur($user);
-            $tontine->updateNextDueDate();
-
+            
+            // Journalisation pour le débogage
+error_log('Création de la tontine : ' . print_r([
+                'code' => $tontine->getTontineCode(),
+                'amount' => $tontine->getAmountPerPoint(),
+                'points' => $tontine->getTotalPoints(),
+                'frequency' => $tontine->getFrequency(),
+                'startDate' => $tontine->getStartDate() ? $tontine->getStartDate()->format('Y-m-d') : null,
+                'user_identifier' => $user->getUserIdentifier()
+            ], true));
+            
             $entityManager->persist($tontine);
             $entityManager->flush();
+            
+            error_log('Tontine créée avec succès, ID : ' . $tontine->getId());
+//log   
+            $this->activityLogger->log(
+                $user,
+                'TONTINE_CREATED',
+                'Tontine',
+                $tontine->getId(),
+                'Création d’une nouvelle tontine'
+            );
 
             return $this->json([
                 'success' => true,
@@ -115,8 +175,34 @@ final class TontineController extends AbstractController
     }
 
 
-    private function generateTontineCode(): string
+    /**
+     * Compte le nombre de tontines actives de l'utilisateur
+     */
+    #[Route('/api/tontine/count', name: 'app_tontine_count', methods: ['GET'])]
+    public function countActiveTontines(EntityManagerInterface $em): JsonResponse
     {
-        return bin2hex(random_bytes(5));
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        
+        $count = $em->getRepository(Tontine::class)->count([
+            'statut' => 'active', 
+            'utilisateur' => $this->getUser()
+        ]);
+
+        return $this->json([
+            'count' => $count,
+            'canCreate' => $count < 3
+        ]);
+    }
+
+    private function generateTontineCode(EntityManagerInterface $em): int
+    {
+        // Générer un code des tontines unique
+        do {
+            $code = random_int(10000, 99999);
+            $exists = $em->getRepository(Tontine::class)
+                ->findOneBy(['tontineCode' => $code]);
+        } while ($exists);
+
+        return $code;
     }
 }

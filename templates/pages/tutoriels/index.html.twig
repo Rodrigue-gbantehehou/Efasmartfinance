@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tutoriels - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="relative bg-green-700 text-white py-16 md:py-20">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Tutoriels</h1>
+        <p class="text-xl text-gray-100 max-w-3xl mx-auto">Découvrez nos guides et tutoriels pour utiliser au mieux nos services.</p>
+    </div>
+    <div class="absolute bottom-0 left-0 right-0 h-12 bg-white transform translate-y-1/2 rounded-t-3xl"></div>
+</div>
+<div class="min-h-screen bg-gray-50  px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">   
+        <div class="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            <!-- Carte de tutoriel exemple -->
+            <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+                <div class="p-6">
+                    <div class="flex items-center justify-center w-12 h-12 rounded-md bg-green-100 text-green-600 mb-4">
+                        <i class="fas fa-play-circle text-xl"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">Débuter avec EFA Smart Finance</h3>
+                    <p class="text-gray-600 mb-4">Apprenez à configurer votre compte et à effectuer vos premières opérations.</p>
+                    <a href="#" class="text-green-600 hover:text-green-800 font-medium inline-flex items-center">
+                        Voir le tutoriel
+                        <i class="fas fa-arrow-right ml-2"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Ajoutez plus de cartes de tutoriel ici -->
+        </div>
+    </div>
+</div>
+{% endblock %}

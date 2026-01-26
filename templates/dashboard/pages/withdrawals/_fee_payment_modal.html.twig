@@ -1,0 +1,179 @@
+<!-- Modal de paiement des frais -->
+<div id="feePaymentModal" class="fixed z-10 inset-0 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <!-- Fond de la modale -->
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+        <!-- Contenu de la modale -->
+        <div class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+            <div class="sm:flex sm:items-start">
+                <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-yellow-100 sm:mx-0 sm:h-10 sm:w-10">
+                    <i class="fas fa-exclamation text-yellow-600"></i>
+                </div>
+                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                        Frais de retrait
+                    </h3>
+                    <div class="mt-2">
+                        <p class="text-sm text-gray-500">
+                            Des frais de retrait uniques de <span class="font-bold fees-amount">0</span> FCFA sont applicables pour ce retrait.
+                            Veuillez choisir comment vous souhaitez les régler :
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                <button type="button" id="payNowBtn" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+                    <span class="flex items-center">
+                        <i class="fas fa-credit-card mr-2"></i>
+                        Payer maintenant (KkiaPay)
+                    </span>
+                </button>
+                <a href="{{ path('app_tontines_show', {'id': tontine.id}) }}" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 sm:mt-0 sm:w-auto sm:text-sm">
+                    <span class="flex items-center">
+                        <i class="fas fa-building mr-2"></i>
+                        Payer plus tard à l'agence
+                    </span>
+                </a>
+            </div>
+            
+            <div id="kkiapay-container" class="mt-4 hidden">
+                <div class="text-center py-4">
+                    <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
+                    <p class="mt-2 text-sm text-gray-600">Chargement du module de paiement...</p>
+                </div>
+            </div>
+            
+            <div id="paymentStatus" class="mt-4 hidden">
+                <div class="bg-green-50 border-l-4 border-green-400 p-4">
+                    <div class="flex">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-check-circle text-green-400"></i>
+                        </div>
+                        <div class="ml-3">
+                            <p class="text-sm text-green-700">
+                                Paiement effectué avec succès ! Redirection en cours...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('feePaymentModal');
+    const payNowBtn = document.getElementById('payNowBtn');
+    const kkiapayContainer = document.getElementById('kkiapay-container');
+    const paymentStatus = document.getElementById('paymentStatus');
+    const feesAmount = document.querySelector('.fees-amount');
+    
+    // Vérifier si des frais sont à payer
+    function checkFees() {
+        fetch('{{ path('app_withdrawal_request', {'id': tontine.id}) }}?check_fees=1', {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.has_paid_fees) {
+                // Mettre à jour le montant des frais
+                feesAmount.textContent = new Intl.NumberFormat('fr-FR').format(data.fees);
+                // Afficher la modale
+                modal.classList.remove('hidden');
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors de la vérification des frais :', error);
+        });
+    }
+    
+    // Vérifier les frais au chargement de la page
+    checkFees();
+    
+    // Gérer le clic sur le bouton "Payer maintenant"
+    payNowBtn.addEventListener('click', function() {
+        // Cacher le bouton et afficher le conteneur KkiaPay
+        payNowBtn.classList.add('hidden');
+        kkiapayContainer.classList.remove('hidden');
+        
+        // Charger le script KkiaPay s'il n'est pas déjà chargé
+        if (typeof initKkiapay !== 'function') {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.kkiapay.me/k.js';
+            script.onload = initializeKkiapay;
+            document.head.appendChild(script);
+        } else {
+            initializeKkiapay();
+        }
+    });
+    
+    function initializeKkiapay() {
+        // Récupérer les frais depuis l'élément DOM
+        const fees = parseInt(feesAmount.textContent.replace(/\s/g, ''));
+        
+        // Initialiser KkiaPay
+        window.kkiapay = window.kkiapay || {};
+        
+        // Configuration de KkiaPay
+        window.kkiapayConfig = {
+            api_key: 'YOUR_KKIAPAY_API_KEY', // À remplacer par votre clé API KkiaPay
+            amount: fees,
+            position: 'center',
+            theme: 'green',
+            payment_method: 'momo',
+            callback: function(response) {
+                if (response.status === 'SUCCESS') {
+                    // Afficher le statut de succès
+                    kkiapayContainer.classList.add('hidden');
+                    paymentStatus.classList.remove('hidden');
+                    
+                    // Rediriger après un court délai
+                    setTimeout(function() {
+                        window.location.href = '{{ path('app_withdrawal_verify_payment', {'id': tontine.id}) }}';
+                    }, 2000);
+                } else {
+                    // Afficher un message d'erreur
+                    alert('Le paiement a échoué. Veuillez réessayer ou payer à l\'agence.');
+                    window.location.reload();
+                }
+            },
+            data: {
+                tontine_id: {{ tontine.id }},
+                user_id: {{ app.user.id }},
+                fee_amount: fees
+            }
+        };
+        
+        // Initialiser le widget KkiaPay
+        window.kkiapay = new Kkiapay({
+            api_key: window.kkiapayConfig.api_key,
+            amount: window.kkiapayConfig.amount,
+            position: window.kkiapayConfig.position,
+            theme: window.kkiapayConfig.theme,
+            payment_method: window.kkiapayConfig.payment_method,
+            callback: window.kkiapayConfig.callback,
+            data: window.kkiapayConfig.data
+        });
+    }
+    
+    // Fermer la modale en cliquant en dehors
+    modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+            modal.classList.add('hidden');
+        }
+    });
+    
+    // Gérer la touche Echap
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !modal.classList.contains('hidden')) {
+            modal.classList.add('hidden');
+        }
+    });
+});
+</script>

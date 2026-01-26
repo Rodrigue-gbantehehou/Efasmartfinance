@@ -1,0 +1,644 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}Demande de retrait - {{ tontine.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .payment-method-option {
+            border: 2px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .payment-method-option:hover {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+        
+        .payment-method-option.selected {
+            border-color: #10b981;
+            background-color: #f0fdf4;
+        }
+        
+        .payment-method-option input[type="radio"] {
+            margin-right: 0.5rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            color: #dc2626;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .kkiapay-button {
+            background-color: #10b981 !important;
+            color: white !important;
+            border: none !important;
+            padding: 12px 24px !important;
+            border-radius: 8px !important;
+            font-weight: 600 !important;
+            cursor: pointer !important;
+            transition: background-color 0.3s !important;
+        }
+        
+        .kkiapay-button:hover {
+            background-color: #0da271 !important;
+        }
+    </style>
+{% endblock %}
+
+{% block contentdashboard %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <!-- En-tête -->
+        <div class="mb-6">
+            <div class="flex items-center mb-4">
+                <a href="{{ path('app_tontines_show', {id: tontine.id}) }}" 
+                   class="text-gray-500 hover:text-gray-700 mr-4 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                </a>
+                <h1 class="text-2xl font-bold text-gray-800">Demande de retrait</h1>
+            </div>
+            
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-5 border border-green-100">
+                <div class="flex items-center mb-3">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h2 class="font-semibold text-gray-800">{{ tontine.name }}</h2>
+                        <p class="text-sm text-gray-600">Tontine active</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-4 mt-4">
+                    <div class="bg-white rounded-lg p-3 border border-gray-100">
+                        <p class="text-sm text-gray-600 mb-1">Total payé</p>
+                        <p class="text-xl font-bold text-green-600">
+                            {{ tontine.totalPay|number_format(0, ',', ' ') }} FCFA
+                        </p>
+                    </div>
+                    <div class="bg-white rounded-lg p-3 border border-gray-100">
+                        <p class="text-sm text-gray-600 mb-1">Solde disponible</p>
+                        <p class="text-xl font-bold text-blue-600">
+                            {{ tontine.availableWithdrawalAmount|number_format(0, ',', ' ') }} FCFA
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulaire -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            {{ form_start(form, {attr: {id: 'withdrawal-form', class: 'space-y-6'}}) }}
+
+            <!-- Type de retrait -->
+            <div>
+                <label class="block text-sm font-bold text-green-700 mb-3 uppercase">
+                    Type de retrait
+                </label>
+                <div class="grid grid-cols-2 gap-4">
+                    {% for child in form.withdrawal_type %}
+                        <label class="payment-method-option {% if loop.first %}selected{% endif %}" 
+                               data-target="{{ child.vars.value }}">
+                            <div class="flex items-center border border-gray-200 rounded-lg p-3">
+                                {{ form_widget(child, {attr: {class: 'mr-3'}}) }}
+                                <div >
+                                    <span class="font-medium">
+                                        {{ child.vars.label|trans }}
+                                    </span>
+                                    
+                                </div>
+                            </div>
+                        </label>
+                    {% endfor %}
+                </div>
+                {{ form_errors(form.withdrawal_type) }}
+            </div>
+
+            <!-- Montant personnalisé -->
+            <div id="custom-amount-container" class="bg-gray-50 rounded-lg p-4 hidden">
+                <div class="relative">
+                    {{ form_label(form.custom_amount, null, {label_attr: {class: 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                    <div class="relative">
+                        {{ form_widget(form.custom_amount, {attr: {
+                            class: 'block w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors',
+                            placeholder: 'Entrez le montant'
+                        }}) }}
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <span class="text-gray-500">FCFA</span>
+                        </div>
+                    </div>
+                    {{ form_errors(form.custom_amount) }}
+                    <p class="text-sm text-gray-500 mt-2">
+                        Maximum: {{ tontine.availableWithdrawalAmount|number_format(0, ',', ' ') }} FCFA
+                    </p>
+                </div>
+            </div>
+
+            <!-- Mode de retrait -->
+            <div>
+                <label class="block text-sm font-bold text-green-700 mb-3 uppercase">
+                    Mode de retrait
+                </label>
+                <div class="grid grid-cols-2 gap-4">
+                    {% for child in form.withdrawal_method %}
+                        <label class="payment-method-option {% if loop.first %}selected{% endif %}" 
+                               data-target="{{ child.vars.value }}">
+                            <div class="flex items-center">
+                                {{ form_widget(child, {attr: {class: 'mr-3'}}) }}
+                                <div>
+                                    <span class="font-medium">
+                                        {{ child.vars.label|trans }}
+                                    </span>
+                                   
+                                </div>
+                            </div>
+                        </label>
+                    {% endfor %}
+                </div>
+                {{ form_errors(form.withdrawal_method) }}
+            </div>
+
+            <!-- Numéro de téléphone -->
+            <div id="phone-container" class="hidden bg-gray-50 rounded-lg p-4">
+                <div class="relative">
+                    {{ form_label(form.phone_number, null, {label_attr: {class: 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                    
+                        {{ form_widget(form.phone_number, {attr: {
+                            class: 'block w-full  px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-colors',
+                            placeholder: '+229 00 00 00 00'
+                        }}) }}
+                    {{ form_errors(form.phone_number) }}
+                </div>
+            </div>
+
+            <!-- Frais de retrait -->
+            {% if not tontine.isFraisPreleves %}
+                <div class="bg-yellow-50 border border-yellow-100 rounded-xl p-5">
+                    <div class="flex items-start mb-4">
+                        <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3 flex-shrink-0">
+                            <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.342 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-gray-800 mb-1">Frais de retrait</h3>
+                            <p class="text-sm text-gray-600">
+                                Frais uniques pour le premier retrait de cette tontine
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white rounded-lg p-4 mb-4">
+                        <div class="flex justify-between items-center">
+                            <span class="text-gray-700">Montant des frais</span>
+                            <span class="text-lg font-bold text-yellow-600">
+                                {{ fees|number_format(0, ',', ' ') }} FCFA
+                            </span>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-3">
+                            Mode de paiement des frais
+                        </label>
+                        <div class="space-y-3">
+                            {% for child in form.fee_payment_method %}
+                                <label class="flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                                    {{ form_widget(child, {attr: {class: 'mr-3'}}) }}
+                                    <div>
+                                        <span class="font-medium">
+                                            {{ child.vars.label|trans }}
+                                        </span>
+                                        {% if child.vars.value == 'online' %}
+                                            <p class="text-sm text-gray-500 mt-1">Paiement sécurisé par carte ou mobile money</p>
+                                        {% else %}
+                                            <p class="text-sm text-gray-500 mt-1">Paiement lors du retrait en agence</p>
+                                        {% endif %}
+                                    </div>
+                                </label>
+                            {% endfor %}
+                        </div>
+                        {{ form_errors(form.fee_payment_method) }}
+                    </div>
+                </div>
+            {% endif %}
+
+            <!-- Bouton de soumission -->
+            <div class="pt-4">
+                <button type="submit" 
+                        id="submit-btn"
+                        class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white font-semibold py-4 px-6 rounded-xl hover:from-green-700 hover:to-emerald-700 focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50 transition-all duration-200 flex items-center justify-center">
+                    <span id="submit-text">Valider la demande de retrait</span>
+                    <div id="submit-spinner" class="hidden ml-2">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </button>
+                
+                <p class="text-sm text-gray-500 text-center mt-3">
+                    En soumettant cette demande, vous acceptez les conditions de retrait
+                </p>
+            </div>
+
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+
+<!-- Zone pour les messages d'erreur -->
+<div id="error-alert" class="hidden fixed top-4 right-4 max-w-sm w-full bg-red-50 border border-red-200 rounded-xl p-4 shadow-lg z-50">
+    <div class="flex items-start">
+        <div class="flex-shrink-0">
+            <svg class="h-6 w-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+        </div>
+        <div class="ml-3">
+            <h3 class="text-sm font-medium text-red-800" id="error-title"></h3>
+            <p class="text-sm text-red-700 mt-1" id="error-message"></p>
+        </div>
+        <button type="button" onclick="hideError()" class="ml-auto -mx-1.5 -my-1.5 rounded-lg p-1.5 inline-flex h-8 w-8 text-red-500 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-400">
+            <span class="sr-only">Fermer</span>
+            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+            </svg>
+        </button>
+    </div>
+</div>
+
+<!-- Script KKiaPay selon la documentation -->
+<script>
+// Variables globales
+let isSubmitting = false;
+let currentWithdrawalId = null;
+
+// Fonction pour afficher les erreurs
+function showError(title, message) {
+    const errorAlert = document.getElementById('error-alert');
+    const errorTitle = document.getElementById('error-title');
+    const errorMessage = document.getElementById('error-message');
+    
+    errorTitle.textContent = title;
+    errorMessage.textContent = message;
+    errorAlert.classList.remove('hidden');
+    
+    setTimeout(() => {
+        errorAlert.classList.add('hidden');
+    }, 5000);
+}
+
+function hideError() {
+    document.getElementById('error-alert').classList.add('hidden');
+}
+
+// Fonction pour gérer l'état du formulaire
+function setFormState(submitting) {
+    const submitBtn = document.getElementById('submit-btn');
+    const submitText = document.getElementById('submit-text');
+    const submitSpinner = document.getElementById('submit-spinner');
+    
+    isSubmitting = submitting;
+    
+    if (submitting) {
+        submitBtn.disabled = true;
+        submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+        submitText.textContent = 'Traitement en cours...';
+        submitSpinner.classList.remove('hidden');
+    } else {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('opacity-75', 'cursor-not-allowed');
+        submitText.textContent = 'Valider la demande de retrait';
+        submitSpinner.classList.add('hidden');
+    }
+}
+
+// Fonction pour charger KKiaPay dynamiquement
+function loadKKiaPayScript() {
+    return new Promise((resolve, reject) => {
+        if (window.openKkiapayWidget) {
+            resolve();
+            return;
+        }
+        
+        const script = document.createElement('script');
+        script.src = 'https://cdn.kkiapay.me/k.js';
+        script.async = true;
+        
+        script.onload = () => {
+            if (window.openKkiapayWidget) {
+                console.log('✅ SDK KKiaPay chargé');
+                resolve();
+            } else {
+                reject(new Error('SDK KKiaPay non disponible'));
+            }
+        };
+        
+        script.onerror = () => {
+            reject(new Error('Échec du chargement du SDK KKiaPay'));
+        };
+        
+        document.head.appendChild(script);
+        
+        setTimeout(() => {
+            if (!window.openKkiapayWidget) {
+                reject(new Error('Timeout du chargement de KKiaPay'));
+            }
+        }, 10000);
+    });
+}
+
+// Initialisation
+document.addEventListener('DOMContentLoaded', async () => {
+    console.log('🚀 Initialisation du formulaire de retrait');
+    
+    // Tenter de charger KKiaPay
+    try {
+        await loadKKiaPayScript();
+        
+        // Ajouter les listeners pour les événements KKiaPay
+        if (window.addSuccessListener) {
+            window.addSuccessListener(response => {
+                console.log('✅ Paiement réussi:', response);
+            });
+        }
+        
+        if (window.addFailedListener) {
+            window.addFailedListener(error => {
+                console.error('❌ Paiement échoué:', error);
+                showError('Paiement échoué', 'Le paiement a échoué. Veuillez réessayer.');
+                setFormState(false);
+            });
+        }
+    } catch (error) {
+        console.warn('⚠️ KKiaPay non disponible:', error.message);
+        // Désactiver l'option de paiement en ligne
+        disableOnlinePayment();
+    }
+    
+    // Gestion des options de paiement
+    const paymentOptions = document.querySelectorAll('.payment-method-option');
+    paymentOptions.forEach(option => {
+        const radio = option.querySelector('input[type="radio"]');
+        
+        option.addEventListener('click', () => {
+            paymentOptions.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            radio.checked = true;
+            radio.dispatchEvent(new Event('change'));
+        });
+        
+        radio.addEventListener('change', () => {
+            if (radio.checked) {
+                paymentOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+            }
+        });
+    });
+    
+    // Gestion de l'affichage conditionnel
+    const customAmountContainer = document.getElementById('custom-amount-container');
+    const phoneContainer = document.getElementById('phone-container');
+    
+    function toggleCustomAmount() {
+        const selected = document.querySelector('input[name="withdrawal_request[withdrawal_type]"]:checked');
+        if (selected && selected.value === 'custom') {
+            customAmountContainer.classList.remove('hidden');
+        } else {
+            customAmountContainer.classList.add('hidden');
+        }
+    }
+    
+    function togglePhone() {
+        const selected = document.querySelector('input[name="withdrawal_request[withdrawal_method]"]:checked');
+        if (selected && selected.value === 'mobile_money') {
+            phoneContainer.classList.remove('hidden');
+        } else {
+            phoneContainer.classList.add('hidden');
+        }
+    }
+    
+    // Fonction pour désactiver le paiement en ligne
+    function disableOnlinePayment() {
+        const onlinePaymentOption = document.querySelector('input[value="online"]');
+        if (onlinePaymentOption) {
+            onlinePaymentOption.disabled = true;
+            onlinePaymentOption.parentElement.parentElement.classList.add('opacity-50', 'cursor-not-allowed');
+            onlinePaymentOption.parentElement.parentElement.querySelector('p').textContent += ' (Indisponible)';
+            
+            // Forcer la sélection de "agence" si "online" était sélectionné
+            if (onlinePaymentOption.checked) {
+                const agencyOption = document.querySelector('input[value="agence"]');
+                if (agencyOption) {
+                    agencyOption.checked = true;
+                    agencyOption.dispatchEvent(new Event('change'));
+                }
+            }
+        }
+    }
+    
+    // Écouteurs d'événements
+    document.querySelectorAll('input[name="withdrawal_request[withdrawal_type]"]').forEach(radio => {
+        radio.addEventListener('change', toggleCustomAmount);
+    });
+    
+    document.querySelectorAll('input[name="withdrawal_request[withdrawal_method]"]').forEach(radio => {
+        radio.addEventListener('change', togglePhone);
+    });
+    
+    // Initialiser l'état
+    toggleCustomAmount();
+    togglePhone();
+    
+    // Gestion de la soumission du formulaire
+    const form = document.getElementById('withdrawal-form');
+    
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (isSubmitting) return;
+        
+        // Validation du montant personnalisé
+        const customAmountInput = document.getElementById('withdrawal_request_custom_amount');
+        if (customAmountInput && !customAmountInput.closest('.hidden')) {
+            const customAmount = parseFloat(customAmountInput.value) || 0;
+            const maxAmount = {{ tontine.availableWithdrawalAmount }};
+            
+            if (customAmount <= 0) {
+                showError('Montant invalide', 'Veuillez entrer un montant valide supérieur à 0.');
+                customAmountInput.focus();
+                return;
+            }
+            
+            if (customAmount > maxAmount) {
+                showError('Montant trop élevé', `Le montant ne peut pas dépasser ${maxAmount.toLocaleString()} FCFA.`);
+                customAmountInput.focus();
+                return;
+            }
+        }
+        
+        // Validation du numéro de téléphone
+        const phoneInput = document.getElementById('withdrawal_request_phone_number');
+        if (phoneInput && !phoneInput.closest('.hidden')) {
+            const phoneNumber = phoneInput.value.trim();
+            if (!phoneNumber || !/^\d{8,10}$/.test(phoneNumber.replace(/\s/g, ''))) {
+                showError('Numéro invalide', 'Veuillez entrer un numéro de téléphone valide.');
+                phoneInput.focus();
+                return;
+            }
+        }
+        
+        setFormState(true);
+        
+        try {
+            // Vérifier le mode de paiement des frais
+            const feePaymentMethod = document.querySelector('input[name="withdrawal_request[fee_payment_method]"]:checked');
+            const requiresOnlinePayment = feePaymentMethod && feePaymentMethod.value === 'online';
+            
+            // Préparer les données du formulaire
+            const formData = new FormData(form);
+            formData.append('tontine_id', '{{ tontine.id }}');
+            
+            // Envoyer la requête de préparation
+            const response = await fetch('{{ path("app_withdrawal_prepare") }}', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (!data.success) {
+                throw new Error(data.message || 'Erreur lors de la préparation du retrait');
+            }
+            
+            // Sauvegarder l'ID du retrait
+            currentWithdrawalId = data.withdrawal_id;
+            
+            // Si paiement en ligne requis
+            if (requiresOnlinePayment && data.requires_payment) {
+                if (!window.openKkiapayWidget) {
+                    throw new Error('Le service de paiement n\'est pas disponible. Veuillez choisir "En agence".');
+                }
+                
+                // Ouvrir le widget KKiaPay
+                openKKiaPayWidget(data);
+                
+            } else {
+                // Paiement en agence, rediriger vers la page de succès
+                window.location.href = '{{ path("app_withdrawal_success", {"id": "PLACEHOLDER"}) }}'.replace('PLACEHOLDER', data.withdrawal_id);
+            }
+            
+        } catch (error) {
+            console.error('❌ Erreur:', error);
+            showError('Erreur', error.message || 'Une erreur est survenue. Veuillez réessayer.');
+            setFormState(false);
+        }
+    });
+});
+
+// Fonction pour ouvrir le widget KKiaPay
+function openKKiaPayWidget(data) {
+    if (!window.openKkiapayWidget) {
+        showError('Erreur', 'Service de paiement non disponible');
+        setFormState(false);
+        return;
+    }
+    
+    // Récupérer le numéro de téléphone si disponible
+    const phoneInput = document.getElementById('withdrawal_request_phone_number');
+    const phone = phoneInput && !phoneInput.closest('.hidden') ? phoneInput.value.trim() : '';
+    
+    // Définir le callback URL
+    const callbackUrl = new URL('{{ path("app_withdrawal_verify_fee", {"id": "PLACEHOLDER"}) }}'.replace('PLACEHOLDER', currentWithdrawalId), window.location.origin);
+    
+    // Ouvrir le widget KKiaPay selon la documentation
+    window.openKkiapayWidget({
+        amount: data.fees.toString(),
+        key: '{{ kkiapay_public_key|default("sandbox") }}',
+        position: "center",
+        sandbox: {{ app.environment == 'dev' ? 'true' : 'false' }},
+        data: JSON.stringify({
+            withdrawal_id: currentWithdrawalId,
+            tontine_id: '{{ tontine.id }}',
+            user_id: '{{ app.user.id }}'
+        }),
+        phone: phone,
+        callback: callbackUrl.toString(),
+        theme: "#10b981",
+        name: '{{ app.user.firstName|default("Client") }}',
+        email: '{{ app.user.email|default("") }}'
+    });
+    
+    // Écouter les événements KKiaPay
+    if (window.addSuccessListener) {
+        window.addSuccessListener(async (response) => {
+            console.log('✅ Paiement KKiaPay réussi:', response);
+            
+            try {
+                // Confirmer le paiement côté serveur
+                const confirmResponse = await fetch('{{ path("app_withdrawal_confirm_fee") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({
+                        withdrawal_id: currentWithdrawalId,
+                        transaction_id: response.transactionId
+                    })
+                });
+                
+                const result = await confirmResponse.json();
+                
+                if (result.success) {
+                    // Rediriger vers la page de succès
+                    window.location.href = '{{ path("app_withdrawal_success", {"id": "PLACEHOLDER"}) }}'.replace('PLACEHOLDER', currentWithdrawalId);
+                } else {
+                    throw new Error(result.message || 'Erreur de confirmation');
+                }
+            } catch (error) {
+                console.error('❌ Erreur de confirmation:', error);
+                showError('Erreur', 'Le paiement a été effectué mais une erreur est survenue lors de la confirmation.');
+                setFormState(false);
+            }
+        });
+    }
+    
+    if (window.addFailedListener) {
+        window.addFailedListener((error) => {
+            console.error('❌ Paiement KKiaPay échoué:', error);
+            showError('Paiement échoué', 'Le paiement a échoué. Veuillez réessayer ou choisir un autre mode de paiement.');
+            setFormState(false);
+        });
+    }
+}
+</script>
+{% endblock %}

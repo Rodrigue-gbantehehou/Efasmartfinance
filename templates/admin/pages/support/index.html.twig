@@ -1,0 +1,122 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Gestion du support{% endblock %}
+
+{% block contentadmin %}
+<div class="bg-white shadow rounded-lg p-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900">Gestion du support</h2>
+            <p class="mt-1 text-sm text-gray-600">Consultez et gérez les demandes de support des utilisateurs</p>
+        </div>
+    </div>
+
+    <!-- Filtres et recherche -->
+    <div class="mb-6">
+        <div class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+            <div class="relative flex-grow">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <input type="text" id="search-input" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="Rechercher une demande...">
+            </div>
+            <select id="status-filter" class="block w-full sm:w-auto pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md">
+                <option value="">Tous les statuts</option>
+                <option value="nouveau">Nouveau</option>
+                <option value="en_cours">En cours</option>
+                <option value="traite">Traité</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Liste des tickets -->
+    <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sujet</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Utilisateur</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+                {% for ticket in tickets %}
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#{{ ticket.id }}</td>
+                    <td class="px-6 py-4">
+                        <div class="text-sm font-medium text-gray-900">{{ ticket.sujet }}</div>
+                        <div class="text-sm text-gray-500 truncate max-w-xs">{{ ticket.description|slice(0, 100) }}{% if ticket.description|length > 100 %}...{% endif %}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        {% if ticket.utilisateur %}
+                            <div class="text-sm text-gray-900">{{ ticket.utilisateur.firstname }} {{ ticket.utilisateur.lastname }}</div>
+                            <div class="text-sm text-gray-500">{{ ticket.utilisateur.email }}</div>
+                        {% else %}
+                            <span class="text-sm text-gray-500">Anonyme</span>
+                        {% endif %}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {{ ticket.createdAt ? ticket.createdAt|date('d/m/Y H:i') : 'N/A' }}
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                        <a href="{{ path('admin_support_ticket_show', {'id': ticket.id}) }}" class="text-green-600 hover:text-green-900 mr-4">
+                            <i class="fas fa-eye"></i> Voir
+                        </a>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
+                        Aucune demande de support trouvée
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="mt-4">
+        <!-- Ajoutez ici la logique de pagination si nécessaire -->
+    </div>
+</div>
+<div class="max-w-7xl mx-auto px-4 py-10 ">
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Script pour la recherche et le filtrage
+    const searchInput = document.getElementById('search-input');
+    const statusFilter = document.getElementById('status-filter');
+    const rows = document.querySelectorAll('tbody tr');
+
+    function filterRows() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const selectedStatus = statusFilter.value;
+
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            const matchesSearch = text.includes(searchTerm);
+            // Pour l'instant, on ne filtre pas par statut car le champ n'existe pas encore
+            // Vous pourrez ajouter cette fonctionnalité plus tard
+            
+            if (matchesSearch) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    }
+
+    searchInput.addEventListener('input', filterRows);
+    statusFilter.addEventListener('change', filterRows);
+});
+</script>
+{% endblock %}

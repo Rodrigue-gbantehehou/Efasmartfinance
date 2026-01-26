@@ -1,0 +1,75 @@
+ <aside id="sidebar" class="hidden md:flex md:w-72 bg-white border-r border-gray-100 flex-col flex-shrink-0">
+      <div class="px-5 py-4 flex items-center gap-3">
+        <a href="{{ path('app_home') }}">
+        <img src="{{asset('images/logovert.png')}}" alt="Logo" class="h-20 "/>
+                </a>
+      </div>
+      
+      <div class="px-4 py-3 border-y border-gray-100">
+        <div class="flex items-center gap-3">
+          <div class="h-10 w-10 rounded-full bg-green-700/10 flex items-center justify-center text-green-700">
+            <i class="fa-solid fa-user"></i>
+          </div>
+          <div>
+            <div class="font-semibold text-sm">Bienvenue, <span id="userName">Utilisateur</span></div>
+            <div class="text-xs text-gray-500">Complet depuis 2024</div>
+          </div>
+        </div>
+      </div>
+      
+      <nav class="mt-2 px-3 pb-4 space-y-1 flex-1 overflow-y-auto">
+        <!-- Tableau de bord Admin -->
+        <a href="{{ path('admin_dashboard') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100  touch-target {{ app.request.get('_route') == 'admin_dashboard' ? 'bg-green-700/5 text-green-700' : '' }}">
+          <i class="fa-solid fa-gauge w-6"></i><span>Tableau de bord</span>
+        </a>
+        
+        <!-- Gestion des utilisateurs -->
+        <a href="{{ path('admin_users') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_users' ? 'bg-green-700/5 text-green-700' : '' }}">
+          <i class="fa-solid fa-users w-6"></i><span>Utilisateurs</span>
+        </a>
+        
+        <!-- Demandes d'activation -->
+        <a href="{{ path('admin_account_activations') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_account_activations' ? 'bg-green-700/5 text-green-700' : '' }}">
+          <i class="fa-solid fa-user-check w-6"></i>
+          <span>Activation de comptes</span>
+      
+        </a>
+        
+        <!-- Gestion des tontines -->
+        <a href="{{ path('admin_tontines') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_tontines' ? 'bg-green-700/5 text-green-700' : '' }}">
+          <i class="fa-solid fa-piggy-bank w-6"></i><span>Tontines</span>
+        </a>
+        
+        <!-- Gestion des transactions -->
+        <a href="{{ path('admin_transactions') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_transactions' ? 'bg-green-700/5 text-green-700' : '' }}">
+          <i class="fa-solid fa-money-bill-transfer w-6"></i><span>Transactions</span>
+        </a>
+        
+        <!-- Demandes de retrait -->
+        <a href="{{ path('admin_withdrawals') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_withdrawals' ? 'bg-green-700/5 text-green-700' : '' }}">
+          <i class="fa-solid fa-hand-holding-dollar w-6"></i><span>Retraits</span>
+        </a>
+        
+        <!-- Rapports et analyses -->
+        <a href="{{ path('admin_reports') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_reports' ? 'bg-green-700/5 text-green-700' : '' }}">
+          <i class="fa-solid fa-chart-line w-6"></i><span>Rapports</span>
+        </a>
+        
+        <!-- Paramètres 
+        <a href="{{ path('admin_settings') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_settings' ? 'bg-green-700/5 text-green-700' : '' }}">
+          <i class="fa-solid fa-sliders w-6"></i><span>Paramètres</span>
+        </a>-->
+        
+        <!-- Support -->
+        <a href="{{ path('admin_support') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_support' ? 'bg-green-700/5 text-green-700' : '' }}">
+          <i class="fa-solid fa-headset w-6"></i><span>Support</span>
+        </a>
+      </nav>
+      
+      <div class="p-4 border-t border-gray-100 flex-shrink-0">
+        <a href="{{path('app_logout')}}" class="w-full inline-flex items-center justify-center gap-2 px-3 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 touch-target">
+          <i class="fa-solid fa-right-from-bracket"></i> <span>Se déconnecter</span>
+        </a>
+        <p class="text-xs text-gray-400 text-center mt-3">© <span id="year"></span> EFA SMART FINANCE</p>
+      </div>
+    </aside>

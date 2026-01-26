@@ -32,6 +32,9 @@ class Transaction
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $createdAt = null;
+    
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $invoicePath = null;
 
     #[ORM\ManyToOne(inversedBy: 'transactions')]
     private ?User $utilisateur = null;
@@ -54,10 +57,27 @@ class Transaction
     #[ORM\Column(nullable: true)]
     private ?bool $isDeleted = null;
 
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $type = null;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private ?array $metadata = [];
+
     public function __construct()
     {
         $this->tontinePoints = new ArrayCollection();
         $this->walletTransactions = new ArrayCollection();
+    }
+    
+    public function getInvoicePath(): ?string
+    {
+        return $this->invoicePath;
+    }
+
+    public function setInvoicePath(?string $invoicePath): self
+    {
+        $this->invoicePath = $invoicePath;
+        return $this;
     }
 
     public function getId(): ?int
@@ -229,6 +249,29 @@ class Transaction
     public function setIsDeleted(?bool $isDeleted): static
     {
         $this->isDeleted = $isDeleted;
+
+        return $this;
+    }
+
+    public function getType(): ?string
+    {
+        return $this->type;
+    }
+
+    public function getMetadata(): ?array
+    {
+        return $this->metadata;
+    }
+
+    public function setMetadata(?array $metadata): self
+    {
+        $this->metadata = $metadata;
+        return $this;
+    }
+
+    public function setType(?string $type): static
+    {
+        $this->type = $type;
 
         return $this;
     }

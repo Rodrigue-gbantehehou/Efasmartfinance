@@ -1,0 +1,95 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Gestion des retraits{% endblock %}
+
+{% block contentadmin %}
+<div class="px-4 sm:px-6 lg:px-8">
+    <div class="sm:flex sm:items-center">
+        <div class="sm:flex-auto">
+            <h1 class="text-2xl font-semibold text-gray-900">Gestion des retraits</h1>
+            <p class="mt-2 text-sm text-gray-700">Consultez et gérez les demandes de retrait des utilisateurs.</p>
+        </div>
+    </div>
+    
+    <div class="mt-8 flex flex-col">
+        <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
+            <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
+                <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                    <table class="min-w-full divide-y divide-gray-300">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">ID</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Utilisateur</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Montant</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Frais de tontine</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Statut</th>
+                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Date</th>
+                                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                    <span class="sr-only">Actions</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200 bg-white">
+                            {% for withdrawal in withdrawals %}
+                            <tr>
+                                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">#{{ withdrawal.id }}</td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                    {{ withdrawal.utilisateur.fullName ?? withdrawal.utilisateur.email }}
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-900">
+                                    <div class="font-medium">{{ (withdrawal.totalAmount - withdrawal.amount)|number_format(0, ',', ' ') }} FCFA</div>
+                                    <div class="text-xs text-gray-500">Net: {{ withdrawal.amount|number_format(0, ',', ' ') }} FCFA</div>
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                    <div class="font-medium">{{ withdrawal.totalAmount|number_format(0, ',', ' ') }} FCFA</div>
+                                    <div class="text-xs text-gray-500">Frais: {{ (withdrawal.totalAmount - withdrawal.amount)|number_format(0, ',', ' ') }} FCFA</div>
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4">
+                                    {% if withdrawal.statut == 'approved' %}
+                                        <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
+                                            Approuvé
+                                        </span>
+                                    {% elseif withdrawal.statut == 'rejected' %}
+                                        <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">
+                                            Rejeté
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">
+                                            En attente
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                    {{ withdrawal.requestedAt ? withdrawal.requestedAt|date('d/m/Y H:i') : 'N/A' }}
+                                </td>
+                                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
+                                    <div class="flex justify-end space-x-2">
+                                        <a href="{{ path('admin_withdrawal_show', {'id': withdrawal.id}) }}" class="text-indigo-600 hover:text-indigo-900">Voir</a>
+                                        {% if withdrawal.statut == 'pending' %}
+                                            <form method="post" action="{{ path('admin_withdrawal_approve', {'id': withdrawal.id}) }}" class="inline">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ withdrawal.id) }}">
+                                                <button type="submit" class="text-green-600 hover:text-green-900">Approuver</button>
+                                            </form>
+                                            <form method="post" action="{{ path('admin_withdrawal_reject', {'id': withdrawal.id}) }}" class="inline">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ withdrawal.id) }}">
+                                                <button type="submit" class="text-red-600 hover:text-red-900">Rejeter</button>
+                                            </form>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="6" class="px-3 py-4 text-sm text-gray-500 text-center">
+                                    Aucun retrait trouvé.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

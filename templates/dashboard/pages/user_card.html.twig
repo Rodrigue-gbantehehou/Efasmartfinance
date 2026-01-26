@@ -1,0 +1,324 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Carte Tontine - {{ tontine.tontineCode }}{% endblock %}
+
+{% block body %}
+<style>
+    .public-card {
+        width: 9cm;
+        height: 5cm;
+        background: #005212f6;
+        border-radius: 8px;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        margin: 2cm auto;
+    }
+    
+    .card-glow {
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: ;
+        pointer-events: none;
+    }
+    
+    .card-pattern {
+        position: absolute;
+        inset: 0;
+        background-image: 
+            radial-gradient(circle at 25% 25%, rgba(255,255,255,0.02) 1px, transparent 1px),
+            radial-gradient(circle at 75% 75%, rgba(255,255,255,0.02) 1px, transparent 1px);
+        background-size: 20px 20px;
+        opacity: 0.5;
+    }
+    
+    .security-stripe {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 2cm;
+        height: 100%;
+        background: linear-gradient(90deg,
+            transparent,
+            rgba(255, 255, 255, 0.1) 20%,
+            rgba(100, 200, 255, 0.1) 50%,
+            rgba(255, 255, 255, 0.1) 80%,
+            transparent);
+        clip-path: polygon(20% 0, 100% 0, 100% 100%, 0% 100%);
+        animation: hologram 3s infinite;
+    }
+    
+    .card-grid {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0.3cm;
+        height: 100%;
+        padding: 0.4cm;
+    }
+    
+    .card-text-micro { font-size: 7px; letter-spacing: 0.5px; text-transform: uppercase; }
+    .card-text-small { font-size: 9px; letter-spacing: 0.3px; }
+    .card-text-medium { font-size: 11px; letter-spacing: 0.2px; }
+    .card-text-large { font-size: 13px; font-weight: 600; letter-spacing: 0.1px; }
+    .card-text-xlarge { font-size: 16px; font-weight: 700; letter-spacing: 0.5px; }
+    
+    .qr-container {
+        background: white;
+        border-radius: 6px;
+        padding: 4px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+    
+    .status-badge {
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 8px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        text-transform: uppercase;
+    }
+    
+    .status-active {
+        background: linear-gradient(135deg, #10b981, #34d399);
+        color: white;
+    }
+    
+    .brand-logo {
+        width: 18px;
+        height: 18px;
+        background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 10px;
+    }
+    
+    .card-chip {
+        width: 20px;
+        height: 15px;
+        background: linear-gradient(135deg, #d97706, #f59e0b);
+        border-radius: 3px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .barcode {
+        height: 12px;
+        width: 100%;
+        background: repeating-linear-gradient(90deg,
+            #000 0px, #000 2px,
+            transparent 2px, transparent 4px);
+        margin-top: 4px;
+        opacity: 0.7;
+    }
+    
+    @keyframes hologram {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 0.6; }
+    }
+    
+    @media print {
+        body {
+            background: white !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        .public-card {
+            box-shadow: none !important;
+            border: 1px solid #e5e7eb !important;
+            margin: 0 auto !important;
+            page-break-inside: avoid;
+        }
+        
+        .no-print {
+            display: none !important;
+        }
+        
+        @page {
+            size: A4 portrait;
+            margin: 2cm;
+        }
+    }
+</style>
+
+<div class="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-4">
+    <div class="max-w-md w-full">
+        <!-- Carte Professionnelle -->
+        <div class="public-card">
+          
+            <div class="card-grid">
+                <!-- Section gauche - Informations -->
+                <div class="card-info">
+                    <!-- En-tête -->
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.2cm;">
+                        <div class="card-brand" style="display: flex; align-items: center; gap: 6px;">
+                            <div class="brand-logo">TP</div>
+                            <div>
+                                <div class="card-text-large font-bold">
+                                    EFA SMART FINANCE</div>
+                                <div class="card-text-micro opacity-80">SYSTÈME D'ÉPARGNE</div>
+                            </div>
+                        </div>
+                        <div class="card-chip"></div>
+                    </div>
+                    
+                    <!-- Corps principal -->
+                    <div style="flex: 1;">
+                        <!-- Nom de la tontine -->
+                        <div style="margin-bottom: 0.3cm;">
+                            <div class="card-text-micro text-green-300" style="margin-bottom: 0.1cm;">TONITNE ASSOCIÉE</div>
+                            <div class="card-text-xlarge font-bold truncate">
+                                {{ tontine.name|upper|slice(0, 18) }}
+                            </div>
+                        </div>
+                        
+                        <!-- Code unique -->
+                        <div style="margin-bottom: 0.3cm;">
+                            <div class="card-text-micro text-green-300" style="margin-bottom: 0.1cm;">CODE UNIQUE</div>
+                            <div class="card-text-large font-mono font-bold tracking-wider">
+                                {{ tontine.tontineCode|slice(0, 3) }}-{{ tontine.tontineCode|slice(3, 3) }}-{{ tontine.tontineCode|slice(6, 3) }}
+                            </div>
+                        </div>
+                        
+                        <!-- Informations membre -->
+                        <div style="margin-bottom: 0.3cm;">
+                            <div class="card-text-micro text-green-300" style="margin-bottom: 0.1cm;">TITULAIRE</div>
+                            <div style="display: flex; align-items: center; gap: 2px;">
+                                <div class="card-text-large font-bold">
+                                    {{ tontine.utilisateur.firstname|slice(0, 1)|upper }}. {{ tontine.utilisateur.lastname|upper|slice(0, 15) }}
+                                </div>
+                                <span class="status-badge status-active">ACTIF</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Montant -->
+                        <div>
+                            <div class="card-text-micro text-green-300" style="margin-bottom: 0.1cm;">CONTRIBUTION MENSUELLE</div>
+                            <div class="card-text-xlarge font-bold text-green-400">
+                                {{ tontine.amountPerPoint|number_format(0, ',', ' ') }} <span class="card-text-large">FCFA</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Pied de page -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div class="card-text-micro opacity-70">ÉMISSION</div>
+                                <div class="card-text-small font-medium">{{ tontine.createdAt|date('m/Y') }}</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="card-text-micro opacity-70">VALIDITÉ</div>
+                                <div class="card-text-small font-medium">
+                                    {% set expiryDate = date(tontine.createdAt).modify('+2 years') %}
+                                    {{ expiryDate|date('m/Y') }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="barcode" style="margin-top: 0.2cm;"></div>
+                    </div>
+                </div>
+                
+                <!-- Section droite - QR Code -->
+                <div class="card-qr-section" style="display: flex; flex-direction: column; align-items: center; justify-content: space-between;">
+                  
+                    
+                    <!-- QR Code -->
+                    <div class="qr-container">
+                        <div id="publicQRCode"></div>
+                    </div>
+                    
+                    <!-- Points et progression -->
+                    <div style="text-align: center; margin-top: 0.2cm;">
+                        <div class="card-text-micro text-green-300" style="margin-bottom: 0.1cm;">PROGRESSION</div>
+                        <div class="card-text-large font-bold">
+                            {% set progress = (tontine.paidPoints|default(0) / tontine.totalPoints * 100)|round %}
+                            {{ progress }}%
+                        </div>
+                        <div class="card-text-small opacity-80">
+                            {{ tontine.paidPoints|default(0) }}/{{ tontine.totalPoints }} pts
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations de vérification -->
+        <div class="bg-white rounded-xl border border-gray-200 p-6 mt-6 shadow-sm">
+            <div class="text-center">
+                <div class="h-12 w-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center mx-auto mb-3">
+                    <i class="fa-solid fa-shield-check text-xl"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-900 mb-2">Carte Vérifiée</h3>
+                <p class="text-gray-600 text-sm mb-4">
+                    Cette carte a été générée via QR code officiel et est valide pour consultation
+                </p>
+                
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                        <div class="text-gray-500">Statut</div>
+                        <div class="font-medium {{ tontine.statut == 'active' ? 'text-green-600' : 'text-gray-600' }}">
+                            {{ tontine.statut == 'active' ? 'Active' : 'Terminée' }}
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-gray-500">Fréquence</div>
+                        <div class="font-medium">
+                            {% if tontine.frequency == 'daily' %}Quotidien
+                            {% elseif tontine.frequency == 'weekly' %}Hebdomadaire
+                            {% else %}Mensuel
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <div class="text-xs text-gray-500">
+                        Validité: {{ expiryDate|date('d/m/Y') }} • 
+                        Généré le: {{ "now"|date('d/m/Y H:i') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Actions -->
+        <div class="flex gap-3 mt-6">
+            <button onclick="window.print()" 
+                    class="flex-1 px-4 py-2.5 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-lg hover:from-green-700 hover:to-green-800 transition-all">
+                <i class="fa-solid fa-print mr-2"></i> Imprimer
+            </button>
+            <button onclick="window.close()" 
+                    class="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-all">
+                <i class="fa-solid fa-xmark mr-2"></i> Fermer
+            </button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Générer QR code de la page actuelle
+    const currentUrl = window.location.href;
+    QRCode.toCanvas(document.getElementById('publicQRCode'), currentUrl, {
+        width: 70,
+        height: 70,
+        margin: 0,
+        color: {
+            dark: '#1e293b',
+            light: '#FFFFFF'
+        },
+        errorCorrectionLevel: 'H'
+    });
+});
+</script>
+{% endblock %}

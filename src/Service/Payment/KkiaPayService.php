@@ -32,7 +32,7 @@ class KkiaPayService
         return [
             'public_key' => $this->publicKey,
             'amount' => $payment->getAmount(),
-            'currency' => $options['currency'] ?? 'XOF',
+            'currency' => $options['currency'] ?? 'F CFA',
             'description' => $options['description'] ?? 'Paiement',
             'callback' => $options['callback'] ?? null,
             'data' => $options['data'] ?? []

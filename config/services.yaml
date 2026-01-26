@@ -7,6 +7,9 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.support_email: 'contact@binajia.org'
+    app.admin_email: 'rodriguenagnon@gmail.com'
+    uploads_directory: '%kernel.project_dir%/public/uploads'
 
 services:
     # default configuration for services in *this* file
@@ -18,9 +21,45 @@ services:
     # this creates a service per class whose id is the fully-qualified class name
     App\:
         resource: '../src/'
+        exclude:
+            - '../src/DependencyInjection/'
+            - '../src/Entity/'
+            - '../src/Kernel.php'
+            - '../src/Tests/'
+
+    # Configure the test email command
+    App\Command\TestEmailCommand:
+        arguments:
+            $adminEmail: '%app.admin_email%'
+            $supportEmail: '%app.support_email%'
+
+    # File uploader service
+    App\Service\FileUploader:
+        arguments:
+            $targetDirectory: '%uploads_directory%'
+            $slugger: '@Symfony\Component\String\Slugger\SluggerInterface'
+
+    # Configure IdentityVerificationController with upload directory
+    App\Controller\Dashboard\IdentityVerificationController:
+        arguments:
+            $uploadDirectory: '%uploads_directory%'
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    # Twig Extension
+    App\Twig\AppExtension:
+        tags: ['twig.extension']
+        arguments:
+            $tontineRepository: '@App\Repository\TontineRepository'
+            $requestStack: '@request_stack'
+            $security: '@security.helper'
+
+    # Configuration de l'écouteur d'événements de connexion
+    App\EventListener\LoginListener:
+        tags:
+            - { name: 'kernel.event_listener', event: 'security.interactive_login', method: 'onSecurityInteractiveLogin' }
+
 
     # Configuration des services de paiement
     App\Service\Payment\FedaPayService:

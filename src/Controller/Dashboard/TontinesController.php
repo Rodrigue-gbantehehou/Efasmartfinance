@@ -10,11 +10,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/Dashboard/Tontines')]
+#[IsGranted('ROLE_USER')]
+#[Route('/dashboard/tontines')]
 final class TontinesController extends AbstractController
 {
+    private EntityManagerInterface $entityManager;
+
+    public function __construct(EntityManagerInterface $entityManager)
+    {
+        $this->entityManager = $entityManager;
+    }
+
     #[Route(name: 'app_tontines_index', methods: ['GET'])]
     public function index(TontineRepository $tontineRepository): Response
     {
@@ -26,13 +35,15 @@ final class TontinesController extends AbstractController
         if (!$user) {
             // Rediriger vers la page de connexion si l'utilisateur n'est pas connecté
             return $this->redirectToRoute('app_login');
-        } // Récupérer uniquement les tontines de l'utilisateur connecté
-        $userTontines = $tontineRepository->findBy(['utilisateur' => $user->getId()]);
+        }
+
+        // Récupérer uniquement les tontines de l'utilisateur connecté
+        $userTontines = $tontineRepository->findBy(['utilisateur' => $user]);
 
         return $this->render('dashboard/pages/tontines/tontines.html.twig', [
             'tontines' => $userTontines,
         ]);
-     }
+    }
 
     #[Route('/new', name: 'app_tontines_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
@@ -55,10 +66,51 @@ final class TontinesController extends AbstractController
     }
 
     #[Route('/{id}', name: 'app_tontines_show', methods: ['GET'])]
-    public function show(Tontine $tontine): Response
+    public function show(Tontine $tontine, $id): Response
     {
+        $tontine = $this->entityManager->getRepository(Tontine::class)->find($id);
+        $startDate = $tontine->getStartDate();
+        $endDate = null;
+
+        if ($startDate) {
+            $endDate = clone $startDate;
+            $totalPoints = $tontine->getTotalPoints() ?? 0;
+            $frequency = $tontine->getFrequency() ?? 'monthly';
+
+            // Ensure we have a positive number of points
+            $totalPoints = max(1, (int)$totalPoints);
+
+            // Calculate the interval based on frequency
+            $interval = null;
+            switch ($frequency) {
+                case 'daily':
+                    $interval = new \DateInterval("P{$totalPoints}D");
+                    break;
+                case 'weekly':
+                    $interval = new \DateInterval("P{$totalPoints}W");
+                    break;
+                case 'monthly':
+                default:
+                    $interval = new \DateInterval("P{$totalPoints}M");
+            }
+
+            if ($interval) {
+                $endDate->add($interval);
+            }
+        }
+        $uiState = match (true) {
+            $tontine->getStatut() === 'active' => 'ACTIVE',
+            $tontine->getStatut() === 'completed' && $tontine->isFullyWithdrawn() => 'COMPLETED_FULL_WITHDRAWAL',
+            $tontine->getStatut() === 'completed' && $tontine->isPartiallyWithdrawn() => 'PARTIAL_WITHDRAWAL',
+            $tontine->getStatut() === 'completed' && $tontine->getWithdrawnAmount() === 0 => 'COMPLETED_NO_WITHDRAWAL',
+        };
+
+
+
         return $this->render('dashboard/pages/tontines/show.html.twig', [
             'tontine' => $tontine,
+            'endDate' => $endDate,
+            'uiState' => $uiState,
         ]);
     }
 

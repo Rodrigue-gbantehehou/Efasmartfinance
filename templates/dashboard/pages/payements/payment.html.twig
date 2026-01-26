@@ -108,126 +108,21 @@
                     <p class="text-gray-600 text-sm sm:text-base mt-1">Sélectionnez votre moyen de paiement</p>
                 </div>
                 <a href="{{ path('app_tontines_index') }}" 
-                   class="text-sm text-primary hover:text-green-700 font-medium">
+                   class="text-sm text-green-700 hover:text-green-700 font-medium">
                     <i class="fa-solid fa-arrow-left mr-1"></i> Retour aux tontines
                 </a>
             </div>
         </div>
     </div>
 
-    <!-- Steps Indicator -->
-    <div class="bg-white border-b border-gray-200">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 py-4">
-            <div class="flex items-center justify-center">
-                <div class="flex items-center space-x-4 sm:space-x-8">
-                    <!-- Step 1 -->
-                    <div class="flex flex-col items-center">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center step-complete">
-                            <i class="fa-solid fa-check text-sm"></i>
-                        </div>
-                        <span class="text-xs font-medium mt-2">Sélection</span>
-                    </div>
-                    
-                    <!-- Separator -->
-                    <div class="h-0.5 w-8 sm:w-16 bg-green-500"></div>
-                    
-                    <!-- Step 2 -->
-                    <div class="flex flex-col items-center">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center step-current">
-                            <span class="font-bold">2</span>
-                        </div>
-                        <span class="text-xs font-medium mt-2">Paiement</span>
-                    </div>
-                    
-                    <!-- Separator -->
-                    <div class="h-0.5 w-8 sm:w-16 bg-gray-300"></div>
-                    
-                    <!-- Step 3 -->
-                    <div class="flex flex-col items-center">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center step-pending">
-                            <span class="font-bold">3</span>
-                        </div>
-                        <span class="text-xs font-medium mt-2">Confirmation</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+  
 
     <!-- Main Content -->
-    <div class="max-w-4xl mx-auto payment-container">
+    <div class="max-w-4xl mx-auto payment-container p-9">
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 py-6">
             <!-- Left Column: Tontine Details -->
-            <div class="lg:col-span-2 space-y-6">
-                <!-- Tontine Information Card -->
-                <div class="bg-white rounded-xl border border-gray-200 p-6">
-                    <h2 class="text-lg font-bold text-gray-900 mb-4">Détails de la tontine</h2>
-                    
-                    {% if tontine %}
-                        <div class="space-y-4">
-                            <!-- Tontine Header -->
-                            <div class="flex items-start justify-between">
-                                <div>
-                                    <h3 class="font-bold text-gray-900 text-xl">{{ tontine.name }}</h3>
-                                    <p class="text-gray-500 text-sm">{{ tontine.tontineCode }}</p>
-                                </div>
-                                <span class="px-3 py-1 rounded-full text-sm font-medium 
-                                    {% if tontine.statut == 'active' %}bg-green-100 text-green-800
-                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
-                                    {{ tontine.statut == 'active' ? 'Active' : 'Terminée' }}
-                                </span>
-                            </div>
-                            
-                            <!-- Payment Info -->
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <div class="text-sm text-gray-500">Montant par versement</div>
-                                    <div class="text-2xl font-bold text-primary mt-1">
-                                        {{ tontine.amountPerPoint|number_format(0, ',', ' ') }} FCFA
-                                    </div>
-                                </div>
-                                
-                                <div class="bg-gray-50 p-4 rounded-lg">
-                                    <div class="text-sm text-gray-500">Prochaine échéance</div>
-                                    <div class="text-lg font-bold text-gray-900 mt-1">
-                                        {{ tontine.nextDueDate|date('d/m/Y') }}
-                                    </div>
-                                    {% if daysRemaining <= 3 and tontine.statut == 'active' %}
-                                        <div class="text-xs text-warning mt-1">
-                                            <i class="fa-solid fa-clock mr-1"></i>
-                                            {{ daysRemaining }} jour{{ daysRemaining > 1 ? 's' : '' }} restant{{ daysRemaining > 1 ? 's' : '' }}
-                                        </div>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            
-                            <!-- Progress -->
-                            <div>
-                                <div class="flex justify-between text-sm mb-2">
-                                    <span class="text-gray-600">Progression globale</span>
-                                    <span class="font-semibold">{{ tontine.progress|default(0) }}%</span>
-                                </div>
-                                <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
-                                    <div class="h-full bg-primary rounded-full" style="width: {{ tontine.progress|default(0) }}%"></div>
-                                </div>
-                                <div class="flex justify-between text-xs text-gray-500 mt-2">
-                                    <span>{{ (tontine.amountPerPoint * (tontine.paidPoints|default(0)))|number_format(0, ',', ' ') }} FCFA épargnés</span>
-                                    <span>{{ (tontine.amountPerPoint * tontine.totalPoints)|number_format(0, ',', ' ') }} FCFA total</span>
-                                </div>
-                            </div>
-                        </div>
-                    {% else %}
-                        <div class="text-center py-8">
-                            <i class="fa-solid fa-circle-exclamation text-gray-300 text-4xl mb-3"></i>
-                            <p class="text-gray-500">Tontine non trouvée</p>
-                            <a href="{{ path('app_tontines_index') }}" class="text-primary hover:text-green-700 font-medium mt-2 inline-block">
-                                Retour à la liste
-                            </a>
-                        </div>
-                    {% endif %}
-                </div>
-                
-                <!-- Payment Amount Card -->
+            <div class="lg:col-span-2 space-y-6"> 
+            <!-- Payment Amount Card -->
                 <div class="bg-white rounded-xl border border-gray-200 p-6">
                     <h2 class="text-lg font-bold text-gray-900 mb-4">Montant du paiement</h2>
                     
@@ -266,7 +161,7 @@
                                        min="{{ tontine.amountPerPoint|default(100) }}"
                                        step="100"
                                        value="{{ tontine.amountPerPoint|default('') }}"
-                                       class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none"
+                                       class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg focus:border-green-700 focus:ring-2 focus:ring-green-700/20 outline-none"
                                        placeholder="Entrez le montant">
                                 <div class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500 font-medium">FCFA</div>
                             </div>
@@ -275,11 +170,90 @@
                             </p>
                         </div>
                     </div>
+                    <!-- Payment Button -->
+                    <button id="process-payment-btn"
+                            class="w-full mt-6 py-3.5 bg-green-700 text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                        <span id="payment-btn-text">
+                            <i class="fa-solid fa-lock mr-2"></i> Payer maintenant
+                        </span>
+                        <span id="payment-loading" class="hidden">
+                            <i class="fa-solid fa-spinner fa-spin mr-2"></i> Traitement en cours...
+                        </span>
+                    </button>
                 </div>
+                <!-- Tontine Information Card -->
+                <div class="bg-white rounded-xl border border-gray-200 p-6">
+                    <h2 class="text-lg font-bold text-gray-900 mb-4">Détails de la tontine</h2>
+                    
+                    {% if tontine %}
+                        <div class="space-y-4">
+                            <!-- Tontine Header -->
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <h3 class="font-bold text-gray-900 text-xl">{{ tontine.name }}</h3>
+                                    <p class="text-gray-500 text-sm">{{ tontine.tontineCode }}</p>
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-sm font-medium 
+                                    {% if tontine.statut == 'active' %}bg-green-100 text-green-800
+                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                    {{ tontine.statut == 'active' ? 'Active' : 'Terminée' }}
+                                </span>
+                            </div>
+                            
+                            <!-- Payment Info -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <div class="text-sm text-gray-500">Montant par versement</div>
+                                    <div class="text-2xl font-bold text-green-700 mt-1">
+                                        {{ tontine.amountPerPoint|number_format(0, ',', ' ') }} FCFA
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-gray-50 p-4 rounded-lg">
+                                    <div class="text-sm text-gray-500">Prochaine échéance</div>
+                                    <div class="text-lg font-bold text-gray-900 mt-1">
+                                        {{ tontine.nextDueDate|date('d/m/Y') }}
+                                    </div>
+                                    {% if daysRemaining <= 3 and tontine.statut == 'active' %}
+                                        <div class="text-xs text-warning mt-1">
+                                            <i class="fa-solid fa-clock mr-1"></i>
+                                            {{ daysRemaining }} jour{{ daysRemaining > 1 ? 's' : '' }} restant{{ daysRemaining > 1 ? 's' : '' }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- Progress -->
+                            <div>
+                                <div class="flex justify-between text-sm mb-2">
+                                    <span class="text-gray-600">Progression globale</span>
+                                    <span class="font-semibold">{{ tontine.progress|default(0) }}%</span>
+                                </div>
+                                <div class="h-3 bg-gray-200 rounded-full overflow-hidden">
+                                    <div class="h-full bg-green-700 rounded-full" style="width: {{ tontine.progress|default(0) }}%"></div>
+                                </div>
+                                <div class="flex justify-between text-xs text-gray-500 mt-2">
+                                    <span>{{ (tontine.amountPerPoint * (tontine.paidPoints|default(0)))|number_format(0, ',', ' ') }} FCFA épargnés</span>
+                                    <span>{{ (tontine.amountPerPoint * tontine.totalPoints)|number_format(0, ',', ' ') }} FCFA total</span>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-8">
+                            <i class="fa-solid fa-circle-exclamation text-gray-300 text-4xl mb-3"></i>
+                            <p class="text-gray-500">Tontine non trouvée</p>
+                            <a href="{{ path('app_tontines_index') }}" class="text-green-700 hover:text-green-700 font-medium mt-2 inline-block">
+                                Retour à la liste
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+                
+               
             </div>
             
             <!-- Right Column: Payment Methods -->
-            <div class="space-y-6">
+            <div class="space-y-6 hidden ">
                 <!-- Payment Methods Card -->
                 <div class="bg-white rounded-xl border border-gray-200 p-6">
                     <h2 class="text-lg font-bold text-gray-900 mb-4">Moyens de paiement</h2>
@@ -327,7 +301,7 @@
                     
                     <!-- Payment Button -->
                     <button id="process-payment-btn"
-                            class="w-full mt-6 py-3.5 bg-primary text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                            class="w-full mt-6 py-3.5 bg-green-700 text-white rounded-lg font-medium hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed">
                         <span id="payment-btn-text">
                             <i class="fa-solid fa-lock mr-2"></i> Payer maintenant
                         </span>
@@ -376,8 +350,11 @@
 <!-- Hidden Data -->
 <input type="hidden" id="tontine-id" value="{{ tontine.id|default('') }}">
 <input type="hidden" id="csrf-token" value="{{ csrf_token('payment') }}">
+<input type="hidden" id="amount-per-point" value="{{ tontine.amountPerPoint|default(100) }}">
 <input type="hidden" id="user-email" value="{{ app.user.email|default('') }}">
 <input type="hidden" id="user-name" value="{{ app.user.nomComplet|default('') }}">
+<input type="hidden" id="total-tontine-amount" value="{{ (tontine.amountPerPoint * tontine.totalPoints)|default(0) }}">
+<input type="hidden" id="amount-paid" value="{{ (tontine.amountPerPoint * (tontine.paidPoints|default(0)))|default(0) }}">
 
 <script>
 // ==================== CONFIGURATION ====================
@@ -387,6 +364,10 @@ let selectedPaymentMethod = null;
 let currentAmount = {{ tontine.amountPerPoint|default(0) }};
 
 // ==================== UTILITY FUNCTIONS ====================
+function isMultiple(number, multiple) {
+    return number % multiple === 0;
+}
+
 function setLoading(isLoading) {
     const btn = document.getElementById('process-payment-btn');
     const loadingEl = document.getElementById('payment-loading');
@@ -403,57 +384,39 @@ function setLoading(isLoading) {
     }
 }
 
-function showError(message) {
-    const errorEl = document.getElementById('payment-error');
-    const messageEl = document.getElementById('error-message');
-    
-    messageEl.textContent = message;
-    errorEl.classList.remove('hidden');
-    
-    // Auto-hide after 5 seconds
-    setTimeout(() => {
-        errorEl.classList.add('hidden');
-    }, 5000);
-}
-
-function showSuccess(message) {
-    // Show success notification
-    const notification = document.createElement('div');
-    notification.className = 'fixed top-4 right-4 z-50 bg-green-500 text-white px-4 py-3 rounded-lg shadow-lg flex items-center notification-slide-in';
-    notification.innerHTML = `
-        <i class="fa-solid fa-check-circle mr-2"></i>
-        <span>${message}</span>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.remove();
-    }, 3000);
-}
-
 // ==================== PAYMENT FUNCTIONS ====================
 // Set payment amount
 function setAmount(amount) {
     const input = document.getElementById('custom-amount');
     if (!input) return;
     
+    // Récupérer le solde restant
+    const totalTontineAmount = parseInt(document.getElementById('total-tontine-amount').value) || 0;
+    const amountPaid = parseInt(document.getElementById('amount-paid').value) || 0;
+    const remainingAmount = totalTontineAmount - amountPaid;
+    
+    // Vérifier si le montant dépasse le solde restant
+    if (amount > remainingAmount) {
+        window.showError(`Le montant dépasse le solde restant à payer (${remainingAmount.toLocaleString('fr-FR')} FCFA)`);
+        return; // Ne pas mettre à jour le montant s'il est trop élevé
+    }
+    
     input.value = amount;
     currentAmount = parseInt(amount);
     
-    // Highlight selected amount button
+    // Mise à jour de l'interface utilisateur
     document.querySelectorAll('.amount-btn').forEach(btn => {
         try {
             const btnAmount = parseInt(btn.textContent.replace(/\s/g, '').replace('FCFA', ''));
             if (btnAmount === amount) {
-                btn.classList.add('bg-primary', 'text-white');
+                btn.classList.add('bg-green-700', 'text-white');
                 btn.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
             } else {
-                btn.classList.remove('bg-primary', 'text-white');
+                btn.classList.remove('bg-green-700', 'text-white');
                 btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
             }
         } catch (e) {
-            console.error('Error parsing button amount:', e);
+            console.error('Erreur lors de l\'analyse du montant du bouton:', e);
         }
     });
 }
@@ -500,22 +463,50 @@ function selectPaymentMethod(method) {
 // ==================== API FUNCTIONS ====================
 async function initPayment() {
     if (!selectedPaymentMethod) {
-        showError('Veuillez sélectionner un moyen de paiement');
+        window.showError('Veuillez sélectionner un moyen de paiement');
         return;
     }
     
     // Validate amount
     const input = document.getElementById('custom-amount');
     if (!input) {
-        showError('Erreur: Champ montant non trouvé');
+        window.showError('Erreur: Champ montant non trouvé');
         return;
     }
     
     const amount = parseInt(input.value);
     const minAmount = parseInt(input.min);
+    const amountPerPoint = parseInt(document.getElementById('amount-per-point').value) || 100;
+    const totalTontineAmount = parseInt(document.getElementById('total-tontine-amount').value) || 0;
+    const amountPaid = parseInt(document.getElementById('amount-paid').value) || 0;
+    const remainingAmount = totalTontineAmount - amountPaid;
     
-    if (!amount || amount < minAmount) {
-        showError(`Le montant minimum est ${minAmount.toLocaleString('fr-FR')} FCFA`);
+    // Basic validation
+    if (!amount || isNaN(amount)) {
+        window.showError('Veuillez entrer un montant valide');
+        return;
+    }
+    
+    if (amount < minAmount) {
+        window.showError(`Le montant minimum est de ${minAmount.toLocaleString('fr-FR')} FCFA`);
+        return;
+    }
+
+    // Vérifier que le montant est un multiple du montant par point
+    if (!isMultiple(amount, amountPerPoint)) {
+        window.showError(`Le montant doit être un nombre entier de fois ${amountPerPoint.toLocaleString('fr-FR')} FCFA`);
+        return;
+    }
+    
+    // Check if amount exceeds total tontine amount
+    if (amount > totalTontineAmount) {
+        window.showError(`Le montant ne peut pas dépasser le montant total de la tontine (${totalTontineAmount.toLocaleString('fr-FR')} FCFA)`);
+        return;
+    }
+    
+    // Check if amount exceeds remaining amount to pay
+    if (amount > remainingAmount) {
+        window.showError(`Le montant dépasse le solde restant à payer (${remainingAmount.toLocaleString('fr-FR')} FCFA)`);
         return;
     }
     
@@ -527,7 +518,7 @@ async function initPayment() {
         const tontineId = document.getElementById('tontine-id');
         
         if (!csrfToken || !tontineId) {
-            showError('Données manquantes');
+            window.showError('Données manquantes');
             setLoading(false);
             return;
         }
@@ -552,12 +543,12 @@ async function initPayment() {
             // Handle payment initialization based on method
             handlePaymentInit(data);
         } else {
-            showError(data.message || 'Erreur lors de l\'initialisation du paiement');
+            window.showError(data.message || 'Erreur lors de l\'initialisation du paiement');
             setLoading(false);
         }
     } catch (error) {
         console.error('Erreur:', error);
-        showError('Erreur de connexion au serveur');
+        window.showError('Erreur de connexion au serveur');
         setLoading(false);
     }
 }
@@ -574,7 +565,7 @@ function handlePaymentInit(data) {
             processCashPayment(data);
             break;
         default:
-            showError('Méthode de paiement non supportée');
+            window.showError('Méthode de paiement non supportée');
             setLoading(false);
     }
 }
@@ -589,10 +580,100 @@ function processCashPayment(data) {
     }
 }
 
+// ==================== VALIDATION FUNCTIONS ====================
+function validateAmount(amount) {
+    const totalTontineAmount = parseInt(document.getElementById('total-tontine-amount').value) || 0;
+    const amountPaid = parseInt(document.getElementById('amount-paid').value) || 0;
+    const remainingAmount = totalTontineAmount - amountPaid;
+    const minAmount = parseInt(document.getElementById('custom-amount').min) || 0;
+    
+    // Vérifier si le montant est valide
+    if (!amount || isNaN(amount) || amount < minAmount) {
+        return { isValid: false, message: `Le montant minimum est de ${minAmount.toLocaleString('fr-FR')} FCFA` };
+    }
+    
+    // Vérifier si le montant dépasse le solde restant
+    if (amount > remainingAmount) {
+        return { 
+            isValid: false, 
+            message: `Le montant dépasse le solde restant (${remainingAmount.toLocaleString('fr-FR')} FCFA)` 
+        };
+    }
+    
+    return { isValid: true };
+}
+
+function updatePaymentButtonState() {
+    const input = document.getElementById('custom-amount');
+    const button = document.getElementById('process-payment-btn');
+    if (!input || !button) return;
+    
+    const amount = parseInt(input.value) || 0;
+    const validation = validateAmount(amount);
+    
+    if (validation.isValid) {
+        button.disabled = false;
+        button.classList.remove('opacity-50', 'cursor-not-allowed');
+    } else {
+        button.disabled = true;
+        button.classList.add('opacity-50', 'cursor-not-allowed');
+    }
+}
+
+// ==================== PAYMENT FUNCTIONS ====================
+function setAmount(amount) {
+    const input = document.getElementById('custom-amount');
+    if (!input) return;
+    
+    // Mettre à jour la valeur de l'input
+    input.value = amount;
+    currentAmount = parseInt(amount);
+    
+    // Mettre à jour l'état du bouton
+    updatePaymentButtonState();
+    
+    // Mise à jour de l'interface utilisateur
+    document.querySelectorAll('.amount-btn').forEach(btn => {
+        try {
+            const btnAmount = parseInt(btn.textContent.replace(/\s/g, '').replace('FCFA', ''));
+            if (btnAmount === amount) {
+                btn.classList.add('bg-green-700', 'text-white');
+                btn.classList.remove('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+            } else {
+                btn.classList.remove('bg-green-700', 'text-white');
+                btn.classList.add('bg-gray-100', 'text-gray-700', 'hover:bg-gray-200');
+            }
+        } catch (e) {
+            console.error('Erreur lors de l\'analyse du montant du bouton:', e);
+        }
+    });
+}
+
+// Ajouter un écouteur d'événement sur l'input pour mettre à jour l'état du bouton
+document.addEventListener('DOMContentLoaded', function() {
+    const input = document.getElementById('custom-amount');
+    if (input) {
+        input.addEventListener('input', function() {
+            const amount = parseInt(this.value) || 0;
+            const validation = validateAmount(amount);
+            updatePaymentButtonState();
+            
+            if (this.value && !validation.isValid) {
+                window.showError(validation.message);
+            }
+        });
+    }
+    
+    // Mettre à jour l'état initial du bouton
+    updatePaymentButtonState();
+    
+    // Autres initialisations...
+});
+
 // KKiaPay avec la nouvelle API
 function initKkiaPay(data) {
     if (typeof openKkiapayWidget === 'undefined') {
-        showError('KKiaPay n\'est pas disponible. Veuillez recharger la page.');
+        window.showError('KKiaPay n\'est pas disponible. Veuillez recharger la page.');
         setLoading(false);
         return;
     }
@@ -631,7 +712,7 @@ function initKkiaPay(data) {
         
     } catch (error) {
         console.error('Erreur KKiaPay:', error);
-        showError('Erreur lors de l\'initialisation du paiement KKiaPay');
+        window.showError('Erreur lors de l\'initialisation du paiement KKiaPay');
         setLoading(false);
     }
 }
@@ -658,7 +739,7 @@ function addKKiaPayListeners(paymentId) {
             await verifyPayment(paymentId, response.transactionId || response.id);
         } catch (error) {
             console.error('Erreur de vérification:', error);
-            showError('Erreur lors de la vérification du paiement');
+            window.showError('Erreur lors de la vérification du paiement');
             setLoading(false);
         }
     });
@@ -666,14 +747,14 @@ function addKKiaPayListeners(paymentId) {
     // Écouteur pour l'échec
     addFailedListener((error) => {
         console.error('KKiaPay Échec:', error);
-        showError('Paiement annulé ou échoué: ' + (error.message || 'Raison inconnue'));
+        window.showError('Paiement annulé ou échoué: ' + (error.message || 'Raison inconnue'));
         setLoading(false);
     });
 }
 
 function initPayPal(data) {
     if (typeof paypal === 'undefined') {
-        showError('PayPal non disponible');
+        window.showError('PayPal non disponible');
         setLoading(false);
         return;
     }
@@ -716,19 +797,19 @@ function initPayPal(data) {
                 if (details.status === 'COMPLETED') {
                     await verifyPayment(data.payment_id, details.id);
                 } else {
-                    showError('Paiement PayPal échoué');
+                    window.showError('Paiement PayPal échoué');
                     setLoading(false);
                 }
             } catch (error) {
                 console.error('Erreur PayPal:', error);
-                showError('Erreur lors du traitement PayPal');
+                window.showError('Erreur lors du traitement PayPal');
                 setLoading(false);
             }
         },
         
         onError: function(err) {
             console.error('Erreur PayPal:', err);
-            showError('Erreur PayPal');
+            window.showError('Erreur PayPal');
             setLoading(false);
         }
     }).render('#payment-process-container');
@@ -756,7 +837,7 @@ async function verifyPayment(paymentId, transactionId) {
         const data = await response.json();
         
         if (data.success) {
-            showSuccess('Paiement effectué avec succès !');
+            window.showSuccess('Paiement effectué avec succès !');
             setTimeout(() => {
                 if (data.redirect_url) {
                     window.location.href = data.redirect_url;
@@ -765,12 +846,12 @@ async function verifyPayment(paymentId, transactionId) {
                 }
             }, 1500);
         } else {
-            showError(data.message || 'Erreur lors de la vérification du paiement');
+            window.showError(data.message || 'Erreur lors de la vérification du paiement');
             setLoading(false);
         }
     } catch (error) {
         console.error('Erreur:', error);
-        showError('Erreur de connexion au serveur');
+        window.showError('Erreur de connexion au serveur');
         setLoading(false);
     }
 }
@@ -823,6 +904,189 @@ document.addEventListener('DOMContentLoaded', function() {
         const firstMethod = paymentCards[0].getAttribute('data-method');
         selectPaymentMethod(firstMethod);
     }
+    
+    // ==================== STYLES ====================
+    const style = document.createElement('style');
+    style.textContent = `
+        /* Style de base pour toutes les alertes */
+        .alert {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            z-index: 1000;
+            max-width: 400px;
+            animation: slideIn 0.3s ease-out;
+            transition: all 0.3s ease;
+        }
+        
+        /* Animation d'entrée */
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* Animation de sortie */
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+        
+        /* Types d'alertes */
+        .alert-error {
+            background-color: #FEE2E2;
+            border-left: 4px solid #DC2626;
+            color: #991B1B;
+        }
+        
+        .alert-success {
+            background-color: #D1FAE5;
+            border-left: 4px solid #059669;
+            color: #065F46;
+        }
+        
+        .alert-warning {
+            background-color: #FEF3C7;
+            border-left: 4px solid #D97706;
+            color: #92400E;
+        }
+        
+        .alert-info {
+            background-color: #DBEAFE;
+            border-left: 4px solid #2563EB;
+            color: #1E40AF;
+        }
+        
+        /* Icône */
+        .alert-icon {
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+        
+        /* Bouton de fermeture */
+        .alert-close {
+            margin-left: 1rem;
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+            padding: 0.25rem;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .alert-close:hover {
+            opacity: 1;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+    `;
+    document.head.appendChild(style);
+
+    // ==================== ALERT FUNCTIONS ====================
+    function showAlert(message, type = 'info', duration = 5000) {
+        // Types d'icônes pour chaque type d'alerte
+        const icons = {
+            error: 'fa-circle-exclamation',
+            success: 'fa-circle-check',
+            warning: 'fa-triangle-exclamation',
+            info: 'fa-circle-info'
+        };
+        
+        // Créer l'élément d'alerte
+        const alert = document.createElement('div');
+        alert.className = `alert alert-${type}`;
+        alert.setAttribute('role', 'alert');
+        alert.innerHTML = `
+            <i class="fa-solid ${icons[type] || 'fa-circle-info'} alert-icon"></i>
+            <span>${message}</span>
+            <button class="alert-close" aria-label="Fermer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        `;
+        
+        // Ajouter l'alerte au document
+        const existingAlerts = document.querySelectorAll('.alert');
+        existingAlerts.forEach((existingAlert, index) => {
+            existingAlert.style.top = `${1.5 + (index * 1.2)}rem`;
+        });
+        
+        document.body.appendChild(alert);
+        
+        // Gérer la fermeture au clic
+        const closeBtn = alert.querySelector('.alert-close');
+        closeBtn.addEventListener('click', () => {
+            closeAlert(alert);
+        });
+        
+        // Fermeture automatique après la durée spécifiée
+        let timeoutId = setTimeout(() => {
+            closeAlert(alert);
+        }, duration);
+        
+        // Annuler la fermeture automatique au survol
+        alert.addEventListener('mouseenter', () => {
+            clearTimeout(timeoutId);
+        });
+        
+        // Redémarrer le compte à rebours quand la souris quitte l'alerte
+        alert.addEventListener('mouseleave', () => {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                closeAlert(alert);
+            }, 1000);
+        });
+        
+        // Retourner une fonction pour fermer l'alerte manuellement
+        return {
+            close: () => closeAlert(alert)
+        };
+    }
+
+    function closeAlert(alert) {
+        if (!alert) return;
+        
+        // Animation de sortie
+        alert.style.animation = 'slideOut 0.3s ease-out forwards';
+        
+        // Supprimer l'élément après l'animation
+        setTimeout(() => {
+            if (alert && alert.parentNode) {
+                alert.parentNode.removeChild(alert);
+                // Réorganiser les alertes restantes
+                const remainingAlerts = document.querySelectorAll('.alert');
+                remainingAlerts.forEach((remainingAlert, index) => {
+                    remainingAlert.style.top = `${1.5 + (index * 1.2)}rem`;
+                });
+            }
+        }, 300);
+    }
+
+    // Fonctions utilitaires pour les différents types d'alertes
+    window.showError = function(message, duration = 5000) {
+        return showAlert(message, 'error', duration);
+    };
+
+    window.showSuccess = function(message, duration = 3000) {
+        return showAlert(message, 'success', duration);
+    };
+
+    window.showWarning = function(message, duration = 4000) {
+        return showAlert(message, 'warning', duration);
+    };
+
+    window.showInfo = function(message, duration = 3000) {
+        return showAlert(message, 'info', duration);
+    };
 });
 </script>
 

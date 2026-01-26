@@ -7,20 +7,26 @@ use App\Entity\Tontine;
 use App\Entity\Wallets;
 use App\Entity\Transaction;
 use App\Entity\TontinePoint;
-use App\Entity\WalletTransactions;
+use Psr\Log\LoggerInterface;
 
+use App\Service\ActivityLogger;
+use App\Service\EmailService;
+use App\Service\PdfService;
+use App\Entity\WalletTransactions;
 use App\Service\Payment\PayPalService;
 use App\Service\Payment\FedaPayService;
-
 use App\Service\Payment\KkiaPayService;
 use Doctrine\ORM\EntityManagerInterface;
+use Twig\Environment as TwigEnvironment;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+#[IsGranted('ROLE_USER')]
 final class PaymentController extends AbstractController
 {
     public function __construct(
@@ -28,7 +34,12 @@ final class PaymentController extends AbstractController
         private Security $security,
         private FedaPayService $fedaPayService,
         private KkiaPayService $kkiaPayService,
-        private PayPalService $payPalService
+        private PayPalService $payPalService,
+        private ActivityLogger $activityLogger,
+        private EmailService $emailService,
+        private TwigEnvironment $twig,
+        private LoggerInterface $logger,
+        private PdfService $pdfService
     ) {}
 
     #[Route('/init', name: 'app_tontine_payment_init', methods: ['POST'])]
@@ -53,12 +64,12 @@ final class PaymentController extends AbstractController
 
         // Vérifier si l'utilisateur est le créateur de la tontine
         $tontineOwner = $tontine->getUtilisateur();
-        $currentUserId = $user->getId();
-        $isMember = $tontineOwner && $tontineOwner->getId() === $currentUserId;
+        $currentUserId = $user->getUserIdentifier();
+        $isMember = $tontineOwner && $tontineOwner->getUserIdentifier() === $currentUserId;
 
         // Logs de débogage
-        error_log("Tontine Owner ID: " . ($tontineOwner ? $tontineOwner->getId() : 'null'));
-        error_log("Current User ID: " . $currentUserId);
+        error_log("Tontine Owner Email: " . ($tontineOwner ? $tontineOwner->getEmail() : 'null'));
+        error_log("Current User Email: " . $currentUserId);
         error_log("Is Member: " . ($isMember ? 'true' : 'false'));
 
         if (!$isMember) {
@@ -66,8 +77,8 @@ final class PaymentController extends AbstractController
                 'success' => false,
                 'message' => 'Accès refusé. Vous devez être le créateur de la tontine pour effectuer un paiement.',
                 'debug' => [
-                    'tontine_owner_id' => $tontineOwner ? $tontineOwner->getId() : null,
-                    'current_user_id' => $currentUserId
+                    'tontine_owner_email' => $tontineOwner ? $tontineOwner->getEmail() : null,
+                    'current_user_email' => $currentUserId
                 ]
             ], 403);
         }
@@ -148,13 +159,35 @@ final class PaymentController extends AbstractController
             };
 
             if ($verification['success']) {
+
+               
+
                 // Mettre à jour le paiement
                 $payment->setStatut('completed');
                 $payment->setExternalReference($transactionId);
                 $payment->setCreatedAt(new \DateTimeImmutable());
+                
 
                 // Ajouter les points à la tontine
                 $tontine = $payment->getTontine();
+
+                $this->activityLogger->log(
+                    $currentUser,
+                    'PAYMENT_SUCCESS',
+                    'Transaction',
+                    $payment->getId(),
+                    'Paiement de ' . $payment->getAmount() . ' FCFA effectué'
+                );
+
+                  //verifie si c'est le premier paiement de la tontine avec la statut 'completed'
+                if ($tontine->isFraisPreleves() === false && $payment->getStatut() === 'completed') {
+                    $tontine->setFraisPreleves(true);
+                    $payment->setType('frais');
+                    $em->persist($tontine);
+                    $em->persist($payment);
+                    $em->flush();
+                }
+               
 
 
                 //le montant à payer doit etre egale ou un multiple du montant de la tontine
@@ -210,23 +243,72 @@ final class PaymentController extends AbstractController
                     $payment->getPaymentMethod()
                 );
 
+                $em->flush();
 
+                // Génération et envoi de la facture PDF
+                try {
+                    $user = $payment->getUtilisateur();
+                    
+                    // Générer le PDF
+                    $pdfPath = $this->pdfService->generateInvoice(
+                        [
+                            'payment' => $payment,
+                            'user' => $user,
+                            'tontine' => $tontine,
+                            'baseUrl' => $request->getSchemeAndHttpHost()
+                        ],
+                        'emails/facture_pdf.html.twig',
+                        'facture-' . $payment->getId() . '-' . date('Y-m-d')
+                    );
+                    
+                    // Rendu du contenu HTML pour l'email
+                    $emailContent = $this->twig->render('emails/facture.html.twig', [
+                        'user' => $user,
+                        'payment' => $payment,
+                        'hasPdf' => true
+                    ]);
 
-
-
-                $this->em->flush();
+                    // Envoyer l'email avec la pièce jointe
+                    $this->emailService->sendWithAttachment(
+                        $user->getEmail(),
+                        'Votre facture Efasmartfinance #' . $payment->getId(),
+                        $emailContent,
+                        $pdfPath,
+                        'facture-' . $payment->getId() . '.pdf'
+                    );
+                    
+                    // Mettre à jour le paiement avec le chemin du PDF
+                    $payment->setInvoicePath('factures/' . basename($pdfPath));
+                    $em->persist($payment);
+                    $em->flush();
+                    
+                } catch (\Exception $e) {
+                    $this->logger->error('Erreur lors de la génération de la facture PDF: ' . $e->getMessage(), [
+                        'exception' => $e,
+                        'payment_id' => $payment->getId()
+                    ]);
+                }
 
                 return new JsonResponse([
                     'success' => true,
-                    'message' => 'Paiement vérifié avec succès',
-                    'redirect_url' => $this->generateUrl('app_tontine_payment_success', [
-                        'id' => $payment->getId()
-                    ])
+                    'message' => 'Paiement validé avec succès',
+                    'payment_id' => $payment->getId()
                 ]);
             } else {
                 $payment->setStatut('failed');
+                $em->flush();
                 $this->em->flush();
 
+                $tontine = $payment->getTontine();
+
+                $this->activityLogger->log(
+                    $currentUser,
+                    'PAYMENT_FAILED',
+                    'Transaction',
+                    $payment->getId(),
+                    'Paiement de ' . $payment->getAmount() . ' FCFA échoué'
+                );
+                
                 $payload = [
                     'success' => false,
                     'message' => $verification['message'] ?? 'Échec de la vérification'
@@ -243,6 +325,16 @@ final class PaymentController extends AbstractController
         } catch (\Exception $e) {
             $payment->setStatut('failed');
             $this->em->flush();
+
+            $tontine = $payment->getTontine();
+
+                $this->activityLogger->log(
+                    $currentUser,
+                    'PAYMENT_FAILED',
+                    'Transaction',
+                    $payment->getId(),
+                    'Paiement de ' . $payment->getAmount() . ' FCFA échoué'
+                );  
 
             return new JsonResponse([
                 'success' => false,
@@ -433,7 +525,7 @@ final class PaymentController extends AbstractController
                 // Mettre à jour le paiement
                 $payment->setStatut('completed');
                 $payment->setExternalReference($transactionId);
-                $payment->setPaidAt(new \DateTimeImmutable());
+                $payment->setCreatedAt(new \DateTimeImmutable());
                 $payment->setMetadata(array_merge(
                     $payment->getMetadata() ?? [],
                     ['verification_data' => $verification['data']]
@@ -718,6 +810,10 @@ final class PaymentController extends AbstractController
             };
 
             if ($verification['success']) {
+                //verifie sur c'est le premier payement reçu, si oui alors il devient le frais de la tontine
+                if ($payment->getTontine()->getFrais() === null) {
+                    $payment->getTontine()->setFrais($payment);
+                }
                 $payment->setStatut('completed');
                 $payment->setExternalReference($transactionId);
                 $payment->setCreatedAt(new \DateTimeImmutable());

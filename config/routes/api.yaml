@@ -1,0 +1,4 @@
+api_support_submit:
+    path: /api/support
+    controller: App\Controller\Api\SupportController::submit
+    methods: [POST]

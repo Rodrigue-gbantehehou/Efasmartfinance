@@ -1,0 +1,440 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Détails de la Tontine - Administration{% endblock %}
+
+{% block contentadmin %}
+<div class="space-y-6 p-6">
+    <!-- Header avec navigation -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+            <h2 class="text-2xl font-bold text-gray-900">Détails de la Tontine</h2>
+            <p class="mt-1 text-sm text-gray-600">Informations complètes et gestion</p>
+        </div>
+        <a href="{{ path('admin_tontine_index') }}" class="inline-flex items-center px-4 py-2.5 border border-gray-300 shadow-sm text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200">
+            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            Retour à la liste
+        </a>
+    </div>
+
+    <!-- Carte d'en-tête de la tontine -->
+    <div class="bg-gradient-to-r from-green-600 to-green-800 rounded-2xl shadow-xl overflow-hidden">
+        <div class="px-6 py-8 sm:px-8 sm:py-10">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div class="space-y-3">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
+                            <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl sm:text-3xl font-bold text-white">{{ tontine.name }}</h1>
+                            <div class="flex flex-wrap items-center gap-2 mt-2">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-white/20 text-white backdrop-blur-sm">
+                                    <svg class="w-3 h-3 mr-1.5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                    {{ tontine.tontinecode }}
+                                </span>
+                                {% if tontine.utilisateur %}
+                                <span class="text-green-100">
+                                    <span class="font-medium">Créateur:</span> {{ tontine.utilisateur.firstname }} {{ tontine.utilisateur.lastname }}
+                                </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex flex-wrap items-center gap-3">
+                    {% set statusConfig = {
+                        'active': { class: 'bg-green-100 text-green-800 border-green-200', icon: 'check-circle' },
+                        'en_attente': { class: 'bg-yellow-100 text-yellow-800 border-yellow-200', icon: 'clock' },
+                        'terminee': { class: 'bg-green-100 text-green-800 border-green-200', icon: 'flag' },
+                        'annulee': { class: 'bg-red-100 text-red-800 border-red-200', icon: 'x-circle' }
+                    } %}
+                    
+                    {% set config = statusConfig[tontine.statut] ?? { class: 'bg-gray-100 text-gray-800 border-gray-200', icon: 'question-mark' } %}
+                    
+                    <span class="inline-flex items-center px-4 py-2 rounded-lg text-sm font-semibold border {{ config.class }}">
+                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            {% if config.icon == 'check-circle' %}
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            {% elseif config.icon == 'clock' %}
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            {% elseif config.icon == 'flag' %}
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 21v-4m0 0V5a2 2 0 012-2h6.5l1 1H21l-3 6 3 6h-8.5l-1-1H5a2 2 0 00-2 2zm9-13.5V9" />
+                            {% elseif config.icon == 'x-circle' %}
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            {% else %}
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            {% endif %}
+                        </svg>
+                        {{ (tontine.statut ?: 'inconnu')|replace({'_': ' '})|title }}
+                    </span>
+                    
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-white">
+                            {{ (tontine.amountPerPoint * tontine.totalPoints)|number_format(0, ',', ' ') }} FCFA
+                        </div>
+                        <div class="text-sm text-green-100">
+                            {{ tontine.totalPoints }} points
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid d'informations principales -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Informations financières -->
+        <div class="lg:col-span-2 space-y-6">
+            <!-- Progression -->
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-bold text-gray-900">Progression des points</h3>
+                    <span class="text-sm font-medium text-gray-700">
+                        {{ ((tontine.paidPoints|default(0) / tontine.totalPoints) * 100)|round }}% complété
+                    </span>
+                </div>
+                
+                <!-- Barre de progression -->
+                <div class="mb-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-sm font-medium text-gray-700">
+                            Points payés: {{ tontine.paidPoints|default(0) }}/{{ tontine.totalPoints }}
+                        </span>
+                        <span class="text-sm font-medium text-gray-700">
+                            Restant: {{ tontine.totalPoints - tontine.paidPoints|default(0) }} points
+                        </span>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-3">
+                        <div class="bg-gradient-to-r from-green-500 to-green-600 h-3 rounded-full transition-all duration-500 ease-out" 
+                             style="width: {{ ((tontine.paidPoints|default(0) / tontine.totalPoints) * 100) }}%"></div>
+                    </div>
+                </div>
+
+                <!-- Grid des points -->
+                <div class="mb-4">
+                    <div class="point-grid grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
+                        {% set interval = tontine.frequency == 'mensuelle' ? 'month' : (tontine.frequency == 'hebdomadaire' ? 'week' : 'day') %}
+                        {% for point in 1..tontine.totalPoints %}
+                            {% set isPaid = point <= (tontine.paidPoints|default(0)) %}
+                            {% set isCurrent = point == (tontine.paidPoints|default(0)) + 1 %}
+                            {% set pointDueDate = tontine.startDate ? tontine.startDate.modify('+' ~ (point-1) ~ ' ' ~ interval) : null %}
+                            {% set isMissed = pointDueDate and pointDueDate < date('now') and not isPaid %}
+
+                            <div class="relative group">
+                                <div class="aspect-square border-2
+                                        {% if isPaid %}border-green-500 bg-green-50
+                                        {% elseif isMissed %}border-red-500 bg-red-50
+                                        {% elseif isCurrent %}border-yellow-500 bg-yellow-50
+                                        {% else %}border-gray-200 bg-white{% endif %}
+                                        rounded-lg flex flex-col items-center justify-center cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1" 
+                                     data-tooltip="Point #{{ point }}{% if pointDueDate %} - Échéance: {{ pointDueDate|date('d/m/Y') }}{% endif %}">
+
+                                    <div class="text-sm font-bold 
+                                        {% if isPaid %}text-green-700
+                                        {% elseif isMissed %}text-red-700
+                                        {% elseif isCurrent %}text-yellow-600
+                                        {% else %}text-gray-700{% endif %}">
+                                        {{ point }}
+                                    </div>
+                                    <div class="text-xs mt-0.5">
+                                        {% if isPaid %}
+                                            <svg class="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                            </svg>
+                                        {% elseif isMissed %}
+                                            <svg class="w-3 h-3 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.464 0L4.346 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                                            </svg>
+                                        {% elseif isCurrent %}
+                                            <svg class="w-3 h-3 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        {% else %}
+                                            <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                            </svg>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                {% if isCurrent and tontine.statut == 'active' %}
+                                    <div class="absolute -top-2 -right-2 bg-gradient-to-r from-yellow-500 to-yellow-600 text-white text-xs px-1.5 py-0.5 rounded-full shadow-lg animate-pulse">
+                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                {% endif %}
+
+                                <!-- Tooltip -->
+                                <div class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 hidden group-hover:block z-10">
+                                    <div class="bg-gray-900 text-white text-xs rounded py-1 px-2 whitespace-nowrap">
+                                        Point #{{ point }}
+                                        {% if pointDueDate %}
+                                            <br>Échéance: {{ pointDueDate|date('d/m/Y') }}
+                                        {% endif %}
+                                        {% if isPaid %}
+                                            <br><span class="text-green-300">Payé</span>
+                                        {% elseif isMissed %}
+                                            <br><span class="text-red-300">En retard</span>
+                                        {% elseif isCurrent %}
+                                            <br><span class="text-yellow-300">En cours</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="w-0 h-0 border-l-4 border-r-4 border-t-4 border-l-transparent border-r-transparent border-t-gray-900 absolute left-1/2 transform -translate-x-1/2"></div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informations détaillées -->
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-6">Informations détaillées</h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Section gauche -->
+                    <div class="space-y-5">
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500 mb-3">Configuration</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center pb-2 border-b border-gray-100">
+                                    <span class="text-sm text-gray-600">Montant par point</span>
+                                    <span class="text-sm font-medium text-gray-900">{{ tontine.amountPerPoint|number_format(0, ',', ' ') }} FCFA</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-2 border-b border-gray-100">
+                                    <span class="text-sm text-gray-600">Total points</span>
+                                    <span class="text-sm font-medium text-gray-900">{{ tontine.totalPoints }}</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-2 border-b border-gray-100">
+                                    <span class="text-sm text-gray-600">Fréquence</span>
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        {{ tontine.frequency|default('Non spécifiée')|capitalize }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500 mb-3">Propriétaire</h4>
+                            <div class="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                                <div class="flex-shrink-0">
+                                    <div class="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-green-600 flex items-center justify-center">
+                                        <span class="text-white font-medium text-sm">
+                                            {{ tontine.utilisateur.firstname|first }}{{ tontine.utilisateur.lastname|first }}
+                                        </span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">
+                                        {{ tontine.utilisateur.firstname }} {{ tontine.utilisateur.lastname }}
+                                    </p>
+                                    <p class="text-xs text-gray-500">ID: {{ tontine.utilisateur.uuid }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section droite -->
+                    <div class="space-y-5">
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500 mb-3">Dates importantes</h4>
+                            <div class="space-y-3">
+                                <div class="flex justify-between items-center pb-2 border-b border-gray-100">
+                                    <span class="text-sm text-gray-600">Création</span>
+                                    <span class="text-sm font-medium text-gray-900">{{ tontine.createdAt|date('d/m/Y H:i') }}</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-2 border-b border-gray-100">
+                                    <span class="text-sm text-gray-600">Début</span>
+                                    <span class="text-sm font-medium text-gray-900">{{ tontine.startDate ? tontine.startDate|date('d/m/Y') : 'Non définie' }}</span>
+                                </div>
+                                <div class="flex justify-between items-center pb-2 border-b border-gray-100">
+                                    <span class="text-sm text-gray-600">Prochaine échéance</span>
+                                    <span class="text-sm font-medium text-gray-900">{{ tontine.nextDueDate ? tontine.nextDueDate|date('d/m/Y') : 'Aucune' }}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500 mb-3">Fonctionnalités</h4>
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Rappels activés</span>
+                                    {% if tontine.reminderEnabled %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                            </svg>
+                                            Oui
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
+                                            </svg>
+                                            Non
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-600">Retrait effectué</span>
+                                    {% if tontine.withdrawals|length > 0 %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                            Oui
+                                            {% set lastWithdrawal = tontine.withdrawals|last %}
+                                            {% if lastWithdrawal and lastWithdrawal.requestedAt %}
+                                                <span class="ml-1 text-xs">({{ lastWithdrawal.requestedAt|date('d/m/Y') }})</span>
+                                            {% endif %}
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                            Non
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar d'actions et statistiques -->
+        <div class="space-y-6">
+            <!-- Actions rapides -->
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Actions</h3>
+                <div class="space-y-3">
+                    {% if tontine.statut != 'active' %}
+                        <form action="{{ path('admin_tontine_activate', {'id': tontine.id}) }}" method="post" class="w-full">
+                            <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 shadow-md">
+                                <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Activer la tontine
+                            </button>
+                        </form>
+                    {% else %}
+                        <form action="{{ path('admin_tontine_deactivate', {'id': tontine.id}) }}" method="post" class="w-full">
+                            <button type="submit" class="w-full inline-flex items-center justify-center px-4 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-yellow-500 to-yellow-600 hover:from-yellow-600 hover:to-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500 transition-all duration-200 shadow-md">
+                                <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Suspendre la tontine
+                            </button>
+                        </form>
+                    {% endif %}
+
+                </div>
+            </div>
+
+            <!-- Statistiques rapides -->
+            <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
+                <h3 class="text-lg font-bold text-gray-900 mb-4">Résumé financier</h3>
+                <div class="space-y-4">
+                    <div class="p-4 bg-gradient-to-r from-green-50 to-green-100 rounded-lg">
+                        <p class="text-sm text-green-700 font-medium">Capital total</p>
+                        <p class="text-2xl font-bold text-green-900">{{ (tontine.amountPerPoint * tontine.totalPoints)|number_format(0, ',', ' ') }} FCFA</p>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Collecté</span>
+                            <span class="text-sm font-medium text-gray-900">
+                                {{ (tontine.amountPerPoint * tontine.paidPoints|default(0))|number_format(0, ',', ' ') }} FCFA
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Restant</span>
+                            <span class="text-sm font-medium text-gray-900">
+                                {{ (tontine.amountPerPoint * (tontine.totalPoints - tontine.paidPoints|default(0)))|number_format(0, ',', ' ') }} FCFA
+                            </span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm text-gray-600">Valeur par point</span>
+                            <span class="text-sm font-medium text-gray-900">{{ tontine.amountPerPoint|number_format(0, ',', ' ') }} FCFA</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.tooltip {
+    position: relative;
+}
+
+.tooltip:hover .tooltip-text {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.tooltip-text {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.2s ease;
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    pointer-events: none;
+}
+
+.point-grid > div {
+    animation: fadeInUp 0.3s ease-out forwards;
+    opacity: 0;
+}
+
+.point-grid > div:nth-child(n) {
+    animation-delay: calc(var(--i, 1) * 0.05s);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Animation des points
+    const points = document.querySelectorAll('.point-grid > div');
+    points.forEach((point, index) => {
+        point.style.setProperty('--i', index + 1);
+    });
+
+    // Confirmation pour les actions
+    const actionForms = document.querySelectorAll('form[action*="activate"], form[action*="deactivate"]');
+    actionForms.forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const action = this.action.includes('activate') ? 'activer' : 'suspendre';
+            if (!confirm(`Êtes-vous sûr de vouloir ${action} cette tontine ?`)) {
+                e.preventDefault();
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

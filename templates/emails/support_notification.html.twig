@@ -1,0 +1,36 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block content %}
+    <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto;">
+        <div style="background-color: #10b981; padding: 20px; text-align: center; border-radius: 8px 8px 0 0;">
+            <h1 style="color: white; margin: 0;">Nouvelle demande de support</h1>
+        </div>
+        
+        <div style="padding: 20px; background-color: #fff; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px;">
+            <p>Bonjour,</p>
+            
+            <p>Une nouvelle demande de support a été soumise :</p>
+            
+            <div style="background-color: #f9fafb; padding: 15px; border-radius: 6px; margin: 15px 0;">
+                <p style="margin: 5px 0;"><strong>Nom :</strong> {{ name }}</p>
+                <p style="margin: 5px 0;"><strong>Email :</strong> {{ email }}</p>
+                <p style="margin: 5px 0;"><strong>Sujet :</strong> {{ subject|trans({}, 'support_subjects') }}</p>
+                <p style="margin: 5px 0;"><strong>Date :</strong> {{ 'now'|date('d/m/Y H:i') }}</p>
+            </div>
+            
+            <h3 style="color: #111827; margin-top: 20px; margin-bottom: 10px;">Message :</h3>
+            <div style="background-color: #f3f4f6; padding: 15px; border-radius: 6px; white-space: pre-line;">
+                {{ message|nl2br }}
+            </div>
+            
+            <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center;">
+                <p style="margin-bottom: 5px; color: #6b7280; font-size: 14px;">
+                    Ceci est une notification automatique, merci de ne pas y répondre directement.
+                </p>
+                <p style="margin: 0; color: #6b7280; font-size: 14px;">
+                    © {{ 'now'|date('Y') }} EFA SMART FINANCE
+                </p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

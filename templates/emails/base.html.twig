@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}EFA Smart Finance{% endblock %}</title>
+    <style type="text/css">
+        /* Base styles */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -webkit-text-size-adjust: none;
+            width: 100% !important;
+            height: 100%;
+            line-height: 1.6;
+        }
+
+        /* Responsive images */
+        img {
+            max-width: 100%;
+        }
+
+        /* Links */
+        a {
+            color: #10b981;
+            text-decoration: none;
+        }
+
+        /* Responsive layout */
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            display: block;
+            clear: both;
+        }
+
+        /* Email header */
+        .email-header {
+            background-color: #10b981;
+            color: #ffffff;
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        /* Email content */
+        .email-content {
+            padding: 30px;
+            background: #ffffff;
+        }
+
+        /* Email footer */
+        .email-footer {
+            padding: 20px;
+            font-size: 12px;
+            color: #6b7280;
+            text-align: center;
+            background-color: #f9fafb;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #10b981;
+            color: #ffffff !important;
+            text-decoration: none;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none; width: 100% !important; height: 100%; line-height: 1.6; background: #f4f4f4;">
+   <img src="{{ asset('assets/images/logo.png') }}" alt="EFA Smart Finance" style="display: block; margin: 0 auto;">
+    <table class="email-container" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width: 600px; margin: 0 auto; display: block; clear: both;">
+        <!-- Header -->
+        <tr>
+            <td class="email-header" style="background-color: #10b981; color: #ffffff; padding: 30px 0; text-align: center;">
+                <h1 style="margin: 0; font-size: 24px;">{% block email_title %}EFA Smart Finance{% endblock %}</h1>
+            </td>
+        </tr>
+        
+        <!-- Content -->
+        <tr>
+            <td class="email-content" style="padding: 30px; background: #ffffff;">
+                {% block content %}{% endblock %}
+            </td>
+        </tr>
+        
+        <!-- Footer -->
+        <tr>
+            <td class="email-footer" style="padding: 20px; font-size: 12px; color: #6b7280; text-align: center; background-color: #f9fafb;">
+                <p style="margin: 0 0 10px 0;">© {{ 'now'|date('Y') }} EFA Smart Finance. Tous droits réservés.</p>
+                <p style="margin: 0; font-size: 11px; color: #9ca3af;">
+                    Ceci est un email automatique, merci de ne pas y répondre directement.
+                </p>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

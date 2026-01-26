@@ -1,0 +1,62 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block content %}
+    <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; color: #333; line-height: 1.6;">
+        <!-- En-tête -->
+        <div style="text-align: center; padding: 20px 0; border-bottom: 1px solid #eee;">
+            <img src="{{ absolute_url(asset('images/logo.png')) }}" alt="EFA Smart Finance" style="max-width: 200px; height: auto;">
+        </div>
+
+        <!-- Contenu principal -->
+        <div style="padding: 30px 20px;">
+            <h1 style="color: #2c3e50; margin-top: 0;">Réponse à votre demande</h1>
+            
+            <p>Bonjour {% if ticket.utilisateur %}{{ ticket.utilisateur.firstname }}{% else %}Cher client{% endif %},</p>
+            
+            <p>Nous vous remercions d'avoir contacté notre service client. Voici les détails de votre demande :</p>
+            
+            <!-- Carte de la demande -->
+            <div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0; border-left: 4px solid #3b82f6;">
+                <h2 style="margin-top: 0; color: #2c3e50; font-size: 18px;">{{ ticket.sujet }}</h2>
+                
+                <div style="margin-bottom: 15px;">
+                    <p style="font-weight: 600; margin-bottom: 5px; color: #555;">Votre demande :</p>
+                    <div style="background: white; padding: 12px; border-radius: 4px; border: 1px solid #e0e0e0;">
+                        {{ ticket.description|nl2br }}
+                    </div>
+                </div>
+                
+                <div>
+                    <p style="font-weight: 600; margin-bottom: 5px; color: #555;">Notre réponse :</p>
+                    <div style="background: white; padding: 12px; border-radius: 4px; border: 1px solid #e0e0e0;">
+                        {{ ticket.reponse|nl2br }}
+                    </div>
+                </div>
+
+                {% if ticket.repliedBy %}
+                <p style="margin-top: 15px; color: #666; font-size: 14px;">
+                    Répondu par : <strong>{{ ticket.repliedBy.firstname }} {{ ticket.repliedBy.lastname }}</strong>
+                </p>
+                {% endif %}
+            </div>
+
+            <p>Si vous avez d'autres questions, n'hésitez pas à nous contacter en répondant à cet email.</p>
+            
+            <p style="margin-top: 30px;">
+                <a href="{{ absolute_url(path('app_contact_support')) }}" 
+                   style="display: inline-block; padding: 12px 24px; background-color: #3b82f6; 
+                          color: white; text-decoration: none; border-radius: 4px; font-weight: 500;">
+                    Contacter le support
+                </a>
+            </p>
+        </div>
+
+        <!-- Pied de page -->
+        <div style="background-color: #f8f9fa; padding: 20px; text-align: center; font-size: 14px; color: #666; border-top: 1px solid #eee;">
+            <p>© {{ "now"|date('Y') }} EFA Smart Finance. Tous droits réservés.</p>
+            <p style="margin: 5px 0; font-size: 12px; color: #888;">
+                Si vous n'êtes pas à l'origine de cette demande, veuillez ignorer cet email.
+            </p>
+        </div>
+    </div>
+{% endblock %}

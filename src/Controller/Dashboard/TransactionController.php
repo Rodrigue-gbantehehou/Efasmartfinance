@@ -4,24 +4,58 @@ namespace App\Controller\Dashboard;
 
 use App\Entity\Transaction;
 use App\Form\TransactionType;
-use App\Repository\TransactionRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Repository\TransactionRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+#[IsGranted('ROLE_USER')]
 #[Route('/dashboard/transaction')]
 final class TransactionController extends AbstractController
 {
     #[Route(name: 'app_transaction_index', methods: ['GET'])]
     public function index(TransactionRepository $transactionRepository): Response
     {
+        $transactions = $transactionRepository->findBy([], ['createdAt' => 'DESC']);
+        
+        // Calculate statistics
+        $totalEntrees = 0;
+        $totalSorties = 0;
+        $transactionsCount = count($transactions);
+        $transactionsMois = 0;
+        
+        foreach ($transactions as $transaction) {
+            $amount = (float) $transaction->getAmount();
+            $paymentMethod = $transaction->getPaymentMethod();
+            
+            // Assuming 'deposit' or similar indicates an incoming transaction
+            // Adjust these conditions based on your actual payment methods
+            if (str_contains(strtolower($paymentMethod ?? ''), 'deposit') || 
+                str_contains(strtolower($paymentMethod ?? ''), 'entree') ||
+                $transaction->getAmount() > 0) {
+                $totalEntrees += $amount;
+            } else {
+                $totalSorties += abs($amount); // Use absolute value to ensure positive numbers
+            }
+            
+            // Count transactions from the last 30 days
+            if ($transaction->getCreatedAt() > new \DateTime('-30 days')) {
+                $transactionsMois++;
+            }
+        }
+        
         return $this->render('dashboard/pages/transaction/index.html.twig', [
             'transactions' => $transactionRepository->findBy(
-                [],
-                ['createdAt' => 'DESC']
+                ['utilisateur' => $this->getUser()],
+                ['createdAt' => 'DESC'],
             ),
+            'totalEntrees' => $totalEntrees,
+            'totalSorties' => $totalSorties,
+            'transactionsCount' => $transactionsCount,
+            'transactionsMois' => $transactionsMois,
         ]);
     }
 

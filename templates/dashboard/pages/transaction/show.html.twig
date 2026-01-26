@@ -22,7 +22,7 @@
                 </div>
                 <div class="mt-4 md:mt-0 flex items-center space-x-3">
                     <a href="{{ path('app_transaction_edit', {'id': transaction.id}) }}" 
-                       class="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                       class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors">
                         <i class="fa-solid fa-pencil mr-2"></i>
                         Modifier
                     </a>
@@ -67,7 +67,7 @@
                     <div class="p-6">
                         <div class="space-y-6">
                             <!-- Amount Card -->
-                            <div class="bg-gradient-to-r from-green-50 to-blue-50 rounded-xl p-6 border border-green-100">
+                            <div class="bg-gradient-to-r from-green-50 to-green-50 rounded-xl p-6 border border-green-100">
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <div class="text-sm font-medium text-gray-500 mb-1">Montant</div>
@@ -75,7 +75,7 @@
                                             {{ transaction.amount|number_format(0, ',', ' ') }} FCFA
                                         </div>
                                     </div>
-                                    <div class="h-16 w-16 bg-gradient-to-br from-green-500 to-blue-500 rounded-full flex items-center justify-center">
+                                    <div class="h-16 w-16 bg-gradient-to-br from-green-500 to-green-500 rounded-full flex items-center justify-center">
                                         <i class="fa-solid fa-money-bill-wave text-white text-2xl"></i>
                                     </div>
                                 </div>
@@ -87,8 +87,8 @@
                                 <div class="bg-gray-50 rounded-lg p-4">
                                     <div class="flex items-center mb-2">
                                         <div class="h-10 w-10 rounded-lg flex items-center justify-center mr-3
-                                            {% if transaction.paymentMethod == 'kkiapay' %}bg-purple-100 text-purple-600
-                                            {% elseif transaction.paymentMethod == 'paypal' %}bg-blue-100 text-blue-600
+                                            {% if transaction.paymentMethod == 'kkiapay' %}bg-yellow-100 text-yellow-600
+                                            {% elseif transaction.paymentMethod == 'paypal' %}bg-green-100 text-green-600
                                             {% elseif transaction.paymentMethod == 'fedapay' %}bg-green-100 text-green-600
                                             {% elseif transaction.paymentMethod == 'cash' %}bg-yellow-100 text-yellow-600
                                             {% else %}bg-gray-100 text-gray-600{% endif %}">
@@ -154,8 +154,8 @@
                                 <!-- Date & Time -->
                                 <div class="bg-gray-50 rounded-lg p-4">
                                     <div class="flex items-center mb-2">
-                                        <div class="h-10 w-10 rounded-lg bg-blue-100 flex items-center justify-center mr-3">
-                                            <i class="fa-solid fa-calendar text-blue-600"></i>
+                                        <div class="h-10 w-10 rounded-lg bg-green-100 flex items-center justify-center mr-3">
+                                            <i class="fa-solid fa-calendar text-green-600"></i>
                                         </div>
                                         <div>
                                             <div class="text-sm font-medium text-gray-500">Date</div>
@@ -169,8 +169,8 @@
                                 <!-- Time -->
                                 <div class="bg-gray-50 rounded-lg p-4">
                                     <div class="flex items-center mb-2">
-                                        <div class="h-10 w-10 rounded-lg bg-purple-100 flex items-center justify-center mr-3">
-                                            <i class="fa-solid fa-clock text-purple-600"></i>
+                                        <div class="h-10 w-10 rounded-lg bg-yellow-100 flex items-center justify-center mr-3">
+                                            <i class="fa-solid fa-clock text-yellow-600"></i>
                                         </div>
                                         <div>
                                             <div class="text-sm font-medium text-gray-500">Heure</div>
@@ -230,7 +230,7 @@
                     <h3 class="text-lg font-semibold text-gray-900 mb-4">Actions</h3>
                     <div class="space-y-3">
                         <a href="{{ path('app_transaction_edit', {'id': transaction.id}) }}" 
-                           class="w-full flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors">
+                           class="w-full flex items-center justify-center px-4 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors">
                             <i class="fa-solid fa-pencil mr-3"></i>
                             Modifier cette transaction
                         </a>
@@ -286,6 +286,8 @@
                 </div>
             </div>
         </div>
+    </div>
+    <div class="max-w-7xl mx-auto px-4 py-10 ">
     </div>
 </div>
 
@@ -365,7 +367,7 @@ function showNotification(message, type = 'info') {
     notification.className = `fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg flex items-center transform translate-x-full transition-transform duration-300 ${
         type === 'success' ? 'bg-green-500 text-white' :
         type === 'error' ? 'bg-red-500 text-white' :
-        'bg-blue-500 text-white'
+        'bg-green-500 text-white'
     }`;
     
     const icon = type === 'success' ? 'fa-check-circle' :

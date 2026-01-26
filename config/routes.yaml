@@ -7,5 +7,24 @@
 # To list all registered routes, run the following command:
 #   bin/console debug:router
 
-controllers:
-    resource: routing.controllers
+# Import API routes
+api_support:
+    resource: routes/api.yaml
+    prefix: /
+
+# Import API controllers with attributes
+api_controller:
+    resource: '../src/Controller/Api/'
+    type: 'attribute'
+    prefix: /dashboard
+
+# Import main controllers with attributes
+app_controller:
+    resource: '../src/Controller/'
+    type: 'attribute'
+    prefix: /
+
+# Import DashboardAdmin controller with attributes
+dashboard_admin_controller:
+    resource: '../src/Controller/Admin/'
+    type: 'attribute'

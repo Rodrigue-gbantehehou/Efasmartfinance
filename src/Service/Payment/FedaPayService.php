@@ -32,7 +32,7 @@ class FedaPayService
         return [
             'public_key' => $this->publicKey,
             'amount' => $payment->getAmount(),
-            'currency' => 'XOF',
+            'currency' => 'F CFA',
             'description' => $options['description'] ?? 'Paiement tontine',
             'callback_url' => $callbackUrl,
             'cancel_url' => $this->generateCancelUrl($payment)

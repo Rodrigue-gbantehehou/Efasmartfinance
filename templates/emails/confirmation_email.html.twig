@@ -1,11 +1,32 @@
-<h1>Salut! Veuillez confirmer votre email!</h1>
+{% extends 'emails/base.html.twig' %}
 
-<p>
-    s'il vous plaît cliquez sur le lien suivant pour confirmer votre adresse e-mail : <br><br>
-    <a href="{{ signedUrl|raw }}">Confirm my Email</a>.
-    Ce lien expirera dans {{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}.
-</p>
+{% block email_title %}Confirmez votre adresse email{% endblock %}
 
-<p>
-    Cordialement,
-</p>
+{% block content %}
+    <h2 style="color: #111827; margin-top: 0; margin-bottom: 20px;">Confirmation de votre adresse email</h2>
+    
+    <p>Bonjour,</p>
+    
+    <p>Merci de vous être inscrit(e) sur EFA Smart Finance. Pour finaliser votre inscription, veuillez confirmer votre adresse email en cliquant sur le bouton ci-dessous :</p>
+    
+    <div style="text-align: center; margin: 30px 0;">
+        <a href="{{ signedUrl|raw }}" style="display: inline-block; padding: 12px 24px; background-color: #10b981; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: bold;">
+            Confirmer mon email
+        </a>
+    </div>
+    
+    <p style="color: #6b7280; font-size: 14px; text-align: center;">
+        Ce lien de confirmation expirera dans <strong>{{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}</strong>.
+    </p>
+    
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+        <p style="margin: 5px 0; color: #6b7280; font-size: 14px;">
+            Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet email en toute sécurité.
+        </p>
+    </div>
+    
+    <p style="margin-top: 25px;">
+        Cordialement,<br>
+        <strong>L'équipe EFA Smart Finance</strong>
+    </p>
+{% endblock %}

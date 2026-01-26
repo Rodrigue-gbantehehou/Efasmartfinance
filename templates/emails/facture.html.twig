@@ -1,0 +1,46 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block content %}
+    <h2>Facture de Paiement</h2>
+    
+    <p>Bonjour {{ user.firstName }},</p>
+    
+    <p>Nous vous remercions pour votre paiement. Voici les détails de votre transaction :</p>
+    
+    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+        <tr>
+            <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Référence</th>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ payment.id }}</td>
+        </tr>
+        <tr>
+            <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Date</th>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ payment.createdAt|date('d/m/Y H:i') }}</td>
+        </tr>
+        <tr>
+            <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Montant</th>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ payment.amount|number_format(0, ',', ' ') }} FCFA</td>
+        </tr>
+        <tr>
+            <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Moyen de paiement</th>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">
+                {% if payment.paymentMethod == 'fedapay' %}
+                    Carte Bancaire (FedaPay)
+                {% elseif payment.paymentMethod == 'kkiapay' %}
+                    Mobile Money (KkiaPay)
+                {% elseif payment.paymentMethod == 'paypal' %}
+                    PayPal
+                {% else %}
+                    {{ payment.paymentMethod|capitalize }}
+                {% endif %}
+            </td>
+        </tr>
+        <tr>
+            <th style="text-align: left; padding: 8px; border-bottom: 1px solid #ddd;">Référence transaction</th>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">{{ payment.externalReference }}</td>
+        </tr>
+    </table>
+    
+    <p>Pour toute question concernant cette transaction, n'hésitez pas à nous contacter.</p>
+    
+    <p>Cordialement,<br>L'équipe Efasmartfinance</p>
+{% endblock %}

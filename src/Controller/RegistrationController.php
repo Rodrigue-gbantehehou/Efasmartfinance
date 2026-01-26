@@ -8,6 +8,7 @@ use App\Security\Authenticator;
 use App\Security\EmailVerifier;
 use App\Form\RegistrationFormType;
 use App\Repository\UserRepository;
+use App\Service\SecurityLogger;
 use Symfony\Component\Mime\Address;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
@@ -24,7 +25,8 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 
 class RegistrationController extends AbstractController
 {
-    public function __construct(private EmailVerifier $emailVerifier, private EmailService $emailService) {}
+    public function __construct(
+        private EmailVerifier $emailVerifier, private EmailService $emailService,private SecurityLogger $securityLogger) {}
 
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
@@ -47,6 +49,17 @@ class RegistrationController extends AbstractController
 
             $entityManager->persist($user);
             $entityManager->flush();
+
+            //log
+             $this->securityLogger->log(
+                    $user,
+                    'USER_REGISTER',
+                    'User',
+                    $user->getId(),
+                    'Nouveau utilisateur enregistré'
+                );  
+
+            
 
             // Envoyer un email avec le code utilisateur
             $this->emailService->send(
@@ -115,7 +128,7 @@ class RegistrationController extends AbstractController
     private function generateUniqueUserCode(EntityManagerInterface $em): int
     {
         do {
-            $code = random_int(10000, 99999);
+            $code = random_int(1000000, 9999999);
             $exists = $em->getRepository(User::class)
                 ->findOneBy(['uuid' => $code]);
         } while ($exists);

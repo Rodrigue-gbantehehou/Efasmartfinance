@@ -3,28 +3,406 @@
 {% block title %}Email Vérifié - EFA Smart Finance{% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8 text-center">
-                <div class="card">
-                    <div class="card-body p-5">
-                        <div class="mb-4">
-                            <i class="fas fa-check-circle text-success" style="font-size: 5rem;"></i>
+<div class="min-h-screen bg-gradient-to-b from-green-50 via-white to-green-50/50 flex items-center justify-center p-4">
+    <div class="max-w-2xl w-full">
+        <!-- Carte principale avec animation de succès -->
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-green-200 transform transition-all duration-500 hover:shadow-3xl">
+            <!-- Bandeau supérieur de succès -->
+            <div class="bg-gradient-to-r from-green-600 via-green-500 to-green-600 p-8 text-center relative overflow-hidden">
+                <!-- Effets décoratifs -->
+                <div class="absolute top-0 left-0 w-full h-full opacity-10">
+                    <div class="absolute top-1/4 left-1/4 w-32 h-32 bg-white rounded-full"></div>
+                    <div class="absolute bottom-1/4 right-1/4 w-40 h-40 bg-white rounded-full"></div>
+                </div>
+                
+                <!-- Icône animée -->
+                <div class="relative">
+                    <!-- Cercles concentriques animés -->
+                    <div class="absolute inset-0 flex items-center justify-center">
+                        <div class="h-32 w-32 border-4 border-green-300 rounded-full animate-ping opacity-20"></div>
+                        <div class="h-24 w-24 border-4 border-green-200 rounded-full animate-ping opacity-30" style="animation-delay: 0.2s"></div>
+                    </div>
+                    
+                    <!-- Icône de succès -->
+                    <div class="relative h-24 w-24 rounded-full bg-white flex items-center justify-center mx-auto mb-6 shadow-lg">
+                        <i class="fas fa-check-circle text-5xl text-green-600"></i>
+                    </div>
+                </div>
+                
+                <h1 class="text-3xl font-bold text-white mb-2">Félicitations !</h1>
+                <p class="text-green-100 text-lg">EFA Smart Finance</p>
+            </div>
+
+            <!-- Contenu -->
+            <div class="p-8">
+                <!-- Message de succès -->
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl font-bold text-green-800 mb-4">
+                        <i class="fas fa-check-double text-green-600 mr-2"></i>
+                        Vérification réussie
+                    </h2>
+                    <p class="text-gray-700 text-lg mb-4">
+                        Votre adresse email a été vérifiée avec succès.
+                    </p>
+                    <p class="text-gray-600">
+                        Bienvenue dans la communauté EFA Smart Finance !
+                    </p>
+                </div>
+
+                <!-- Cartes de fonctionnalités débloquées -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    <!-- Carte 1 -->
+                    <div class="text-center p-5 bg-gradient-to-b from-green-50 to-white rounded-xl border border-green-100 hover:border-green-300 transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
+                        <div class="h-14 w-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-coins text-xl"></i>
                         </div>
-                        <h1 class="h3 mb-4">Félicitations !</h1>
-                        <p class="lead">Votre adresse email a été vérifiée avec succès.</p>
-                        <p>Vous pouvez maintenant profiter de toutes les fonctionnalités de votre compte EFA Smart Finance.</p>
-                        <div class="mt-4">
-                            <a href="{{ path('app_home') }}" class="btn btn-primary">
-                                <i class="fas fa-home me-2"></i>Retour à l'accueil
-                            </a>
-                            <a href="{{ path('app_dashboard') }}" class="btn btn-outline-primary ms-2">
-                                <i class="fas fa-tachometer-alt me-2"></i>Tableau de bord
-                            </a>
+                        <h4 class="font-semibold text-gray-800 mb-2">Créez des tontines</h4>
+                        <p class="text-sm text-gray-600">
+                            Lancez vos projets d'épargne collective
+                        </p>
+                    </div>
+
+                    <!-- Carte 2 -->
+                    <div class="text-center p-5 bg-gradient-to-b from-green-50 to-white rounded-xl border border-green-100 hover:border-green-300 transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
+                        <div class="h-14 w-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-chart-line text-xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Suivez vos finances</h4>
+                        <p class="text-sm text-gray-600">
+                            Visualisez votre épargne en temps réel
+                        </p>
+                    </div>
+
+                    <!-- Carte 3 -->
+                    <div class="text-center p-5 bg-gradient-to-b from-green-50 to-white rounded-xl border border-green-100 hover:border-green-300 transition-all duration-300 hover:shadow-lg hover:scale-[1.02]">
+                        <div class="h-14 w-14 rounded-full bg-green-100 text-green-600 flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-shield-alt text-xl"></i>
+                        </div>
+                        <h4 class="font-semibold text-gray-800 mb-2">Sécurité garantie</h4>
+                        <p class="text-sm text-gray-600">
+                            Vos données sont protégées
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Message d'accueil -->
+                <div class="mb-10 p-6 bg-gradient-to-r from-green-50 to-green-50 border border-green-200 rounded-2xl">
+                    <div class="flex items-center gap-4">
+                        <div class="h-12 w-12 rounded-full bg-gradient-to-r from-green-500 to-green-500 text-white flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-gem"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-gray-800 mb-1">
+                                <span class="text-green-600">Bienvenue à bord !</span>
+                            </p>
+                            <p class="text-sm text-gray-600">
+                                Vous pouvez maintenant profiter de toutes les fonctionnalités premium de votre compte. 
+                                Commencez votre voyage vers l'indépendance financière dès aujourd'hui.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Boutons d'action -->
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <!-- Tableau de bord (principal) -->
+                    <a href="{{ path('app_dashboard') }}" 
+                       class="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-green-600 to-green-700 text-white font-bold hover:from-green-700 hover:to-green-800 transition-all duration-300 transform hover:scale-[1.03] shadow-lg hover:shadow-xl flex-1 max-w-sm">
+                        <i class="fas fa-tachometer-alt text-xl"></i>
+                        <span>Accéder au tableau de bord</span>
+                    </a>
+
+                    <!-- Accueil (secondaire) -->
+                    <a href="{{ path('app_home') }}" 
+                       class="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl border-2 border-green-600 text-green-600 font-semibold hover:bg-green-50 transition-all duration-300 flex-1 max-w-sm">
+                        <i class="fas fa-home"></i>
+                        <span>Retour à l'accueil</span>
+                    </a>
+                </div>
+
+                <!-- Prochaines étapes -->
+                <div class="mt-12 pt-8 border-t border-gray-100">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">
+                        <i class="fas fa-rocket text-green-500 mr-2"></i>
+                        Prêt à commencer ?
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="text-center p-3">
+                            <div class="text-sm font-medium text-green-700 mb-1">Étape 1</div>
+                            <div class="text-xs text-gray-600">Créez votre première tontine</div>
+                        </div>
+                        <div class="text-center p-3">
+                            <div class="text-sm font-medium text-green-700 mb-1">Étape 2</div>
+                            <div class="text-xs text-gray-600">Invitez vos proches</div>
+                        </div>
+                        <div class="text-center p-3">
+                            <div class="text-sm font-medium text-green-700 mb-1">Étape 3</div>
+                            <div class="text-xs text-gray-600">Épargnez ensemble</div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Footer de la carte -->
+            <div class="bg-green-50 p-6 border-t border-green-100">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="h-10 w-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-green-800">Compte vérifié</p>
+                            <p class="text-xs text-green-600">100% sécurisé</p>
+                        </div>
+                    </div>
+                    <div class="text-center sm:text-right">
+                        <p class="text-xs text-green-600">
+                            <i class="fas fa-shield-check mr-1"></i>
+                            Protection des données activée
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Message de bienvenue global -->
+        <div class="mt-8 text-center">
+            <p class="text-sm text-gray-600">
+                Questions ? 
+                <a href="mailto:support@efasmartfinance.com" class="text-green-600 hover:text-green-700 font-medium ml-1">
+                    Notre équipe est là pour vous aider
+                </a>
+            </p>
+            <p class="text-xs text-gray-500 mt-2">
+                Vous recevrez bientôt un email de bienvenue avec nos meilleurs conseils.
+            </p>
+        </div>
+
+        <!-- Confettis visuels (CSS only) -->
+        <div class="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
+            {% for i in 1..15 %}
+                <div class="confetti" style="
+                    --i: {{ i }};
+                    --x: {{ random(0, 100) }}vw;
+                    --y: {{ random(-20, -5) }}vh;
+                    --r: {{ random(0, 360) }}deg;
+                    --color: {{ ['#10B981', '#059669', '#047857', '#065F46', '#064E3B']|random }};
+                "></div>
+            {% endfor %}
         </div>
     </div>
+</div>
+
+<!-- Modal de tutoriel rapide -->
+<div id="quickGuideModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl p-8 max-w-lg w-full shadow-2xl">
+        <div class="text-center">
+            <div class="h-16 w-16 rounded-full bg-gradient-to-r from-green-100 to-green-200 text-green-600 flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-play-circle text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-green-700 mb-3">Bienvenue sur EFA Smart Finance !</h3>
+            <p class="text-gray-600 mb-6">
+                Souhaitez-vous voir un tutoriel rapide pour découvrir comment créer votre première tontine ?
+            </p>
+            <div class="flex flex-col sm:flex-row gap-3">
+                <button onclick="startTutorial()" 
+                        class="px-6 py-3 rounded-lg bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold hover:from-green-700 hover:to-green-800 transition-all duration-300 flex-1">
+                    <i class="fas fa-play mr-2"></i>Voir le tutoriel
+                </button>
+                <button onclick="closeQuickGuide()" 
+                        class="px-6 py-3 rounded-lg border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors font-medium flex-1">
+                    Plus tard
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Gestion du modal de guide
+function showQuickGuide() {
+    document.getElementById('quickGuideModal').classList.remove('hidden');
+}
+
+function closeQuickGuide() {
+    document.getElementById('quickGuideModal').classList.add('hidden');
+    localStorage.setItem('quickGuideShown', 'true');
+}
+
+function startTutorial() {
+    closeQuickGuide();
+    // Ici vous pouvez rediriger vers une page de tutoriel
+    // ou lancer une animation/guide interactif
+    window.location.href = '{{ path('app_tutorial') }}';
+}
+
+// Affichage du guide après un délai
+document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+        if (!localStorage.getItem('quickGuideShown')) {
+            showQuickGuide();
+        }
+    }, 2000);
+    
+    // Fermer avec ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeQuickGuide();
+        }
+    });
+    
+    // Fermer en cliquant à l'extérieur
+    const modal = document.getElementById('quickGuideModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeQuickGuide();
+            }
+        });
+    }
+    
+    // Animation de progression des étapes
+    const steps = document.querySelectorAll('.text-center.p-3');
+    steps.forEach((step, index) => {
+        setTimeout(() => {
+            step.classList.add('animate-step');
+        }, index * 300 + 1000);
+    });
+});
+</script>
+
+<style>
+/* Animation des confettis */
+.confetti {
+    position: absolute;
+    width: 10px;
+    height: 20px;
+    background-color: var(--color);
+    top: var(--y);
+    left: var(--x);
+    transform: rotate(var(--r));
+    animation: fall calc(1s * var(--i)) linear infinite;
+    opacity: 0.7;
+    border-radius: 2px;
+}
+
+@keyframes fall {
+    0% {
+        transform: translateY(0) rotate(var(--r));
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(calc(var(--r) + 360deg));
+        opacity: 0;
+    }
+}
+
+/* Animation pour les étapes */
+@keyframes stepPulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(16, 185, 129, 0.1);
+    }
+}
+
+.animate-step {
+    animation: stepPulse 1.5s ease-in-out;
+}
+
+/* Animation d'entrée pour les cartes */
+.text-center.p-5 {
+    animation: slideUp 0.5s ease-out forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.text-center.p-5:nth-child(1) { animation-delay: 0.1s; }
+.text-center.p-5:nth-child(2) { animation-delay: 0.2s; }
+.text-center.p-5:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes slideUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Effet de survol amélioré pour les boutons */
+a.inline-flex.items-center.justify-center {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+a.inline-flex.items-center.justify-center::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+}
+
+a.inline-flex.items-center.justify-center:hover::after {
+    transform: translateX(100%);
+}
+
+/* Animation pour l'icône de succès */
+@keyframes checkmark {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.fa-check-circle {
+    animation: checkmark 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .p-8 {
+        padding: 1.5rem;
+    }
+    
+    .text-3xl {
+        font-size: 1.75rem;
+    }
+    
+    .h-24.w-24 {
+        height: 5rem;
+        width: 5rem;
+    }
+    
+    .flex-col.sm\:flex-row {
+        flex-direction: column;
+    }
+}
+
+/* Focus pour l'accessibilité */
+:focus-visible {
+    outline: 2px solid #10B981;
+    outline-offset: 2px;
+    border-radius: 0.75rem;
+}
+</style>
 {% endblock %}

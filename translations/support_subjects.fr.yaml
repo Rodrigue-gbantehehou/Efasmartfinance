@@ -1,0 +1,8 @@
+# Support subjects translations
+support_subjects:
+  technical: 'Problème technique'
+  payment: 'Problème de paiement'
+  account: 'Problème de compte'
+  tontine: 'Question sur les tontines'
+  security: 'Question de sécurité'
+  other: 'Autre'

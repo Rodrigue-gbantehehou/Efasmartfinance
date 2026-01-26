@@ -1,0 +1,462 @@
+{% extends 'dashboard/base.html.twig' %}
+
+
+{% block title %}Vérification d'identité - EFA Smart Finance{% endblock %}
+
+
+{% block contentdashboard %}
+
+{{ form_start(formcompte, {'attr': { 'enctype': 'multipart/form-data', 'id': 'verificationForm' }}) }}
+<div class="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-6 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <a href="{{ path('app_dashboard') }}" 
+                       class="inline-flex items-center gap-2 px-3 py-2 text-sm text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors">
+                        <i class="fa-solid fa-arrow-left text-sm"></i>
+                        Retour
+                    </a>
+                    <div class="h-6 w-px bg-gray-300"></div>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900">Vérification d'identité</h1>
+                        <p class="text-gray-600 mt-1">Sécurisez votre compte en validant votre identité</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1 px-3 py-1.5 bg-green-100 text-green-800 text-xs font-medium rounded-full">
+                        <i class="fa-solid fa-shield-alt"></i>
+                        Sécurisé & Crypté
+                    </span>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-200">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium text-gray-700">Progression de vérification</span>
+                    <span id="progressPercentage" class="text-sm font-semibold text-green-600">0%</span>
+                </div>
+                <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                    <div id="progressBar" class="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full transition-all duration-500" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="space-y-6">
+            <!-- Step 1: Personal Information -->
+            <div id="step1" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="border-b border-gray-100 px-6 py-4 bg-gradient-to-r from-green-50 to-green-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="flex-shrink-0 h-10 w-10 rounded-lg bg-white border border-green-200 flex items-center justify-center">
+                            <span class="font-bold text-green-600">1</span>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-gray-900">Informations personnelles</h2>
+                            <p class="text-sm text-gray-600">Remplissez vos informations de base</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <div id="personalInfoForm" class="space-y-5">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <!-- Prénom -->
+                            <div class="space-y-2">
+                                {{ form_label(formcompte.firstname, 'Prénom', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                                {{ form_widget(formcompte.firstname, {
+                                    'attr': {
+                                        'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none',
+                                        'placeholder': 'Votre prénom'
+                                    }
+                                }) }}
+                                {{ form_errors(formcompte.firstname) }}
+                            </div>
+
+                            <!-- Nom -->
+                            <div class="space-y-2">
+                                {{ form_label(formcompte.lastname, 'Nom', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                                {{ form_widget(formcompte.lastname, {
+                                    'attr': {
+                                        'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none',
+                                        'placeholder': 'Votre nom de famille'
+                                    }
+                                }) }}
+                                {{ form_errors(formcompte.lastname) }}
+                            </div>
+                        </div>
+                        
+                        <!-- Date de naissance -->
+                        <div class="space-y-2">
+                            {{ form_label(formcompte.birthDate, 'Date de naissance', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                            <div class="relative">
+                                {{ form_widget(formcompte.birthDate, {
+                                    'attr': {
+                                        'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none',
+                                        'max': 'now'|date_modify('-18 years')|date('Y-m-d')
+                                    }
+                                }) }}
+                            </div>
+                            <p class="text-xs text-gray-500 mt-1">
+                                <i class="fa-solid fa-info-circle text-green-500 mr-1"></i>
+                                Vous devez avoir au moins 18 ans
+                            </p>
+                            {{ form_errors(formcompte.birthDate) }}
+                        </div>
+                        
+                        <!-- Nationalité -->
+                        <div class="space-y-2">
+                            {{ form_label(formcompte.nationality, 'Nationalité', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                            {{ form_widget(formcompte.nationality, {
+                                'attr': {
+                                    'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none bg-white'
+                                }
+                            }) }}
+                            {{ form_errors(formcompte.nationality) }}
+                        </div>
+                        
+                        <!-- Adresse -->
+                        <div class="space-y-2">
+                            {{ form_label(formcompte.address, 'Adresse complète', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                            {{ form_widget(formcompte.address, {
+                                'attr': {
+                                    'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none resize-none',
+                                    'rows': 3,
+                                    'placeholder': 'Numéro, rue, ville, code postal, pays'
+                                }
+                            }) }}
+                            {{ form_errors(formcompte.address) }}
+                        </div>
+                        
+                        <!-- Téléphone -->
+                        <div class="space-y-2">
+                            {{ form_label(formcompte.phone, 'Numéro de téléphone', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                            <div class="flex flex-col sm:flex-row gap-3">
+                             
+                                <div class="flex-1">
+                                    {{ form_widget(formcompte.phone, {
+                                        'attr': {
+                                            'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none',
+                                            'placeholder': 'XX XX XX XX',
+                                         
+                                        }
+                                    }) }}
+                                    {{ form_errors(formcompte.phone) }}
+                                </div>
+                            </div>
+                           
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Identity Document -->
+            <div id="step2" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="border-b border-gray-100 px-6 py-4 bg-gradient-to-r from-green-50 to-green-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="flex-shrink-0 h-10 w-10 rounded-lg bg-white border border-green-200 flex items-center justify-center">
+                            <span class="font-bold text-green-600">2</span>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-gray-900">Document d'identité</h2>
+                            <p class="text-sm text-gray-600">Téléchargez une photo de votre pièce d'identité</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <div class="space-y-5">
+                        <!-- Document Type -->
+                        <div class="space-y-2">
+                            {{ form_label(formcompte.documentType, 'Type de document', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                            {{ form_widget(formcompte.documentType, {
+                                'attr': {
+                                    'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none bg-white',
+                                    'required': 'required'
+                                }
+                            }) }}
+                            {{ form_errors(formcompte.documentType) }}
+                        </div>
+
+                        <!-- Document Front Upload -->
+                        <div class="space-y-2">
+                            {{ form_label(formcompte.documentFront, 'Recto du document', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                            <div class="relative">
+                                <div class="relative">
+                                    {{ form_widget(formcompte.documentFront, {
+                                        'attr': {
+                                            'class': 'hidden-file-input',
+                                            'accept': 'image/*,.pdf',
+                                            'data-dropzone': 'documentFront',
+                                            'onchange': 'handleFileSelect(this, "documentFrontPreview")'
+                                        }
+                                    }) }}
+                                    {{ form_errors(formcompte.documentFront) }}
+                                    
+                                    <div id="documentFrontDropzone" 
+                                         class="upload-dropzone"
+                                         onclick="document.getElementById('{{ formcompte.documentFront.vars.id }}').click()"
+                                         ondragover="event.preventDefault(); this.classList.add('dragover');"
+                                         ondragleave="this.classList.remove('dragover');"
+                                         ondrop="handleDrop(event, '{{ formcompte.documentFront.vars.id }}', 'documentFrontPreview')">
+                                        <i class="fas fa-cloud-upload-alt"></i>
+                                        <p>Glissez et déposez votre fichier ici ou <span class="browse-link">parcourir</span></p>
+                                        <p class="text-xs text-gray-500 mt-2">Formats acceptés : JPG, PNG, PDF (max. 5MB)</p>
+                                    </div>
+                                    
+                                    <!-- Prévisualisation du fichier -->
+                                    <div id="documentFrontPreview" class="file-previews mt-4"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Document Back Upload -->
+                        <div class="space-y-2">
+                            {{ form_label(formcompte.documentBack, 'Verso du document', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                            <div class="relative">
+                                <div class="relative">
+                                    {{ form_widget(formcompte.documentBack, {
+                                        'attr': {
+                                            'class': 'hidden-file-input',
+                                            'accept': 'image/*,.pdf',
+                                            'data-dropzone': 'documentBack',
+                                            'onchange': 'handleFileSelect(this, "documentBackPreview")'
+                                        }
+                                    }) }}
+                                    {{ form_errors(formcompte.documentBack) }}
+                                    
+                                 
+                                </div>
+                            </div>
+                            
+                   
+                        </div>
+
+                        <!-- Document Details -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mt-6">
+                            <!-- Document Number -->
+                            <div class="space-y-2">
+                                {{ form_label(formcompte.documentNumber, 'Numéro du document', {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                                {{ form_widget(formcompte.documentNumber, {
+                                    'attr': {
+                                        'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none',
+                                        'placeholder': 'Ex: 123456789012'
+                                    }
+                                }) }}
+                                {{ form_errors(formcompte.documentNumber) }}
+                            </div>
+                            
+                            <!-- Expiry Date -->
+                            <div class="space-y-2">
+                                {{ form_label(formcompte.expiryDate, "Date d'expiration", {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                                <div class="relative">
+                                    {{ form_widget(formcompte.expiryDate, {
+                                        'attr': {
+                                            'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none',
+                                            'min': 'now'|date('Y-m-d')
+                                        }
+                                    }) }}
+                                </div>
+                                {{ form_errors(formcompte.expiryDate) }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Selfie -->
+            <div id="step3" class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="border-b border-gray-100 px-6 py-4 bg-gradient-to-r from-yellow-50 to-yellow-50/50">
+                    <div class="flex items-center gap-3">
+                        <div class="flex-shrink-0 h-10 w-10 rounded-lg bg-white border border-yellow-200 flex items-center justify-center">
+                            <span class="font-bold text-yellow-600">3</span>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-gray-900">Photo selfie avec document</h2>
+                            <p class="text-sm text-gray-600">Prenez une photo de vous tenant votre pièce d'identité</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <div class="space-y-5">
+                        <!-- Instructions -->
+                        <div class="bg-green-50 border border-green-100 rounded-xl p-4">
+                            <div class="flex items-start gap-3">
+                                <div class="flex-shrink-0 h-8 w-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center mt-0.5">
+                                    <i class="fa-solid fa-lightbulb"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium text-green-800 mb-2">Instructions importantes</p>
+                                    <ul class="text-sm text-green-700 space-y-1">
+                                        <li class="flex items-start gap-2">
+                                            <i class="fa-solid fa-check-circle text-green-500 mt-0.5"></i>
+                                            <span>Tenez votre pièce d'identité à côté de votre visage</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <i class="fa-solid fa-check-circle text-green-500 mt-0.5"></i>
+                                            <span>Assurez-vous que votre visage et le document soient bien visibles</span>
+                                        </li>
+                                        <li class="flex items-start gap-2">
+                                            <i class="fa-solid fa-check-circle text-green-500 mt-0.5"></i>
+                                            <span>Utilisez un bon éclairage et évitez les reflets</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Selfie Upload Section -->
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                             
+                                <!-- Upload Option -->
+                                <div class="space-y-4">
+                                    <div class="flex items-center gap-2">
+                                        <i class="fa-solid fa-upload text-green-500"></i>
+                                        <h3 class="font-medium text-gray-900">Ou télécharger une photo</h3>
+                                    </div>
+                                    
+                                    <div class="relative">
+                                        {{ form_widget(formcompte.selfie, {
+                                            'attr': {
+                                           
+                                                'accept': 'image/*',
+                                                'data-dropzone': 'selfie'
+                                            }
+                                        }) }}
+                                        {{ form_errors(formcompte.selfie) }}
+                                  
+                                    </div>
+                                    
+                                  
+                                    
+                                    <!-- Upload Tips -->
+                                    <div class="text-sm text-gray-600 bg-gray-50 rounded-lg p-4">
+                                        <p class="font-medium text-gray-900 mb-2">Conseils pour une photo réussie :</p>
+                                        <ul class="space-y-1">
+                                            <li class="flex items-center gap-2">
+                                                <i class="fa-solid fa-check text-green-500"></i>
+                                                <span>Photo récente (moins de 6 mois)</span>
+                                            </li>
+                                            <li class="flex items-center gap-2">
+                                                <i class="fa-solid fa-check text-green-500"></i>
+                                                <span>Visage et document bien visibles</span>
+                                            </li>
+                                            <li class="flex items-center gap-2">
+                                                <i class="fa-solid fa-check text-green-500"></i>
+                                                <span>Pas de filtre ni de modification</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Confirmed Selfie Preview -->
+                            <div id="confirmedSelfiePreview" class="hidden mt-6">
+                                <div class="bg-green-50 border border-green-200 rounded-xl p-6">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center gap-4">
+                                            <div class="h-16 w-16 rounded-lg bg-green-100 text-green-600 flex items-center justify-center">
+                                                <i class="fa-solid fa-check text-2xl"></i>
+                                            </div>
+                                            <div>
+                                                <p class="font-semibold text-green-800 text-lg">Selfie confirmé</p>
+                                                <p class="text-sm text-green-600">Votre photo est prête pour la vérification</p>
+                                            </div>
+                                        </div>
+                                        <button type="button" 
+                                                onclick="removeSelfie()"
+                                                class="text-red-500 hover:text-red-700 p-2 rounded-lg hover:bg-red-50 transition-colors">
+                                            <i class="fa-solid fa-trash-can text-lg"></i>
+                                        </button>
+                                    </div>
+                                    <div id="confirmedSelfieImageContainer" class="mt-4 hidden">
+                                        <img id="confirmedSelfieImage" alt="Selfie confirmé" class="preview-image w-full">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Confirmation -->
+            <div class="bg-white rounded-2xl border border-green-200 p-6 shadow-sm">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900">Prêt à soumettre votre vérification ?</h3>
+                        <p class="text-sm text-gray-600 mt-1">
+                            Vérifiez que toutes les informations sont correctes avant de soumettre.
+                        </p>
+                    </div>
+                    <button type="submit" 
+                            id="submitVerificationBtn"
+                            class="w-full sm:w-auto px-8 py-3.5 text-base font-semibold text-white bg-gradient-to-r from-green-600 to-green-700 rounded-xl hover:from-green-700 hover:to-green-800 transition-all transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                        <i class="fa-solid fa-check-circle mr-2"></i>
+                        <span>Soumettre la vérification</span>
+                    </button>
+                </div>
+                
+                <!-- Summary -->
+                <div id="verificationSummary" class="hidden mt-6 pt-6 border-t border-gray-200">
+                    <h4 class="font-medium text-gray-900 mb-3">Résumé de votre soumission :</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="h-8 w-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-user-check"></i>
+                                </div>
+                                <span class="font-medium text-gray-900">Informations personnelles</span>
+                            </div>
+                            <div class="text-sm text-gray-600">
+                                <p id="summaryName"></p>
+                                <p id="summaryPhone" class="mt-1"></p>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="h-8 w-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-id-card"></i>
+                                </div>
+                                <span class="font-medium text-gray-900">Document d'identité</span>
+                            </div>
+                            <div class="text-sm text-gray-600">
+                                <p id="summaryDocument"></p>
+                                <p id="summaryExpiry" class="mt-1"></p>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-4">
+                            <div class="flex items-center gap-2 mb-2">
+                                <div class="h-8 w-8 rounded-full bg-yellow-100 text-yellow-600 flex items-center justify-center">
+                                    <i class="fa-solid fa-camera"></i>
+                                </div>
+                                <span class="font-medium text-gray-900">Selfie</span>
+                            </div>
+                            <div class="text-sm text-gray-600" id="summarySelfie">
+                                Prêt pour vérification
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Security Note -->
+            <div class="text-center">
+                <div class="inline-flex items-center gap-2 text-sm text-gray-500 bg-white rounded-lg px-4 py-3 border border-gray-200">
+                    <i class="fa-solid fa-shield-halved text-green-500"></i>
+                    <span>Vos données sont sécurisées, cryptées et conformes au RGPD.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{{ form_end(formcompte) }}
+{% endblock %}
+
+{% block javascripts %}
+
+{% endblock %}

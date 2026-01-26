@@ -1,0 +1,156 @@
+{% extends 'admin/base.html.twig' %}
+{% block title %}Tableau de bord des frais{% endblock %}
+
+
+
+{% block contentadmin %}
+    <div class="container mx-auto px-4 py-6">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">Tableau de bord des frais</h1>
+                <p class="text-gray-500">Aperçu des frais de la plateforme</p>
+            </div>
+            <div class="mt-4 md:mt-0 text-sm text-gray-500">
+                Dernière mise à jour : {{ currentDate|date('d/m/Y H:i') }}
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Carte des frais journaliers -->
+            <div class="fee-card">
+                <div class="fee-card-header">
+                    <h2 class="text-lg font-medium text-gray-900">Aujourd'hui</h2>
+                    <span class="fee-badge fee-badge-green-700">
+                        {{ dailyFees|length }} {{ dailyFees|length <= 1 ? 'type' : 'types' }}
+                    </span>
+                </div>
+                <div class="fee-card-body">
+                    {% if dailyFees is not empty %}
+                        <div class="space-y-3">
+                            {% for fee in dailyFees %}
+                                <div class="fee-item">
+                                    <span class="text-gray-600">{{ fee.type|trans }}</span>
+                                    <span class="font-medium">{{ fee.total|number_format(2, ',', ' ') }} FCFA</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            <div class="flex justify-between items-center">
+                                <span class="font-medium">Total journalier</span>
+                                <span class="fee-amount">
+                                    {{ dailyFees|reduce((total, fee) => total + fee.total, 0)|number_format(2, ',', ' ') }} FCFA
+                                </span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-6 text-gray-500">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <p class="mt-2">Aucun frais enregistré aujourd'hui</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Carte des frais mensuels -->
+            <div class="fee-card">
+                <div class="fee-card-header">
+                    <h2 class="text-lg font-medium text-gray-900">Ce mois-ci</h2>
+                    <span class="fee-badge fee-badge-info">
+                        {{ monthlyFees|length }} {{ monthlyFees|length <= 1 ? 'type' : 'types' }}
+                    </span>
+                </div>
+                <div class="fee-card-body">
+                    {% if monthlyFees is not empty %}
+                        <div class="space-y-3">
+                            {% for fee in monthlyFees %}
+                                <div class="fee-item">
+                                    <span class="text-gray-600">{{ fee.type|trans }}</span>
+                                    <span class="font-medium">{{ fee.total|number_format(2, ',', ' ') }} FCFA</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            <div class="flex justify-between items-center">
+                                <span class="font-medium">Total mensuel</span>
+                                <span class="fee-amount">
+                                    {{ monthlyFees|reduce((total, fee) => total + fee.total, 0)|number_format(2, ',', ' ') }} FCFA
+                                </span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-6 text-gray-500">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <p class="mt-2">Aucun frais enregistré ce mois-ci</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Carte des frais annuels -->
+            <div class="fee-card">
+                <div class="fee-card-header">
+                    <h2 class="text-lg font-medium text-gray-900">Cette année ({{ currentDate|date('Y') }})</h2>
+                    <span class="fee-badge fee-badge-success">
+                        {{ annualFees|length }} {{ annualFees|length <= 1 ? 'type' : 'types' }}
+                    </span>
+                </div>
+                <div class="fee-card-body">
+                    {% if annualFees is not empty %}
+                        <div class="space-y-3">
+                            {% for fee in annualFees %}
+                                <div class="fee-item">
+                                    <span class="text-gray-600">{{ fee.type|trans }}</span>
+                                    <span class="font-medium">{{ fee.total|number_format(2, ',', ' ') }} FCFA</span>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            <div class="flex justify-between items-center">
+                                <span class="font-medium">Total annuel</span>
+                                <span class="fee-amount">
+                                    {{ annualFees|reduce((total, fee) => total + fee.total, 0)|number_format(2, ',', ' ') }} FCFA
+                                </span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="text-center py-6 text-gray-500">
+                            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                            <p class="mt-2">Aucun frais enregistré cette année</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="px-6 py-4 border-b border-gray-200">
+                <h2 class="text-lg font-medium text-gray-900">Dernières transactions</h2>
+            </div>
+            <div class="p-6">
+                <div class="text-center py-12 text-gray-500">
+                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="mt-2">Aucune transaction récente</p>
+                    <p class="text-sm mt-1">Les transactions récentes apparaîtront ici</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Rafraîchir la page toutes les 5 minutes
+        setTimeout(function() {
+            window.location.reload();
+        }, 5 * 60 * 1000);
+    </script>
+{% endblock %}

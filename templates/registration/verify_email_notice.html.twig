@@ -3,39 +3,290 @@
 {% block title %}Vérification d'email - EFA Smart Finance{% endblock %}
 
 {% block body %}
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-body p-5 text-center">
-                        <div class="mb-4">
-                            <i class="fas fa-envelope-open-text text-primary" style="font-size: 4rem;"></i>
-                        </div>
-                        <h1 class="h3 mb-4">Vérification d'email requise</h1>
-                        
-                        <div class="alert alert-info text-start">
-                            <p class="mb-0">
-                                <i class="fas fa-info-circle me-2"></i>
-                                Un email de vérification a été envoyé à votre adresse email. 
-                                Veuillez cliquer sur le lien dans cet email pour activer votre compte.
-                            </p>
-                        </div>
+<div class="min-h-screen bg-gradient-to-b from-green-50 via-white to-green-50/50 flex items-center justify-center p-4">
+    <div class="max-w-md w-full">
+        <!-- Carte principale -->
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-green-100">
+            <!-- Bandeau supérieur -->
+            <div class="bg-gradient-to-r from-green-700 via-green-600 to-green-700 p-6 text-center">
+                <div class="relative inline-block">
+                    <!-- Cercle animé pour l'enveloppe -->
+                    <div class="absolute inset-0 bg-white/20 rounded-full animate-ping"></div>
+                    <div class="relative h-20 w-20 rounded-full bg-white flex items-center justify-center mx-auto mb-4 shadow-lg">
+                        <i class="fas fa-envelope-open-text text-3xl text-green-600"></i>
+                    </div>
+                </div>
+                <h1 class="text-2xl font-bold text-white mb-2">Vérification d'email</h1>
+                <p class="text-green-100 text-sm">EFA Smart Finance</p>
+            </div>
 
-                        <div class="mt-4">
-                            <p class="text-muted mb-4">
-                                Vous n'avez pas reçu l'email ?
-                                <a href="{{ path('app_resend_verification') }}" class="ms-1">
-                                    Renvoyer l'email de vérification
-                                </a>
+            <!-- Contenu -->
+            <div class="p-8">
+                <!-- Message principal -->
+                <div class="text-center mb-8">
+                    <h2 class="text-xl font-semibold text-gray-800 mb-3">Vérification requise</h2>
+                    <p class="text-gray-600">
+                        Un email de vérification a été envoyé à votre adresse email.
+                    </p>
+                </div>
+
+                <!-- Alerte informative -->
+                <div class="mb-8 p-4 bg-gradient-to-r from-green-50 to-green-100 border border-green-200 rounded-xl">
+                    <div class="flex items-start gap-3">
+                        <div class="h-10 w-10 rounded-full bg-green-100 text-green-600 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-info-circle"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-green-800 font-medium mb-1">Comment procéder ?</p>
+                            <p class="text-sm text-green-700">
+                                Cliquez sur le lien dans l'email reçu pour activer votre compte et accéder à toutes les fonctionnalités.
                             </p>
-                            
-                            <a href="{{ path('app_home') }}" class="btn btn-outline-primary">
-                                <i class="fas fa-home me-2"></i>Retour à l'accueil
-                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Instructions étape par étape -->
+                <div class="mb-8">
+                    <h3 class="text-sm font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                        <i class="fas fa-list-ol text-green-500"></i>
+                        <span>Suivez ces étapes :</span>
+                    </h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="h-8 w-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-sm font-bold">
+                                1
+                            </div>
+                            <span class="text-sm text-gray-700">Ouvrez votre boîte email</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="h-8 w-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-sm font-bold">
+                                2
+                            </div>
+                            <span class="text-sm text-gray-700">Cherchez l'email de EFA Smart Finance</span>
+                        </div>
+                        <div class="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
+                            <div class="h-8 w-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center text-sm font-bold">
+                                3
+                            </div>
+                            <span class="text-sm text-gray-700">Cliquez sur le lien de vérification</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Boutons d'action -->
+                <div class="space-y-4">
+                    <!-- Renvoyer l'email -->
+                    <div class="text-center">
+                        <p class="text-sm text-gray-600 mb-3">Vous n'avez pas reçu l'email ?</p>
+                        <a href="{{ path('app_resend_verification') }}" 
+                           class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold hover:from-green-700 hover:to-green-800 transition-all duration-300 transform hover:scale-[1.02] shadow-md hover:shadow-lg w-full justify-center">
+                            <i class="fas fa-redo"></i>
+                            <span>Renvoyer l'email de vérification</span>
+                        </a>
+                    </div>
+
+                    <!-- Séparateur -->
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-200"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white text-gray-500">Ou</span>
+                        </div>
+                    </div>
+
+                    <!-- Retour à l'accueil -->
+                    <a href="{{ path('app_home') }}" 
+                       class="inline-flex items-center gap-2 px-6 py-3 rounded-lg border-2 border-green-600 text-green-600 font-semibold hover:bg-green-50 transition-all duration-300 w-full justify-center">
+                        <i class="fas fa-home"></i>
+                        <span>Retour à l'accueil</span>
+                    </a>
+                </div>
+
+                <!-- Conseils supplémentaires -->
+                <div class="mt-8 pt-6 border-t border-gray-100">
+                    <div class="flex items-start gap-3">
+                        <i class="fas fa-lightbulb text-yellow-500 mt-1"></i>
+                        <div>
+                            <p class="text-sm font-medium text-gray-700 mb-1">Conseil pratique</p>
+                            <p class="text-xs text-gray-600">
+                                Vérifiez également votre dossier "Spam" ou "Courriers indésirables" si l'email n'apparaît pas dans votre boîte de réception.
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Footer de la carte -->
+            <div class="bg-green-50 p-4 border-t border-green-100">
+                <div class="text-center">
+                    <p class="text-xs text-green-600">
+                        <i class="fas fa-shield-alt mr-1"></i>
+                        Sécurité garantie par EFA Smart Finance
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Information de support -->
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-600">
+                Besoin d'aide ? 
+                <a href="mailto:support@efasmartfinance.com" class="text-green-600 hover:text-green-700 font-medium ml-1">
+                    Contactez notre support
+                </a>
+            </p>
         </div>
     </div>
+</div>
+
+<!-- Modal de succès pour le renvoi d'email -->
+<div id="resendSuccessModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
+        <div class="text-center">
+            <div class="h-16 w-16 rounded-full bg-green-100 text-green-600 flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-check text-2xl"></i>
+            </div>
+            <h3 class="text-xl font-bold text-green-700 mb-3">Email renvoyé !</h3>
+            <p class="text-gray-600 mb-6">
+                Un nouvel email de vérification a été envoyé à votre adresse.
+                Veuillez vérifier votre boîte de réception.
+            </p>
+            <button onclick="closeResendSuccessModal()" 
+                    class="w-full px-6 py-3 rounded-lg bg-gradient-to-r from-green-600 to-green-700 text-white font-semibold hover:from-green-700 hover:to-green-800 transition-all duration-300">
+                Compris
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Gestion du modal de succès
+function showResendSuccessModal() {
+    document.getElementById('resendSuccessModal').classList.remove('hidden');
+}
+
+function closeResendSuccessModal() {
+    document.getElementById('resendSuccessModal').classList.add('hidden');
+}
+
+// Si l'URL contient un paramètre de succès pour le renvoi
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('resend') === 'success') {
+        showResendSuccessModal();
+    }
+    
+    // Fermer le modal avec la touche ESC
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeResendSuccessModal();
+        }
+    });
+    
+    // Fermer le modal en cliquant à l'extérieur
+    const modal = document.getElementById('resendSuccessModal');
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeResendSuccessModal();
+            }
+        });
+    }
+});
+</script>
+
+<style>
+/* Animation pour l'enveloppe */
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.fa-envelope-open-text {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* Animation des étapes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.flex.items-center.gap-3.p-3 {
+    animation: fadeInUp 0.5s ease-out forwards;
+    opacity: 0;
+}
+
+.flex.items-center.gap-3.p-3:nth-child(1) { animation-delay: 0.1s; }
+.flex.items-center.gap-3.p-3:nth-child(2) { animation-delay: 0.2s; }
+.flex.items-center.gap-3.p-3:nth-child(3) { animation-delay: 0.3s; }
+
+/* Effet de survol pour les boutons */
+button, .inline-flex.items-center.gap-2 {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+button::after, .inline-flex.items-center.gap-2::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to right,
+        transparent,
+        rgba(255, 255, 255, 0.3),
+        transparent
+    );
+    transform: translateX(-100%);
+    transition: transform 0.6s;
+}
+
+button:hover::after, .inline-flex.items-center.gap-2:hover::after {
+    transform: translateX(100%);
+}
+
+/* Animation pour le modal */
+#resendSuccessModal {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+    .p-8 {
+        padding: 1.5rem;
+    }
+    
+    .text-2xl {
+        font-size: 1.5rem;
+    }
+    
+    .h-20.w-20 {
+        height: 4rem;
+        width: 4rem;
+    }
+}
+
+/* Focus pour l'accessibilité */
+:focus-visible {
+    outline: 2px solid #10B981;
+    outline-offset: 2px;
+    border-radius: 0.5rem;
+}
+</style>
 {% endblock %}

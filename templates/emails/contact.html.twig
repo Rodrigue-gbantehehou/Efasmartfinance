@@ -1,0 +1,41 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block content %}
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #4F46E5; margin: 0;">Nouveau message de contact</h1>
+            <p style="color: #6B7280; margin: 10px 0 0 0;">Formulaire de contact EFA SMART FINANCE</p>
+        </div>
+
+        <div style="background-color: #F9FAFB; border-radius: 8px; padding: 24px; margin-bottom: 24px;">
+            <h2 style="color: #111827; margin-top: 0; margin-bottom: 16px;">Détails du message</h2>
+            
+            <div style="margin-bottom: 16px;">
+                <p style="margin: 0 0 4px 0; color: #6B7280; font-size: 14px;">Nom</p>
+                <p style="margin: 0; color: #111827; font-weight: 500;">{{ data.name }}</p>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <p style="margin: 0 0 4px 0; color: #6B7280; font-size: 14px;">Email</p>
+                <p style="margin: 0; color: #111827; font-weight: 500;">{{ data.email }}</p>
+            </div>
+            
+            <div style="margin-bottom: 16px;">
+                <p style="margin: 0 0 4px 0; color: #6B7280; font-size: 14px;">Sujet</p>
+                <p style="margin: 0; color: #111827; font-weight: 500;">{{ data.subject }}</p>
+            </div>
+            
+            <div>
+                <p style="margin: 0 0 4px 0; color: #6B7280; font-size: 14px;">Message</p>
+                <div style="background-color: white; border: 1px solid #E5E7EB; border-radius: 6px; padding: 12px; margin-top: 8px;">
+                    <p style="margin: 0; color: #111827; white-space: pre-line;">{{ data.message }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align: center; color: #6B7280; font-size: 14px; padding-top: 24px; border-top: 1px solid #E5E7EB;">
+            <p style="margin: 0 0 8px 0;">Ce message a été envoyé depuis le formulaire de contact du site EFA SMART FINANCE.</p>
+            <p style="margin: 0;">© {{ "now"|date("Y") }} EFA SMART FINANCE. Tous droits réservés.</p>
+        </div>
+    </div>
+{% endblock %}

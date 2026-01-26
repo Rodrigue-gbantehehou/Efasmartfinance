@@ -1,12 +1,25 @@
-<h3>Bienvenue sur EFA Smart Finance</h3>
+{% extends 'emails/base.html.twig' %}
 
-<p>Bonjour {{ user.firstname }} {{ user.lastname }},</p>
+{% block email_title %}Votre identifiant EFA Smart Finance{% endblock %}
 
-<p>Voici votre identifiant utilisateur :</p>
-
-<h2 style="letter-spacing: 3px;">{{ uuid }}</h2>
-
-<p>
-Conservez-le soigneusement.  
-Vous pouvez vous connecter avec cet identifiant ou votre adresse email.
-</p>
+{% block content %}
+    <p>Bonjour <strong>{{ user.firstname }} {{ user.lastname }}</strong>,</p>
+    
+    <p>Bienvenue sur EFA Smart Finance ! Voici vos informations de connexion :</p>
+    
+    <div style="background-color: #f9fafb; padding: 15px; border-radius: 6px; margin: 20px 0; text-align: center;">
+        <p style="margin: 5px 0; font-size: 14px; color: #4b5563;">Votre identifiant unique :</p>
+        <div style="background-color: #f3f4f6; padding: 10px; border-radius: 4px; margin: 10px 0; display: inline-block; font-family: monospace; letter-spacing: 2px;">
+            {{ uuid }}
+        </div>
+    </div>
+    
+    <p style="margin-top: 20px;">
+        <strong>Conseil de sécurité :</strong> Conservez cet identifiant précieusement. 
+        Vous pourrez l'utiliser avec votre mot passe pour vous connecter à votre espace personnel.
+    </p>
+    
+    <p>Si vous n'êtes pas à l'origine de cette demande, veuillez contacter immédiatement notre support.</p>
+    
+    <p>Cordialement,<br>L'équipe EFA Smart Finance</p>
+{% endblock %}

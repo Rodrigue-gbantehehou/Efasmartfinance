@@ -13,7 +13,7 @@
       theme: {
         extend: {
           colors: {
-            primary: '#1a4d2e',
+            green-700: '#1a4d2e',
             secondary: '#f6c90e',
             accent: '#2e7d32',
             light: '#f8f9fa',
@@ -31,12 +31,12 @@
   <main class="w-full max-w-md">
     <div class="bg-white/95 backdrop-blur rounded-2xl shadow-custom p-8">
       <div class="flex items-center justify-center mb-6">
-        <img src="../images/estm.png" alt="Logo EFA Smart Finance" class="h-12 w-12 mr-3 rounded-full" />
-        <div>
-          <h1 class="text-xl font-extrabold text-primary leading-tight">EFA SMART FINANCE</h1>
-          <p class="text-sm text-gray-500">Création de compte (démo)</p>
-        </div>
-      </div>
+        <img src="/images/logovert.png" alt="Logo EFA Smart Finance" class="h-20" />
+        
+      </div><div class=" mb-6">
+					<h1 class="text-xl font-extrabold text-green-700 leading-tight">INSCRIPTION</h1>
+					<p class="text-sm text-gray-500">Création de compte</p>
+				</div>
     {% for flash_error in app.flashes('verify_email_error') %}
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
     {% endfor %}
@@ -71,23 +71,23 @@
         
 
         <label class="inline-flex items-center gap-2 text-sm">
-        {{ form_row(registrationForm.agreeTerms ,{' attr': {'class': 'rounded border-gray-300 text-primary focus:ring-secondary'}}) }}
+        {{ form_row(registrationForm.agreeTerms ,{' attr': {'class': 'rounded border-gray-300 text-green-700 focus:ring-secondary'}}) }}
           <span class="text-gray-600">J’accepte les CGU et la Politique de confidentialité</span>
         </label>
 
         <button type="submit"
-                class="w-full bg-secondary text-primary font-bold py-2.5 rounded-lg hover:bg-yellow-500 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary">
+                class="w-full bg-green-600 text-white font-bold py-2.5 rounded-lg hover:bg-yellow-500 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary">
           Créer mon compte
         </button>
       {{ form_end(registrationForm) }}
 
       <p class="mt-4 text-sm text-gray-600 text-center">
         Déjà inscrit ?
-        <a href="index.php" class="font-semibold text-primary hover:text-accent">Se connecter</a>
+        <a href="{{path('app_login')}}" class="font-semibold text-green-700 hover:text-accent">Se connecter</a>
       </p>
 
       <div class="mt-6 text-center">
-        <a href="../index.php" class="inline-flex items-center text-sm text-gray-600 hover:text-primary">
+        <a href="{{path('app_home')}}" class="inline-flex items-center text-sm text-gray-600 hover:text-green-700">
           <i class="fa-solid fa-arrow-left mr-2"></i>Retour au site
         </a>
       </div>
