@@ -9,12 +9,15 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Scheb\TwoFactorBundle\Model\Totp\TwoFactorInterface as TotpTwoFactorInterface;
+use Scheb\TwoFactorBundle\Model\Email\TwoFactorInterface as EmailTwoFactorInterface;
+use Scheb\TwoFactorBundle\Model\Totp\TotpConfigurationInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_UUID', fields: ['uuid'])]
 #[UniqueEntity(fields: ['uuid'], message: 'There is already an account with this uuid')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface, TotpTwoFactorInterface, EmailTwoFactorInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -48,6 +51,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Transaction::class, mappedBy: 'utilisateur')]
     private Collection $transactions;
 
+    /**
+     * @var Collection<int, CookieConsent>
+     */
+    #[ORM\OneToMany(targetEntity: CookieConsent::class, mappedBy: 'utilisateur')]
+    private Collection $cookieConsents;
+
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $firstname = null;
 
@@ -55,7 +64,13 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $lastname = null;
 
     #[ORM\Column(length: 255, nullable: true)]
-    private ?string $phone = null;
+    private ?string $phoneNumber = null;
+
+    /**
+     * @var Collection<int, Facture>
+     */
+    #[ORM\OneToMany(targetEntity: Facture::class, mappedBy: 'client')]
+    private Collection $factures;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $email = null;
@@ -156,11 +171,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Withdrawals::class, mappedBy: 'utilisateur')]
     private Collection $withdrawals;
 
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: TwoFactorAuth::class, cascade: ['persist', 'remove'])]
+    private ?TwoFactorAuth $twoFactorAuth = null;
+
     public function __construct()
     {
+        $this->roles = ['ROLE_USER'];
+        $this->isVerified = false;
+        $this->uuid = uniqid('', true);
         $this->tontines = new ArrayCollection();
         $this->transactions = new ArrayCollection();
-        $this->isVerified = false;
+        $this->cookieConsents = new ArrayCollection();
+        $this->factures = new ArrayCollection();
         $this->wallets = new ArrayCollection();
         $this->contactSupports = new ArrayCollection();
         $this->userTermsAcceptances = new ArrayCollection();
@@ -337,14 +359,44 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getPhone(): ?string
+    public function getPhoneNumber(): ?string
     {
-        return $this->phone;
+        return $this->phoneNumber;
     }
 
-    public function setPhone(?string $phone): static
+    public function setPhoneNumber(?string $phoneNumber): static
     {
-        $this->phone = $phone;
+        $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Facture>
+     */
+    public function getFactures(): Collection
+    {
+        return $this->factures;
+    }
+
+    public function addFacture(Facture $facture): self
+    {
+        if (!$this->factures->contains($facture)) {
+            $this->factures->add($facture);
+            $facture->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFacture(Facture $facture): self
+    {
+        if ($this->factures->removeElement($facture)) {
+            // set the owning side to null (unless already changed)
+            if ($facture->getClient() === $this) {
+                $facture->setClient(null);
+            }
+        }
 
         return $this;
     }
@@ -791,5 +843,152 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    /**
+     * @return Collection<int, CookieConsent>
+     */
+    public function getCookieConsents(): Collection
+    {
+        return $this->cookieConsents;
+    }
+
+    public function addCookieConsent(CookieConsent $cookieConsent): static
+    {
+        if (!$this->cookieConsents->contains($cookieConsent)) {
+            $this->cookieConsents->add($cookieConsent);
+            $cookieConsent->setUtilisateur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCookieConsent(CookieConsent $cookieConsent): static
+    {
+        if ($this->cookieConsents->removeElement($cookieConsent)) {
+            // set the owning side to null (unless already changed)
+            if ($cookieConsent->getUtilisateur() === $this) {
+                $cookieConsent->setUtilisateur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function isTwoFactorEnabled(): bool
+    {
+        return $this->twoFactorAuth && $this->twoFactorAuth->isEnabled();
+    }
+
+    public function getTotpSecret(): ?string
+    {
+        return $this->twoFactorAuth ? $this->twoFactorAuth->getTotpSecret() : null;
+    }
+
+    public function getBackupCodes(): ?array
+    {
+        return $this->twoFactorAuth ? $this->twoFactorAuth->getBackupCodesArray() : null;
+    }
+
+    public function getTwoFactorAuth(): ?TwoFactorAuth
+    {
+        return $this->twoFactorAuth;
+    }
+
+    public function setTwoFactorAuth(?TwoFactorAuth $twoFactorAuth): static
+    {
+        $this->twoFactorAuth = $twoFactorAuth;
+
+        // Set the owning side of the relation if necessary
+        if ($twoFactorAuth && $twoFactorAuth->getUser() !== $this) {
+            $twoFactorAuth->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function getLatestCookieConsent(): ?CookieConsent
+    {
+        $consents = $this->cookieConsents->toArray();
+        
+        if (empty($consents)) {
+            return null;
+        }
+        
+        // Trier par date décroissante
+        usort($consents, function($a, $b) {
+            return $b->getConsentDate() <=> $a->getConsentDate();
+        });
+        
+        return $consents[0];
+    }
+
+    // ========================================
+    // Méthodes pour TwoFactorInterface (scheb/2fa-totp)
+    // ========================================
+
+    public function isTotpAuthenticationEnabled(): bool
+    {
+        return $this->isTwoFactorEnabled() && $this->twoFactorAuth->getMethod() === 'totp';
+    }
+
+    public function getTotpAuthenticationUsername(): string
+    {
+        return $this->email ?: $this->uuid;
+    }
+
+    public function getTotpAuthenticationConfiguration(): ?TotpConfigurationInterface
+    {
+        if (!$this->twoFactorAuth || !$this->twoFactorAuth->getTotpSecret()) {
+            return null;
+        }
+
+        return new class($this->twoFactorAuth->getTotpSecret()) implements TotpConfigurationInterface {
+            public function __construct(private string $secret) {}
+            
+            public function getSecret(): string
+            {
+                return $this->secret;
+            }
+            
+            public function getAlgorithm(): string
+            {
+                return 'sha1';
+            }
+            
+            public function getPeriod(): int
+            {
+                return 30;
+            }
+            
+            public function getDigits(): int
+            {
+                return 6;
+            }
+        };
+    }
+
+    /* 2FA Email Implementation */
+
+    public function isEmailAuthEnabled(): bool
+    {
+        return $this->twoFactorAuth && $this->twoFactorAuth->isEnabled() && $this->twoFactorAuth->getMethod() === 'email';
+    }
+
+    public function getEmailAuthRecipient(): string
+    {
+        return (string) $this->email;
+    }
+
+    public function getEmailAuthCode(): ?string
+    {
+        return $this->twoFactorAuth ? $this->twoFactorAuth->getEmailCode() : null;
+    }
+
+    public function setEmailAuthCode(string $code): void
+    {
+        if ($this->twoFactorAuth) {
+            $this->twoFactorAuth->setEmailCode($code);
+        }
     }
 }

@@ -1,0 +1,120 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}Activer l'Authentification à Deux Facteurs{% endblock %}
+
+{% block contentdashboard %}
+<div class="space-y-6 max-w-4xl mx-auto px-4 py-8">
+    <!-- Header -->
+    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8 flex items-center space-x-4">
+        <div class="p-4 bg-yellow-50 rounded-2xl border border-yellow-100">
+            <i class="fas fa-envelope-open-text text-green-700 text-2xl"></i>
+        </div>
+        <div>
+            <h1 class="text-2xl font-bold text-gray-900">Sécurisez votre compte</h1>
+            <p class="text-gray-500 mt-1">Ajoutez une couche de sécurité supplémentaire avec l'authentification par e-mail</p>
+        </div>
+    </div>
+
+    <div class="grid lg:grid-cols-5 gap-6">
+        <!-- Étape 1: Instructions E-mail -->
+        <div class="lg:col-span-3 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
+            <div class="flex items-center space-x-2 mb-6">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-green-700 text-white text-sm font-bold">1</span>
+                <h2 class="text-xl font-bold text-gray-900">Vérifiez vos e-mails</h2>
+            </div>
+            
+            <p class="text-gray-600 mb-8 leading-relaxed">
+                Nous venons d'envoyer un code de sécurité à l'adresse <span class="font-semibold text-gray-900">{{ app.user.email }}</span>. 
+                Ce code est nécessaire pour activer la protection de votre compte.
+            </p>
+            
+            <div class="flex flex-col items-center mb-8">
+                <div class="w-24 h-24 bg-yellow-50 rounded-full flex items-center justify-center mb-6 border-4 border-yellow-100">
+                    <i class="fas fa-paper-plane text-green-700 text-4xl animate-bounce"></i>
+                </div>
+                
+                <div class="w-full max-w-sm bg-gray-50 rounded-2xl p-6 border border-gray-200">
+                    <h3 class="font-bold text-gray-900 mb-2">Pas reçu d'e-mail ?</h3>
+                    <ul class="text-sm text-gray-600 space-y-2">
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2 text-xs"></i>
+                            Vérifiez votre dossier de courriers indésirables (Spam).
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2 text-xs"></i>
+                            Attendez quelques minutes.
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-check-circle text-green-500 mt-1 mr-2 text-xs"></i>
+                            <a href="{{ path('app_dashboard_2fa_enable') }}" class="text-green-700 hover:text-yellow-500 font-bold">Cliquez ici pour renvoyer le code.</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Étape 2: Vérification -->
+        <div class="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-8">
+            <div class="flex items-center space-x-2 mb-6">
+                <span class="flex items-center justify-center w-8 h-8 rounded-full bg-green-700 text-white text-sm font-bold">2</span>
+                <h2 class="text-xl font-bold text-gray-900">Saisissez le code</h2>
+            </div>
+            
+            <!-- Flash Messages -->
+            {% for message in app.flashes('error') %}
+                <div class="mb-6 p-4 bg-red-50 text-red-700 rounded-xl border border-red-100 font-medium flex items-center animate-pulse">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            {% for message in app.flashes('success') %}
+                <div class="mb-6 p-4 bg-green-50 text-green-700 rounded-xl border border-green-100 font-medium flex items-center">
+                    <i class="fas fa-check-circle mr-2"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+            
+            <p class="text-gray-600 mb-8">
+                Saisissez le code à 6 chiffres pour confirmer l'activation.
+            </p>
+            
+            <form id="verify2FAForm" method="POST" action="{{ path('app_dashboard_2fa_confirm') }}" class="space-y-6">
+                <div class="space-y-4">
+                    <input type="text" 
+                           id="verificationCode" 
+                           name="code" 
+                           maxlength="6" 
+                           pattern="[0-9]{6}" 
+                           required
+                           placeholder="000 000"
+                           class="w-full text-center text-3xl font-bold py-4 bg-gray-50 border-2 border-gray-100 rounded-2xl focus:border-yellow-500 focus:bg-white focus:ring-4 focus:ring-yellow-100 transition-all outline-none tracking-[0.2em]"
+                           autocomplete="one-time-code">
+                </div>
+                
+                <button type="submit" id="verifyBtn"
+                        class="w-full bg-green-700 hover:bg-yellow-500 hover:text-green-900 text-white font-bold py-4 px-6 rounded-2xl transition-all shadow-lg shadow-green-900/10 flex items-center justify-center space-x-2 group">
+                    <span>Activer la protection</span>
+                    <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+// Auto-format input
+document.getElementById('verificationCode')?.addEventListener('input', function(e) {
+    this.value = this.value.replace(/[^0-9]/g, '').slice(0, 6);
+});
+
+document.getElementById('verify2FAForm')?.addEventListener('submit', function() {
+    const btn = document.getElementById('verifyBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-circle-notch animate-spin mr-2"></i> Activation...';
+});
+</script>
+{% endblock %}

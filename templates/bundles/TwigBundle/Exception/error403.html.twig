@@ -1,0 +1,219 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accès refusé{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .access-denied-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        .access-denied-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            text-align: center;
+            max-width: 500px;
+            margin: 0 20px;
+        }
+        
+        .lock-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+        }
+        
+        .error-code {
+            font-size: 6rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+            line-height: 1;
+        }
+        
+        .error-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin: 1rem 0;
+            font-weight: 600;
+        }
+        
+        .error-message {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .btn-home {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin: 0 5px;
+        }
+        
+        .btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+        
+        .btn-dashboard {
+            display: inline-block;
+            padding: 12px 30px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+        }
+        
+        .btn-dashboard:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .permission-info {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            text-align: left;
+        }
+        
+        .permission-info h4 {
+            color: #333;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .permission-info p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .current-role {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 0.25rem 0.75rem;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .access-denied-card {
+                padding: 2rem;
+            }
+            
+            .error-code {
+                font-size: 4rem;
+            }
+            
+            .btn-home, .btn-dashboard {
+                display: block;
+                margin: 10px auto;
+                width: 200px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="access-denied-container">
+    <div class="access-denied-card">
+        <div class="lock-icon">
+            <i class="fas fa-lock"></i>
+        </div>
+        
+        <h1 class="error-code">403</h1>
+        <h2 class="error-title">Accès refusé</h2>
+        
+        <p class="error-message">
+            Désolé, vous n'avez pas les permissions nécessaires pour accéder à cette page.
+        </p>
+        
+        {% if app.user %}
+            <div class="permission-info">
+                <h4>Informations sur votre compte</h4>
+                <p><strong>Email:</strong> {{ app.user.email }}</p>
+                <p><strong>Nom:</strong> {{ app.user.firstname }} {{ app.user.lastname }}</p>
+                <p><strong>Rôle actuel:</strong> 
+                    {% if app.user.roles %}
+                        {% for role in app.user.roles %}
+                            {% if role != 'ROLE_USER' %}
+                                <span class="current-role">{{ role|replace({'ROLE_': ''}) }}</span>
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <span class="current-role">USER</span>
+                    {% endif %}
+                </p>
+                {% if is_granted('ROLE_ADMIN') %}
+                    <p><strong>Permissions:</strong> Vous avez accès au panneau d'administration.</p>
+                {% elseif is_granted('ROLE_USER') %}
+                    <p><strong>Permissions:</strong> Vous avez accès au tableau de bord utilisateur.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+        
+        <div style="margin-top: 2rem;">
+            {% if app.user %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('admin_dashboard') }}" class="btn-home">
+                        <i class="fas fa-tachometer-alt"></i> Tableau de bord admin
+                    </a>
+                {% elseif is_granted('ROLE_USER') %}
+                    <a href="{{ path('dashboard') }}" class="btn-home">
+                        <i class="fas fa-home"></i> Tableau de bord
+                    </a>
+                {% endif %}
+                <a href="{{ path('app_logout') }}" class="btn-dashboard">
+                    <i class="fas fa-sign-out-alt"></i> Déconnexion
+                </a>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="btn-home">
+                    <i class="fas fa-sign-in-alt"></i> Se connecter
+                </a>
+                <a href="{{ path('app_home') }}" class="btn-dashboard">
+                    <i class="fas fa-home"></i> Accueil
+                </a>
+            {% endif %}
+        </div>
+        
+        {% if not app.user %}
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #eee;">
+                <p style="color: #999; font-size: 0.9rem;">
+                    Vous devez être connecté pour accéder à cette ressource.
+                </p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -11,8 +11,8 @@
             <i class="fa-solid fa-user"></i>
           </div>
           <div>
-            <div class="font-semibold text-sm">Bienvenue, <span id="userName">Utilisateur</span></div>
-            <div class="text-xs text-gray-500">Complet depuis 2024</div>
+            <div class="font-semibold text-sm">Bienvenue, <span id="userName"></span></div>
+            <div class="text-xs text-gray-500">{{ app.user.firstname ~ ' ' ~ app.user.lastname }}</div>
           </div>
         </div>
       </div>
@@ -59,6 +59,11 @@
         <a href="{{ path('admin_settings') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_settings' ? 'bg-green-700/5 text-green-700' : '' }}">
           <i class="fa-solid fa-sliders w-6"></i><span>Paramètres</span>
         </a>-->
+        
+        <!-- Frais de transfert -->
+        <a href="{{ path('admin_platform_fees_index') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_platform_fees' ? 'bg-green-700/5 text-green-700' : '' }}">
+          <i class="fa-solid fa-money-bill-transfer w-6"></i><span>Frais de transfert</span>
+        </a>
         
         <!-- Support -->
         <a href="{{ path('admin_support') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_support' ? 'bg-green-700/5 text-green-700' : '' }}">

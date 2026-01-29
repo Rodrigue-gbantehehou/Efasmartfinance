@@ -45,9 +45,6 @@ class Withdrawals
     #[ORM\ManyToOne(inversedBy: 'withdrawals')]
     private ?Tontine $tontine = null;
     
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $feeApplied = null;
-    
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
     private ?string $withdrawalType = null;
     
@@ -56,27 +53,10 @@ class Withdrawals
     
     #[ORM\Column(type: 'string', length: 50, nullable: true)]
     private ?string $phoneNumber = null;
-    
-    #[ORM\Column(type: 'boolean', nullable: true)]
-    private ?bool $feePaid = false;
-    
-    #[ORM\Column(type: 'datetime_immutable', nullable: true)]
-    private ?\DateTimeImmutable $feePaymentDate = null;
+   
     
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
     private ?string $transactionId = null;
-
-    #[ORM\OneToMany(targetEntity: PlatformFee::class, mappedBy: 'withdrawal')]
-    private Collection $fees;
-    
-    #[ORM\Column(type: 'datetime_immutable')]
-    private ?\DateTimeImmutable $createdAt = null;
-    
-    public function __construct()
-    {
-        $this->fees = new ArrayCollection();
-        $this->createdAt = new \DateTimeImmutable();
-    }
 
     public function getId(): ?int
     {
@@ -200,15 +180,7 @@ class Withdrawals
 
         return $this;
     }
-    public function getFeeApplied(): ?int
-    {
-        return $this->feeApplied;
-    }
-    public function setFeeApplied(?int $feeApplied): self
-    {
-        $this->feeApplied = $feeApplied;
-        return $this;
-    }
+
     public function getWithdrawalType(): ?string
     {
         return $this->withdrawalType;
@@ -230,29 +202,7 @@ class Withdrawals
         $this->withdrawalMethod = $withdrawalMethod;
         return $this;
     }
-    
-    
-    public function isFeePaid(): ?bool
-    {
-        return $this->feePaid;
-    }
-    
-    public function setFeePaid(?bool $feePaid): static
-    {
-        $this->feePaid = $feePaid;
-        return $this;
-    }
-    
-    public function getFeePaymentDate(): ?\DateTimeImmutable
-    {
-        return $this->feePaymentDate;
-    }
-    
-    public function setFeePaymentDate(?\DateTimeImmutable $feePaymentDate): static
-    {
-        $this->feePaymentDate = $feePaymentDate;
-        return $this;
-    }
+   
     
     public function getTransactionId(): ?string
     {
@@ -275,27 +225,7 @@ class Withdrawals
         $this->statut = $status;
         return $this;
     }
-    public function getFees(): Collection
-    {
-        return $this->fees;
-    }
-    public function addFee(PlatformFee $fee): self
-    {
-        if (!$this->fees->contains($fee)) {
-            $this->fees[] = $fee;
-            $fee->setWithdrawal($this);
-        }
-        return $this;
-    }
-    public function removeFee(PlatformFee $fee): self
-    {
-        if ($this->fees->removeElement($fee)) {
-            if ($fee->getWithdrawal() === $this) {
-                $fee->setWithdrawal(null);
-            }
-        }
-        return $this;
-    }
+    
 
     public function getPhoneNumber(): ?string
     {

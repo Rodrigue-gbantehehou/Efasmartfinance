@@ -3,10 +3,12 @@
 namespace App\Security;
 
 use App\Entity\User;
+use App\Service\TwoFactorAuthService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -26,7 +28,8 @@ class Authenticator extends AbstractLoginFormAuthenticator
 
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private TwoFactorAuthService $twoFactorAuthService
     ) {}
 
     public function authenticate(Request $request): Passport
@@ -74,6 +77,16 @@ class Authenticator extends AbstractLoginFormAuthenticator
         TokenInterface $token,
         string $firewallName
     ): ?Response {
+        /** @var User $user */
+        $user = $token->getUser();
+
+        // Mettre à jour la date de dernière connexion
+        $user->setLastLoginAt(new \DateTimeImmutable());
+        $this->entityManager->flush();
+
+        // Le bundle scheb/2fa-bundle gère automatiquement la redirection vers 2FA
+        // si l'utilisateur a activé le 2FA
+
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);
         }

@@ -5,12 +5,16 @@ namespace App\Service;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Part\DataPart;
+use Scheb\TwoFactorBundle\Mailer\AuthCodeMailerInterface;
+use Scheb\TwoFactorBundle\Model\Email\TwoFactorInterface;
+use Twig\Environment;
 
-class EmailService
+class EmailService implements AuthCodeMailerInterface
 {
     public function __construct(
         private MailerInterface $mailer,
-        private \Psr\Log\LoggerInterface $logger
+        private \Psr\Log\LoggerInterface $logger,
+        private Environment $twig
     ) {}
 
     public function send(
@@ -79,6 +83,32 @@ class EmailService
                 'attachment' => $attachmentPath
             ]);
             throw $e;
+        }
+    }
+
+    public function sendAuthCode(TwoFactorInterface $user): void
+    {
+        $authCode = $user->getEmailAuthCode();
+        
+        try {
+            $htmlContent = $this->twig->render('bundles/SchebTwoFactorBundle/Authentication/email.html.twig', [
+                'authCode' => $authCode,
+                'user' => $user
+            ]);
+
+            $this->send(
+                $user->getEmailAuthRecipient(),
+                'Votre code de sécurité - EFA Smart Finance',
+                $htmlContent
+            );
+        } catch (\Exception $e) {
+            $this->logger->error("Erreur lors du rendu du template d'email 2FA: " . $e->getMessage());
+            // Fallback sur un contenu texte simple au cas où Twig échoue
+            $this->send(
+                $user->getEmailAuthRecipient(),
+                'Votre code de sécurité - EFA Smart Finance',
+                "Votre code de sécurité est : " . $authCode
+            );
         }
     }
 }

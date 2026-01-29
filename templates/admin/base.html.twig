@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
-  <meta name="theme-color" content="#10B981">
+  <meta name="theme-color" content="#008040">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>EFA SMART FINANCE — Tableau de bord Tontines</title>
   <meta name="description" content="Tableau de bord des tontines individuelles pour la gestion de vos épargnes." />
+  <link rel="icon" href="{{ asset('images/logovert.png') }}" type="image/png">
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -169,7 +170,7 @@
     }
     
     .payment-option.selected {
-      border-color: #10b981;
+      border-color: #008040;
       background-color: rgba(16, 185, 129, 0.05);
     }
     
@@ -188,7 +189,7 @@
     .spinner {
       border: 3px solid rgba(0, 0, 0, 0.1);
       border-radius: 50%;
-      border-top-color: #10b981;
+      border-top-color: #008040;
       animation: spin 1s linear infinite;
     }
     
@@ -732,6 +733,56 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   </script>
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Éléments du menu
+    const openBtn = document.getElementById('openDrawer');
+    const drawer = document.getElementById('drawer');
+    
+    if (!openBtn || !drawer) {
+        console.log('Menu mobile non trouvé');
+        return;
+    }
+    
+    console.log('Menu mobile prêt');
+    
+    // Ouvrir le menu
+    openBtn.addEventListener('click', function() {
+        console.log('Ouverture menu');
+        drawer.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; // Bloquer défilement
+    });
+    
+    // Fermer le menu en cliquant sur l'overlay (drawerBackdrop)
+    const backdrop = document.getElementById('drawerBackdrop');
+    if (backdrop) {
+        backdrop.addEventListener('click', function() {
+            console.log('Fermeture menu (overlay)');
+            drawer.classList.add('hidden');
+            document.body.style.overflow = ''; // Restaurer défilement
+        });
+    }
+    
+    // Fermer le menu en cliquant sur les liens
+    const menuLinks = drawer.querySelectorAll('a');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            console.log('Fermeture menu (lien cliqué)');
+            drawer.classList.add('hidden');
+            document.body.style.overflow = '';
+        });
+    });
+    
+    // Fermer avec la touche Échap
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && !drawer.classList.contains('hidden')) {
+            console.log('Fermeture menu (Échap)');
+            drawer.classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+    });
+});
+</script>
 </body>
 
 {% include 'dashboard/links/_js.html.twig' %}

@@ -48,7 +48,7 @@ class RegistrationFormType extends AbstractType
                     'data-validate-email-url' => $options['validate_email_url'] ?? null,
                 ]
             ])
-            ->add('phone',TextType::class,[
+            ->add('phoneNumber',TextType::class,[
                 'label' => false,
                 'required' => false])
             ->add('plainPassword', PasswordType::class, [

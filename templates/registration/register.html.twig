@@ -60,13 +60,30 @@
         </div>
 
         <div>
-          <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Téléphone (optionnel)</label>
-          {{ form_row(registrationForm.phone ,{'attr': {'class': 'px-3 py-2 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent','id': 'phone'}}) }}
+          <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-1">Téléphone (optionnel)</label>
+          {{ form_row(registrationForm.phoneNumber ,{'attr': {'class': 'px-3 py-2 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent','id': 'phoneNumber'}}) }}
         </div>
-        <div>
+        <div class="relative">
           <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
-          {{ form_row(registrationForm.plainPassword ,{'attr': {'class': 'px-3 py-2 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent'}}) }}
+          <div class="relative">
+            {{ form_row(registrationForm.plainPassword, {
+              'label': false,
+              'attr': {
+                'class': 'px-3 py-2 w-full rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-secondary focus:border-transparent pr-10',
+                'id': 'password-field',
+                'autocomplete': 'new-password'
+              }
+            }) }}
+            <button type="button" 
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                    id="toggle-password"
+                    aria-label="Afficher le mot de passe">
+              <i class="far fa-eye" id="toggle-icon"></i>
+            </button>
+          </div>
         </div>
+        
+        
 
         
 
@@ -98,6 +115,32 @@
     </p>
   </main>
 <script src="{{ asset('assets/js/registration.js') }}"></script>
+<script>
+          document.addEventListener('DOMContentLoaded', function() {
+            const passwordField = document.querySelector('input[id$="_plainPassword"]');
+            const toggleButton = document.getElementById('toggle-password');
+            const toggleIcon = document.getElementById('toggle-icon');
+            
+            if (toggleButton && passwordField) {
+              // S'assurer que le champ est bien de type password au chargement
+              passwordField.setAttribute('type', 'password');
+              
+              toggleButton.addEventListener('click', function() {
+                const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordField.setAttribute('type', type);
+                
+                // Changer l'icône
+                if (type === 'password') {
+                  toggleIcon.classList.remove('fa-eye-slash');
+                  toggleIcon.classList.add('fa-eye');
+                } else {
+                  toggleIcon.classList.remove('fa-eye');
+                  toggleIcon.classList.add('fa-eye-slash');
+                }
+              });
+            }
+          });
+        </script>
   <script>
 
     document.getElementById('year').textContent = new Date().getFullYear();

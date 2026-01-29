@@ -2,29 +2,34 @@
 
 namespace App\Twig;
 
-use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 use App\Repository\TontineRepository;
-use Symfony\Component\HttpFoundation\RequestStack;
+use App\Service\CookieConsentManager;
+use Twig\Extension\AbstractExtension;
 use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class AppExtension extends AbstractExtension
 {
     private $tontineRepository;
     private $requestStack;
     private $security;
+    private $cookieConsentManager;
 
-    public function __construct(TontineRepository $tontineRepository, RequestStack $requestStack, Security $security)
+    public function __construct(TontineRepository $tontineRepository, RequestStack $requestStack, Security $security, CookieConsentManager $cookieConsentManager)
     {
         $this->tontineRepository = $tontineRepository;
         $this->requestStack = $requestStack;
         $this->security = $security;
+        $this->cookieConsentManager = $cookieConsentManager;
     }
 
     public function getFunctions()
     {
         return [
             new TwigFunction('getCurrentTontine', [$this, 'getCurrentTontine']),
+            new TwigFunction('has_cookie_consent', [$this, 'hasCookieConsent']),
+            new TwigFunction('cookie_consent_preferences', [$this, 'getCookieConsentPreferences']),
         ];
     }
 
@@ -50,5 +55,15 @@ class AppExtension extends AbstractExtension
         }
         
         return null;
+    }
+
+        public function hasCookieConsent(): bool
+    {
+        return $this->cookieConsentManager->hasConsent();
+    }
+
+    public function getCookieConsentPreferences(): array
+    {
+        return $this->cookieConsentManager->getConsentPreferences();
     }
 }

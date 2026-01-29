@@ -62,7 +62,7 @@ class VerificationIdentiteType extends AbstractType
                     'placeholder' => 'Numéro, rue, ville, code postal, pays'
                 ]
             ])
-            ->add('phone', TextType::class, [
+            ->add('phoneNumber', TextType::class, [
                 'label' => 'Numéro de téléphone',
                 'attr' => [
                     'class' => 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-green-500 focus:ring-2 focus:ring-green-200 transition-all outline-none',

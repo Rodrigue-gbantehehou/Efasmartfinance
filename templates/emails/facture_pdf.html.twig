@@ -2,195 +2,492 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Facture #{{ payment.id }}</title>
+    <title>Facture {{ facture.numero }} - EFA SMART FINANCE</title>
     <style>
-        @page { margin: 2cm; }
+        @page { 
+            margin: 1.5cm;
+            @bottom-center {
+                content: "Page " counter(page) " sur " counter(pages);
+                font-size: 10px;
+                color: #666;
+            }
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Arial', 'Helvetica', sans-serif;
             font-size: 12px;
-            line-height: 1.4;
-            color: #333;
+            line-height: 1.5;
+            color: #1a202c;
             margin: 0;
             padding: 0;
+            background-color: #ffffff;
         }
-        .header {
-            overflow: hidden;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #4a86e8;
-            padding-bottom: 20px;
-        }
-        .header-left {
-            float: left;
-            width: 50%;
-        }
-        .header-right {
-            float: right;
-            width: 45%;
-            text-align: right;
-        }
-        .logo {
-            max-width: 200px;
+        
+        /* Main Tables */
+        .main-table {
+            width: 100%;
+            border-collapse: collapse;
             margin-bottom: 20px;
         }
+        
+        .header-table {
+            width: 100%;
+            border-bottom: 3px solid #008040;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .info-table {
+            width: 100%;
+            background: #f7fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+        
+        .info-table td {
+            padding: 20px;
+            vertical-align: top;
+        }
+        
+        .info-table .separator {
+            width: 1px;
+            background-color: #e2e8f0;
+            padding: 0;
+        }
+        
+        /* Header */
+        h1 {
+            color: #008040;
+            margin: 0 0 15px 0;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        .company-info {
+            font-size: 11px;
+            color: #4a5568;
+            line-height: 1.4;
+        }
+        
+        .company-name {
+            font-size: 14px;
+            font-weight: bold;
+            color: #008040;
+            margin-bottom: 5px;
+        }
+        
         .invoice-info {
             text-align: right;
         }
-        h1 {
-            color: #4a86e8;
-            margin: 0 0 20px 0;
-            font-size: 24px;
-        }
-        .client-info, .company-info {
-            width: 45%;
-            margin-bottom: 30px;
-        }
-        .client-info {
-            float: left;
-        }
-        .company-info {
-            float: right;
-            text-align: right;
-        }
-        .clearfix::after {
-            content: "";
-            clear: both;
-            display: table;
-        }
-        .info-label {
-            font-weight: bold;
-            color: #666;
-            margin-bottom: 5px;
-        }
-        .info-value {
+        
+        /* Info Labels & Values */
+        .info-group {
             margin-bottom: 15px;
         }
-        table {
+        
+        .info-label {
+            font-size: 10px;
+            font-weight: 600;
+            color: #718096;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        
+        .info-value {
+            font-size: 12px;
+            color: #2d3748;
+            font-weight: 500;
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .status-completed {
+            background-color: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        
+        .status-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+        
+        .status-failed {
+            background-color: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+        
+        /* Invoice Table */
+        .invoice-table {
             width: 100%;
             border-collapse: collapse;
-            margin: 20px 0;
-            page-break-inside: auto;
-        }
-        th, td {
-            padding: 8px;
-            border: 1px solid #ddd;
-        }
-        th {
-            background-color: #f5f5f5;
-            text-align: left;
-        }
-        tr {
+            margin: 25px 0;
             page-break-inside: avoid;
-            page-break-after: auto;
         }
+        
+        .invoice-table thead {
+            background-color: #008040;
+        }
+        
+        .invoice-table th {
+            padding: 12px 15px;
+            text-align: left;
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: none;
+        }
+        
+        .invoice-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+            font-size: 12px;
+            color: #4a5568;
+        }
+        
+        .invoice-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+        
         .text-right {
             text-align: right;
         }
-        .total {
-            margin-top: 20px;
-            text-align: right;
-            font-size: 16px;
-            font-weight: bold;
+        
+        .text-center {
+            text-align: center;
         }
+        
+        .description {
+            font-weight: 500;
+            color: #2d3748;
+        }
+        
+        .sub-description {
+            font-size: 10px;
+            color: #718096;
+            margin-top: 4px;
+            display: block;
+        }
+        
+        /* Total Section */
+        .total-section {
+            margin-top: 30px;
+            page-break-inside: avoid;
+        }
+        
+        .total-table {
+            width: 300px;
+            margin-left: auto;
+            border-collapse: collapse;
+        }
+        
+        .total-table td {
+            padding: 10px 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .total-label {
+            font-weight: 600;
+            color: #4a5568;
+            text-align: left;
+        }
+        
+        .total-amount {
+            font-weight: 700;
+            color: #2d3748;
+            text-align: right;
+        }
+        
+        .grand-total {
+            font-size: 16px;
+            color: #008040;
+            border-top: 2px solid #008040;
+            padding-top: 10px;
+            margin-top: 5px;
+        }
+        
+        /* Footer */
         .footer {
             margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+            font-size: 10px;
+            color: #718096;
             text-align: center;
-            font-size: 11px;
-            color: #777;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
             position: fixed;
             bottom: 0;
             width: 100%;
-            page-break-after: always;
         }
-        .status {
-            display: inline-block;
-            padding: 5px 10px;
-            border-radius: 4px;
+        
+        .footer-content {
+            max-width: 100%;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .thank-you {
+            font-size: 11px;
+            color: #008040;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        /* Responsive pour PDF */
+        @media print {
+            .footer {
+                position: fixed;
+                bottom: 0;
+            }
+            
+            .invoice-table {
+                page-break-inside: avoid;
+            }
+        }
+        
+        /* Watermark */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-45deg);
+            font-size: 80px;
+            color: rgba(16, 185, 129, 0.05);
             font-weight: bold;
-            text-transform: uppercase;
-            font-size: 10px;
-            letter-spacing: 1px;
+            z-index: -1;
+            pointer-events: none;
+            user-select: none;
         }
-        .status-paid {
-            background-color: #d4edda;
-            color: #155724;
+        
+        /* QR Code Section */
+        .qr-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f7fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+            page-break-inside: avoid;
+        }
+        
+        .qr-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #008040;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+        
+        /* Notes Section */
+        .notes {
+            margin-top: 30px;
+            padding: 15px;
+            background: #fefce8;
+            border-left: 4px solid #f59e0b;
+            font-size: 11px;
+            color: #92400e;
+            border-radius: 4px;
+            page-break-inside: avoid;
+        }
+        
+        .notes-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #d97706;
+        }
+        
+        /* Logo */
+        .logo-cell {
+            vertical-align: top;
+        }
+        
+        .logo {
+            max-width: 120px;
+            height: auto;
+            margin-bottom: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-left">
-            <h1>FACTURE</h1>
-            <div class="info-label">N° Facture</div>
-            <div class="info-value">#{{ payment.id }}-{{ payment.createdAt|date('Y') }}</div>
-            
-            <div class="info-label">Date</div>
-            <div class="info-value">{{ payment.createdAt|date('d/m/Y') }}</div>
-            
-            <div class="info-label">Statut</div>
-            <div class="info-value">
-                <span class="status status-{{ payment.statut }}">
-                    {% if payment.statut == 'completed' %}Payé{% else %}{{ payment.statut }}{% endif %}
-                </span>
-            </div>
-        </div>
-        <div class="header-right">
-            <div>EFASMART FINANCE</div>
-            <div>123 Avenue de la Tontine</div>
-            <div>75000 Paris, France</div>
-            <div>Tél: +33 1 23 45 67 89</div>
-            <div>Email: contact@efasmartfinance.com</div>
-        </div>
-    </div>
-
-    <div class="clearfix">
-        <div class="client-info">
-            <div class="info-label">Facturé à</div>
-            <div class="info-value">
-                <strong>{{ payment.utilisateur.nomComplet ?? payment.utilisateur.email }}</strong><br>
-                {% if payment.utilisateur.telephone %}
-                    {{ payment.utilisateur.telephone }}<br>
-                {% endif %}
-                {{ payment.utilisateur.email }}
-            </div>
-            
-            <div class="info-label">Tontine</div>
-            <div class="info-value">
-                {{ payment.tontine.nom }}<br>
-                Montant par point: {{ payment.tontine.amountPerPoint|number_format(0, ',', ' ') }} FCFA<br>
-                Période: {{ payment.tontine.periode }}
-            </div>
-        </div>
-    </div>
-
-    <div style="page-break-inside: avoid;">
-        <table>
-            <thead>
-                <tr>
-                    <th>Description</th>
-                    <th class="text-right">Montant</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        Paiement pour la tontine "{{ payment.tontine.nom }}"<br>
-                        <small>Méthode: {{ payment.paymentMethod|capitalize }} - Ref: {{ payment.externalReference }}</small>
-                    </td>
-                    <td class="text-right">{{ payment.amount|number_format(0, ',', ' ') }} FCFA</td>
-                </tr>
-                <tr>
-                    <td class="text-right"><strong>Total TTC</strong></td>
-                    <td class="text-right"><strong>{{ payment.amount|number_format(0, ',', ' ') }} FCFA</strong></td>
-                </tr>
-            </tbody>
+    <!-- Watermark -->
+    <div class="watermark">EFA SMART FINANCE</div>
+    
+    <!-- Header Table -->
+    <table class="header-table">
+        <tr>
+            <td width="60%" class="logo-cell">
+               
+                <div class="company-info">
+                    <div class="company-name">
+                       <img src="{{ app.request.schemeAndHttpHost ~ asset('images/logovert.png') }}" alt="Logo EFA SMART FINANCE" class="logo">
+                    </div>
+                    <div>Plateforme de Tontines Digitales</div>
+                    <div>contact@efasmartfinance.com</div>
+                    <div>+229 69 69 69 69</div>
+                    <div>Cotonou, Bénin</div>
+                </div>
+            </td>
+            <td width="40%" class="invoice-info">
+             <h1>FACTURE </h1>
+                <div class="company-info">
+                    <table width="100%">
+                        <tr class="text-right ">
+                            <td ><strong>N° FACTURE : </strong></td>
+                            <td class="info-value">{{ facture.numero }}</td>
+                        </tr>
+                        
+                        <tr class="text-right ">
+                            <td class="text-uppercase"><strong>DATE d'émission : </strong></td>
+                            <td class="text-ight info-value">{{ payment.createdAt|date('d/m/Y') }}</td>
+                        </tr>
+                     
+                        <tr class="text-right ">
+                            <td><strong>ÉCHÉANCE : </strong></td>
+                            <td class="text-rght info-value">{{ payment.createdAt|date_modify('+30 days')|date('d/m/Y') }}</td>
+                        </tr>
+                        
+                        <tr class="text-right ">
+                            <td><strong>STATUT : </strong></td>
+                            <td class="text-right info-value">
+                                <span class="status-badge status-{{ payment.statut }}">
+                                    {% if payment.statut == 'completed' %}PAYÉ
+                                    {% elseif payment.statut == 'pending' %}EN ATTENTE
+                                    {% elseif payment.statut == 'failed' %}ÉCHOUÉ
+                                    {% else %}{{ payment.statut|upper }}{% endif %}
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+    
+    <!-- Client & Tontine Info Table -->
+    <table class="info-table">
+        <tr>
+            <td width="50%">
+                <div class="info-group">
+                    <div class="info-label">FACTURE À</div>
+                    <div class="info-value">
+                        <strong>{{ payment.utilisateur.firstname ~ ' ' ~ payment.utilisateur.lastname }}</strong><br>
+                        {% if payment.utilisateur.phoneNumber %}
+                            {{ payment.utilisateur.phoneNumber }}<br>
+                        {% endif %}
+                        {{ payment.utilisateur.email }}
+                    </div>
+                </div>
+            </td>
+            <td class="separator"></td>
+            <td width="50%">
+                <div class="info-group">
+                    <div class="info-label">TONTINE</div>
+                    <div class="info-value">
+                        <strong>{{ payment.tontine.tontineCode }}</strong><br>
+                        {{ payment.tontine.name }}<br>
+                        Montant/point: {{ payment.tontine.amountPerPoint|number_format(0, ',', ' ') }} FCFA<br>
+                        Périodicité: {{ payment.tontine.frequency }}
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+    
+    <!-- Invoice Details Table -->
+    <table class="invoice-table">
+        <thead>
+            <tr>
+                <th width="60%">Description</th>
+                <th width="15%" class="text-center">Quantité</th>
+                <th width="15%" class="text-center">Prix Unitaire</th>
+                <th width="20%" class="text-right">Montant</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <span class="description">Participation à la tontine "{{ payment.tontine.tontineCode }}"</span>
+                    <span class="sub-description">
+                        Méthode de paiement: {{ payment.paymentMethod|upper }}<br>
+                        Référence: {{ payment.externalReference }}<br>
+                        Date: {{ payment.createdAt|date('d/m/Y H:i') }}
+                    </span>
+                </td>
+                <td class="text-center">
+                    {% set quantity = (payment.amount / payment.tontine.amountPerPoint)|round(2) %}
+                    {{ quantity }} pts
+                </td>
+                <td class="text-center">{{ payment.tontine.amountPerPoint|number_format(0, ',', ' ') }} FCFA</td>
+                <td class="text-right">{{ payment.amount|number_format(0, ',', ' ') }} FCFA</td>
+            </tr>
+        </tbody>
+    </table>
+    
+    <!-- Total Section Table -->
+    <div class="total-section">
+        <table class="total-table">
+            <tr>
+                <td class="total-label">Sous-total</td>
+                <td class="total-amount">{{ payment.amount|number_format(0, ',', ' ') }} FCFA</td>
+            </tr>
+            <tr>
+                <td class="total-label">TVA (0%)</td>
+                <td class="total-amount">0 FCFA</td>
+            </tr>
+            <tr>
+                <td class="total-label grand-total">TOTAL TTC</td>
+                <td class="total-amount grand-total">{{ payment.amount|number_format(0, ',', ' ') }} FCFA</td>
+            </tr>
         </table>
     </div>
-
+    
+    <!-- Payment Notes -->
+    <div class="notes">
+        <div class="notes-title">INFORMATIONS DE PAIEMENT</div>
+        <table width="100%">
+            <tr>
+                <td>
+                    • Les fonds sont immédiatement crédités sur votre compte tontine<br>
+                    • Conservez cette facture pour vos archives<br>
+                    • Pour toute question, contactez-nous à support@efasmartfinance.com
+                </td>
+            </tr>
+        </table>
+    </div>
+    
+    
+    
+    <!-- Footer -->
     <div class="footer">
-        <p>Merci pour votre confiance. En cas de question, n'hésitez pas à nous contacter à contact@efasmartfinance.com</p>
-        <p>EFASMART FINANCE - SAS au capital de 10 000 € - RCS Paris 123 456 789 - TVA FR12 3456789012</p>
+        <table width="100%" class="footer-content">
+            <tr>
+                <td class="text-center">
+                    <div class="thank-you">MERCI POUR VOTRE CONFIANCE</div>
+                    <div>
+                        EFA SMART FINANCE • SAS au capital de 10 000 € • RCS Paris 123 456 789<br>
+                        TVA intracommunautaire FR12 3456789012 • SIRET 123 456 789 00010<br>
+                        Tél: +33 1 23 45 67 89 • Email: contact@efasmartfinance.com<br>
+                        Site: https://efasmartfinance.com
+                    </div>
+                </td>
+            </tr>
+        </table>
     </div>
 </body>
 </html>

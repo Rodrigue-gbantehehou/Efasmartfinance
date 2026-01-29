@@ -122,22 +122,19 @@
 			<!-- Colonne droite - Solde et bouton -->
 			<div class="flex flex-col items-center md:items-end justify-center h-full">
 				<div class="text-right md:text-right">
-					<div class="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold mb-1 md:mb-2 leading-none" id="totalBalance">
-						0 FCFA
+					<div class="flex items-center gap-2">
+						<button type="button" id="toggleBalance" class="text-white hover:text-white focus:outline-none" aria-label="Afficher/masquer le solde">
+							<i class="fa-solid fa-eye-slash" id="balanceIcon"></i>
+						</button>
+						<div class="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold mb-1 md:mb-2 leading-none" id="totalBalance">
+							0 FCFA
+						</div>
 					</div>
 
 					<div class="text-xs md:text-sm opacity-90 mb-2 md:mb-3">
 						Montant total épargné
 					</div>
-<!--
-					<a href="{{path('app_wallet')}}" class="inline-flex items-center justify-center gap-1.5 md:gap-2
-														                          px-3 md:px-4 py-2 md:py-2.5 bg-white text-green-700 rounded-lg font-medium md:font-semibold
-														                          hover:bg-gray-100 active:scale-95 transition-all duration-200
-														                          text-xs md:text-sm touch-target shadow-sm hover:shadow
-														                          min-h-[40px] md:min-h-[44px]">
-						<i class="fa-solid fa-wallet-line text-xs md:text-sm"></i>
-						<span>Portefeuille</span>
-					</a>-->
+
 				</div>
 			</div>
 		</div>
@@ -313,4 +310,36 @@
 	</div>
 </div>
 
-<!-- Le JavaScript est maintenant dans le fichier dashboard.js -->{% endblock %}
+<!-- Le JavaScript est maintenant dans le fichier dashboard.js -->
+<script>
+	// Fonction pour basculer l'affichage du solde
+	document.addEventListener('DOMContentLoaded', function() {
+		const toggleButton = document.getElementById('toggleBalance');
+		const balanceElement = document.getElementById('totalBalance');
+		const balanceIcon = document.getElementById('balanceIcon');
+		let isBalanceVisible = true;
+
+		toggleButton.addEventListener('click', function() {
+			isBalanceVisible = !isBalanceVisible;
+			
+			if (isBalanceVisible) {
+				balanceElement.textContent = balanceElement.getAttribute('data-amount') + ' FCFA';
+				balanceIcon.classList.remove('fa-eye');
+				balanceIcon.classList.add('fa-eye-slash');
+			} else {
+				// Sauvegarder le montant dans un attribut data pour le réafficher plus tard
+				const currentAmount = balanceElement.textContent.replace(' FCFA', '').trim();
+				balanceElement.setAttribute('data-amount', currentAmount);
+				balanceElement.textContent = '••••••••';
+				balanceIcon.classList.remove('fa-eye-slash');
+				balanceIcon.classList.add('fa-eye');
+			}
+		});
+
+		// Initialisation du montant dans l'attribut data
+		const initialAmount = balanceElement.textContent.replace(' FCFA', '').trim();
+		balanceElement.setAttribute('data-amount', initialAmount);
+	});
+
+	// Script existant... dans le fichier dashboard.js 
+</script>{% endblock %}

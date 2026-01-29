@@ -1,0 +1,180 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Erreur {{ status_code }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .error-container {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        .error-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 3rem;
+            text-align: center;
+            max-width: 500px;
+            margin: 0 20px;
+        }
+        
+        .error-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 2rem;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+        }
+        
+        .error-code {
+            font-size: 6rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin: 0;
+            line-height: 1;
+        }
+        
+        .error-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin: 1rem 0;
+            font-weight: 600;
+        }
+        
+        .error-message {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .btn-home {
+            display: inline-block;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin: 0 5px;
+        }
+        
+        .btn-home:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+            color: white;
+        }
+        
+        .btn-secondary {
+            display: inline-block;
+            padding: 12px 30px;
+            background: white;
+            color: #667eea;
+            text-decoration: none;
+            border: 2px solid #667eea;
+            border-radius: 25px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+        }
+        
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .error-card {
+                padding: 2rem;
+            }
+            
+            .error-code {
+                font-size: 4rem;
+            }
+            
+            .btn-home, .btn-secondary {
+                display: block;
+                margin: 10px auto;
+                width: 200px;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="error-container">
+    <div class="error-card">
+        <div class="error-icon">
+            {% if status_code == 404 %}
+                <i class="fas fa-search"></i>
+            {% elseif status_code == 500 %}
+                <i class="fas fa-exclamation-triangle"></i>
+            {% else %}
+                <i class="fas fa-exclamation-circle"></i>
+            {% endif %}
+        </div>
+        
+        <h1 class="error-code">{{ status_code }}</h1>
+        <h2 class="error-title">
+            {% if status_code == 404 %}
+                Page non trouvée
+            {% elseif status_code == 500 %}
+                Erreur serveur
+            {% else %}
+                Erreur
+            {% endif %}
+        </h2>
+        
+        <p class="error-message">
+            {% if status_code == 404 %}
+                La page que vous recherchez n'existe pas ou a été déplacée.
+            {% elseif status_code == 500 %}
+                Une erreur interne est survenue. Nos équipes en ont été informées et travaillent à résoudre le problème.
+            {% else %}
+                Une erreur est survenue. Veuillez réessayer plus tard.
+            {% endif %}
+        </p>
+        
+        <div style="margin-top: 2rem;">
+            {% if app.user %}
+                {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('admin_dashboard') }}" class="btn-home">
+                        <i class="fas fa-tachometer-alt"></i> Tableau de bord admin
+                    </a>
+                {% elseif is_granted('ROLE_USER') %}
+                    <a href="{{ path('dashboard') }}" class="btn-home">
+                        <i class="fas fa-home"></i> Tableau de bord
+                    </a>
+                {% endif %}
+            {% endif %}
+            
+            <a href="{{ path('app_home') }}" class="btn-secondary">
+                <i class="fas fa-home"></i> Accueil
+            </a>
+        </div>
+        
+        {% if status_code == 500 %}
+            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #eee;">
+                <p style="color: #999; font-size: 0.9rem;">
+                    Référence de l'erreur: {{ status_text }}
+                </p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

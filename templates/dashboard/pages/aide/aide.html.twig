@@ -41,9 +41,7 @@
                 </div>
                 
                 <div class="flex flex-wrap justify-center gap-2 mt-4">
-                    <span class="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-sm">
-                        <i class="fa-solid fa-wallet mr-1"></i> Portefeuille
-                    </span>
+                    
                     <span class="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-sm">
                         <i class="fa-solid fa-credit-card mr-1"></i> Paiements
                     </span>
@@ -70,39 +68,7 @@
                     </h2>
                     
                     <div class="space-y-4">
-                        <!-- FAQ Portefeuille -->
-                        <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
-                            <button onclick="toggleFAQ(1)"
-                                    class="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors touch-target">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                                        <i class="fa-solid fa-wallet text-green-600"></i>
-                                    </div>
-                                    <div class="text-left">
-                                        <h3 class="font-semibold text-gray-900">Portefeuille & Transactions</h3>
-                                        <p class="text-sm text-gray-500">Gestion de votre argent</p>
-                                    </div>
-                                </div>
-                                <i class="fa-solid fa-chevron-down text-gray-400 transition-transform" id="faq-icon-1"></i>
-                            </button>
-                            <div id="faq-content-1" class="hidden px-6 pb-4">
-                                <div class="space-y-4 pt-2">
-                                    <div class="faq-item" data-search="comment alimenter portefeuille dépôt">
-                                        <h4 class="font-medium text-gray-900 mb-2">Comment alimenter mon portefeuille ?</h4>
-                                        <p class="text-gray-600 text-sm">Pour alimenter votre portefeuille, rendez-vous dans la section "Portefeuille" et cliquez sur "Alimenter". Vous pouvez choisir entre Mobile Money, carte bancaire ou virement.</p>
-                                    </div>
-                                    <div class="faq-item" data-search="retirer argent retrait portefeuille">
-                                        <h4 class="font-medium text-gray-900 mb-2">Comment retirer de l'argent ?</h4>
-                                        <p class="text-gray-600 text-sm">Les retraits sont actuellement en développement. Pour l'instant, contactez le support pour toute demande de retrait.</p>
-                                    </div>
-                                    <div class="faq-item" data-search="transaction échouée paiement échoué">
-                                        <h4 class="font-medium text-gray-900 mb-2">Que faire si une transaction échoue ?</h4>
-                                        <p class="text-gray-600 text-sm">Si une transaction échoue, vérifiez d'abord votre solde. Si le problème persiste, contactez notre support avec le numéro de transaction.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
+                      
                         <!-- FAQ Tontines -->
                         <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
                             <button onclick="toggleFAQ(2)"
@@ -726,7 +692,7 @@ document.getElementById('chatInput')?.addEventListener('keypress', function(e) {
 .gradient-border {
     border: 2px solid transparent;
     background: linear-gradient(white, white) padding-box,
-                linear-gradient(135deg, #10b981, #3b82f6) border-box;
+                linear-gradient(135deg, #008040, #3b82f6) border-box;
 }
 </style>
 {% endblock %}

@@ -43,7 +43,7 @@
     .gradient-border {
         border: 2px solid transparent;
         background: linear-gradient(white, white) padding-box,
-                    linear-gradient(135deg, #10b981, #3b82f6) border-box;
+                    linear-gradient(135deg, #008040, #3b82f6) border-box;
     }
 </style>
 {% endblock %}
@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 500);
     
     function createConfetti() {
-        const colors = ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b'];
+        const colors = ['#008040', '#3b82f6', '#8b5cf6', '#f59e0b'];
         const confetti = document.createElement('div');
         confetti.className = 'absolute w-2 h-2 rounded-full';
         confetti.style.background = colors[Math.floor(Math.random() * colors.length)];

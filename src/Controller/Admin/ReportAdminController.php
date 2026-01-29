@@ -88,7 +88,7 @@ class ReportAdminController extends AbstractController
                 $tontineRepository->count(['statut' => 'completed']),
                 $tontineRepository->count(['statut' => 'pending']),
             ],
-            'colors' => ['#10B981', '#3B82F6', '#F59E0B']
+            'colors' => ['#008040', '#3B82F6', '#F59E0B']
         ];
 
         return $this->render('admin/reports/index.html.twig', [

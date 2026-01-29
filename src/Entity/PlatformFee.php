@@ -20,8 +20,6 @@ class PlatformFee
     #[ORM\ManyToOne(targetEntity: Tontine::class)]
     private ?Tontine $tontine = null;
 
-    #[ORM\ManyToOne(targetEntity: Withdrawals::class, inversedBy: 'fees')]
-    private ?Withdrawals $withdrawal = null;
 
     #[ORM\Column]
     private int $amount = 0;
@@ -71,17 +69,7 @@ class PlatformFee
         return $this;
     }
 
-    public function getWithdrawal(): ?Withdrawals
-    {
-        return $this->withdrawal;
-    }
-
-    public function setWithdrawal(?Withdrawals $withdrawal): self
-    {
-        $this->withdrawal = $withdrawal;
-        return $this;
-    }
-
+  
     public function getAmount(): int
     {
         return $this->amount;
@@ -118,6 +106,12 @@ class PlatformFee
     public function getCreatedAt(): \DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+        return $this;
     }
 
     public function getTransactionId(): ?string

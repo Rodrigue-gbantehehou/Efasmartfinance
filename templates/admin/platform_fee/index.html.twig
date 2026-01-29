@@ -1,0 +1,304 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Frais de transfert - Administration{% endblock %}
+
+{% block contentadmin %}
+<div class="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <!-- Header avec actions -->
+    <div class="border-b border-gray-200 bg-white">
+        <div class="px-4 md:px-6 py-4">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold text-gray-900">Frais de transfert</h1>
+                    <p class="text-gray-600 text-sm mt-1">Gestion des frais de transfert et de retrait</p>
+                </div>
+                
+             
+            </div>
+        </div>
+    </div>
+
+    <!-- Flash messages -->
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="mx-4 md:mx-6 mt-4">
+                <div class="flash-message p-4 rounded-xl border border-{{ label }}-200 bg-{{ label }}-50 text-{{ label }}-800">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-{% if label == 'success' %}check-circle{% elseif label == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <!-- Contenu principal -->
+    <div class="p-4 md:p-6">
+        <!-- Stats résumé -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white rounded-xl border border-gray-200 p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">Total des frais</p>
+                        <p class="text-2xl font-bold text-gray-900">
+                            {{ totalFees|number_format(0, ',', ' ') }} FCFA
+                        </p>
+                    </div>
+                    <div class="h-12 w-12 rounded-full bg-green-50 text-green-600 flex items-center justify-center">
+                        <i class="fas fa-coins text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl border border-gray-200 p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">Frais ce mois</p>
+                        <p class="text-2xl font-bold text-gray-900">
+                            {{ monthlyFees|number_format(0, ',', ' ') }} FCFA
+                        </p>
+                    </div>
+                    <div class="h-12 w-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                        <i class="fas fa-calendar-alt text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-xl border border-gray-200 p-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm text-gray-600">Total des transactions</p>
+                        <p class="text-2xl font-bold text-gray-900">
+                            {{ fees|length }}
+                        </p>
+                    </div>
+                    <div class="h-12 w-12 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center">
+                        <i class="fas fa-exchange-alt text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tableau des frais -->
+        <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+            <!-- En-tête du tableau -->
+            <div class="px-4 md:px-6 py-4 border-b border-gray-200 bg-gray-50">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900">Historique des frais</h3>
+                        <p class="text-gray-600 text-sm mt-1">
+                            {{ fees|length }} transaction{{ fees|length > 1 ? 's' : '' }}
+                        </p>
+                    </div>
+                    
+                   
+                </div>
+            </div>
+
+            <!-- Corps du tableau -->
+            <div class="overflow-x-auto">
+                <table class="w-full">
+                    <thead class="bg-gray-50 border-b border-gray-200">
+                        <tr>
+                            <th class="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <span>Utilisateur</span>
+                                </div>
+                            </th>
+                            <th class="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <span>Tontine</span>
+                                </div>
+                            </th>
+                            <th class="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <span>Montant</span>
+                                </div>
+                            </th>
+                            <th class="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <span>Type</span>
+                                </div>
+                            </th>
+                            <th class="px-4 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                <div class="flex items-center gap-2">
+                                    <span>Date</span>
+                                </div>
+                            </th>
+                            <th class="px-4 md:px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                                Statut
+                            </th>
+                        </tr>
+                    </thead>
+                    
+                    <tbody class="divide-y divide-gray-200">
+                        {% for fee in fees %}
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <!-- Colonne utilisateur -->
+                            <td class="px-4 md:px-6 py-4">
+                                {% if fee.user %}
+                                <div class="flex items-center gap-3">
+                                    <div class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-600">
+                                        <i class="fas fa-user"></i>
+                                    </div>
+                                    <div>
+                                        <p class="font-medium text-gray-900">{{ fee.user.getfirstName() }} {{ fee.user.getlastName() }}</p>
+                                        <p class="text-xs text-gray-500">ID: {{ fee.user.uuid }}</p>
+                                    </div>
+                                </div>
+                                {% else %}
+                                <span class="text-gray-400">N/A</span>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Colonne tontine -->
+                            <td class="px-4 md:px-6 py-4">
+                                {% if fee.tontine %}
+                                <div>
+                                    <p class="font-medium text-gray-900">{{ fee.tontine.getName() }}</p>
+                                    <p class="text-xs text-gray-500">Code: {{ fee.tontine.tontineCode }}</p>
+                                </div>
+                                {% else %}
+                                <span class="text-gray-400">N/A</span>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Colonne montant -->
+                            <td class="px-4 md:px-6 py-4">
+                                <p class="font-semibold text-green-700">
+                                    {{ fee.amount|number_format(0, ',', ' ') }} FCFA
+                                </p>
+                            </td>
+                            
+                            <!-- Colonne type -->
+                            <td class="px-4 md:px-6 py-4">
+                                {% if fee.type == 'withdrawal_fee' %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                    <i class="fas fa-money-bill-wave"></i>
+                                    Frais de retrait
+                                </span>
+                                {% elseif fee.type == 'transfer_fee' %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                    <i class="fas fa-exchange-alt"></i>
+                                    Frais de transfert
+                                </span>
+                                {% else %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                    <i class="fas fa-question-circle"></i>
+                                    {{ fee.type }}
+                                </span>
+                                {% endif %}
+                            </td>
+                            
+                            <!-- Colonne date -->
+                            <td class="px-4 md:px-6 py-4 whitespace-nowrap">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900">{{ fee.createdAt|date('d/m/Y') }}</p>
+                                    <p class="text-xs text-gray-500">{{ fee.createdAt|date('H:i') }}</p>
+                                </div>
+                            </td>
+                            
+                            <!-- Colonne statut -->
+                            <td class="px-4 md:px-6 py-4 text-right">
+                                {% if fee.status == 'completed' %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                    <i class="fas fa-check-circle"></i>
+                                    Collecté
+                                </span>
+                                {% else %}
+                                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                    <i class="fas fa-clock"></i>
+                                    En attente
+                                </span>
+                                {% endif %}
+                                
+                                {% if fee.transactionId %}
+                                <p class="text-xs text-gray-500 mt-1">Ref: {{ fee.transactionId|slice(0, 8) }}...</p>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="6" class="px-6 py-12 text-center">
+                                <div class="h-16 w-16 rounded-full bg-gray-100 text-gray-400 flex items-center justify-center mx-auto mb-4">
+                                    <i class="fas fa-coins text-2xl"></i>
+                                </div>
+                                <h3 class="text-lg font-medium text-gray-900">Aucun frais enregistré</h3>
+                                <p class="mt-1 text-sm text-gray-500">Les frais de transfert apparaîtront ici.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Pagination -->
+            {% if fees is defined and fees.pagination is defined and fees.pagination.totalPages > 1 %}
+            <div class="px-4 md:px-6 py-4 border-t border-gray-200">
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="text-sm text-gray-500">
+                        Affichage de <span class="font-medium">{{ fees.pagination.offsetStart }}</span> à 
+                        <span class="font-medium">{{ fees.pagination.offsetEnd }}</span> sur 
+                        <span class="font-medium">{{ fees.pagination.totalItems }}</span> résultats
+                    </div>
+                    
+                    <div class="flex items-center gap-1">
+                        <a href="{{ path('admin_platform_fees_index', {'page': 1}) }}" 
+                           class="px-3 py-1.5 rounded-l-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                        <a href="{{ path('admin_platform_fees_index', {'page': fees.pagination.currentPage > 1 ? fees.pagination.currentPage - 1 : 1}) }}" 
+                           class="px-3 py-1.5 border-t border-b border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                        
+                        {% for page in 1..fees.pagination.totalPages %}
+                            {% if page >= fees.pagination.currentPage - 2 and page <= fees.pagination.currentPage + 2 %}
+                                <a href="{{ path('admin_platform_fees_index', {'page': page}) }}" 
+                                   class="px-3 py-1.5 border-t border-b border-gray-300 text-sm font-medium {% if page == fees.pagination.currentPage %}bg-green-50 text-green-600 border-green-200{% else %}bg-white text-gray-700 hover:bg-gray-50{% endif %}">
+                                    {{ page }}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        <a href="{{ path('admin_platform_fees_index', {'page': fees.pagination.currentPage < fees.pagination.totalPages ? fees.pagination.currentPage + 1 : fees.pagination.totalPages}) }}" 
+                           class="px-3 py-1.5 border-t border-b border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                        <a href="{{ path('admin_platform_fees_index', {'page': fees.pagination.totalPages}) }}" 
+                           class="px-3 py-1.5 rounded-r-lg border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    // Recherche en temps réel
+    document.getElementById('searchInput').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('tbody tr');
+        
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            if (text.includes(searchTerm)) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
+        });
+    });
+    
+    // Rafraîchissement automatique toutes les 5 minutes
+    setTimeout(function() {
+        window.location.reload();
+    }, 5 * 60 * 1000);
+</script>
+{% endblock %}

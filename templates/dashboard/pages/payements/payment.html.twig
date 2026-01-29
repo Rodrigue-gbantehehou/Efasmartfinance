@@ -13,7 +13,7 @@
     }
     
     .payment-step.active {
-        border-color: #10b981;
+        border-color: #008040;
         background-color: rgba(16, 185, 129, 0.05);
     }
     
@@ -28,7 +28,7 @@
     }
     
     .payment-method-card.selected {
-        border-color: #10b981;
+        border-color: #008040;
         background-color: rgba(16, 185, 129, 0.05);
     }
     
@@ -45,7 +45,7 @@
     
     /* Animation pour les étapes */
     .step-complete {
-        background-color: #10b981;
+        background-color: #008040;
         color: white;
     }
     
@@ -63,7 +63,7 @@
     .loading-spinner {
         border: 3px solid rgba(0, 0, 0, 0.1);
         border-radius: 50%;
-        border-top-color: #10b981;
+        border-top-color: #008040;
         animation: spin 1s linear infinite;
     }
     
@@ -439,7 +439,7 @@ function selectPaymentMethod(method) {
                 console.log(`Ajout de la classe 'selected' à ${cardMethod}`);
                 card.classList.add('selected');
                 // Ajouter un style de surbrillance plus visible
-                card.style.border = '2px solid #10b981';
+                card.style.border = '2px solid #008040';
                 card.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.2)';
             } else {
                 card.classList.remove('selected');

@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
-  <meta name="theme-color" content="#10B981">
+  <meta name="theme-color" content="#008040">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>EFA SMART FINANCE — Tableau de bord Tontines</title>
   <meta name="description" content="Tableau de bord des tontines individuelles pour la gestion de vos épargnes." />
-  <link rel="icon" href="{{ asset('assets/images/estm.png') }}" type="image/png">
+  <link rel="icon" href="{{ asset('images/logovert.png') }}" type="image/png">
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
@@ -33,7 +33,7 @@
       theme: {
         extend: {
           colors: {
-            green-700: '#10B981',
+            green-700: '#008040',
             secondary: '#FBBF24',
             accent: '#059669',
             warning: '#F59E0B',
@@ -169,7 +169,7 @@
     }
     
     .payment-option.selected {
-      border-color: #10b981;
+      border-color: #008040;
       background-color: rgba(16, 185, 129, 0.05);
     }
     
@@ -188,7 +188,7 @@
     .spinner {
       border: 3px solid rgba(0, 0, 0, 0.1);
       border-radius: 50%;
-      border-top-color: #10b981;
+      border-top-color: #008040;
       animation: spin 1s linear infinite;
     }
     
@@ -730,6 +730,67 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     }
   </script>
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Éléments du menu mobile
+    const openMobileMenuBtn = document.getElementById('openMobileMenu');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const mobileMenuOverlay = document.getElementById('mobileMenuOverlay');
+    
+    // Vérifier que les éléments existent
+    if (!openMobileMenuBtn || !mobileMenu || !mobileMenuOverlay) {
+        console.log('Éléments du menu mobile non trouvés');
+        return;
+    }
+    
+    // Ouvrir le menu mobile
+    openMobileMenuBtn.addEventListener('click', () => {
+        console.log('Ouverture du menu mobile');
+        mobileMenuOverlay.classList.remove('hidden');
+        mobileMenu.classList.remove('-translate-x-full');
+        
+        // Empêcher le défilement du body
+        document.body.style.overflow = 'hidden';
+    });
+    
+    // Fermer le menu mobile
+    function closeMobileMenu() {
+        console.log('Fermeture du menu mobile');
+        mobileMenu.classList.add('-translate-x-full');
+        mobileMenuOverlay.classList.add('hidden');
+        
+        // Restaurer le défilement du body
+        document.body.style.overflow = '';
+    }
+    
+    // Fermer avec l'overlay
+    mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+    
+    // Fermer avec la touche Échap
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !mobileMenu.classList.contains('-translate-x-full')) {
+            closeMobileMenu();
+        }
+    });
+    
+    // Fermer en cliquant sur un lien (optionnel)
+    const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+    mobileMenuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            setTimeout(closeMobileMenu, 300); // Petite attente pour l'animation
+        });
+    });
+    
+    // Année courante pour le footer
+    const yearElements = document.querySelectorAll('#year, #year2');
+    const currentYear = new Date().getFullYear();
+    yearElements.forEach(element => {
+        if (element) {
+            element.textContent = currentYear;
+        }
+    });
+});
+</script>
 </body>
 
 {% include 'dashboard/links/_js.html.twig' %}

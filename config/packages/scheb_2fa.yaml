@@ -1,0 +1,12 @@
+scheb_two_factor:
+    security_tokens:
+        - Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken
+        - Symfony\Component\Security\Http\Authenticator\Token\PostAuthenticationToken
+    
+    email:
+        enabled: true
+        digits: 6
+        mailer: App\Service\EmailService
+        sender_email: contact@binajia.org
+        sender_name: EFA Smart Finance
+        template: bundles/SchebTwoFactorBundle/Authentication/form.html.twig

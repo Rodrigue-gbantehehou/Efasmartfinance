@@ -4,14 +4,17 @@ namespace App\Controller\Dashboard;
 
 use App\Entity\User;
 use App\Entity\Tontine;
+use App\Entity\Facture;
 use App\Entity\Wallets;
+use App\Entity\PlatformFee;
 use App\Entity\Transaction;
+use App\Service\PdfService;
+use App\Service\NumerotationFactureService;
+
 use App\Entity\TontinePoint;
 use Psr\Log\LoggerInterface;
-
-use App\Service\ActivityLogger;
 use App\Service\EmailService;
-use App\Service\PdfService;
+use App\Service\ActivityLogger;
 use App\Entity\WalletTransactions;
 use App\Service\Payment\PayPalService;
 use App\Service\Payment\FedaPayService;
@@ -39,7 +42,8 @@ final class PaymentController extends AbstractController
         private EmailService $emailService,
         private TwigEnvironment $twig,
         private LoggerInterface $logger,
-        private PdfService $pdfService
+        private PdfService $pdfService,
+        private NumerotationFactureService $numerotationFactureService
     ) {}
 
     #[Route('/init', name: 'app_tontine_payment_init', methods: ['POST'])]
@@ -120,228 +124,386 @@ final class PaymentController extends AbstractController
     }
 
 
-    #[Route('/verify', name: 'app_tontine_payment_verify', methods: ['POST'])]
-    public function verifyPayment(Request $request, EntityManagerInterface $em): JsonResponse
-    {
+    /**
+     * Vérifie le paiement des frais de service via KkiaPay
+     * Gère à la fois les requêtes POST (appel initial) et GET (callback de KkiaPay)
+     */
+    #[Route('/verify-fees', name: 'app_tontine_payment_verify_fees', methods: ['POST'])]
+    public function verifyFeesPayment(
+        Request $request,
+        EntityManagerInterface $em
+    ): JsonResponse {
+        // 1️⃣ Lire les données envoyées
         $data = json_decode($request->getContent(), true);
-        $paymentId = $data['payment_id'] ?? 0;
-        $transactionId = $data['transaction_id'] ?? '';
 
-        $payment = $this->em->getRepository(Transaction::class)->find($paymentId);
-
-        if (!$payment) {
-            return new JsonResponse([
+        if (
+            !$data ||
+            empty($data['transaction_id']) ||
+            empty($data['tontine_id']) ||
+            empty($data['user_id'])
+        ) {
+            return $this->json([
                 'success' => false,
-                'message' => 'Paiement non trouvé'
+                'message' => 'Données invalides'
+            ], 400);
+        }
+
+        $transactionId = $data['transaction_id'];
+        $tontineId     = $data['tontine_id'];
+        $userId        = $data['user_id'];
+
+        // 2️⃣ Récupérer les entités
+        $tontine = $em->getRepository(Tontine::class)->find($tontineId);
+        $user    = $em->getRepository(User::class)->find($userId);
+
+        if (!$tontine || !$user) {
+            return $this->json([
+                'success' => false,
+                'message' => 'Tontine ou utilisateur non trouvé'
             ], 404);
         }
 
-        // Vérifier si l'utilisateur est autorisé
-        $currentUser = $this->security->getUser();
-        if ($payment->getUtilisateur()->getId() !== $currentUser->getId()) {
-            error_log("Accès refusé - Utilisateur ID: " . $currentUser->getId() . " n'est pas le propriétaire du paiement");
-            return new JsonResponse([
-                'success' => false,
-                'message' => 'Non autorisé',
-                'debug' => [
-                    'payment_user_id' => $payment->getUtilisateur()->getId(),
-                    'current_user_id' => $currentUser->getId()
-                ]
-            ], 403);
+        // 3️⃣ Vérifier si déjà payé
+        if ($tontine->isFraisPreleves()) {
+            return $this->json([
+                'success' => true,
+                'message' => 'Les frais ont déjà été payés',
+                'already_paid' => true
+            ]);
         }
 
         try {
-            $verification = match ($payment->getPaymentMethod()) {
-                'fedapay' => $this->fedaPayService->verifyPayment($payment, $transactionId),
-                'kkiapay' => $this->kkiaPayService->verifyPayment($payment, $transactionId),
-                'paypal' => $this->payPalService->verifyPayment($payment, $transactionId),
-                default => throw new \Exception('Méthode non supportée')
-            };
+            // 4️⃣ Vérification Kkiapay
+            $verification = $this->kkiaPayService->verifyTransaction($transactionId);
 
-            if ($verification['success']) {
-
-               
-
-                // Mettre à jour le paiement
-                $payment->setStatut('completed');
-                $payment->setExternalReference($transactionId);
-                $payment->setCreatedAt(new \DateTimeImmutable());
-                
-
-                // Ajouter les points à la tontine
-                $tontine = $payment->getTontine();
-
-                $this->activityLogger->log(
-                    $currentUser,
-                    'PAYMENT_SUCCESS',
-                    'Transaction',
-                    $payment->getId(),
-                    'Paiement de ' . $payment->getAmount() . ' FCFA effectué'
-                );
-
-                  //verifie si c'est le premier paiement de la tontine avec la statut 'completed'
-                if ($tontine->isFraisPreleves() === false && $payment->getStatut() === 'completed') {
-                    $tontine->setFraisPreleves(true);
-                    $payment->setType('frais');
-                    $em->persist($tontine);
-                    $em->persist($payment);
-                    $em->flush();
-                }
-               
-
-
-                //le montant à payer doit etre egale ou un multiple du montant de la tontine
-                $amountPaid = $payment->getAmount();
-                $amountPerPoint = $tontine->getAmountPerPoint();
-
-                // Calcul du surplus
-                $surplus = $amountPaid % $amountPerPoint;
-
-                // Montant réellement utilisable pour la tontine
-                $validAmount = $amountPaid - $surplus;
-
-                // Vérification : le montant doit être égal ou multiple
-                if ($validAmount <= 0) {
-                    throw new \Exception('Le montant payé est inférieur au montant de la tontine.');
-                }
-
-                // Si surplus existe, l’envoyer dans le wallet
-                if ($surplus > 0) {
-                    // Récupérer le wallet de l’utilisateur (ou en créer un nouveau)
-                    $wallet = $this->em->getRepository(Wallets::class)->findOneBy([
-                        'utilisateur' => $payment->getUtilisateur()
-                    ]);
-
-                    if (!$wallet) {
-                        $wallet = new Wallets();
-                        $wallet->setUtilisateur($payment->getUtilisateur());
-                        $wallet->setBalance(0); // init à 0 si nouveau wallet
-                    }
-
-                    // Ajouter le surplus au solde existant
-                    $wallet->setBalance($wallet->getBalance() + $surplus);
-                    $wallet->setUpdatedAt(new \DateTimeImmutable());
-                    
-
-                    //transaction wallet
-                    $transactionWallet = new WalletTransactions();
-                    $transactionWallet->setTransactions($payment);
-                    $transactionWallet->setWallet($wallet);
-                    $transactionWallet->setAmount($surplus);
-                    $transactionWallet->setCreatedAt(new \DateTimeImmutable());
-                    $transactionWallet->setReason('Surplus de paiement tontine');
-
-                    $this->em->persist($transactionWallet);
-                }
-
-                // Continuer avec $validAmount pour la tontine
-
-
-                $tontine->applyPayment(
-                    $validAmount,
-                    $payment,
-                    $payment->getPaymentMethod()
-                );
-
-                $em->flush();
-
-                // Génération et envoi de la facture PDF
-                try {
-                    $user = $payment->getUtilisateur();
-                    
-                    // Générer le PDF
-                    $pdfPath = $this->pdfService->generateInvoice(
-                        [
-                            'payment' => $payment,
-                            'user' => $user,
-                            'tontine' => $tontine,
-                            'baseUrl' => $request->getSchemeAndHttpHost()
-                        ],
-                        'emails/facture_pdf.html.twig',
-                        'facture-' . $payment->getId() . '-' . date('Y-m-d')
-                    );
-                    
-                    // Rendu du contenu HTML pour l'email
-                    $emailContent = $this->twig->render('emails/facture.html.twig', [
-                        'user' => $user,
-                        'payment' => $payment,
-                        'hasPdf' => true
-                    ]);
-
-                    // Envoyer l'email avec la pièce jointe
-                    $this->emailService->sendWithAttachment(
-                        $user->getEmail(),
-                        'Votre facture Efasmartfinance #' . $payment->getId(),
-                        $emailContent,
-                        $pdfPath,
-                        'facture-' . $payment->getId() . '.pdf'
-                    );
-                    
-                    // Mettre à jour le paiement avec le chemin du PDF
-                    $payment->setInvoicePath('factures/' . basename($pdfPath));
-                    $em->persist($payment);
-                    $em->flush();
-                    
-                } catch (\Exception $e) {
-                    $this->logger->error('Erreur lors de la génération de la facture PDF: ' . $e->getMessage(), [
-                        'exception' => $e,
-                        'payment_id' => $payment->getId()
-                    ]);
-                }
-
-                return new JsonResponse([
-                    'success' => true,
-                    'message' => 'Paiement validé avec succès',
-                    'payment_id' => $payment->getId()
-                ]);
-            } else {
-                $payment->setStatut('failed');
-                $em->flush();
-                $this->em->flush();
-
-                $tontine = $payment->getTontine();
-
-                $this->activityLogger->log(
-                    $currentUser,
-                    'PAYMENT_FAILED',
-                    'Transaction',
-                    $payment->getId(),
-                    'Paiement de ' . $payment->getAmount() . ' FCFA échoué'
-                );
-                
-                $payload = [
+            if (
+                !$verification ||
+                ($verification['status'] ?? null) !== 'SUCCESS'
+            ) {
+                return $this->json([
                     'success' => false,
-                    'message' => $verification['message'] ?? 'Échec de la vérification'
-                ];
-
-                if ((bool) $this->getParameter('kernel.debug')) {
-                    $payload['debug'] = [
-                        'provider_response' => $verification,
-                    ];
-                }
-
-                return new JsonResponse($payload);
+                    'message' => 'Paiement non validé par Kkiapay'
+                ], 400);
             }
-        } catch (\Exception $e) {
-            $payment->setStatut('failed');
-            $this->em->flush();
 
-            $tontine = $payment->getTontine();
+            // 5️⃣ Récupération SÉCURISÉE du montant payé
+            $amountPaid = 0;
 
-                $this->activityLogger->log(
-                    $currentUser,
-                    'PAYMENT_FAILED',
-                    'Transaction',
-                    $payment->getId(),
-                    'Paiement de ' . $payment->getAmount() . ' FCFA échoué'
-                );  
+            if (isset($verification['data']['amount'])) {
+                $amountPaid = (float) $verification['data']['amount'];
+            } elseif (isset($verification['amount'])) {
+                $amountPaid = (float) $verification['amount'];
+            }
 
-            return new JsonResponse([
+            if ($amountPaid <= 0) {
+                throw new \Exception('Montant payé invalide ou introuvable');
+            }
+
+            // 6️⃣ Créer la transaction
+            $transaction = new Transaction();
+            $transaction->setTontine($tontine);
+            $transaction->setUtilisateur($user);
+            $transaction->setAmount($amountPaid);
+            $transaction->setType('frais_service');
+            $transaction->setPaymentMethod('online');
+            $transaction->setProvider('kkiapay');
+            $transaction->setStatut('completed');
+            $transaction->setExternalReference($transactionId);
+            $transaction->setCreatedAt(new \DateTimeImmutable());
+
+            $em->persist($transaction);
+
+            // 7️⃣ Enregistrer dans PlatformFee
+            $platformFee = new PlatformFee();
+            $platformFee->setTontine($tontine);
+            $platformFee->setUser($user);
+            $platformFee->setAmount($amountPaid);
+            $platformFee->setStatus('completed');
+            $platformFee->setTransactionId($transactionId);
+            $platformFee->setType('frais_service');
+            $platformFee->setCreatedAt(new \DateTimeImmutable());
+
+            $em->persist($platformFee);
+
+            // 8️⃣ Mettre à jour la tontine
+            $tontine->setFraisPreleves(true);
+            $em->persist($tontine);
+
+            $em->flush();
+
+            // 9️⃣ Journalisation
+            $this->activityLogger->log(
+                $user,
+                'FEES_PAID',
+                'Tontine',
+                $tontine->getId(),
+                'Paiement des frais de service de ' . $amountPaid . ' FCFA'
+            );
+
+            return $this->json([
+                'success' => true,
+                'message' => 'Paiement des frais enregistré avec succès',
+                'amount'  => $amountPaid
+            ]);
+        } catch (\Throwable $e) {
+
+            $this->logger->error('Erreur paiement frais Kkiapay', [
+                'transaction_id' => $transactionId,
+                'exception' => $e->getMessage(),
+            ]);
+
+            return $this->json([
                 'success' => false,
-                'message' => 'Erreur lors de la vérification: ' . $e->getMessage()
+                'message' => 'Erreur lors du traitement du paiement'
             ], 500);
         }
     }
+
+
+    #[Route('/verify', name: 'app_tontine_payment_verify', methods: ['POST'])]
+public function verifyPayment(Request $request, EntityManagerInterface $em): JsonResponse
+{
+    $data = json_decode($request->getContent(), true);
+    $paymentId = $data['payment_id'] ?? 0;
+    $transactionId = $data['transaction_id'] ?? '';
+
+    $payment = $this->em->getRepository(Transaction::class)->find($paymentId);
+
+    $user = $this->getUser();
+    if (!$payment) {
+        return new JsonResponse([
+            'success' => false,
+            'message' => 'Paiement non trouvé'
+        ], 404);
+    }
+
+    // Vérifier si l'utilisateur est autorisé
+    $currentUser = $this->security->getUser();
+    if ($payment->getUtilisateur()->getId() !== $currentUser->getId()) {
+        error_log("Accès refusé - Utilisateur ID: " . $currentUser->getId() . " n'est pas le propriétaire du paiement");
+        return new JsonResponse([
+            'success' => false,
+            'message' => 'Non autorisé',
+            'debug' => [
+                'payment_user_id' => $payment->getUtilisateur()->getId(),
+                'current_user_id' => $currentUser->getId()
+            ]
+        ], 403);
+    }
+
+    try {
+        $verification = match ($payment->getPaymentMethod()) {
+            'fedapay' => $this->fedaPayService->verifyPayment($payment, $transactionId),
+            'kkiapay' => $this->kkiaPayService->verifyPayment($payment, $transactionId),
+            'paypal' => $this->payPalService->verifyPayment($payment, $transactionId),
+            default => throw new \Exception('Méthode non supportée')
+        };
+
+        if ($verification['success']) {
+            // 1. Mettre à jour le statut du paiement d'abord
+            $payment->setStatut('completed');
+            $payment->setExternalReference($transactionId);
+            $payment->setCreatedAt(new \DateTimeImmutable());
+            
+            // 2. Appliquer le paiement à la tontine
+            $tontine = $payment->getTontine();
+            
+            // 3. Gestion du surplus et des points
+            $amountPaid = $payment->getAmount();
+            $amountPerPoint = $tontine->getAmountPerPoint();
+            
+            // Calcul du surplus
+            $surplus = $amountPaid % $amountPerPoint;
+            $validAmount = $amountPaid - $surplus;
+
+            if ($validAmount <= 0) {
+                throw new \Exception('Le montant payé est inférieur au montant de la tontine.');
+            }
+
+            // Gestion du surplus
+            if ($surplus > 0) {
+                $wallet = $this->em->getRepository(Wallets::class)->findOneBy([
+                    'utilisateur' => $payment->getUtilisateur()
+                ]);
+
+                if (!$wallet) {
+                    $wallet = new Wallets();
+                    $wallet->setUtilisateur($payment->getUtilisateur());
+                    $wallet->setBalance(0);
+                }
+
+                $wallet->setBalance($wallet->getBalance() + $surplus);
+                $wallet->setUpdatedAt(new \DateTimeImmutable());
+
+                $transactionWallet = new WalletTransactions();
+                $transactionWallet->setTransactions($payment);
+                $transactionWallet->setWallet($wallet);
+                $transactionWallet->setAmount($surplus);
+                $transactionWallet->setCreatedAt(new \DateTimeImmutable());
+                $transactionWallet->setReason('Surplus de paiement tontine');
+
+                $this->em->persist($transactionWallet);
+            }
+
+            // Appliquer le paiement à la tontine
+            $tontine->applyPayment(
+                $validAmount,
+                $payment,
+                $payment->getPaymentMethod()
+            );
+
+            // Journalisation
+            $this->activityLogger->log(
+                $user,
+                'PAYMENT_SUCCESS',
+                'Transaction',
+                $payment->getId(),
+                'Paiement de ' . $payment->getAmount() . ' FCFA effectué'
+            );
+
+            // Créer et enregistrer la facture avant de générer le PDF
+            $facture = new Facture();
+            $facture->setNumero($this->numerotationFactureService->genererNumero());
+            $facture->setDateEmission(new \DateTime());
+            $facture->setMontantHT($payment->getAmount() / 1.2); // Exemple avec 20% de TVA
+            $facture->setTva(20.00);
+            $facture->calculerMontantTTC();
+            $facture->setStatut('payee');
+            $facture->setClient($user);
+            
+            $em->persist($facture);
+            $em->flush();
+            
+            // Préparer les données pour le PDF
+            $pdfData = [
+                'payment' => $payment,
+                'user' => $user,
+                'facture' => $facture,
+                'hasPdf' => true
+            ];
+            
+            // Générer le PDF avec les données de la facture
+            $pdfPath = $this->pdfService->generateInvoice(
+                $pdfData,
+                'emails/facture_pdf.html.twig',
+                'facture-' . $facture->getNumero()
+            );
+            
+            // Mettre à jour la facture avec le chemin du PDF
+            $facture->setFichier('factures/' . basename($pdfPath));
+            $em->persist($facture);
+            
+            // Mettre à jour le paiement avec le chemin du PDF
+            $payment->setInvoicePath('factures/' . basename($pdfPath));
+            $em->persist($payment);
+            $em->flush();
+            
+            try {
+                // Générer le contenu de l'email
+                $emailContent = $this->twig->render('emails/facture.html.twig', [
+                    'user' => $user,
+                    'payment' => $payment,
+                    'facture' => $facture,
+                    'hasPdf' => true
+                ]);
+
+                // Envoyer l'email avec la pièce jointe
+                $this->emailService->sendWithAttachment(
+                    $user->getEmail(),
+                    'Votre facture Efasmartfinance ' . $facture->getNumero(),
+                    $emailContent,
+                    $pdfPath,
+                    'facture-' . $facture->getNumero() . '.pdf'
+                );
+                
+                $this->logger->info('Facture PDF générée, enregistrée et envoyée avec succès', [
+                    'payment_id' => $payment->getId(),
+                    'facture_id' => $facture->getId(),  
+                    'pdf_path' => $pdfPath,
+                    'user_email' => $user->getEmail()
+                ]);
+            } catch (\Exception $e) {
+                // Journaliser l'erreur mais NE PAS interrompre le flux
+                $this->logger->error('Erreur lors de la génération/envoi de la facture', [
+                    'exception' => $e->getMessage(),
+                    'payment_id' => $payment->getId(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                
+                // Envoyer un email sans pièce jointe
+                try {
+                    $emailContent = $this->twig->render('emails/facture.html.twig', [
+                        'user' => $payment->getUtilisateur(),
+                        'payment' => $payment,
+                        'hasPdf' => false
+                    ]);
+                    
+                    $this->emailService->send(
+                        $payment->getUtilisateur()->getEmail(),
+                        'Confirmation de paiement #' . $payment->getId(),
+                        $emailContent
+                    );
+                    
+                    $this->logger->info('Email sans pièce jointe envoyé', [
+                        'payment_id' => $payment->getId()
+                    ]);
+                } catch (\Exception $emailError) {
+                    $this->logger->error('Échec de l\'envoi de l\'email', [
+                        'exception' => $emailError->getMessage(),
+                        'payment_id' => $payment->getId()
+                    ]);
+                }
+            }
+
+            return new JsonResponse([
+                'success' => true,
+                'message' => 'Paiement validé avec succès',
+                'payment_id' => $payment->getId(),
+                'invoice_sent' => true
+            ]);
+        } else {
+            $payment->setStatut('failed');
+            $em->flush();
+
+            $this->activityLogger->log(
+                $currentUser,
+                'PAYMENT_FAILED',
+                'Transaction',
+                $payment->getId(),
+                'Paiement de ' . $payment->getAmount() . ' FCFA échoué'
+            );
+            
+            $payload = [
+                'success' => false,
+                'message' => $verification['message'] ?? 'Échec de la vérification'
+            ];
+
+            if ((bool) $this->getParameter('kernel.debug')) {
+                $payload['debug'] = [
+                    'provider_response' => $verification,
+                ];
+            }
+
+            return new JsonResponse($payload);
+        }
+    } catch (\Exception $e) {
+        $payment->setStatut('failed');
+        $this->em->flush();
+
+        $this->activityLogger->log(
+            $currentUser,
+            'PAYMENT_FAILED',
+            'Transaction',
+            $payment->getId(),
+            'Paiement de ' . $payment->getAmount() . ' FCFA échoué'
+        );
+
+        return new JsonResponse([
+            'success' => false,
+            'message' => 'Erreur lors de la vérification: ' . $e->getMessage()
+        ], 500);
+    }
+}
 
     #[Route('/success/{id}', name: 'app_tontine_payment_success')]
     public function paymentSuccess(Transaction $transaction): Response
@@ -841,4 +1003,26 @@ final class PaymentController extends AbstractController
             ], 500);
         }
     }
+
+    #[Route('/test-pdf/{id}', name: 'app_test_pdf')]
+public function testPdf(Transaction $payment, Request $request,Facture $facture): Response
+{
+    try {
+        $pdfPath = $this->pdfService->generateInvoice(
+            [
+                'payment' => $payment,
+                'user' => $payment->getUtilisateur(),
+                'tontine' => $payment->getTontine(),
+                'facture' => $facture,
+                'baseUrl' => $request->getSchemeAndHttpHost()
+            ],
+            'emails/facture_pdf.html.twig',
+            'test-facture-' . $payment->getId()
+        );
+        
+        return new Response('PDF généré: ' . $pdfPath);
+    } catch (\Exception $e) {
+        return new Response('Erreur: ' . $e->getMessage());
+    }
+}
 }

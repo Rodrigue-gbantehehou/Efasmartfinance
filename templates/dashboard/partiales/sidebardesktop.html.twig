@@ -34,6 +34,9 @@
         <a href="{{path('app_settings')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'app_settings' ? 'bg-green-700/5 text-green-700' : '' }}">
           <i class="fa-solid fa-gear w-6"></i><span>Paramètres</span>
         </a>
+        <a href="{{path('app_dashboard_2fa_index')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'app_dashboard_2fa' ? 'bg-green-700/5 text-green-700' : '' }}">
+          <i class="fa-solid fa-shield-alt w-6"></i><span>Sécurité 2FA</span>
+        </a>
         <a href="{{path ('app_aide')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{app.request.get('_route') starts with 'app_aide' ? 'bg-green-700/5 text-green-700' : ''}}">
           <i class="fa-solid fa-circle-question w-6"></i><span>Aide & Support</span>
         </a>

@@ -44,7 +44,7 @@ class SettingsApiController extends AbstractController
                     'firstname' => $user->getFirstname(),
                     'lastname' => $user->getLastName(),
                     'email' => $user->getEmail(),
-                    'phone' => $user->getPhone()
+                    'phone' => $user->getPhoneNumber()
                 ]
             ]);
         }
@@ -82,7 +82,7 @@ class SettingsApiController extends AbstractController
         }
         
         if (isset($data['phone'])) {
-            $user->setPhone($data['phone']);
+            $user->setPhoneNumber($data['phone']);
         }
         
         try {
@@ -96,7 +96,7 @@ class SettingsApiController extends AbstractController
                     'firstname' => $user->getFirstname(),
                     'lastname' => $user->getLastname(),
                     'email' => $user->getEmail(),
-                    'phone' => $user->getPhone()
+                    'phone' => $user->getPhoneNumber()
                 ]
             ]);
             

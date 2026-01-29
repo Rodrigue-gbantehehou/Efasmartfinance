@@ -1,13 +1,13 @@
  <!-- Mobile Drawer -->
-  <div id="drawer" class="fixed inset-0 z-50 hidden">
-    <div id="drawerBackdrop" class="absolute inset-0 bg-black/50"></div>
+  <!-- Mobile Menu Overlay -->
+  <div id="mobileMenuOverlay" class="fixed inset-0 bg-black/50 z-40 hidden" aria-hidden="true"></div>
+  
+  <!-- Mobile Menu -->
+  <div id="mobileMenu" class="fixed inset-y-0 left-0 w-72 bg-white z-50 transform -translate-x-full transition-transform duration-300 ease-in-out">
     <aside class="absolute top-0 left-0 bottom-0 w-72 bg-white border-r border-gray-100 flex flex-col">
       <div class="px-5 py-4 flex items-center gap-3 border-b">
-        <img src="{{asset ('/assets/images/estm.png')}}" alt="Logo" class="h-10 w-10 rounded-full"/>
-        <div>
-          <div class="font-extrabold text-green-700 leading-tight">EFA SMART FINANCE</div>
-          <div class="text-xs text-gray-500 -mt-0.5">Tontines individuelles</div>
-        </div>
+        <img src="{{asset ('images/logovert.png')}}" alt="Logo" class="h-20"/>
+        
       </div>
       
       <div class="px-4 py-3 border-y border-gray-100">
@@ -15,31 +15,35 @@
           <div class="h-10 w-10 rounded-full bg-green-700/10 flex items-center justify-center text-green-700">
             <i class="fa-solid fa-user"></i>
           </div>
-          <div>
-            <div class="font-semibold text-sm">Bienvenue, <span>Utilisateur</span></div>
-            <div class="text-xs text-gray-500">Complet depuis 2024</div>
+       <div>
+            <div class="font-semibold text-sm">Bienvenue, <span id="userName"></span></div>
+            <div class="text-xs text-gray-500">{{ app.user.firstname }} {{ app.user.lastname }}</div>
           </div>
         </div>
       </div>
       
       <nav class="mt-2 px-3 pb-4 space-y-1 flex-1 overflow-y-auto">
-        <a href="{{ path('app_dashboard') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg bg-green-700/5 text-green-700 font-medium touch-target">
+       <a href="{{path('app_dashboard')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 text-green-700 font-medium touch-target {{ app.request.get('_route') starts with 'app_dashboard' ? 'bg-green-700/5 text-green-700' : '' }}">
           <i class="fa-solid fa-gauge w-6"></i><span>Tableau de bord</span>
         </a>
-        <a href="{{ path('app_tontines_index') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
+        <a href="{{path ('app_tontines_index')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'app_tontines' ? 'bg-green-700/5 text-green-700' : '' }}">
           <i class="fa-solid fa-coins w-6"></i><span>Mes tontines</span>
         </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
-          <i class="fa-solid fa-calendar-check w-6"></i><span>Échéances</span>
+        <a href="{{path ('app_transaction_index')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'app_transaction' ? 'bg-green-700/5 text-green-700' : '' }}">
+          <i class="fa-solid fa-credit-card w-6"></i><span>Transactions</span>
         </a>
-        <a href="#" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
-          <i class="fa-solid fa-chart-line w-6"></i><span>Statistiques</span>
+        <a href="{{path ('app_withdrawals_index')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'app_withdrawals_index' ? 'bg-green-700/5 text-green-700' : '' }}">
+          <i class="fa-solid fa-wallet w-6"></i><span> Demandes de retrait</span>
         </a>
-        <a href="{{ path('app_transaction_index') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
-          <i class="fa-solid fa-credit-card w-6"></i><span>Paiements</span>
-        </a>
-        <a href="{{path('app_settings')}}"class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target">
+     
+        <a href="{{path('app_settings')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'app_settings' ? 'bg-green-700/5 text-green-700' : '' }}">
           <i class="fa-solid fa-gear w-6"></i><span>Paramètres</span>
+        </a>
+        <a href="{{path('app_dashboard_2fa_index')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'app_dashboard_2fa' ? 'bg-green-700/5 text-green-700' : '' }}">
+          <i class="fa-solid fa-shield-alt w-6"></i><span>Sécurité 2FA</span>
+        </a>
+        <a href="{{path ('app_aide')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{app.request.get('_route') starts with 'app_aide' ? 'bg-green-700/5 text-green-700' : ''}}">
+          <i class="fa-solid fa-circle-question w-6"></i><span>Aide & Support</span>
         </a>
       </nav>
       

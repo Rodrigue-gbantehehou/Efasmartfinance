@@ -115,7 +115,7 @@ class IdentityVerificationController extends AbstractController
             $user->setLastname($data['lastName']);
             $user->setBirthDate(new \DateTime($data['birthDate']));
             $user->setNationality($data['nationality']);
-            $user->setPhone($data['phone'] ?? null);
+            $user->setPhoneNumber($data['phone'] ?? null);
             $user->setAddress($data['address'] ?? null);
             $user->setNationality($data['country'] ?? null);
 

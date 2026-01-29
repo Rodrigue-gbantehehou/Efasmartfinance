@@ -109,7 +109,7 @@
                     <a href="{{ path('app_dashboard') }}" 
                        class="inline-flex items-center justify-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-green-600 to-green-700 text-white font-bold hover:from-green-700 hover:to-green-800 transition-all duration-300 transform hover:scale-[1.03] shadow-lg hover:shadow-xl flex-1 max-w-sm">
                         <i class="fas fa-tachometer-alt text-xl"></i>
-                        <span>Accéder au tableau de bord</span>
+                        <span>Tableau de bord</span>
                     </a>
 
                     <!-- Accueil (secondaire) -->
@@ -120,7 +120,7 @@
                     </a>
                 </div>
 
-                <!-- Prochaines étapes -->
+                <!-- Prochaines étapes 
                 <div class="mt-12 pt-8 border-t border-gray-100">
                     <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">
                         <i class="fas fa-rocket text-green-500 mr-2"></i>
@@ -140,7 +140,7 @@
                             <div class="text-xs text-gray-600">Épargnez ensemble</div>
                         </div>
                     </div>
-                </div>
+                </div>-->
             </div>
 
             <!-- Footer de la carte -->
@@ -180,20 +180,12 @@
 
         <!-- Confettis visuels (CSS only) -->
         <div class="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
-            {% for i in 1..15 %}
-                <div class="confetti" style="
-                    --i: {{ i }};
-                    --x: {{ random(0, 100) }}vw;
-                    --y: {{ random(-20, -5) }}vh;
-                    --r: {{ random(0, 360) }}deg;
-                    --color: {{ ['#10B981', '#059669', '#047857', '#065F46', '#064E3B']|random }};
-                "></div>
-            {% endfor %}
+
         </div>
     </div>
 </div>
 
-<!-- Modal de tutoriel rapide -->
+<!-- Modal de tutoriel rapide 
 <div id="quickGuideModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
     <div class="bg-white rounded-2xl p-8 max-w-lg w-full shadow-2xl">
         <div class="text-center">
@@ -216,7 +208,7 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->
 
 <script>
 // Gestion du modal de guide
@@ -233,7 +225,7 @@ function startTutorial() {
     closeQuickGuide();
     // Ici vous pouvez rediriger vers une page de tutoriel
     // ou lancer une animation/guide interactif
-    window.location.href = '{{ path('app_tutorial') }}';
+
 }
 
 // Affichage du guide après un délai
@@ -400,7 +392,7 @@ a.inline-flex.items-center.justify-center:hover::after {
 
 /* Focus pour l'accessibilité */
 :focus-visible {
-    outline: 2px solid #10B981;
+    outline: 2px solid #008040;
     outline-offset: 2px;
     border-radius: 0.75rem;
 }

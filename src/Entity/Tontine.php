@@ -406,36 +406,35 @@ class Tontine
         // 1️⃣ Total payé
         $this->totalPay += $amount;
 
-        $newPaidPoints = (int)($transaction->getAmount() / $this->amountPerPoint);
-        $pointsToCreate = $newPaidPoints - $previousPaidPoints;
+        // Calculer le nombre total de points payés après ce paiement
+        $newPaidPoints = $this->getPaidPoints();
+        $pointsPaidInThisTransaction = $newPaidPoints - $previousPaidPoints;
 
-        // 2️⃣ Créer les nouveaux points
-        // for ($i = 1; $i <= $pointsToCreate; $i++) {
+        // Créer un point pour chaque point payé dans cette transaction
+        for ($i = 1; $i <= $pointsPaidInThisTransaction; $i++) {
+            $pointNumber = $previousPaidPoints + $i;
+            
+            $point = new TontinePoint();
+            $point->setPointNumber($pointNumber);
+            $point->setAmount($this->amountPerPoint);
+            $point->setMethod($method);
+            $point->setPointedAt(new \DateTimeImmutable());
+            $point->setTontine($this);
+            $point->setTransaction($transaction);
 
-        // $pointNumber = $previousPaidPoints + $i;
+            $this->tontinePoints[] = $point;
+        }
 
-        $point = new TontinePoint();
-        $point->setPointNumber($newPaidPoints);
-        $point->setAmount($this->amountPerPoint);
-        $point->setMethod($method);
-        $point->setPointedAt(new \DateTimeImmutable());
-        $point->setTontine($this);
-        $point->setTransaction($transaction);
-
-        $this->tontinePoints[] = $point;
-        //     }
-
-        // 3️⃣ Clôture ou prochaine échéance
+        // 3️⃣ Vérifier si la tontine est complète
         if ($newPaidPoints >= $this->totalPoints) {
             $this->statut = 'completed';
             $this->nextDueDate = null;
+            $this->endedAt = new \DateTimeImmutable();
             return;
         }
 
-        // $this->updateNextDueDate();
+        // Mettre à jour la prochaine date d'échéance
         $frequency = $this->getFrequency();
-        $frequency = $this->getFrequency();
-
         $intervalMap = [
             'daily'   => 'day',
             'weekly'  => 'week',
@@ -447,13 +446,14 @@ class Tontine
             throw new \LogicException('Fréquence de tontine invalide');
         }
 
-        $interval = sprintf('+%d %s', $newPaidPoints, $intervalMap[$frequency]);
+        // Toujours ajouter 1 à l'intervalle pour la prochaine échéance
+        $interval = sprintf('+1 %s', $intervalMap[$frequency]);
 
-        // On part toujours de la prochaine échéance existante
+        // Définir la prochaine date d'échéance
         if ($this->nextDueDate instanceof \DateTimeInterface) {
             $this->nextDueDate = (clone $this->nextDueDate)->modify($interval);
         } else {
-            // Cas rare : première échéance
+            // Première échéance
             $this->nextDueDate = (new \DateTime())->modify($interval);
         }
     }

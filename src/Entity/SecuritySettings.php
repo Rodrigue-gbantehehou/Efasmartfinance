@@ -31,8 +31,53 @@ class SecuritySettings
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $createdAt = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $totpSecret = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $backupCodes = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $lastTwoFactorAt = null;
+
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    public function getTotpSecret(): ?string
+    {
+        return $this->totpSecret;
+    }
+
+    public function setTotpSecret(?string $totpSecret): static
+    {
+        $this->totpSecret = $totpSecret;
+
+        return $this;
+    }
+
+    public function getBackupCodes(): ?string
+    {
+        return $this->backupCodes;
+    }
+
+    public function setBackupCodes(?string $backupCodes): static
+    {
+        $this->backupCodes = $backupCodes;
+
+        return $this;
+    }
+
+    public function getLastTwoFactorAt(): ?\DateTimeImmutable
+    {
+        return $this->lastTwoFactorAt;
+    }
+
+    public function setLastTwoFactorAt(?\DateTimeImmutable $lastTwoFactorAt): static
+    {
+        $this->lastTwoFactorAt = $lastTwoFactorAt;
+
+        return $this;
+    }
 
     public function getId(): ?int
     {

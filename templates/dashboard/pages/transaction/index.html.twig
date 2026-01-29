@@ -4,8 +4,8 @@
 
 {% block contentdashboard %}
 <div class="space-y-6 p-6 ">
-    <!-- Fil d'Ariane -->
-    <nav class="mb-6" aria-label="Breadcrumb">
+    <!-- Fil d'Ariane 
+    <nav class="mb-6 bg-white rounded-xl border border-gray-200 overflow-hidden" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
             <li class="inline-flex items-center">
                 <a href="{{ path('admin_dashboard') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600 transition-colors duration-200">
@@ -24,7 +24,7 @@
                 </div>
             </li>
         </ol>
-    </nav>
+    </nav>-->
 
     <!-- En-tête avec titre et actions -->
     <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -35,9 +35,8 @@
        
     </div>
 
-    <!-- Cartes de statistiques -->
+    <!-- Cartes de statistiques 
     <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <!-- Entrées -->
         <div class="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-xl shadow-sm p-6">
             <div class="flex items-center">
                 <div class="p-3 rounded-lg bg-green-100 border border-green-200">
@@ -60,7 +59,6 @@
             </div>
         </div>
 
-        <!-- Sorties -->
         <div class="bg-gradient-to-br from-red-50 to-red-100 border border-red-200 rounded-xl shadow-sm p-6">
             <div class="flex items-center">
                 <div class="p-3 rounded-lg bg-red-100 border border-red-200">
@@ -83,7 +81,6 @@
             </div>
         </div>
 
-        <!-- Solde -->
         <div class="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-xl shadow-sm p-6">
             <div class="flex items-center">
                 <div class="p-3 rounded-lg bg-green-100 border border-green-200">
@@ -117,7 +114,6 @@
             </div>
         </div>
 
-        <!-- Transactions du mois -->
         <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 border border-yellow-200 rounded-xl shadow-sm p-6">
             <div class="flex items-center">
                 <div class="p-3 rounded-lg bg-yellow-100 border border-yellow-200">
@@ -137,7 +133,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>-->
 
     <!-- Filtres avancés -->
     <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
@@ -401,46 +397,11 @@
                             </span>
                         </td>
                         
-                        <!-- Actions 
-                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                            <div class="flex justify-end space-x-1">
-                                <button type="button" class="inline-flex items-center p-1.5 rounded-md text-green-600 hover:text-green-800 hover:bg-green-50 transition-colors duration-200" title="Voir les détails">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                    </svg>
-                                </button>
-                                
-                                {% if transaction.statut == 'pending' %}
-                                    <button type="button" class="inline-flex items-center p-1.5 rounded-md text-green-600 hover:text-green-800 hover:bg-green-50 transition-colors duration-200" title="Valider">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                                        </svg>
-                                    </button>
-                                    <button type="button" class="inline-flex items-center p-1.5 rounded-md text-red-600 hover:text-red-800 hover:bg-red-50 transition-colors duration-200" title="Refuser">
-                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
-                                    </button>
-                                {% endif %}
-                                
-                                <button type="button" class="inline-flex items-center p-1.5 rounded-md text-yellow-600 hover:text-yellow-800 hover:bg-yellow-50 transition-colors duration-200" title="Télécharger reçu">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                </button>
-                                
-                                <button type="button" class="inline-flex items-center p-1.5 rounded-md text-gray-600 hover:text-gray-800 hover:bg-gray-50 transition-colors duration-200" title="Plus d'options">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </td>-->
+                     
                     </tr>
                     {% else %}
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center">
+                        <td colspan="7" class="px-6 py-12 text-center ">
                             <div class="flex flex-col items-center justify-center">
                                 <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.801 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.801 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.1251.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />

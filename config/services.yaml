@@ -9,7 +9,7 @@
 parameters:
     app.support_email: 'contact@binajia.org'
     app.admin_email: 'rodriguenagnon@gmail.com'
-    uploads_directory: '%kernel.project_dir%/public/uploads'
+    uploads_directory: '%kernel.project_dir%/var/uploads'
 
 services:
     # default configuration for services in *this* file
@@ -84,3 +84,15 @@ services:
             $clientId: '%env(PAYPAL_CLIENT_ID)%'
             $clientSecret: '%env(PAYPAL_CLIENT_SECRET)%'
             $environment: '%env(PAYPAL_ENVIRONMENT)%'
+
+    # Configuration du gestionnaire de consentement aux cookies
+    App\Service\CookieConsentManager:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+            $cookieConsentRepository: '@App\Repository\CookieConsentRepository'
+            $requestStack: '@request_stack'
+
+    # Configuration du listener pour les accès refusés
+    App\EventListener\AccessDeniedListener:
+        tags:
+            - { name: 'kernel.event_listener', event: 'kernel.exception', method: 'onKernelException' }

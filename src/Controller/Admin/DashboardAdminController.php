@@ -96,7 +96,7 @@ class DashboardAdminController extends AbstractController
                 $stats['completed_tontines'],
                 $stats['pending_tontines']
             ],
-            'colors' => ['#10B981', '#3B82F6', '#F59E0B']
+            'colors' => ['#008040', '#3B82F6', '#F59E0B']
         ];
         
         // Dernières transactions
