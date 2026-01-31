@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>{{ broadcast.title }}</title>
+    <!--[if mso]>
+    <style type="text/css">
+        body, table, td {font-family: Arial, Helvetica, sans-serif !important;}
+    </style>
+    <![endif]-->
+</head>
+<body style="margin: 0; padding: 0; background-color: #f3f4f6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+    <!-- Email Container -->
+    <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="background-color: #f3f4f6;">
+        <tr>
+            <td style="padding: 40px 20px;">
+                <!-- Main Content Table -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="600" style="margin: 0 auto; max-width: 600px; background-color: #ffffff; border-radius: 16px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+                    
+                    <!-- Header with Logo and Brand -->
+                    <tr>
+                        <td style="background: linear-gradient(135deg, #059669 0%, #047857 100%); padding: 40px 30px; text-align: center; border-radius: 16px 16px 0 0;">
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <!-- Logo Circle -->
+                                        <div style="width: 80px; height: 80px; margin: 0 auto 20px; background-color: rgba(255, 255, 255, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+                                            <span style="font-size: 40px; color: #ffffff;">📢</span>
+                                        </div>
+                                        
+                                        <!-- Title -->
+                                        <h1 style="margin: 0 0 10px 0; color: #ffffff; font-size: 28px; font-weight: 700; line-height: 1.3;">
+                                            {{ broadcast.title }}
+                                        </h1>
+                                        
+                                        <!-- Brand Name -->
+                                        <p style="margin: 0; color: rgba(255, 255, 255, 0.9); font-size: 16px; font-weight: 500;">
+                                            EFA Smart Finance
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                    <!-- Greeting -->
+                    <tr>
+                        <td style="padding: 40px 30px 20px 30px;">
+                            <p style="margin: 0; color: #374151; font-size: 16px; line-height: 1.6;">
+                                Bonjour <strong style="color: #059669;">{{ user.firstname }} {{ user.lastname }}</strong>,
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Message Content -->
+                    <tr>
+                        <td style="padding: 0 30px 30px 30px;">
+                            <div style="background-color: #f9fafb; border-left: 4px solid #059669; border-radius: 8px; padding: 24px;">
+                                <div style="color: #374151; font-size: 15px; line-height: 1.7;">
+                                    {{ broadcast.content|raw }}
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Signature -->
+                    <tr>
+                        <td style="padding: 0 30px 40px 30px;">
+                            <p style="margin: 0 0 8px 0; color: #6b7280; font-size: 15px; line-height: 1.6;">
+                                Cordialement,
+                            </p>
+                            <p style="margin: 0; color: #059669; font-size: 16px; font-weight: 600;">
+                                L'équipe EFA Smart Finance
+                            </p>
+                        </td>
+                    </tr>
+                    
+                    <!-- Divider -->
+                    <tr>
+                        <td style="padding: 0 30px;">
+                            <div style="height: 1px; background-color: #e5e7eb;"></div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Footer -->
+                    <tr>
+                        <td style="padding: 30px; text-align: center; background-color: #f9fafb; border-radius: 0 0 16px 16px;">
+                            <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                                <tr>
+                                    <td style="text-align: center;">
+                                        <!-- Social Icons (Optional) -->
+                                        <div style="margin-bottom: 20px;">
+                                            <a href="#" style="display: inline-block; margin: 0 8px; text-decoration: none;">
+                                                <span style="display: inline-block; width: 36px; height: 36px; background-color: #059669; border-radius: 50%; line-height: 36px; text-align: center; color: #ffffff; font-size: 16px;">f</span>
+                                            </a>
+                                            <a href="#" style="display: inline-block; margin: 0 8px; text-decoration: none;">
+                                                <span style="display: inline-block; width: 36px; height: 36px; background-color: #059669; border-radius: 50%; line-height: 36px; text-align: center; color: #ffffff; font-size: 16px;">𝕏</span>
+                                            </a>
+                                            <a href="#" style="display: inline-block; margin: 0 8px; text-decoration: none;">
+                                                <span style="display: inline-block; width: 36px; height: 36px; background-color: #059669; border-radius: 50%; line-height: 36px; text-align: center; color: #ffffff; font-size: 16px;">in</span>
+                                            </a>
+                                        </div>
+                                        
+                                        <!-- Copyright -->
+                                        <p style="margin: 0 0 8px 0; color: #6b7280; font-size: 13px; line-height: 1.5;">
+                                            © {{ "now"|date('Y') }} EFA Smart Finance. Tous droits réservés.
+                                        </p>
+                                        
+                                        <!-- Auto-reply Notice -->
+                                        <p style="margin: 0; color: #9ca3af; font-size: 12px; line-height: 1.5;">
+                                            Cet email a été envoyé automatiquement, merci de ne pas y répondre.
+                                        </p>
+                                        
+                                        <!-- Unsubscribe Link (Optional) -->
+                                        <p style="margin: 12px 0 0 0;">
+                                            <a href="#" style="color: #059669; font-size: 12px; text-decoration: underline;">
+                                                Se désabonner des notifications
+                                            </a>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                </table>
+                
+                <!-- Spacer for mobile -->
+                <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%">
+                    <tr>
+                        <td style="height: 20px;"></td>
+                    </tr>
+                </table>
+                
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

@@ -1,122 +1,144 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Gestion du support{% endblock %}
+{% block title %}Centre d'Assistance — Finance Pro{% endblock %}
 
 {% block contentadmin %}
-<div class="bg-white shadow rounded-lg p-6">
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+<div class="min-h-screen bg-green-50 p-6 lg:p-8">
+    <!-- Header Content -->
+    <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
-            <h2 class="text-2xl font-bold text-gray-900">Gestion du support</h2>
-            <p class="mt-1 text-sm text-gray-600">Consultez et gérez les demandes de support des utilisateurs</p>
-        </div>
-    </div>
-
-    <!-- Filtres et recherche -->
-    <div class="mb-6">
-        <div class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
-            <div class="relative flex-grow">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                    </svg>
+            <div class="flex items-center gap-3 mb-2">
+                <div class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center shadow-lg">
+                    <i class="fas fa-headset text-sm"></i>
                 </div>
-                <input type="text" id="search-input" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm" placeholder="Rechercher une demande...">
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Support & Relation Client</span>
             </div>
-            <select id="status-filter" class="block w-full sm:w-auto pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md">
-                <option value="">Tous les statuts</option>
-                <option value="nouveau">Nouveau</option>
-                <option value="en_cours">En cours</option>
-                <option value="traite">Traité</option>
-            </select>
+            <h1 class="text-3xl font-bold font-poppins text-gray-900 tracking-tight">Gestion des Tickets</h1>
+            <p class="text-gray-500 font-medium mt-1">Supervisez et répondez aux demandes d'assistance de la communauté.</p>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="px-4 py-2 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center gap-3">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span class="text-xs font-bold text-emerald-700 uppercase tracking-widest">{{ tickets|length }} Demandes</span>
+            </div>
         </div>
     </div>
 
-    <!-- Liste des tickets -->
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sujet</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Utilisateur</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                {% for ticket in tickets %}
-                <tr class="hover:bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">#{{ ticket.id }}</td>
-                    <td class="px-6 py-4">
-                        <div class="text-sm font-medium text-gray-900">{{ ticket.sujet }}</div>
-                        <div class="text-sm text-gray-500 truncate max-w-xs">{{ ticket.description|slice(0, 100) }}{% if ticket.description|length > 100 %}...{% endif %}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        {% if ticket.utilisateur %}
-                            <div class="text-sm text-gray-900">{{ ticket.utilisateur.firstname }} {{ ticket.utilisateur.lastname }}</div>
-                            <div class="text-sm text-gray-500">{{ ticket.utilisateur.email }}</div>
-                        {% else %}
-                            <span class="text-sm text-gray-500">Anonyme</span>
-                        {% endif %}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{ ticket.createdAt ? ticket.createdAt|date('d/m/Y H:i') : 'N/A' }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <a href="{{ path('admin_support_ticket_show', {'id': ticket.id}) }}" class="text-green-600 hover:text-green-900 mr-4">
-                            <i class="fas fa-eye"></i> Voir
-                        </a>
-                    </td>
-                </tr>
-                {% else %}
-                <tr>
-                    <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
-                        Aucune demande de support trouvée
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <!-- Filters Interface -->
+    <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 mb-8">
+        <div class="flex flex-col md:flex-row gap-6">
+            <div class="flex-grow space-y-2">
+                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Filtrer par Sujet ou Utilisateur</label>
+                <div class="relative group">
+                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-emerald-500 transition-colors"></i>
+                    <input type="text" id="search-input" placeholder="Sujet, email, nom..." class="w-full h-12 pl-11 pr-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-emerald-500/20 text-sm font-medium transition-all">
+                </div>
+            </div>
+            <div class="w-full md:w-64 space-y-2">
+                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">État du Ticket</label>
+                <select id="status-filter" class="w-full h-12 px-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-emerald-500/20 text-sm font-medium">
+                    <option value="">Tous les états</option>
+                    <option value="nouveau">Ouvert / Nouveau</option>
+                    <option value="en_cours">En Traitement</option>
+                    <option value="traite">Résolu / Clos</option>
+                </select>
+            </div>
+        </div>
     </div>
 
-    <!-- Pagination -->
-    <div class="mt-4">
-        <!-- Ajoutez ici la logique de pagination si nécessaire -->
+    <!-- Tickets Grid/Table -->
+    <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+                <thead>
+                    <tr class="bg-gray-50/50 border-b border-gray-50">
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">ID</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sujet & Aperçu</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Utilisateur</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date de création</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Action</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-50">
+                    {% for ticket in tickets %}
+                    <tr class="group hover:bg-gray-50 transition-all duration-300">
+                        <td class="px-8 py-6">
+                            <span class="text-xs font-black text-gray-300">#{{ ticket.id }}</span>
+                        </td>
+                        <td class="px-8 py-6">
+                            <div class="max-w-md">
+                                <h4 class="text-sm font-bold text-gray-900 font-poppins">{{ ticket.sujet }}</h4>
+                                <p class="text-xs text-gray-400 mt-1 line-clamp-1 italic">"{{ ticket.description }}"</p>
+                            </div>
+                        </td>
+                        <td class="px-8 py-6">
+                            {% if ticket.utilisateur %}
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-[10px] font-black uppercase">
+                                        {{ ticket.utilisateur.firstname|slice(0, 1) }}{{ ticket.utilisateur.lastname|slice(0, 1) }}
+                                    </div>
+                                    <div>
+                                        <div class="text-xs font-bold text-gray-700">{{ ticket.utilisateur.firstname }} {{ ticket.utilisateur.lastname }}</div>
+                                        <div class="text-[10px] text-gray-400">{{ ticket.utilisateur.email }}</div>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <span class="text-[10px] font-bold text-gray-400 uppercase italic">Utilisateur Anonyme</span>
+                            {% endif %}
+                        </td>
+                        <td class="px-8 py-6">
+                            <div class="flex items-center gap-2 text-gray-400">
+                                <i class="far fa-clock text-[10px]"></i>
+                                <span class="text-[10px] font-bold">{{ ticket.createdAt ? ticket.createdAt|date('d/m/Y H:i') : 'N/A' }}</span>
+                            </div>
+                        </td>
+                        <td class="px-8 py-6 text-right">
+                            <a href="{{ path('admin_support_ticket_show', {'id': ticket.id}) }}" class="h-9 px-4 bg-gray-900 text-white rounded-lg text-[10px] font-bold uppercase tracking-widest inline-flex items-center gap-2 hover:bg-emerald-600 transition-all shadow-sm">
+                                <i class="fas fa-reply-all"></i> Traiter
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="p-20 text-center">
+                            <div class="w-16 h-16 rounded-[1.5rem] bg-gray-50 text-gray-200 flex items-center justify-center text-2xl mx-auto mb-4">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <h4 class="text-lg font-bold text-gray-900 font-poppins">Aucun ticket en attente</h4>
+                            <p class="text-gray-400 text-sm mt-1">Bon travail ! Tous les dossiers semblent être à jour.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
-<div class="max-w-7xl mx-auto px-4 py-10 ">
-    </div>
-{% endblock %}
 
-{% block javascripts %}
-{{ parent() }}
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap');
+    .font-poppins { font-family: 'Poppins', sans-serif; }
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Script pour la recherche et le filtrage
     const searchInput = document.getElementById('search-input');
     const statusFilter = document.getElementById('status-filter');
     const rows = document.querySelectorAll('tbody tr');
 
     function filterRows() {
         const searchTerm = searchInput.value.toLowerCase();
-        const selectedStatus = statusFilter.value;
-
+        // Le filtrage par statut dépend de l'UI (le statut n'est pas encore visible dans le tableau, 
+        // mais on peut l'injecter dans un data-statut si nécessaire par le backend)
+        
         rows.forEach(row => {
             const text = row.textContent.toLowerCase();
             const matchesSearch = text.includes(searchTerm);
-            // Pour l'instant, on ne filtre pas par statut car le champ n'existe pas encore
-            // Vous pourrez ajouter cette fonctionnalité plus tard
-            
-            if (matchesSearch) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
+            row.style.display = matchesSearch ? '' : 'none';
         });
     }
 
     searchInput.addEventListener('input', filterRows);
-    statusFilter.addEventListener('change', filterRows);
 });
 </script>
 {% endblock %}

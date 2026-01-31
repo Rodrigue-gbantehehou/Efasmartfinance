@@ -1,84 +1,111 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Demandes d'activation de compte{% endblock %}
+{% block title %}Activations | EFA SMART FINANCE{% endblock %}
 
 {% block contentadmin %}
-<div class="p-6">
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-        <h1 class="text-2xl font-bold text-gray-800">Demandes d'activation de compte</h1>
-        <div class="mt-4 md:mt-0">
-            <div class="relative">
-                <input type="text" placeholder="Rechercher..." class="pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 w-full md:w-64">
-                <div class="absolute left-3 top-2.5 text-gray-400">
-                    <i class="fas fa-search"></i>
+<div class="p-6 font-poppins">
+    <!-- Header with Stats -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+        <div>
+            <h1 class="text-3xl font-bold text-pro-green-900">Demandes d'activation</h1>
+            <p class="text-gray-500 mt-1">Gérez les vérifications d'identité en attente</p>
+        </div>
+        
+        <div class="flex items-center gap-4">
+            <div class="bg-white px-6 py-3 rounded-2xl shadow-sm border border-pro-green-100 flex items-center gap-4 transition-all hover:shadow-md">
+                <div class="w-12 h-12 rounded-full bg-pro-green-100 flex items-center justify-center text-pro-green-600">
+                    <i class="fas fa-clock text-xl"></i>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-pro-green-900">{{ activations|length }}</div>
+                    <div class="text-xs text-gray-400 uppercase tracking-wider font-semibold">En attente</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="bg-white rounded-xl shadow overflow-hidden">
+    <!-- Main Card -->
+    <div class="bg-white rounded-3xl shadow-xl shadow-pro-green-900/5 overflow-hidden border border-pro-green-50">
+        <div class="p-4 border-b border-pro-green-50 bg-pro-green-50/30 flex items-center justify-between backdrop-blur-sm">
+            <div class="flex items-center gap-3">
+                <i class="fas fa-list text-pro-green-600"></i>
+                <span class="font-semibold text-pro-green-900">Liste des demandes</span>
+            </div>
+        </div>
+
         {% if activations|length > 0 %}
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-gray-50">
-                        <tr>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nom</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Téléphone</th>
-                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date de la demande</th>
-                            <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <table id="activationsTable" class="min-w-full divide-y divide-pro-green-50">
+                    <thead>
+                        <tr class="bg-pro-green-50/20">
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-pro-green-900 uppercase tracking-widest">Utilisateur</th>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-pro-green-900 uppercase tracking-widest">Contact</th>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-bold text-pro-green-900 uppercase tracking-widest">Date Soumission</th>
+                            <th scope="col" class="px-6 py-4 text-center text-xs font-bold text-pro-green-900 uppercase tracking-widest">Selfie</th>
+                            <th scope="col" class="px-6 py-4 text-right text-xs font-bold text-pro-green-900 uppercase tracking-widest">Actions</th>
                         </tr>
                     </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tbody class="divide-y divide-pro-green-50">
                         {% for user in activations %}
-                            <tr class="hover:bg-gray-50 transition-colors">
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.id }}</td>
+                            <tr class="group hover:bg-pro-green-50/40 transition-all duration-300">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
-                                        <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600">
-                                            <i class="fas fa-user"></i>
+                                        <div class="flex-shrink-0 h-11 w-11 rounded-xl bg-gradient-to-br from-pro-green-500 to-pro-green-700 flex items-center justify-center text-white font-bold shadow-lg shadow-pro-green-500/20">
+                                            {{ user.firstname|first }}{{ user.lastname|first }}
                                         </div>
                                         <div class="ml-4">
-                                            <div class="text-sm font-medium text-gray-900">{{ user.firstname }} {{ user.lastname }}</div>
-                                            <div class="text-sm text-gray-500">Membre depuis {{ user.createdAt|date('d/m/Y') }}</div>
+                                            <div class="text-sm font-bold text-pro-green-900 group-hover:text-pro-green-600 transition-colors">{{ user.firstname }} {{ user.lastname }}</div>
+                                            <div class="text-xs text-gray-400">ID: #{{ user.id }}</div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.email }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ user.phoneNumber|default('Non renseigné') }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                    <div class="flex items-center">
-                                        <i class="far fa-clock text-gray-400 mr-2"></i>
-                                        {{ user.verificationSubmittedAt|date('d/m/Y H:i') }}
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-700 font-medium">{{ user.email }}</div>
+                                    <div class="text-xs text-gray-400 flex items-center gap-1">
+                                        <i class="fas fa-phone-alt text-[10px]"></i>
+                                        {{ user.phoneNumber|default('Non renseigné') }}
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div class="flex justify-end space-x-2">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex flex-col">
+                                        <span class="text-sm text-gray-700 font-medium">{{ user.verificationSubmittedAt|date('d M Y') }}</span>
+                                        <span class="text-xs text-pro-green-600 font-semibold">{{ user.verificationSubmittedAt|date('H:i') }}</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    {% if user.selfie %}
+                                        <div class="relative inline-block group/selfie">
+                                            <img src="{{ asset('uploads/' ~ user.selfie) }}" 
+                                                 alt="Selfie" 
+                                                 class="h-12 w-12 rounded-xl object-cover ring-2 ring-white shadow-md cursor-pointer transition-transform hover:scale-110 selfie-preview-trigger"
+                                                 data-src="{{ asset('uploads/' ~ user.selfie) }}"
+                                                 data-title="Selfie de {{ user.firstname }}">
+                                            <div class="absolute -top-1 -right-1 h-4 w-4 bg-pro-gold-500 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
+                                                <i class="fas fa-search text-[8px] text-white"></i>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-xs text-gray-300 italic">Aucun selfie</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right">
+                                    <div class="flex justify-end gap-2">
                                         <a href="{{ path('admin_activation_show', {'id': user.id}) }}" 
-                                           class="text-green-600 hover:text-green-900 p-2 rounded-full hover:bg-green-50 transition-colors"
-                                           title="Voir les détails">
+                                           class="w-10 h-10 flex items-center justify-center rounded-xl bg-pro-green-50 text-pro-green-600 hover:bg-pro-green-600 hover:text-white transition-all shadow-sm"
+                                           title="Détails complets">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <form method="post" 
-                                              action="{{ path('admin_approve_activation', {'id': user.id}) }}" 
-                                              class="inline"
-                                              onsubmit="return confirm('Êtes-vous sûr de vouloir approuver ce compte ?')">
+                                        
+                                        <form method="post" action="{{ path('admin_approve_activation', {'id': user.id}) }}" class="inline" onsubmit="return confirm('Approuver ce compte ?')">
                                             <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ user.id) }}">
-                                            <button type="submit" 
-                                                    class="text-green-600 hover:text-green-900 p-2 rounded-full hover:bg-green-50 transition-colors"
-                                                    title="Approuver">
+                                            <button type="submit" class="w-10 h-10 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm group/btn">
                                                 <i class="fas fa-check"></i>
                                             </button>
                                         </form>
-                                        <form method="post" 
-                                              action="{{ path('admin_reject_activation', {'id': user.id}) }}" 
-                                              class="inline"
-                                              onsubmit="return confirm('Êtes-vous sûr de vouloir rejeter cette demande ?')">
+
+                                        <form method="post" action="{{ path('admin_reject_activation', {'id': user.id}) }}" class="inline" onsubmit="return confirm('Rejeter cette demande ?')">
                                             <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ user.id) }}">
-                                            <button type="submit" 
-                                                    class="text-red-600 hover:text-red-900 p-2 rounded-full hover:bg-red-50 transition-colors"
-                                                    title="Rejeter">
+                                            <button type="submit" class="w-10 h-10 flex items-center justify-center rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-all shadow-sm group/btn">
                                                 <i class="fas fa-times"></i>
                                             </button>
                                         </form>
@@ -89,75 +116,133 @@
                     </tbody>
                 </table>
             </div>
-
-            <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
-                <div class="flex-1 flex justify-between sm:hidden">
-                    <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                        Précédent
-                    </a>
-                    <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-                        Suivant
-                    </a>
-                </div>
-                <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                    <div>
-                        <p class="text-sm text-gray-700">
-                            Affichage de
-                            <span class="font-medium">1</span>
-                            à
-                            <span class="font-medium">10</span>
-                            sur
-                            <span class="font-medium">{{ activations|length }}</span>
-                            résultats
-                        </p>
-                    </div>
-                    <div>
-                        <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
-                            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                <span class="sr-only">Précédent</span>
-                                <i class="fas fa-chevron-left h-5 w-5"></i>
-                            </a>
-                            <a href="#" aria-current="page" class="z-10 bg-green-50 border-green-500 text-green-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                1
-                            </a>
-                            <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                2
-                            </a>
-                            <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                                3
-                            </a>
-                            <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
-                                <span class="sr-only">Suivant</span>
-                                <i class="fas fa-chevron-right h-5 w-5"></i>
-                            </a>
-                        </nav>
-                    </div>
-                </div>
-            </div>
         {% else %}
-            <div class="text-center py-12">
-                <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
-                    <i class="fas fa-check text-green-600"></i>
+            <div class="text-center py-20 bg-gradient-to-b from-pro-green-50/20 to-white">
+                <div class="w-24 h-24 bg-pro-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-check-double text-4xl text-pro-green-300"></i>
                 </div>
-                <h3 class="mt-2 text-sm font-medium text-gray-900">Aucune demande en attente</h3>
-                <p class="mt-1 text-sm text-gray-500">Toutes les demandes ont été traitées.</p>
+                <h3 class="text-xl font-bold text-pro-green-900">Tout est à jour !</h3>
+                <p class="text-gray-500 mt-2">Aucune nouvelle demande d'activation en attente.</p>
             </div>
         {% endif %}
     </div>
 </div>
+
+<!-- Preview Modal -->
+<div id="previewModal" class="fixed inset-0 z-[100] hidden overflow-hidden transition-opacity duration-300 pointer-events-none" style="background: rgba(6, 78, 59, 0.4); backdrop-filter: blur(8px);">
+    <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="bg-white rounded-[2rem] shadow-2xl max-w-lg w-full transform transition-all scale-90 opacity-0 duration-300 pointer-events-auto overflow-hidden border border-pro-green-100" id="modalContent">
+            <div class="p-6 flex items-center justify-between border-b border-pro-green-50">
+                <h3 class="font-bold text-pro-green-900" id="modalTitle">Aperçu du Selfie</h3>
+                <button onclick="closePreview()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-pro-green-50 text-gray-400 hover:text-pro-green-600 transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-4 bg-pro-green-50/50">
+                <div class="rounded-2xl overflow-hidden shadow-inner bg-pro-green-100">
+                    <img id="previewImage" src="" alt="Aperçu" class="w-full h-auto max-h-[70vh] object-contain">
+                </div>
+            </div>
+            <div class="p-6 text-center">
+                <button onclick="closePreview()" class="px-8 py-3 bg-pro-green-600 text-white rounded-xl font-bold hover:bg-pro-green-700 transition-all shadow-lg shadow-pro-green-600/20">
+                    Fermer l'aperçu
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
+    <style>
+        .dataTables_wrapper .dataTables_filter input {
+            border-radius: 1rem;
+            border: 1px solid #d1fae5;
+            padding: 0.5rem 1rem;
+            margin-left: 0.5rem;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .dataTables_wrapper .dataTables_filter input:focus {
+            box-shadow: 0 0 0 2px #10b981;
+            border-color: #10b981;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background: #059669 !important;
+            border-color: #059669 !important;
+            color: white !important;
+            border-radius: 0.5rem;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background: #ecfdf5 !important;
+            border-color: #10b981 !important;
+            color: #059669 !important;
+            border-radius: 0.5rem;
+        }
+    </style>
     <script>
         $(document).ready(function() {
-            $('#dataTable').DataTable({
-                "language": {
-                    "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/French.json"
-                },
-                "order": [[4, "desc"]],
-                "pageLength": 25
+            if ($('#activationsTable').length) {
+                $('#activationsTable').DataTable({
+                    "language": {
+                        "url": "//cdn.datatables.net/plug-ins/1.10.25/i18n/French.json"
+                    },
+                    "order": [[2, "desc"]],
+                    "pageLength": 10,
+                    "drawCallback": function() {
+                        $('.dataTables_paginate').addClass('mt-4');
+                    }
+                });
+            }
+
+            $('.selfie-preview-trigger').on('click', function() {
+                const src = $(this).data('src');
+                const title = $(this).data('title');
+                openPreview(src, title);
             });
+        });
+
+        function openPreview(src, title) {
+            const modal = document.getElementById('previewModal');
+            const content = document.getElementById('modalContent');
+            const img = document.getElementById('previewImage');
+            const titleEl = document.getElementById('modalTitle');
+
+            img.src = src;
+            titleEl.textContent = title;
+            
+            modal.classList.remove('hidden', 'opacity-0');
+            modal.style.opacity = '1';
+            modal.style.pointerEvents = 'auto';
+            
+            setTimeout(() => {
+                content.classList.remove('scale-90', 'opacity-0');
+                content.classList.add('scale-100', 'opacity-100');
+            }, 10);
+            
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePreview() {
+            const modal = document.getElementById('previewModal');
+            const content = document.getElementById('modalContent');
+            
+            content.classList.remove('scale-100', 'opacity-100');
+            content.classList.add('scale-90', 'opacity-0');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden', 'opacity-0');
+                modal.style.opacity = '0';
+                modal.style.pointerEvents = 'none';
+                document.body.style.overflow = '';
+            }, 300);
+        }
+
+        // Close on clicking outside
+        document.getElementById('previewModal').addEventListener('click', function(e) {
+            if (e.target === this) closePreview();
         });
     </script>
 {% endblock %}

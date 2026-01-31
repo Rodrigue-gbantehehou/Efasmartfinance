@@ -1,51 +1,70 @@
- <aside id="sidebar" class="hidden md:flex md:w-72 bg-white border-r border-gray-100 flex-col flex-shrink-0">
-      <div class="px-5 py-4 flex items-center gap-3">
-          <a href="{{ path('app_home') }}">
-        <img src="{{asset('images/logovert.png')}}" alt="Logo" class="h-20 "/>
-                </a>
+<aside id="sidebar" class="hidden md:flex md:w-72 bg-white border-r border-gray-100 flex-col flex-shrink-0">
+  <div class="px-5 py-4 flex items-center gap-3">
+    <a href="{{ path('app_home') }}">
+      <img src="{{asset('images/logovert.png')}}" alt="Logo" class="h-20 " />
+    </a>
+  </div>
+
+  <div class="px-4 py-3 border-y border-gray-100">
+    <div class="flex items-center gap-3">
+      <div class="h-10 w-10 rounded-full bg-green-700/10 flex items-center justify-center text-green-700">
+        <i class="fa-solid fa-user"></i>
       </div>
-      
-      <div class="px-4 py-3 border-y border-gray-100">
-        <div class="flex items-center gap-3">
-          <div class="h-10 w-10 rounded-full bg-green-700/10 flex items-center justify-center text-green-700">
-            <i class="fa-solid fa-user"></i>
-          </div>
-          <div>
-            <div class="font-semibold text-sm">Bienvenue, <span id="userName">{{ app.user.firstname }} {{ app.user.lastname }}</span></div>
-            <div class="text-xs text-gray-500">Complet depuis {{app.user.createdAt|date('Y')}}</div>
-          </div>
-        </div>
+      <div>
+        <div class="font-semibold text-sm">Bienvenue, <span id="userName">{{ app.user.firstname }} {{ app.user.lastname
+            }}</span></div>
+        <div class="text-xs text-gray-500">Complet depuis {{app.user.createdAt|date('Y')}}</div>
       </div>
-      
-      <nav class="mt-2 px-3 pb-4 space-y-1 flex-1 overflow-y-auto">
-        <a href="{{path('app_dashboard')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 text-green-700 font-medium touch-target {{ app.request.get('_route') starts with 'app_dashboard' ? 'bg-green-700/5 text-green-700' : '' }}">
-          <i class="fa-solid fa-gauge w-6"></i><span>Tableau de bord</span>
-        </a>
-        <a href="{{path ('app_tontines_index')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'app_tontines' ? 'bg-green-700/5 text-green-700' : '' }}">
-          <i class="fa-solid fa-coins w-6"></i><span>Mes tontines</span>
-        </a>
-        <a href="{{path ('app_transaction_index')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'app_transaction' ? 'bg-green-700/5 text-green-700' : '' }}">
-          <i class="fa-solid fa-credit-card w-6"></i><span>Transactions</span>
-        </a>
-        <a href="{{path ('app_withdrawals_index')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'app_withdrawals_index' ? 'bg-green-700/5 text-green-700' : '' }}">
-          <i class="fa-solid fa-wallet w-6"></i><span> Demandes de retrait</span>
-        </a>
-     
-        <a href="{{path('app_settings')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'app_settings' ? 'bg-green-700/5 text-green-700' : '' }}">
-          <i class="fa-solid fa-gear w-6"></i><span>Paramètres</span>
-        </a>
-        <a href="{{path('app_dashboard_2fa_index')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'app_dashboard_2fa' ? 'bg-green-700/5 text-green-700' : '' }}">
-          <i class="fa-solid fa-shield-alt w-6"></i><span>Sécurité 2FA</span>
-        </a>
-        <a href="{{path ('app_aide')}}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{app.request.get('_route') starts with 'app_aide' ? 'bg-green-700/5 text-green-700' : ''}}">
-          <i class="fa-solid fa-circle-question w-6"></i><span>Aide & Support</span>
-        </a>
-      </nav>
-      
-      <div class="p-4 border-t border-gray-100 flex-shrink-0">
-        <a href="{{path('app_logout')}}" class="w-full inline-flex items-center justify-center gap-2 px-3 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 touch-target">
-          <i class="fa-solid fa-right-from-bracket"></i> <span>Se déconnecter</span>
-        </a>
-        <p class="text-xs text-gray-400 text-center mt-3">© <span id="year"></span> EFA SMART FINANCE</p>
-      </div>
-    </aside>
+    </div>
+  </div>
+
+  <nav class="mt-2 px-3 pb-4 space-y-1 flex-1 overflow-y-auto">
+    <a href="{{path('app_dashboard')}}"
+      class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 text-green-700 font-medium touch-target {{ app.request.get('_route') starts with 'app_dashboard' ? 'bg-green-700/5 text-green-700' : '' }}">
+      <i class="fa-solid fa-gauge w-6"></i><span>Tableau de bord</span>
+    </a>
+    <a href="{{path ('app_tontines_index')}}"
+      class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'app_tontines' ? 'bg-green-700/5 text-green-700' : '' }}">
+      <i class="fa-solid fa-coins w-6"></i><span>Mes tontines</span>
+    </a>
+    <a href="{{path ('app_transaction_index')}}"
+      class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'app_transaction' ? 'bg-green-700/5 text-green-700' : '' }}">
+      <i class="fa-solid fa-credit-card w-6"></i><span>Transactions</span>
+    </a>
+    <a href="{{path ('app_notifications_index')}}"
+      class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'app_notifications' ? 'bg-green-700/5 text-green-700' : '' }}">
+      <i class="fa-solid fa-bell w-6"></i><span>Notifications</span>
+      {% set unreadCount = app.user.notifications|filter(n => not n.isRead)|length %}
+      {% if unreadCount > 0 %}
+      <span class="ml-auto px-2 py-0.5 bg-warning text-white text-[10px] font-bold rounded-full">
+          {{ unreadCount }}
+      </span>
+      {% endif %}
+    </a>
+    <a href="{{path ('app_withdrawals_index')}}"
+      class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'app_withdrawals_index' ? 'bg-green-700/5 text-green-700' : '' }}">
+      <i class="fa-solid fa-wallet w-6"></i><span> Demandes de retrait</span>
+    </a>
+
+    <a href="{{path('app_settings')}}"
+      class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'app_settings' ? 'bg-green-700/5 text-green-700' : '' }}">
+      <i class="fa-solid fa-gear w-6"></i><span>Paramètres</span>
+    </a>
+    <a href="{{path('pin_change')}}"
+      class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'pin_' ? 'bg-green-700/5 text-green-700' : '' }}">
+      <i class="fa-solid fa-shield-alt w-6"></i><span>Sécurité PIN</span>
+    </a>
+    <a href="{{path ('app_aide')}}"
+      class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{app.request.get('_route') starts with 'app_aide' ? 'bg-green-700/5 text-green-700' : ''}}">
+      <i class="fa-solid fa-circle-question w-6"></i><span>Aide & Support</span>
+    </a>
+  </nav>
+
+  <div class="p-4 border-t border-gray-100 flex-shrink-0">
+    <a href="{{path('app_logout')}}"
+      class="w-full inline-flex items-center justify-center gap-2 px-3 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 touch-target">
+      <i class="fa-solid fa-right-from-bracket"></i> <span>Se déconnecter</span>
+    </a>
+    <p class="text-xs text-gray-400 text-center mt-3">© <span id="year"></span> EFA SMART FINANCE</p>
+  </div>
+</aside>

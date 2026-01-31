@@ -1,0 +1,81 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}Récupération du Code PIN — EFA SMART FINANCE{% endblock %}
+
+{% block contentdashboard %}
+<div class="min-h-screen bg-green-50-slate-50 flex items-center justify-center p-4 font-poppins">
+    <div class="max-w-md w-full bg-white p-10 rounded-[2.5rem] shadow-xl border border-gray-100 animate-fade-in-up">
+        <div class="text-center mb-10">
+            <div
+                class="mx-auto h-20 w-20 bg-red-50 rounded-3xl flex items-center justify-center text-red-500 mb-6 border border-red-100">
+                <i class="fas fa-key-skeleton text-3xl"></i>
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight">Code PIN Oublié ?</h2>
+            <p class="mt-3 text-slate-500 text-sm leading-relaxed px-4">
+                Pour réinitialiser votre code PIN, nous devons d'abord confirmer votre identité avec votre mot de passe
+                habituel.
+            </p>
+        </div>
+
+        {% for message in app.flashes('error') %}
+        <div class="mb-6 p-4 bg-red-50 border border-red-100 rounded-2xl text-red-700 text-sm flex items-center gap-3">
+            <i class="fas fa-circle-exclamation"></i>
+            <span>{{ message }}</span>
+        </div>
+        {% endfor %}
+
+        <div class="p-5 bg-amber-50 border border-amber-100 rounded-2xl mb-8 flex gap-4">
+            <i class="fas fa-triangle-exclamation text-amber-500 mt-1"></i>
+            <div class="text-xs text-amber-800 leading-relaxed">
+                <strong>Attention :</strong> Une fois réinitialisé, un code PIN temporaire vous sera attribué. Vous
+                devrez le changer immédiatement après votre reconnexion.
+            </div>
+        </div>
+
+        <form method="post" action="{{ path('pin_reset_request') }}" class="space-y-6">
+            <div>
+                <label for="password"
+                    class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Votre mot de passe
+                    actuel</label>
+                <div class="relative group">
+                    <div
+                        class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none text-slate-400 group-focus-within:text-green-600 transition-colors">
+                        <i class="fas fa-lock text-sm"></i>
+                    </div>
+                    <input id="password" name="password" type="password" required
+                        class="block w-full pl-12 pr-6 py-4 bg-slate-50 border-2 border-transparent focus:bg-white focus:border-green-600 rounded-2xl text-slate-900 transition-all placeholder-slate-400"
+                        placeholder="••••••••••••" autofocus>
+                </div>
+            </div>
+
+            <button type="submit"
+                class="w-full flex justify-center py-4 px-4 text-lg font-bold rounded-2xl text-white bg-slate-900 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-900 transition-all shadow-lg active:scale-[0.98]">
+                Confirmer & Réinitialiser
+            </button>
+
+            <a href="{{ path('pin_verify') }}"
+                class="block w-full text-center py-2 text-slate-500 hover:text-slate-800 font-semibold text-sm transition-colors">
+                Retour à la vérification
+            </a>
+        </form>
+    </div>
+</div>
+
+<style>
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in-up {
+        animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+</style>
+{% endblock %}

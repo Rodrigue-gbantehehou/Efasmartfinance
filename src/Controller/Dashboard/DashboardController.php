@@ -21,12 +21,34 @@ final class DashboardController extends AbstractController
         private SerializerInterface $serializer
     ) {}
 
-     #[Route('/dashboard', name: 'app_dashboard')]
+    #[Route('/dashboard', name: 'app_dashboard')]
     public function index(Security $security): Response
     {
         $user = $security->getUser();
-        $tontines= $this->entityManager->getRepository(Tontine::class)->findBy(['utilisateur' => $user]);
-        // Données mock pour le développement
+        $tontines = $this->entityManager->getRepository(Tontine::class)->findBy(['utilisateur' => $user]);
+        
+        // Fetch recent transactions
+        $transactionsRepo = $this->entityManager->getRepository(\App\Entity\Transaction::class);
+        $recentTransactions = $transactionsRepo->findBy(
+            ['utilisateur' => $user],
+            ['createdAt' => 'DESC'],
+            10
+        );
+
+        // Calculate amount "payé mais non récupéré"
+        // totalBalance: Net available across all tontines
+        // totalPaidNotRecovered: Net available only for COMPLETED tontines
+        $totalPaidNotRecovered = 0;
+        $totalBalance = 0;
+        foreach ($tontines as $tontine) {
+            $availableAmount = (float)$tontine->getAvailableWithdrawalAmount();
+            $totalBalance += $availableAmount;
+            
+            if ($tontine->getStatut() === 'completed') {
+                $totalPaidNotRecovered += $availableAmount;
+            }
+        }
+
         $appData = [
             'user' => [
                 'id' =>  $user->getId(),
@@ -34,14 +56,19 @@ final class DashboardController extends AbstractController
                 'lastName' => $user->getLastName(),
                 'email' => $user->getEmail(),
             ],
-          
+            'stats' => [
+                'totalPaidNotRecovered' => $totalPaidNotRecovered,
+                'totalBalance' => $totalBalance
+            ]
         ];
         
-        // Pass the data to the template
         return $this->render('dashboard/index.html.twig', [
-            'user' => $appData['user'] ?? null,
-          
-            'appDataJson' => json_encode($appData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT), // For JS
+            'user' => $appData['user'],
+            'tontines' => $tontines,
+            'recentTransactions' => $recentTransactions,
+            'totalPaidNotRecovered' => $totalPaidNotRecovered,
+            'totalBalance' => $totalBalance,
+            'appDataJson' => json_encode($appData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT),
         ]);
     }
 
@@ -98,9 +125,9 @@ final class DashboardController extends AbstractController
         }, $tontines);
 
         // Calculate statistics
-        $totalBalance = array_sum(array_map(function($t) {
-            return is_numeric($t['totalPay'] ?? null) ? (float)$t['totalPay'] : 0;
-        }, $formattedTontines));
+        $totalBalance = array_sum(array_map(function($tontine) {
+            return (float)$tontine->getAvailableWithdrawalAmount();
+        }, $tontines));
         
         $activeTontines = array_filter($formattedTontines, function($t) {
             return isset($t['status']) && $t['status'] === 'active';

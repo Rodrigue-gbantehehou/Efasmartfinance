@@ -1,0 +1,136 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Créer un Broadcast{% endblock %}
+
+{% block contentadmin %}
+<div class="min-h-screen bg-green-50 font-poppins p-8">
+    <div class="max-w-4xl mx-auto">
+        
+        {# Header #}
+        <div class="mb-8">
+            <a href="{{ path('admin_broadcast') }}" class="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-semibold mb-4">
+                ← Retour aux broadcasts
+            </a>
+            <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-green-800 mb-2">
+                ✉️ Nouveau Broadcast
+            </h1>
+            <p class="text-slate-600 text-lg">Créez et envoyez un message groupé</p>
+        </div>
+
+        {# Form #}
+        <form method="post" class="bg-white rounded-3xl p-8 shadow-lg border-2 border-slate-100">
+            <div class="space-y-6">
+                
+                {# Title #}
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Titre du message *</label>
+                    <input type="text" name="title" required 
+                           class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none"
+                           placeholder="Ex: Nouvelle fonctionnalité disponible">
+                </div>
+
+                {# Content #}
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Contenu du message *</label>
+                    <textarea name="content" required rows="10"
+                              class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none"
+                              placeholder="Rédigez votre message ici..."></textarea>
+                    <p class="text-sm text-slate-500 mt-2">💡 Vous pouvez utiliser du HTML pour formater votre message</p>
+                </div>
+
+                {# Type #}
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Canal de diffusion *</label>
+                    <select name="type" class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none">
+                        <option value="email">📧 Email uniquement</option>
+                        <option value="notification">🔔 Notification uniquement</option>
+                        <option value="both">📧 + 🔔 Email et Notification</option>
+                    </select>
+                </div>
+
+                {# Target Audience #}
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Audience cible *</label>
+                    <select name="target_audience" id="targetAudience" 
+                            class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none">
+                        <option value="all">👥 Tous les utilisateurs</option>
+                        <option value="verified">✓ Utilisateurs vérifiés</option>
+                        <option value="unverified">⏳ Utilisateurs non vérifiés</option>
+                        <option value="role_support">🎧 Support uniquement</option>
+                        <option value="role_finance">💰 Finance uniquement</option>
+                        <option value="role_admin">👑 Admins uniquement</option>
+                    </select>
+                    <div id="audiencePreview" class="mt-3 p-3 bg-green-50 rounded-lg text-sm text-green-700 font-semibold">
+                        📊 Estimation: Chargement...
+                    </div>
+                </div>
+
+                {# Scheduled Date (Optional) #}
+                <div>
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Planifier l'envoi (optionnel)</label>
+                    <input type="datetime-local" name="scheduled_date"
+                           class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none">
+                    <p class="text-sm text-slate-500 mt-2">⏰ Laissez vide pour enregistrer comme brouillon</p>
+                </div>
+
+                {# Preview Box #}
+                <div class="border-2 border-green-200 rounded-2xl p-6 bg-green-50/50">
+                    <h3 class="text-lg font-bold text-slate-800 mb-3">👁️ Aperçu du message</h3>
+                    <div class="bg-white rounded-xl p-6 border-2 border-slate-100">
+                        <div id="previewTitle" class="text-xl font-bold text-slate-800 mb-3">Titre du message</div>
+                        <div id="previewContent" class="text-slate-600">Contenu du message...</div>
+                    </div>
+                </div>
+
+                {# Actions #}
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" 
+                            class="flex-1 px-6 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors font-bold">
+                        💾 Enregistrer le Broadcast
+                    </button>
+                    <a href="{{ path('admin_broadcast') }}" 
+                       class="px-6 py-3 bg-slate-200 text-slate-700 rounded-xl hover:bg-slate-300 transition-colors font-bold">
+                        Annuler
+                    </a>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap');
+    .font-poppins { font-family: 'Poppins', sans-serif; }
+</style>
+
+<script>
+// Live preview
+document.querySelector('input[name="title"]')?.addEventListener('input', function() {
+    document.getElementById('previewTitle').textContent = this.value || 'Titre du message';
+});
+
+document.querySelector('textarea[name="content"]')?.addEventListener('input', function() {
+    document.getElementById('previewContent').innerHTML = this.value || 'Contenu du message...';
+});
+
+// Audience estimation (mock - à remplacer par un appel AJAX réel)
+const audienceCounts = {
+    'all': 'Tous les utilisateurs (~500)',
+    'verified': 'Utilisateurs vérifiés (~350)',
+    'unverified': 'Utilisateurs non vérifiés (~150)',
+    'role_support': 'Support (~5)',
+    'role_finance': 'Finance (~10)',
+    'role_admin': 'Admins (~3)'
+};
+
+document.getElementById('targetAudience')?.addEventListener('change', function() {
+    const preview = document.getElementById('audiencePreview');
+    preview.textContent = '📊 Estimation: ' + (audienceCounts[this.value] || 'Chargement...');
+});
+
+// Initialize
+document.getElementById('targetAudience')?.dispatchEvent(new Event('change'));
+</script>
+{% endblock %}

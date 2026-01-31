@@ -20,7 +20,7 @@
                 </a>
                 
                 <a href="{{path('app_tontines_index')}}" class="group  relative px-3 lg:px-4 py-2 transition-all duration-300 ">
-                    <span class="text-xs hover:text-white lg:text-sm font-medium  text-green-700 hover:bg-green-800 rounded-lg  px-3 lg:px-4 py-2 {{app.request.attributes.get('_route') == 'app_tontine' ? 'bg-green-800/50 px-3 lg:px-4 py-2 rounded-lg transition-all  text-white transition-colors' : ''}}">Mes tontines</span>
+                    <span class="text-xs hover:text-white lg:text-sm font-medium  text-green-700 hover:bg-green-800 rounded-lg  px-3 lg:px-4 py-2 {{app.request.attributes.get('_route') == 'app_tontines_index' ? 'bg-green-800/50 px-3 lg:px-4 py-2 rounded-lg transition-all  text-white transition-colors' : ''}}">Mes tontines</span>
                     <span class="absolute text-white bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-green-700 to-secondary group-hover:w-6 lg:group-hover:w-8 transition-all duration-300"></span>
                 </a>
                 
@@ -33,16 +33,7 @@
                     <span class="text-xs hover:text-white lg:text-sm font-medium text-green-700 hover:bg-green-800 rounded-lg  px-3 lg:px-4 py-2 {{app.request.attributes.get('_route') == 'app_contact' ? 'bg-green-800 px-3 lg:px-4 py-2 rounded-lg transition-all text-white transition-colors' : ''}}">Contact</span>
                     <span class="absolute hover:text-white bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-green-700 to-secondary group-hover:w-6 lg:group-hover:w-8 transition-all duration-300"></span>
                 </a>
-                <!-- Navigation desktop 
-                <a href="{{ path('app_tutoriels') }}" class="group relative px-3 lg:px-4 py-2 rounded-lg transition-all duration-300 hover:bg-gray-800/50">
-                    <span class="text-xs lg:text-sm font-medium text-green-700 {{app.request.attributes.get('_route') == 'app_tutoriels' ? 'bg-gray-800/50 px-3 lg:px-4 py-2 rounded-lg transition-all text-white transition-colors' : ''}}">Tutoriels</span>
-                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-green-700 to-secondary group-hover:w-6 lg:group-hover:w-8 transition-all duration-300"></span>
-                </a>
-                
-                <a href="{{ path('app_blog') }}" class="group relative px-3 lg:px-4 py-2 rounded-lg transition-all duration-300 hover:bg-gray-800/50">
-                    <span class="text-xs lg:text-sm font-medium text-green-700 {{app.request.attributes.get('_route') == 'app_blog' ? 'bg-gray-800/50 px-3 lg:px-4 py-2 rounded-lg transition-all text-white transition-colors' : ''}}">Blog</span>
-                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-green-700 to-secondary group-hover:w-6 lg:group-hover:w-8 transition-all duration-300"></span>
-                </a>-->
+         
             </nav>
 
             <!-- Actions -->
@@ -55,12 +46,12 @@
                     </a>
 
                    
-                  {% if 'ROLE_ADMIN' in app.user.roles %}
-                   <a href="{{ path('admin_dashboard') }}" class="hidden lg:flex items-center space-x-2 bg-gradient-to-r from-yellow-400 to-yellow-300 hover:from-yellow-300 hover:to-yellow-200 text-white px-4 lg:px-5 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group">
-                      <i class="fas fa-user-shield text-xs lg:text-sm group-hover:rotate-12 transition-transform"></i>
-                      <span class="text-xs lg:text-sm font-semibold hidden lg:inline">Admin</span>
-                  </a>
-                  {% endif %}
+                   {% if is_granted('ROLE_SUPPORT') %}
+                    <a href="{{ path('admin_dashboard') }}" class="hidden lg:flex items-center space-x-2 bg-gradient-to-r from-yellow-400 to-yellow-300 hover:from-yellow-300 hover:to-yellow-200 text-white px-4 lg:px-5 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group">
+                       <i class="fas fa-user-shield text-xs lg:text-sm group-hover:rotate-12 transition-transform"></i>
+                       <span class="text-xs lg:text-sm font-semibold hidden lg:inline">Admin</span>
+                   </a>
+                   {% endif %}
                   
                 {% else %}
                   <!-- Connexion desktop -->
@@ -261,7 +252,7 @@
           
              <!-- admin -->
             {% if app.user %}
-             {% if 'ROLE_ADMIN' in app.user.roles %}
+             {% if is_granted('ROLE_SUPPORT') %}
              <a href="{{ path('admin_dashboard') }}" 
                class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-gray-100 transition-all duration-300"
                onclick="closeMobileMenu()">

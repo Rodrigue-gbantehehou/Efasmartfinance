@@ -1,101 +1,114 @@
 {% extends "dashboard/base.html.twig" %}
 {% block contentdashboard %}
-	<!-- Mobile Header -->
+<!-- Mobile Header -->
 
 
-	<!-- Desktop Header -->
-		<header class="hidden md:block bg-white border-b border-gray-100 sticky top-0 z-30 flex-shrink-0"> <div
-			class="max-w-[1400px] mx-auto px-4 md:px-6 py-3 flex items-center gap-3">
-			<!-- Quick Actions -->
-			<div class="flex items-center gap-2 flex-1">
-				<a href="{{path('app_tontine')}}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-green-700 text-white hover:bg-green-700 transition-colors font-medium touch-target">
-					<i class="fa-solid fa-plus"></i>
-					Nouvelle tontine
-				</a>
+<!-- Desktop Header -->
+<header class="hidden md:block bg-white border-b border-gray-100 sticky top-0 z-30 flex-shrink-0">
+	<div class="max-w-[1400px] mx-auto px-4 md:px-6 py-3 flex items-center gap-3">
+		<!-- Quick Actions -->
+		<div class="flex items-center gap-2 flex-1">
+			<a href="{{path('app_tontine')}}"
+				class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-green-700 text-white hover:bg-green-700 transition-colors font-medium touch-target">
+				<i class="fa-solid fa-plus"></i>
+				Nouvelle tontine
+			</a>
 
-				{% if app.user.verificationStatut == "pending" %}
-    <div class="relative group">
-        <button disabled class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-yellow-100 text-yellow-800 cursor-not-allowed font-medium touch-target border border-yellow-200 shadow-sm">
-            <i class="fa-regular fa-clock animate-pulse"></i>
-            Vérification en cours...
-        </button>
-        <div class="absolute z-10 hidden group-hover:block w-64 p-3 mt-2 text-sm text-gray-600 bg-white border border-gray-200 rounded-lg shadow-lg">
-            Votre demande de vérification est en cours de traitement par notre équipe. Cela peut prendre jusqu'à 24 heures.
-        </div>
-    </div>
-{% elseif app.user.verificationStatut == "verified" %}
-    
-{% else %}
-    <a href="{{path('app_compte_verification')}}" class="relative group inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-green-600 to-green-700 text-white font-medium touch-target hover:from-green-700 hover:to-green-800 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-        <i class="fa-solid fa-user-shield"></i>
-        Vérifier mon compte
-        <span class="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-400 text-xs font-bold text-white">!</span>
-    </a>
-{% endif %}
-			</div>
-
-			<div
-				class="flex items-center gap-3 ml-auto">
-				<!-- Notifications -->
-				<div class="relative">
-					<button class="relative h-10 w-10 rounded-lg hover:bg-gray-100 flex items-center justify-center touch-target">
-						<i class="fa-regular fa-bell text-gray-700"></i>
-						<span id="notificationCount" class="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-warning text-white text-xs flex items-center justify-center">3</span>
-					</button>
+			{% if app.user.verificationStatut == "pending" %}
+			<div class="relative group">
+				<button disabled
+					class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-yellow-100 text-yellow-800 cursor-not-allowed font-medium touch-target border border-yellow-200 shadow-sm">
+					<i class="fa-regular fa-clock animate-pulse"></i>
+					Vérification en cours...
+				</button>
+				<div
+					class="absolute z-10 hidden group-hover:block w-64 p-3 mt-2 text-sm text-gray-600 bg-white border border-gray-200 rounded-lg shadow-lg">
+					Votre demande de vérification est en cours de traitement par notre équipe. Cela peut prendre jusqu'à
+					24 heures.
 				</div>
+			</div>
+			{% elseif app.user.verificationStatut == "verified" %}
 
-				<!-- User Menu -->
-				<div class="flex items-center gap-3">
-					<div class="text-right hidden md:block">
-						<div class="font-semibold leading-4" id="userDisplayName">John Doe</div>
+			{% else %}
+			<a href="{{path('app_compte_verification')}}"
+				class="relative group inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-gradient-to-r from-green-600 to-green-700 text-white font-medium touch-target hover:from-green-700 hover:to-green-800 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+				<i class="fa-solid fa-user-shield"></i>
+				Vérifier mon compte
+				<span
+					class="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-400 text-xs font-bold text-white">!</span>
+			</a>
+			{% endif %}
+		</div>
+
+		<div class="flex items-center gap-3 ml-auto">
+			<!-- Notification Button -->
+                <a href="{{ path('app_notifications_index') }}"
+                    class="relative p-2.5 bg-gray-50 rounded-xl text-gray-400 hover:text-green-700 hover:bg-green-50 transition-all duration-200">
+                    <i class="fa-solid fa-bell text-xl"></i>
+                    {% set unreadCount = app.user.notifications|filter(n => not n.isRead)|length %}
+                    {% if unreadCount > 0 %}
+                    <span id="notificationCount"
+                        class="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-warning text-white text-xs flex items-center justify-center">
+                        {{ unreadCount }}
+                    </span>
+                    {% endif %}
+                </a>
+
+			<!-- User Menu -->
+			<div class="flex items-center gap-3">
+				<div class="text-right hidden md:block">
+					<div class="font-semibold leading-4" id="userDisplayName">John Doe</div>
+					{% if app.user.verificationStatut == "verified" %}
+					<div class="text-xs text-green-600">Compte vérifié</div>
+					{% else %}
+					<div class="text-xs text-red-500">Compte non vérifié</div>
+					{% endif %}
+				</div>
+				<div class="relative">
+					<button id="userMenuButton"
+						class="h-10 w-10 rounded-full bg-green-700/10 text-green-700 flex items-center justify-center hover:bg-green-700/20 touch-target">
+						<i class="fa-solid fa-user"></i>
+					</button>
+					<div id="userMenu"
+						class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden z-50">
+						<a href="{{path('app_settings')}}" class="block px-4 py-3 hover:bg-gray-50">
+							<i class="fa-solid fa-user mr-3"></i>
+							Mon profil</a>
 						{% if app.user.verificationStatut == "verified" %}
-							<div class="text-xs text-green-600">Compte vérifié</div>
-						{% else %}
-							<div class="text-xs text-red-500">Compte non vérifié</div>
+
+						<a href="{{path('app_resend_verification')}}" class="block px-4 py-3 hover:bg-gray-50">
+							<i class="fa-solid fa-envelope mr-3"></i>
+							Vérifier compte</a>
 						{% endif %}
-					</div>
-					<div class="relative">
-						<button id="userMenuButton" class="h-10 w-10 rounded-full bg-green-700/10 text-green-700 flex items-center justify-center hover:bg-green-700/20 touch-target">
-							<i class="fa-solid fa-user"></i>
-						</button>
-						<div id="userMenu" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 hidden z-50">
-							<a href="{{path('app_settings')}}" class="block px-4 py-3 hover:bg-gray-50">
-								<i class="fa-solid fa-user mr-3"></i>
-								Mon profil</a>
-							{% if app.user.verificationStatut == "verified" %}
 
-								<a href="{{path('app_resend_verification')}}" class="block px-4 py-3 hover:bg-gray-50">
-									<i class="fa-solid fa-envelope mr-3"></i>
-									Vérifier compte</a>
-							{% endif %}
-
-							<div class="border-t border-gray-200"></div>
-							<a href="{{ path('app_logout') }}" class="block px-4 py-3 text-red-600 hover:bg-gray-50">
-								<i class="fa-solid fa-right-from-bracket mr-3"></i>
-								Déconnexion</a>
-						</div>
+						<div class="border-t border-gray-200"></div>
+						<a href="{{ path('app_logout') }}" class="block px-4 py-3 text-red-600 hover:bg-gray-50">
+							<i class="fa-solid fa-right-from-bracket mr-3"></i>
+							Déconnexion</a>
 					</div>
 				</div>
 			</div>
 		</div>
-	</header>
+	</div>
+</header>
 
-	<!-- Content Area -->
-	<div class="max-w-[1400px] mx-auto px-3 xs:px-4 md:px-6 py-3 md:py-6 space-y-3 md:space-y-6 safe-bottom">
+<!-- Content Area -->
+<div class="max-w-[1400px] mx-auto px-3 xs:px-4 md:px-6 py-3 md:py-6 space-y-3 md:space-y-6 safe-bottom">
 
-		<!-- Welcome Banner -->
-		<!-- Welcome Banner - Version avec colonnes sur même ligne -->
-			<div
-			class="bg-gradient-to-r from-green-700 to-green-600 text-white rounded-xl md:rounded-2xl p-4 md:p-6 card-hover"> <!-- Grille responsive : toujours sur la même ligne -->
-			<div
-				class="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-8 items-center">
+	<!-- Welcome Banner -->
+	<!-- Welcome Banner - Version avec colonnes sur même ligne -->
+	<div
+		class="bg-gradient-to-r from-green-700 to-green-600 text-white rounded-xl md:rounded-2xl p-4 md:p-6 card-hover">
+		<!-- Grille responsive : toujours sur la même ligne -->
+		<div class="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-8 items-center">
 
-				<!-- Colonne gauche - Texte et badges -->
-				<div class="flex flex-col h-full justify-center">
-					<h1 class="text-xl xs:text-2xl md:text-3xl font-bold mb-2 md:mb-3 leading-tight">
-						Bonjour,
+			<!-- Colonne gauche - Texte et badges -->
+			<div class="flex flex-col h-full justify-center">
+				<h1 class="text-xl xs:text-2xl md:text-3xl font-bold mb-2 md:mb-3 leading-tight">
+					Bonjour,
 					</br>
-					<span id="welcomeUserName" class="truncate inline-block max-w-[140px] xs:max-w-[160px] sm:max-w-[200px] md:max-w-full">
+					<span id="welcomeUserName"
+						class="truncate inline-block max-w-[140px] xs:max-w-[160px] sm:max-w-[200px] md:max-w-full">
 						{{user.firstName}}
 					</span>
 					!
@@ -107,11 +120,13 @@
 
 				<!-- Badges en ligne compacte -->
 				<div class="flex flex-wrap gap-1.5 md:gap-2">
-					<div class="bg-white/20 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full text-xs md:text-sm flex items-center whitespace-nowrap">
+					<div
+						class="bg-white/20 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full text-xs md:text-sm flex items-center whitespace-nowrap">
 						<i class="fa-solid fa-shield-alt mr-1.5 text-xs md:text-sm"></i>
 						<span>Sécurisé</span>
 					</div>
-					<div class="bg-white/20 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full text-xs md:text-sm flex items-center whitespace-nowrap">
+					<div
+						class="bg-white/20 px-2.5 py-1 md:px-3 md:py-1.5 rounded-full text-xs md:text-sm flex items-center whitespace-nowrap">
 						<i class="fa-solid fa-bolt mr-1.5 text-xs md:text-sm"></i>
 						<span>Automatisé</span>
 					</div>
@@ -123,113 +138,220 @@
 			<div class="flex flex-col items-center md:items-end justify-center h-full">
 				<div class="text-right md:text-right">
 					<div class="flex items-center gap-2">
-						<button type="button" id="toggleBalance" class="text-white hover:text-white focus:outline-none" aria-label="Afficher/masquer le solde">
+						<button type="button" id="toggleBalance" class="text-white hover:text-white focus:outline-none"
+							aria-label="Afficher/masquer le solde">
 							<i class="fa-solid fa-eye-slash" id="balanceIcon"></i>
 						</button>
-						<div class="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold mb-1 md:mb-2 leading-none" id="totalBalance">
-							0 FCFA
+						<div class="text-2xl xs:text-3xl sm:text-4xl md:text-5xl font-bold mb-1 md:mb-2 leading-none"
+							id="totalBalance">
+							{{ totalBalance|default(0)|number_format(0, ',', ' ') }} FCFA
 						</div>
 					</div>
 
 					<div class="text-xs md:text-sm opacity-90 mb-2 md:mb-3">
 						Montant total épargné
 					</div>
-
+				</div>
+				<div class="text-right md:text-right mt-2 pt-2 border-t border-white/20">
+					<div class="text-lg md:text-xl font-bold leading-none">
+						{{ totalPaidNotRecovered|default(0)|number_format(0, ',', ' ') }} FCFA
+					</div>
+					<div class="text-xxs md:text-xs opacity-80 mt-1 flex items-center justify-end gap-1">
+						<span>Payer non récupéré</span>
+						<i class="fa-solid fa-circle-info cursor-help" title="Somme disponible sur vos tontines terminées dont le retrait n'a pas encore été validé."></i>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-<!-- Mes tontines -->
-	<section class="bg-white rounded-lg md:rounded-xl p-3 md:p-5 border border-gray-100 card-hover mt-4">
-		<div class="flex flex-col xs:flex-row xs:items-center justify-between mb-3 md:mb-4 gap-2">
-			<h3 class="font-semibold text-gray-800 text-base md:text-lg">Mes tontines</h3>
-			<div class="flex items-center gap-3">
-				<a href="#" class="text-sm text-green-700 hover:text-accent flex items-center gap-1 touch-target whitespace-nowrap">
-					<i class="fa-solid fa-list"></i>
-					<span class="hidden xs:inline">Toutes</span>
-				</a>
-				<div class="h-4 w-px bg-gray-200"></div>
-				<a href="#" class="text-sm text-green-700 hover:text-accent flex items-center gap-1 touch-target whitespace-nowrap">
-					<i class="fa-solid fa-filter"></i>
-					<span class="hidden xs:inline">Filtrer</span>
-				</a>
+
+	<!-- Essential Stats Grid -->
+	<div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+		<div class="bg-white p-3 md:p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-3">
+			<div class="h-10 w-10 rounded-lg bg-green-50 text-green-600 flex items-center justify-center">
+				<i class="fa-solid fa-piggy-bank"></i>
+			</div>
+			<div>
+				<div class="text-xxs md:text-xs text-gray-500 uppercase font-semibold">Tontines Actives</div>
+				<div class="text-base md:text-lg font-bold text-gray-800">{{ tontines|length }}</div>
 			</div>
 		</div>
-
-		<!-- Tableau des tontines - Version mobile friendly -->
-		<div class="overflow-x-auto">
-			<div class="min-w-full inline-block align-middle">
-				<!-- Desktop Table -->
-				<table class="min-w-full text-sm md:table">
-					<thead>
-						<tr class="text-left text-gray-500 border-b">
-							<th class="py-3 pr-2 text-center">N°</th>
-							<th class="py-3 pr-2 "> Tontine</th>
-							<th class="py-3 pr-2 hidden md:table">Périodicité</th>
-							<th class="py-3 pr-2">Reste à Payer</th>
-							<th class="py-3 pr-2 hidden md:table">Échéance</th>
-							<th class="py-3 pr-2">Progression</th>
-							<th class="py-3 pr-2">Statut</th>
-							<th class="py-3">Actions</th>
-						</tr>
-					</thead>
-					<tbody id="tontinesTableBody" class="divide-y">
-						<tr>
-							<td colspan="8" class="py-8 text-center text-gray-500">
-								<i class="fa-solid fa-piggy-bank text-3xl text-gray-300 mb-3 block"></i>
-								<p class="mb-3">Aucune tontine créée pour le moment</p>
-								<a href="{{path('app_tontine')}}" class="inline-block px-4 py-2 bg-green-700 text-white rounded-lg hover:bg-green-700 text-sm transition-colors touch-target">
-									Créer ma première tontine
-								</a>
-							</td>
-						</tr>
-					</tbody>
-				</table>
-
-				
+		<div class="bg-white p-3 md:p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-3">
+			<div class="h-10 w-10 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+				<i class="fa-solid fa-clock-rotate-left"></i>
+			</div>
+			<div>
+				<div class="text-xxs md:text-xs text-gray-500 uppercase font-semibold">Dernière activité</div>
+				<div class="text-base md:text-lg font-bold text-gray-800">
+					{% if recentTransactions|length > 0 %}
+					{{ recentTransactions[0].createdAt|date('d/m') }}
+					{% else %}
+					-
+					{% endif %}
+				</div>
 			</div>
 		</div>
-	</section>
-
-	<!-- Échéances à venir - Version mobile -->
-	<section class="bg-white rounded-lg md:rounded-xl p-3 md:p-5 border border-gray-100 card-hover">
-		<div class="flex flex-col xs:flex-row xs:items-center justify-between mb-3 md:mb-4 gap-2">
-			<h3 class="font-semibold text-gray-800 text-sm md:text-lg">Échéances à venir</h3>
-		<!-- 	<a href="#" class="text-xs md:text-sm text-green-700 hover:text-accent flex items-center gap-1 touch-target whitespace-nowrap">
-				<i class="fa-solid fa-calendar-alt"></i>
-				<span class="hidden xs:inline">Voir calendrier</span>
-			</a> -->
-		</div>
-
-		<div
-			class="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3" id="upcomingPayments">
-			<!-- Les échéances seront ajoutées dynamiquement ici -->
-			<div class="col-span-full bg-gray-50 rounded-lg p-4 md:p-6 border border-gray-200 text-center">
-				<i class="fa-solid fa-calendar-check text-xl md:text-3xl text-gray-300 mb-2 md:mb-3 block"></i>
-				<p class="text-gray-500 text-sm md:text-base">Aucune échéance à venir</p>
-				<p class="text-xs text-gray-400 mt-1">Tout est à jour</p>
+		<div class="bg-white p-3 md:p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-3">
+			<div class="h-10 w-10 rounded-lg bg-orange-50 text-orange-600 flex items-center justify-center">
+				<i class="fa-solid fa-wallet"></i>
+			</div>
+			<div>
+				<div class="text-xxs md:text-xs text-gray-500 uppercase font-semibold">Solde Wallet</div>
+				<div class="text-base md:text-lg font-bold text-gray-800">{{
+					app.user.wallet.balance|default(0)|number_format(0, ',', ' ') }} F</div>
 			</div>
 		</div>
-	</section>
-	
+		<div class="bg-white p-3 md:p-4 rounded-xl border border-gray-100 shadow-sm flex items-center gap-3">
+			<div class="h-10 w-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+				<i class="fa-solid fa-shield-check"></i>
+			</div>
+			<div>
+				<div class="text-xxs md:text-xs text-gray-500 uppercase font-semibold">Verif. Statut</div>
+				<div class="text-base md:text-lg font-bold text-gray-800">
+					{% if app.user.verificationStatut == 'verified' %}
+					<span class="text-green-600">OUI</span>
+					{% else %}
+					<span class="text-orange-500 text-sm">EN COURS</span>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+		<!-- Mes tontines (Takes 2 columns on large screens) -->
+		<div class="lg:col-span-2 space-y-4">
+			<section class="bg-white rounded-xl p-4 md:p-5 border border-gray-100 shadow-sm">
+				<div class="flex items-center justify-between mb-4">
+					<h3 class="font-bold text-gray-800 text-lg">Mes tontines</h3>
+					<a href="{{ path('app_tontine') }}" class="text-sm text-green-700 font-semibold hover:underline">
+						+ Créer
+					</a>
+				</div>
+
+				<div class="overflow-x-auto">
+					<table class="min-w-full text-sm">
+						<thead>
+							<tr class="text-left text-gray-400 border-b border-gray-50">
+								<th class="pb-3 pr-2">Nom</th>
+								<th class="pb-3 pr-2">Reste</th>
+								<th class="pb-3 pr-2">Progrès</th>
+								<th class="pb-3 text-right">Action</th>
+							</tr>
+						</thead>
+						<tbody id="tontinesTableBody" class="divide-y divide-gray-50">
+							<!-- Dynamically loaded via fetch in dashboard.js but keep layout for reference -->
+							{% for tontine in tontines|slice(0, 5) %}
+							<tr>
+								<td class="py-3 font-medium text-gray-700">{{ tontine.name }}</td>
+								<td class="py-3">{{ (tontine.amount - tontine.totalPay)|number_format(0, ',', ' ') }} F
+								</td>
+								<td class="py-3">
+									<div class="w-full bg-gray-100 rounded-full h-1.5 max-w-[80px]">
+										<div class="bg-green-600 h-1.5 rounded-full"
+											style="width: {{ (tontine.totalPay / tontine.amount * 100)|round }}%"></div>
+									</div>
+								</td>
+								<td class="py-3 text-right">
+									<a href="{{ path('app_tontines_show', {'id': tontine.id}) }}"
+										class="text-green-600 hover:text-green-800">
+										<i class="fa-solid fa-chevron-right"></i>
+									</a>
+								</td>
+							</tr>
+							{% else %}
+							<tr>
+								<td colspan="4" class="py-8 text-center text-gray-400">
+									Aucune tontine active
+								</td>
+							</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</section>
+
+			<!-- Échéances à venir -->
+			<section class="bg-white rounded-xl p-4 md:p-5 border border-gray-100 shadow-sm">
+				<h3 class="font-bold text-gray-800 text-lg mb-4">Échéances à venir</h3>
+				<div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="upcomingPayments">
+					<div class="bg-gray-50 rounded-lg p-4 text-center border border-dashed border-gray-200">
+						<p class="text-sm text-gray-500">Chargement des échéances...</p>
+					</div>
+				</div>
+			</section>
+		</div>
+
+		<!-- Sidebar (Transaction History) -->
+		<div class="space-y-4">
+			<section class="bg-white rounded-xl p-4 md:p-5 border border-gray-100 shadow-sm h-full flex flex-col">
+				<div class="flex items-center justify-between mb-4">
+					<h3 class="font-bold text-gray-800 text-lg">Transactions</h3>
+					{# <a href="#" class="text-xs text-gray-400 hover:text-gray-600">Voir tout</a> #}
+				</div>
+
+				<div class="space-y-4 flex-1 overflow-y-auto max-h-[600px] pr-2 custom-scrollbar">
+					{% for transaction in recentTransactions %}
+					<div class="flex items-center gap-3 p-2 hover:bg-gray-50 rounded-lg transition-colors">
+						<div
+							class="h-10 w-10 flex-shrink-0 rounded-full {% if transaction.statut == 'success' or transaction.statut == 'completed' %}bg-green-100 text-green-600{% else %}bg-orange-100 text-orange-600{% endif %} flex items-center justify-center">
+							{% if transaction.type == 'SERVICE_FEE' or transaction.type == 'fee' %}
+							<i class="fa-solid fa-receipt text-xs"></i>
+							{% else %}
+							<i class="fa-solid fa-arrow-up text-xs"></i>
+							{% endif %}
+						</div>
+						<div class="min-w-0 flex-1">
+							<div class="text-sm font-semibold text-gray-800 truncate">
+								{% if transaction.type == 'SERVICE_FEE' or transaction.type == 'fee' %}
+								Frais de service
+								{% else %}
+								Cotisation Tontine
+								{% endif %}
+							</div>
+							<div class="text-xxs text-gray-400 truncate">{{ transaction.createdAt|date('d M Y, H:i') }}
+							</div>
+						</div>
+						<div class="text-right">
+							<div class="text-sm font-bold text-gray-800">{{ transaction.amount|number_format(0, ',', '
+								') }} F</div>
+							<div
+								class="text-xxs uppercase {% if transaction.statut == 'success' or transaction.statut == 'completed' %}text-green-600{% else %}text-orange-500{% endif %} font-bold">
+								{{ transaction.statut|default('Payer') }}
+							</div>
+						</div>
+					</div>
+					{% else %}
+					<div class="text-center py-8 text-gray-400">
+						<i class="fa-solid fa-money-bill-transfer text-3xl mb-2 block opacity-20"></i>
+						<p class="text-sm">Aucune transaction</p>
+					</div>
+					{% endfor %}
+				</div>
+			</section>
+		</div>
+	</div>
+
+
 	<!-- Charts & Quick Actions -->
 	<section class="">
-    <div class="bg-white rounded-lg md:rounded-xl p-3 md:p-5 border border-gray-100 card-hover">
-        <h3 class="font-semibold text-gray-800 mb-3 md:mb-4 text-sm md:text-lg">Actions rapides</h3>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2">
-            <!-- Bouton 1 -->
-            <a href="{{path('app_tontine')}}" 
-               class="flex flex-col items-center justify-center p-3 md:p-4 rounded-lg border border-gray-200 hover:bg-green-700/5 hover:border-green-700 transition-colors touch-target text-center">
-                <div class="h-10 w-10 md:h-12 md:w-12 rounded-lg bg-green-700/10 text-green-700 flex items-center justify-center mb-2">
-                    <i class="fa-solid fa-plus text-base md:text-lg"></i>
-                </div>
-                <div class="min-w-0 w-full">
-                    <div class="font-medium text-xs md:text-sm truncate">Créer une tontine</div>
-                    <div class="text-xs text-gray-500 truncate hidden sm:block">Lancer une nouvelle épargne</div>
-                </div>
-            </a>
+		<div class="bg-white rounded-lg md:rounded-xl p-3 md:p-5 border border-gray-100 card-hover">
+			<h3 class="font-semibold text-gray-800 mb-3 md:mb-4 text-sm md:text-lg">Actions rapides</h3>
+			<div class="grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2">
+				<!-- Bouton 1 -->
+				<a href="{{path('app_tontine')}}"
+					class="flex flex-col items-center justify-center p-3 md:p-4 rounded-lg border border-gray-200 hover:bg-green-700/5 hover:border-green-700 transition-colors touch-target text-center">
+					<div
+						class="h-10 w-10 md:h-12 md:w-12 rounded-lg bg-green-700/10 text-green-700 flex items-center justify-center mb-2">
+						<i class="fa-solid fa-plus text-base md:text-lg"></i>
+					</div>
+					<div class="min-w-0 w-full">
+						<div class="font-medium text-xs md:text-sm truncate">Créer une tontine</div>
+						<div class="text-xs text-gray-500 truncate hidden sm:block">Lancer une nouvelle épargne</div>
+					</div>
+				</a>
 
-            <!-- Bouton 2 
+				<!-- Bouton 2 
             <a href="#" 
                class="flex flex-col items-center justify-center p-3 md:p-4 rounded-lg border border-gray-200 hover:bg-green-700/5 hover:border-green-700 transition-colors touch-target text-center">
                 <div class="h-10 w-10 md:h-12 md:w-12 rounded-lg bg-secondary/10 text-green-700 flex items-center justify-center mb-2">
@@ -241,7 +363,7 @@
                 </div>
             </a>-->
 
-            <!-- Bouton 3 
+				<!-- Bouton 3 
             <a href="#" 
                class="flex flex-col items-center justify-center p-3 md:p-4 rounded-lg border border-gray-200 hover:bg-green-700/5 hover:border-green-700 transition-colors touch-target text-center">
                 <div class="h-10 w-10 md:h-12 md:w-12 rounded-lg bg-accent/10 text-accent flex items-center justify-center mb-2">
@@ -253,7 +375,7 @@
                 </div>
             </a>-->
 
-            <!-- Bouton 4 
+				<!-- Bouton 4 
             <a href="#" 
                class="flex flex-col items-center justify-center p-3 md:p-4 rounded-lg border border-gray-200 hover:bg-green-700/5 hover:border-green-700 transition-colors touch-target text-center">
                 <div class="h-10 w-10 md:h-12 md:w-12 rounded-lg bg-warning/10 text-warning flex items-center justify-center mb-2">
@@ -264,11 +386,11 @@
                     <div class="text-xs text-gray-500 truncate hidden sm:block">Configurer notifications</div>
                 </div>
             </a>-->
-        </div>
-    </div>
-</section>
+			</div>
+		</div>
+	</section>
 
-	
+
 
 	<!-- Footer -->
 	<div class="text-center text-xs text-gray-400 py-3 md:py-4">
@@ -276,7 +398,8 @@
 		<p class="text-xxs md:text-xs">Support: support@efasmartfinance.com</p>
 		<p class="mt-1 md:mt-2 text-xxs md:text-xs">©
 			<span id="currentYear">{{ "now"|date("Y") }}</span>
-			Tous droits réservés</p>
+			Tous droits réservés
+		</p>
 	</div>
 </div>
 
@@ -313,15 +436,15 @@
 <!-- Le JavaScript est maintenant dans le fichier dashboard.js -->
 <script>
 	// Fonction pour basculer l'affichage du solde
-	document.addEventListener('DOMContentLoaded', function() {
+	document.addEventListener('DOMContentLoaded', function () {
 		const toggleButton = document.getElementById('toggleBalance');
 		const balanceElement = document.getElementById('totalBalance');
 		const balanceIcon = document.getElementById('balanceIcon');
 		let isBalanceVisible = true;
 
-		toggleButton.addEventListener('click', function() {
+		toggleButton.addEventListener('click', function () {
 			isBalanceVisible = !isBalanceVisible;
-			
+
 			if (isBalanceVisible) {
 				balanceElement.textContent = balanceElement.getAttribute('data-amount') + ' FCFA';
 				balanceIcon.classList.remove('fa-eye');

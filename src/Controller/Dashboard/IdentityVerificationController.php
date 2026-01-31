@@ -24,8 +24,12 @@ class IdentityVerificationController extends AbstractController
     private $uploadDirectory;
     private $requestStack;
 
-    public function __construct(EntityManagerInterface $entityManager, CountryService $countryService, string $uploadDirectory, RequestStack $requestStack)
-    {
+    public function __construct(
+        EntityManagerInterface $entityManager,
+        CountryService $countryService,
+        RequestStack $requestStack,
+        string $uploadDirectory = 'uploads'
+    ) {
         $this->entityManager = $entityManager;
         $this->countryService = $countryService;
         $this->uploadDirectory = $uploadDirectory;
@@ -129,10 +133,6 @@ class IdentityVerificationController extends AbstractController
             // Handle file uploads if any
             if (!empty($data['documentFrontPath'])) {
                 $user->setDocumentFront($data['documentFrontPath']);
-            }
-            
-            if (!empty($data['documentBackPath'])) {
-                $user->setDocumentBack($data['documentBackPath']);
             }
             
             if (!empty($data['selfiePath'])) {

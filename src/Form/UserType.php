@@ -45,7 +45,10 @@ class UserType extends AbstractType
                 'label' => 'Rôle',
                 'choices' => [
                     'Utilisateur' => 'ROLE_USER',
+                    'Support' => 'ROLE_SUPPORT',
+                    'Finance' => 'ROLE_FINANCE',
                     'Administrateur' => 'ROLE_ADMIN',
+                    'Super Administrateur' => 'ROLE_SUPER_ADMIN',
                     'Superviseur' => 'ROLE_SUPERVISOR',
                     'Caissier' => 'ROLE_CAISSIER',
                     'Comptable' => 'ROLE_COMPTABLE',

@@ -61,14 +61,6 @@ services:
             - { name: 'kernel.event_listener', event: 'security.interactive_login', method: 'onSecurityInteractiveLogin' }
 
 
-    # Configuration des services de paiement
-    App\Service\Payment\FedaPayService:
-        lazy: true
-        arguments:
-            $publicKey: '%env(FEDAPAY_PUBLIC_KEY)%'
-            $privateKey: '%env(FEDAPAY_SECRET_KEY)%'
-            $webhookSecret: '%env(FEDAPAY_WEBHOOK_SECRET)%'
-
     App\Service\Payment\KkiaPayService:
         lazy: true
         arguments:
@@ -77,13 +69,6 @@ services:
             $secretKey: '%env(KKIAPAY_SECRET_KEY)%'
             $logger: '@logger'
             $sandbox: '%env(bool:KKIAPAY_SANDBOX)%'
-
-    App\Service\Payment\PayPalService:
-        lazy: true
-        arguments:
-            $clientId: '%env(PAYPAL_CLIENT_ID)%'
-            $clientSecret: '%env(PAYPAL_CLIENT_SECRET)%'
-            $environment: '%env(PAYPAL_ENVIRONMENT)%'
 
     # Configuration du gestionnaire de consentement aux cookies
     App\Service\CookieConsentManager:

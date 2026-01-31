@@ -11,7 +11,10 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 #[Route('/admin/account-activations')]
+#[IsGranted('ROLE_SUPPORT')]
 class AccountActivationController extends AbstractController
 {
     public function __construct(
@@ -22,6 +25,7 @@ class AccountActivationController extends AbstractController
     #[Route('/', name: 'admin_account_activations')]
     public function index(EntityManagerInterface $em): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'users');
         $activations = $em->getRepository(User::class)->findBy(["verificationStatut" => "pending"], ['createdAt' => 'DESC']);
 
         return $this->render('admin/pages/account_activations/index.html.twig', [
@@ -32,6 +36,7 @@ class AccountActivationController extends AbstractController
     #[Route('/{id}/approve', name: 'admin_approve_activation', methods: ['POST'])]
     public function approve(User $user, EntityManagerInterface $em, Request $request): Response
     {
+        $this->denyAccessUnlessGranted('EDIT_MODULE', 'users');
         if ($this->isCsrfTokenValid('approve'.$user->getId(), $request->request->get('_token'))) {
             $user->setIsActive(true);
             $user->setVerificationStatut('verified');
@@ -55,6 +60,7 @@ class AccountActivationController extends AbstractController
     #[Route('/{id}/reject', name: 'admin_reject_activation', methods: ['POST'])]
     public function reject(User $user, EntityManagerInterface $em, Request $request): Response
     {
+        $this->denyAccessUnlessGranted('EDIT_MODULE', 'users');
         if ($this->isCsrfTokenValid('reject'.$user->getId(), $request->request->get('_token'))) {
             $user->setVerificationStatut('rejected');
             $user->setVerificationSubmittedAt(null);
@@ -91,6 +97,7 @@ class AccountActivationController extends AbstractController
     #[Route('/{id}', name: 'admin_activation_show', methods: ['GET'])]
     public function show(int $id, EntityManagerInterface $em): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'users');
         $user = $em->getRepository(User::class)->find($id);
         
         if (!$user) {
@@ -98,7 +105,7 @@ class AccountActivationController extends AbstractController
         }
         
         // Vérifier que l'utilisateur a bien une demande d'activation en attente
-        if ($user->getVerificationStatut() !== 'pending' || $user->isActive()) {
+        if ($user->getVerificationStatut() !== 'pending' ) {
             $this->addFlash('warning', 'Cette demande d\'activation n\'est plus en attente.');
             return $this->redirectToRoute('admin_account_activations');
         }

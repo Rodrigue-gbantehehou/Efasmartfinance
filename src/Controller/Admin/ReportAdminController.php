@@ -13,7 +13,10 @@ use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 #[Route('/admin/reports')]
+#[IsGranted('ROLE_SUPPORT')]
 class ReportAdminController extends AbstractController
 {
     #[Route('', name: 'admin_reports', methods: ['GET', 'POST'])]
@@ -23,6 +26,7 @@ class ReportAdminController extends AbstractController
         UserRepository $userRepository,
         TontineRepository $tontineRepository
     ): Response {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'reports');
         // Gérer la soumission du formulaire d'export
         if ($request->isMethod('POST')) {
             $reportType = $request->request->get('report-type');
@@ -101,6 +105,7 @@ class ReportAdminController extends AbstractController
     #[Route('/transactions', name: 'admin_reports_transactions')]
     public function transactions(TransactionRepository $transactionRepository): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'reports');
         $transactions = $transactionRepository->findBy([], ['createdAt' => 'DESC']);
         
         return $this->render('admin/reports/transactions.html.twig', [
@@ -111,6 +116,7 @@ class ReportAdminController extends AbstractController
     #[Route('/users', name: 'admin_reports_users')]
     public function users(UserRepository $userRepository): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'reports');
         $users = $userRepository->findBy([], ['createdAt' => 'DESC']);
         
         return $this->render('admin/reports/users.html.twig', [

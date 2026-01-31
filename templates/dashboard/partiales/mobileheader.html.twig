@@ -12,11 +12,15 @@
        
           <a href="{{path('app_tontine')}}" class="px-2 py-1 rounded-lg bg-green-700 text-white hover:bg-green-700 flex items-center justify-center touch-target" title="Nouvelle tontine">
             <i class="fa-solid fa-plus w-6"></i> Nouvelle Tontine
-          </a> <!-- Mobile Header 
-          <button class="relative h-10 w-10 rounded-lg bg-green-700 hover:bg-green-700 flex items-center justify-center touch-target">
-            <i class="fa-regular fa-bell text-white"></i>
-            <span id="mobileNotificationCount" class="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-warning text-white text-xs flex items-center justify-center">3</span>
-          </button> -->   
+          <a href="{{ path('app_notifications_index') }}" class="relative h-10 w-10 rounded-lg bg-green-700 hover:bg-green-800 flex items-center justify-center touch-target transition-colors">
+            <i class="fa-solid fa-bell text-white"></i>
+            {% set unreadCount = app.user.notifications|filter(n => not n.isRead)|length %}
+            {% if unreadCount > 0 %}
+            <span id="mobileNotificationCount" class="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-warning text-white text-[10px] flex items-center justify-center font-bold">
+                {{ unreadCount }}
+            </span>
+            {% endif %}
+          </a>
         </div>
         
       </div>

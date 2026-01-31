@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
-  <meta name="theme-color" content="#008040">
+  <meta name="theme-color" content="#006400">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -11,6 +11,11 @@
   <meta name="description" content="Tableau de bord des tontines individuelles pour la gestion de vos épargnes." />
   <link rel="icon" href="{{ asset('images/logovert.png') }}" type="image/png">
   
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
   
@@ -33,10 +38,27 @@
     tailwind.config = {
       theme: {
         extend: {
+          fontFamily: {
+            'sans': ['Inter', 'ui-sans-serif', 'system-ui'],
+            'poppins': ['Poppins', 'sans-serif'],
+          },
           colors: {
-            green-700: '#10b94381',
+            'green-700': '#006400', 
+            'pro-green': {
+              50: '#F0F9F1',
+              100: '#DDEFE0',
+              500: '#006400', 
+              600: '#006400', 
+              700: '#006400',
+              900: '#006400',
+            },
+            'pro-gold': {
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706',
+            },
             secondary: '#FBBF24',
-            accent: '#059669',
+            accent: '#006400',
             warning: '#F59E0B',
             danger: '#EF4444',
             light: '#f8f9fa',
@@ -170,8 +192,8 @@
     }
     
     .payment-option.selected {
-      border-color: #008040;
-      background-color: rgba(16, 185, 129, 0.05);
+      border-color: #006400;
+      background-color: rgba(0, 100, 0, 0.05);
     }
     
     .payment-option.selected .check-icon {
@@ -189,7 +211,7 @@
     .spinner {
       border: 3px solid rgba(0, 0, 0, 0.1);
       border-radius: 50%;
-      border-top-color: #008040;
+      border-top-color: #006400;
       animation: spin 1s linear infinite;
     }
     
@@ -274,9 +296,16 @@
       overscroll-behavior-y: contain;
     }
     
+    /* Centralized background color management */
+    :root {
+      --app-bg-primary: #F0F9F1; /* bg-green-50 equivalent - MODIFIER ICI POUR CHANGER LE FOND */
+      --app-bg-secondary: #FFFFFF;
+      --app-bg-tertiary: #DDEFE0; /* bg-green-100 equivalent */
+    }
+    
     /* Selection color */
     ::selection {
-      background-color: rgba(16, 185, 129, 0.3);
+      background-color: rgba(0, 100, 0, 0.3);
     }
   </style>
   <style>
@@ -290,8 +319,8 @@
   
   .alert-success {
     background: white;
-    border-color: rgba(16, 185, 129, 0.2);
-    color: #065f46;
+    border-color: rgba(0, 100, 0, 0.2);
+    color: #004d00;
   }
   
   .alert-error {
@@ -360,7 +389,7 @@
   {% include 'dashboard/links/_css.html.twig' %}
 </head>
 
-<body class="bg-gradient-to-b from-green-50 to-white text-gray-800 min-h-screen flex flex-col safe-top safe-bottom">
+<body class="text-gray-800 min-h-screen flex flex-col safe-top safe-bottom" style="background-color: var(--app-bg-primary);">
 <!-- Flash Messages - Version Centrée -->
 <div id="flash-messages" class="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none p-4">
   {% for label, messages in app.flashes %}
@@ -458,7 +487,7 @@
     {% include "admin/partiales/sidebardesktop.html.twig" %}
 
     <!-- Main Content -->
-    <main id="main-content" class="flex-1 min-w-0 flex flex-col overflow-y-auto scrollbar-hide" role="main">
+    <main id="main-content" class="flex-1 min-w-0 flex flex-col overflow-y-auto scrollbar-hide pb-24 md:pb-0" role="main">
 
       <!-- Desktop Topbar -->
       <div class="flex-1">

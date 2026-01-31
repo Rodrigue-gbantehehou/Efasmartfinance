@@ -3,7 +3,7 @@
 {% block title %}Créer une Tontine - EFA{% endblock %}
 
 {% block body %}
-<div class="min-h-screen bg-green-700">
+<div class="min-h-screen bg-green-50-green-700">
   <main class="max-w-6xl mx-auto px-4 py-8">
     <!-- En-tête -->
     <div class="mb-8 text-center">
@@ -27,7 +27,7 @@
       <!-- ÉTAPE 1 : Type de tontine -->
       <div id="step1" class="step active">
         <div class="text-center mb-10">
-          <h2 class="text-3xl font-black text-yellow-500 tracking-tight">Quel type de tontine ?</h2>
+          <h2 class="text-3xl font-black text-green-700 tracking-tight">Quel type de tontine ?</h2>
           <p class="text-gray-500 mt-2 font-medium">Sélectionnez la formule qui correspond à votre rythme financier</p>
         </div>
 
@@ -152,7 +152,7 @@
       <!-- ÉTAPE 2 : Configuration -->
       <div id="step2" class="step hidden">
         <div class="text-center mb-10">
-          <h2 class="text-3xl font-black text-slate-900 tracking-tight">Paramétrage</h2>
+          <h2 class="text-3xl font-black text-green-500 tracking-tight">Paramétrage</h2>
           <p id="typeDescription"
             class="text-slate-500 mt-2 font-medium italic underline decoration-yellow-500 underline-offset-4">Configurez
             votre tontine</p>
@@ -164,33 +164,38 @@
             <label for="duration"
               class="block text-sm font-black text-slate-900 uppercase tracking-widest mb-4 flex items-center">
               <i class="fas fa-history mr-2 text-yellow-500"></i>
-              Durée de l'engagement (en mois)
+              Durée de la tontine (en mois)
             </label>
             <div class="relative group">
-              <input type="number" id="duration" min="1" max="12" step="1" value="3"
+              <input type="number" id="duration" min="1" max="12" step="1" value="1"
                 class="w-full px-8 py-5 bg-slate-50 border-2 border-slate-50 rounded-2xl focus:border-green-700 focus:bg-white focus:ring-[12px] focus:ring-green-50 transition-all outline-none font-black text-2xl text-slate-900 placeholder:text-slate-200">
               <span
                 class="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 font-black text-lg group-focus-within:text-green-700 transition-colors">MOIS</span>
             </div>
-            <p id="durationInfo" class="text-xs text-slate-400 mt-3 font-medium"></p>
+            <p id="durationInfo" class="text-xs text-slate-400 mt-3 font-medium flex items-center">
+              <i class="fas fa-info-circle mr-2 text-yellow-500"></i>
+              La durée de la tontine est limitée entre 1 et 12 mois.
+            </p>
           </div>
 
           <!-- Montant -->
           <div class="space-y-4">
             <label class="block text-sm font-black text-slate-900 uppercase tracking-widest mb-4 flex items-center">
               <i class="fas fa-money-bill-wave mr-2 text-yellow-500"></i>
-              Montant par versement
+              Montant à payer par cotisation
             </label>
             <div class="relative group">
               <span
                 class="absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 font-black text-lg group-focus-within:text-green-700 transition-colors">FCFA</span>
-              <input type="number" id="amount" min="500" step="100"
+              <input type="number" id="amount" min="100" step="100"
                 class="w-full pl-20 pr-8 py-5 bg-slate-50 border-2 border-slate-50 rounded-2xl focus:border-green-700 focus:bg-white focus:ring-[12px] focus:ring-green-50 transition-all outline-none font-black text-2xl text-slate-900 placeholder:text-slate-200"
-                placeholder="0 000">
+                placeholder="100">
             </div>
 
             <!-- Suggestions Modernes -->
             <div class="flex flex-wrap gap-3 mt-4">
+              <button type="button" data-amount="100"
+                class="amount-btn flex-1 min-w-[80px] py-3 px-4 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-600 hover:border-green-700 hover:text-green-700 transition-all active:scale-95 shadow-sm">100</button>
               <button type="button" data-amount="500"
                 class="amount-btn flex-1 min-w-[80px] py-3 px-4 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-600 hover:border-green-700 hover:text-green-700 transition-all active:scale-95 shadow-sm">500</button>
               <button type="button" data-amount="1000"
@@ -225,30 +230,30 @@
               <i class="fas fa-piggy-bank text-9xl"></i>
             </div>
 
-            <h3 class="font-black text-xs uppercase tracking-[0.3em] text-yellow-500 mb-8 flex items-center">
-              Simulation Financière
+            <h3 class="font-black text-xl uppercase tracking-[0.3em] text-yellow-500 mb-8 flex items-center">
+              Prévisualisation
             </h3>
 
             <div class="grid grid-cols-2 gap-8 mb-10">
               <div class="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10">
                 <div id="previewPoints" class="text-3xl font-black text-white">--</div>
-                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Versements</div>
+                <div class="text-sm font-bold text-slate-400 uppercase tracking-widest mt-1">Versements</div>
               </div>
               <div class="bg-white/5 backdrop-blur-md rounded-2xl p-4 border border-white/10">
                 <div id="previewTotal" class="text-3xl font-black text-green-400">--</div>
-                <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Total Brut</div>
+                <div class="text-sm font-bold text-slate-400 uppercase tracking-widest mt-1">Total Brut</div>
               </div>
             </div>
 
             <div class="space-y-4 relative z-10">
               <div class="flex justify-between text-sm">
-                <span class="text-slate-400 font-medium">Frais de service :</span>
+                <span class="text-white font-medium">Frais de service :</span>
                 <span id="previewFees" class="font-black text-yellow-500">--</span>
               </div>
               <div class="pt-6 border-t border-white/10">
                 <div class="flex justify-between items-end">
                   <div>
-                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Pécule Net Estimé
+                    <p class="text-xl font-black text-slate-400 uppercase tracking-widest mb-1">Montant Net à Recevoir
                     </p>
                     <span id="previewNet" class="text-4xl font-black text-white tracking-tighter">--</span>
                   </div>
@@ -263,7 +268,7 @@
       <div id="step3" class="step hidden">
         <input type="hidden" id="tontine_csrf" value="{{ csrf_token('tontine_create') }}">
         <div class="text-center mb-10">
-          <h2 class="text-3xl font-black text-slate-900 tracking-tight">Finalisation</h2>
+          <h2 class="text-3xl font-black text-slate-900 tracking-tight">Bilan</h2>
           <p class="text-slate-500 mt-2 font-medium">Une dernière vérification avant de commencer</p>
         </div>
 
@@ -274,10 +279,6 @@
               <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm">
                 <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Formule choisie</p>
                 <div class="flex items-center">
-                  <div id="confirmIcon"
-                    class="w-10 h-10 rounded-xl bg-yellow-100 flex items-center justify-center mr-4 text-green-700 font-bold">
-                    <!-- Icon -->
-                  </div>
                   <span id="confirmType" class="text-xl font-black text-slate-900">--</span>
                 </div>
               </div>
@@ -298,40 +299,91 @@
               class="bg-green-700 rounded-[2rem] p-8 text-white flex flex-col justify-between shadow-xl shadow-green-900/20">
               <div class="space-y-4">
                 <div class="flex justify-between items-center text-sm">
-                  <span class="opacity-60">Épargne brute :</span>
+                  <span class="opacity-60">Montant total à cotiser :</span>
                   <span id="confirmTotal" class="font-bold">--</span>
                 </div>
                 <div class="flex justify-between items-center text-sm text-yellow-400 font-bold">
-                  <span>Frais inclus :</span>
+                  <span>Frais de service :</span>
                   <span id="confirmFees">--</span>
                 </div>
               </div>
               <div class="mt-8 pt-8 border-t border-white/10">
-                <p class="text-[10px] font-black opacity-60 uppercase tracking-widest mb-2">Pécule Net Garanti</p>
+                <p class="text-[10px] font-black opacity-60 uppercase tracking-widest mb-2">Montant Total à Recevoir</p>
                 <div id="confirmNet" class="text-4xl font-black text-white tracking-tighter">--</div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Nom de la tontine -->
-        <div class="space-y-6 mb-10">
-          <label class="block text-sm font-black text-slate-900 uppercase tracking-widest mb-4 flex items-center">
-            <i class="fas fa-edit mr-2 text-yellow-500"></i>
-            Nom du projet d'épargne
-          </label>
+        <div class="space-y-4">
+          <!-- Select pour les suggestions -->
           <div class="relative group">
-            <input type="text" id="name" maxlength="30"
-              class="w-full px-8 py-5 bg-slate-50 border-2 border-slate-50 rounded-2xl focus:border-green-700 focus:bg-white transition-all outline-none font-bold text-slate-900"
-              placeholder="Ex: Voyage, Mariage, Achat terrain...">
-            <span id="charCount"
-              class="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-black text-slate-300">0/30</span>
+            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Choisir un projet
+              type</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-green-700">
+                <i class="fas fa-list-ul"></i>
+              </div>
+              <select id="projectSelect"
+                class="w-full pl-14 pr-12 py-5 bg-slate-50 border-2 border-slate-50 rounded-2xl focus:border-green-700 focus:bg-white transition-all outline-none font-bold text-slate-900 appearance-none cursor-pointer">
+                <option value="" disabled selected>Sélectionnez un type de projet...</option>
+                <optgroup label="Immobilier & Patrimoine">
+                  <option value="Achat de terrain">Achat de terrain</option>
+                  <option value="Achat de maison">Achat de maison</option>
+                  <option value="Construction / Rénovation">Construction / Rénovation</option>
+                </optgroup>
+                <optgroup label="Transport">
+                  <option value="Achat de voiture">Achat de voiture</option>
+                  <option value="Achat de moto">Achat de moto</option>
+                </optgroup>
+                <optgroup label="Famille & Éducation">
+                  <option value="Frais de scolarité">Frais de scolarité</option>
+                  <option value="Mariage / Cérémonie">Mariage / Cérémonie</option>
+                  <option value="Épargne Naissance">Épargne Naissance</option>
+                </optgroup>
+                <optgroup label="Business & Investissement">
+                  <option value="Fonds de commerce / Business">Fonds de commerce / Business</option>
+                  <option value="Achat de stock / Marchandises">Achat de stock / Marchandises</option>
+                  <option value="Projet Agricole">Projet Agricole</option>
+                  <option value="Épargne Retraite">Épargne Retraite</option>
+                </optgroup>
+                <optgroup label="Équipement & Loisirs">
+                  <option value="Achat Électroménager">Achat Électroménager</option>
+                  <option value="Épargne Voyage / Vacances">Épargne Voyage / Vacances</option>
+                  <option value="Achat Appareils (iPhone, PC...)">Achat Appareils (iPhone, PC...)</option>
+                </optgroup>
+                <optgroup label="Prévoyance">
+                  <option value="Fonds d'urgence">Fonds d'urgence</option>
+                  <option value="Santé / Bien-être">Santé / Bien-être</option>
+                </optgroup>
+                <option value="other">Autre (Saisie personnalisée...)</option>
+              </select>
+              <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none text-slate-400">
+                <i class="fas fa-chevron-down text-xs"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Champ libre (affiché si 'Autre' est choisi) -->
+          <div id="customNameContainer" class="hidden animate-fade-in">
+            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Saisie
+              personnalisée</label>
+            <div class="relative group">
+              <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-yellow-500">
+                <i class="fas fa-edit"></i>
+              </div>
+              <input type="text" id="name" maxlength="30"
+                class="w-full pl-14 pr-20 py-5 bg-slate-50 border-2 border-slate-100 rounded-2xl focus:border-green-700 focus:bg-white transition-all outline-none font-bold text-slate-900"
+                placeholder="Ex: Mon beau projet...">
+              <span id="charCount"
+                class="absolute right-6 top-1/2 -translate-y-1/2 text-xs font-black text-slate-300">0/30</span>
+            </div>
           </div>
         </div>
 
         <!-- Conditions -->
         <label
-          class="flex items-center space-x-4 cursor-pointer group p-4 rounded-2xl hover:bg-slate-50 transition-all border border-transparent hover:border-slate-100">
+          class="flex items-center space-x-4 cursor-pointer group p-4 rounded-2xl hover:bg-slate-50 transition-all border border-transparent hover:border-slate-100 mt-8">
           <div class="relative">
             <input type="checkbox" id="terms" class="peer sr-only">
             <div
@@ -369,7 +421,7 @@
     </div>
 
     <!-- Informations -->
-    <div class="text-center space-y-1 text-sm text-gray-500">
+    <div class="text-center space-y-1 text-sm text-white">
       <p>Vous pouvez avoir jusqu'à 3 tontines actives</p>
       <p>Toutes vos épargnes sont 100% sécurisées</p>
     </div>
@@ -450,7 +502,7 @@
   let data = {
     type: null,
     amount: null,
-    duration: 3,
+    duration: 1,
     startDate: new Date().toISOString().split('T')[0],
     name: ''
   };
@@ -547,10 +599,11 @@
     const durationInfo = document.getElementById('durationInfo');
     if (durationInfo) {
       if (data.type === 'monthly') {
-        durationInfo.textContent = '⚠️ La tontine mensuelle nécessite une durée minimale de 3 mois';
-        durationInfo.className = 'text-xs text-yellow-600 mt-2';
+        durationInfo.innerHTML = '<i class="fas fa-exclamation-triangle mr-2 text-yellow-600"></i> ⚠️ La tontine mensuelle nécessite une durée minimale de 3 mois (Max 12 mois)';
+        durationInfo.className = 'text-xs text-yellow-600 mt-3 font-bold flex items-center';
       } else {
-        durationInfo.textContent = '';
+        durationInfo.innerHTML = '<i class="fas fa-info-circle mr-2 text-yellow-500"></i> La durée de la tontine est limitée entre 1 et 12 mois.';
+        durationInfo.className = 'text-xs text-slate-400 mt-3 font-medium flex items-center';
       }
     }
   }
@@ -561,7 +614,7 @@
     const points = calculatePoints();
     const total = points * data.amount;
 
-    if (data.amount >= 500 && data.type) {
+    if (data.amount >= 100 && data.type) {
       preview.classList.remove('hidden');
 
       // Les frais = montant d'un versement
@@ -686,7 +739,7 @@
     } else if (step === 2) {
       const type = data.type ? tontineTypes[data.type] : null;
       const validDuration = type && data.duration >= type.minDuration && data.duration <= type.maxDuration;
-      if (btnNext) btnNext.disabled = !(data.amount >= 500 && validDuration);
+      if (btnNext) btnNext.disabled = !(data.amount >= 100 && validDuration);
     } else if (step === 3) {
       const nameValid = data.name && data.name.trim().length > 0;
       const termsChecked = document.getElementById('terms') ? document.getElementById('terms').checked : false;
@@ -762,7 +815,29 @@
     const durationInput = document.getElementById('duration');
     if (durationInput) {
       durationInput.addEventListener('input', function () {
-        data.duration = parseInt(this.value);
+        let value = parseInt(this.value);
+        if (value > 12) {
+          value = 12;
+          this.value = 12;
+        } else if (value < 1) {
+          // Allow empty for better typing experience, but clamp on blur or set to 1 for calculation
+          value = isNaN(value) ? 1 : value;
+        }
+        data.duration = value;
+        updateUI();
+        updatePreview();
+      });
+
+      // Clamp correctly on blur if they left it empty or invalid
+      durationInput.addEventListener('blur', function () {
+        let value = parseInt(this.value);
+        if (isNaN(value) || value < 1) {
+          this.value = 1;
+          data.duration = 1;
+        } else if (value > 12) {
+          this.value = 12;
+          data.duration = 12;
+        }
         updateUI();
         updatePreview();
       });
@@ -782,10 +857,29 @@
     // Nom et compteur de caractères
     const nameInput = document.getElementById('name');
     const charCount = document.getElementById('charCount');
+    const projectSelect = document.getElementById('projectSelect');
+    const customNameContainer = document.getElementById('customNameContainer');
+
     if (nameInput && charCount) {
       nameInput.addEventListener('input', function () {
         data.name = this.value;
         charCount.textContent = `${this.value.length}/30`;
+        updateUI();
+      });
+    }
+
+    // Gestion du Select des projets
+    if (projectSelect) {
+      projectSelect.addEventListener('change', function () {
+        if (this.value === 'other') {
+          customNameContainer.classList.remove('hidden');
+          nameInput.value = '';
+          data.name = '';
+        } else {
+          customNameContainer.classList.add('hidden');
+          data.name = this.value;
+          nameInput.value = this.value;
+        }
         updateUI();
       });
     }
@@ -803,7 +897,7 @@
         if (step === 1 && !data.type) return;
         if (step === 2) {
           const type = tontineTypes[data.type];
-          if (!data.amount || data.amount < 500) return;
+          if (!data.amount || data.amount < 100) return;
           if (data.duration < type.minDuration || data.duration > type.maxDuration) return;
         }
 
@@ -931,103 +1025,4 @@
 
 </script>
 
-<style>
-  /* Styles */
-  .tontine-card {
-    transition: all 0.2s ease;
-  }
-
-  .tontine-card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  }
-
-  .duration-slider {
-    height: 6px;
-    border-radius: 3px;
-    background: #e5e7eb;
-    outline: none;
-  }
-
-  .duration-slider::-webkit-slider-thumb {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    background: #008040;
-    cursor: pointer;
-    border: 3px solid white;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: background 0.2s;
-  }
-
-  .duration-slider::-webkit-slider-thumb:hover {
-    background: #059669;
-  }
-
-  .amount-btn {
-    @apply px-3 py-2 text-sm border border-gray-300 rounded-lg hover:border-green-500 hover:text-green-600 hover:bg-green-50 transition-colors;
-  }
-
-  .btn-green-700 {
-    @apply px-6 py-3 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed;
-  }
-
-  .btn-secondary {
-    @apply px-6 py-3 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors;
-  }
-
-  .btn-success {
-    @apply px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm hover:shadow;
-  }
-
-  .step {
-    animation: fadeIn 0.3s ease;
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Couleurs pour les types */
-  .bg-blue-100 {
-    background-color: #dbeafe !important;
-  }
-
-  .text-blue-600 {
-    color: #2563eb !important;
-  }
-
-  .bg-green-100 {
-    background-color: #d1fae5 !important;
-  }
-
-  .text-green-600 {
-    color: #059669 !important;
-  }
-
-  .bg-purple-100 {
-    background-color: #f3e8ff !important;
-  }
-
-  .text-purple-600 {
-    color: #7c3aed !important;
-  }
-
-  /* Animation pour le checkmark */
-  .checkmark {
-    transition: all 0.2s ease;
-  }
-
-  .checkmark svg {
-    transition: opacity 0.2s ease;
-  }
-</style>
 {% endblock %}

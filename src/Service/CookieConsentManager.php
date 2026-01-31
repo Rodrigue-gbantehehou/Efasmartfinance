@@ -49,16 +49,68 @@ class CookieConsentManager
         $this->entityManager->flush();
 
         // Mettre à jour le cookie du navigateur
-        $this->setConsentCookie(true, [
-            'analytics' => $consent->isAnalyticsCookies(),
-            'marketing' => $consent->isMarketingCookies(),
-            'preferences' => $consent->isPreferencesCookies(),
-            'version' => $consent->getConsentVersion(),
-            'consentDate' => $consent->getConsentDate()->format('c'),
-            'userId' => $user ? $user->getId() : null
-        ]);
+        $cookie = $this->createCookie($consentData);
+        if ($cookie) {
+            $this->attachCookieToResponse($cookie);
+        }
 
         return $consent;
+    }
+
+    /**
+     * Crée l'objet Cookie sans l'attacher à une réponse
+     */
+    public function createCookie(array $consentData): ?\Symfony\Component\HttpFoundation\Cookie
+    {
+        $request = $this->requestStack->getCurrentRequest();
+        if (!$request) {
+            return null;
+        }
+
+        $cookieData = [
+            'accepted' => true,
+            'consent' => $consentData,
+            'timestamp' => time()
+        ];
+
+        return new \Symfony\Component\HttpFoundation\Cookie(
+            self::COOKIE_NAME,
+            json_encode($cookieData),
+            time() + (self::COOKIE_EXPIRY * 24 * 60 * 60),
+            '/',
+            null,
+            $request->isSecure(),
+            true, // httpOnly
+            false,
+            'Lax'
+        );
+    }
+
+    /**
+     * Tente d'attacher un cookie à la réponse actuelle via la session
+     */
+    private function attachCookieToResponse(\Symfony\Component\HttpFoundation\Cookie $cookie): void
+    {
+        $request = $this->requestStack->getCurrentRequest();
+        if (!$request) {
+            return;
+        }
+
+        // Récupérer la réponse depuis l'événement courant ou en créer une nouvelle
+        $response = $request->hasSession() && $request->getSession()->has('_response')
+            ? $request->getSession()->get('_response')
+            : new \Symfony\Component\HttpFoundation\Response();
+
+        $response->headers->setCookie($cookie);
+
+        // Stocker la réponse pour qu'elle soit utilisée plus tard si la session est disponible
+        if ($request->hasSession()) {
+            try {
+                $request->getSession()->set('_response', $response);
+            } catch (\Exception $e) {
+                // Si la session n'est pas démarrée ou autre erreur, on ignore
+            }
+        }
     }
 
     public function getLatestConsent(?User $user): ?CookieConsent
@@ -136,40 +188,9 @@ class CookieConsentManager
 
     private function setConsentCookie(bool $accepted, array $consentData = []): void
     {
-        // Important: on doit pouvoir accéder à la réponse actuelle
-        $request = $this->requestStack->getCurrentRequest();
-        if (!$request) {
-            return;
-        }
-        
-        // Récupérer la réponse depuis l'événement courant
-        $response = $request->hasSession() && $request->getSession()->has('_response') 
-            ? $request->getSession()->get('_response')
-            : new \Symfony\Component\HttpFoundation\Response();
-        
-        $cookieData = [
-            'accepted' => $accepted,
-            'consent' => $consentData,
-            'timestamp' => time()
-        ];
-
-        $cookie = new \Symfony\Component\HttpFoundation\Cookie(
-            self::COOKIE_NAME,
-            json_encode($cookieData),
-            time() + (self::COOKIE_EXPIRY * 24 * 60 * 60),
-            '/',
-            null,
-            $request->isSecure(),
-            true, // httpOnly
-            false,
-            'Lax'
-        );
-
-        $response->headers->setCookie($cookie);
-        
-        // Stocker la réponse pour qu'elle soit utilisée plus tard
-        if ($request->hasSession()) {
-            $request->getSession()->set('_response', $response);
+        $cookie = $this->createCookie($consentData);
+        if ($cookie) {
+            $this->attachCookieToResponse($cookie);
         }
     }
 

@@ -6,6 +6,8 @@ namespace App\Service\Payment;
 use App\Entity\Transaction;
 use Kkiapay\Kkiapay;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class KkiaPayService
 {
@@ -13,21 +15,48 @@ class KkiaPayService
     private ?LoggerInterface $logger;
     private string $publicKey;
     private string $privateKey;
+    private string $secretKey;
+    private bool $sandbox;
 
     public function __construct(
         string $publicKey,
         string $privateKey,
         string $secretKey,
-        ?LoggerInterface $logger = null,
-        bool $sandbox = true
+        bool $sandbox = true,
+        ?LoggerInterface $logger = null
     ) {
         $this->publicKey = $publicKey;
         $this->privateKey = $privateKey;
-        $this->kkiapay = new Kkiapay($publicKey, $privateKey, $secretKey, $sandbox);
+        $this->secretKey = $secretKey;
+        $this->sandbox = $sandbox;
+        
+        $this->validateConfiguration();
+        
+        $this->kkiapay = new Kkiapay(
+            $this->publicKey,
+            $this->privateKey,
+            $this->secretKey,
+            $this->sandbox
+        );
         $this->logger = $logger;
     }
     
-    public function initPayment(Transaction $payment, array $options = []): array
+    private function validateConfiguration(): void
+    {
+        $requiredKeys = ['publicKey', 'privateKey', 'secretKey'];
+        
+        foreach ($requiredKeys as $key) {
+            $value = $this->$key;
+            if (empty($value) || !is_string($value)) {
+                throw new \RuntimeException(sprintf(
+                    'La clé KkiaPay "%s" n\'est pas configurée correctement',
+                    $key
+                ));
+            }
+        }
+    }
+    
+  public function initPayment(Transaction $payment, array $options = []): array
     {
         return [
             'public_key' => $this->publicKey,
@@ -94,4 +123,21 @@ class KkiaPayService
             return $errorResponse;
         }
      }
- }
+    
+    /**
+     * Webhook signature verification
+     */
+    public function verifyWebhookSignature(Request $request): bool
+    {
+        $signature = $request->headers->get('X-KKIAPAY-SIGNATURE');
+        $payload = $request->getContent();
+        
+        if (!$signature || !$payload) {
+            return false;
+        }
+        
+        $expectedSignature = hash_hmac('sha256', $payload, $this->secretKey);
+        
+        return hash_equals($expectedSignature, $signature);
+    }
+}

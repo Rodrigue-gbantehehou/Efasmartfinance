@@ -35,17 +35,14 @@ class CompteController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             // Gestion des fichiers téléchargés
             $documentFront = $form->get('documentFront')->getData();
-            $documentBack = $form->get('documentBack')->getData();
             $selfie = $form->get('selfie')->getData();
 
             // Traitement des fichiers téléchargés
-            if ($documentFront && $documentBack) {
+            if ($documentFront) {
                 $frontPath = $this->uploadFile($documentFront, 'documents');
-                $backPath = $this->uploadFile($documentBack, 'documents');
                 $selfiePath = $selfie ? $this->uploadFile($selfie, 'selfies') : null;
 
                 // Mise à jour des chemins des fichiers
-                $user->setDocumentBack($backPath);
                 $user->setDocumentFront($frontPath);
                 $user->setSelfie($selfiePath);
 
@@ -67,7 +64,7 @@ class CompteController extends AbstractController
                 $this->addFlash('success', 'Votre demande de vérification a été soumise avec succès. Notre équipe va la traiter sous 24-48h.');
                 return $this->redirectToRoute('app_dashboard');
             } else {
-                $this->addFlash('error', 'Veuillez télécharger les deux faces de votre pièce d\'identité.');
+                $this->addFlash('error', 'Veuillez télécharger le recto de votre pièce d\'identité.');
             }
         } elseif ($form->isSubmitted() && !$form->isValid()) {
             // Afficher les erreurs de validation

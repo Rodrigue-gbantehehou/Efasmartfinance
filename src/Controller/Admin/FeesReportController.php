@@ -12,7 +12,10 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 #[Route('/admin/fees')]
+#[IsGranted('ROLE_SUPPORT')]
 class FeesReportController extends AbstractController
 {
     public function __construct(
@@ -24,6 +27,7 @@ class FeesReportController extends AbstractController
     #[Route('', name: 'app_admin_fees')]
     public function index(): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'fees');
         $today = new \DateTimeImmutable();
         
         return $this->render('admin/pages/fees/index.html.twig', [
@@ -42,6 +46,7 @@ class FeesReportController extends AbstractController
     #[Route('/by-tontine/{id}', name: 'app_admin_fees_by_tontine')]
     public function byTontine(int $id): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'fees');
         $tontine = $this->tontineRepository->find($id);
         
         if (!$tontine) {
@@ -60,6 +65,7 @@ class FeesReportController extends AbstractController
     #[Route('/by-user/{id}', name: 'app_admin_fees_by_user')]
     public function byUser(int $id): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'fees');
         $user = $this->userRepository->find($id);
         
         if (!$user) {

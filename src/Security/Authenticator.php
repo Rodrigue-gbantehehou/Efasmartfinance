@@ -3,7 +3,7 @@
 namespace App\Security;
 
 use App\Entity\User;
-use App\Service\TwoFactorAuthService;
+use App\Service\PinAuthService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -29,7 +29,7 @@ class Authenticator extends AbstractLoginFormAuthenticator
     public function __construct(
         private UrlGeneratorInterface $urlGenerator,
         private EntityManagerInterface $entityManager,
-        private TwoFactorAuthService $twoFactorAuthService
+        private PinAuthService $pinAuthService
     ) {}
 
     public function authenticate(Request $request): Passport
@@ -84,8 +84,30 @@ class Authenticator extends AbstractLoginFormAuthenticator
         $user->setLastLoginAt(new \DateTimeImmutable());
         $this->entityManager->flush();
 
-        // Le bundle scheb/2fa-bundle gère automatiquement la redirection vers 2FA
-        // si l'utilisateur a activé le 2FA
+        // Reset PIN verification status for every new connection
+        $session = $request->getSession();
+        $session->remove('pin_verified');
+        $session->remove('pin_verified_at');
+
+        // Check if user has PIN configured
+        if (!$user->hasPinAuth()) {
+            return new RedirectResponse($this->urlGenerator->generate('pin_setup'));
+        }
+
+        // Always redirect to PIN verification after password check
+        // Store target path for after PIN verification
+        if ($targetPath = $this->getTargetPath($session, $firewallName)) {
+            // Sanitize targetPath: ignore if it's an API route or special route
+            if (str_contains($targetPath, '/api/') || str_contains($targetPath, '/check-session')) {
+                $session->set('_security.main.target_path', $this->urlGenerator->generate('app_tontines_index'));
+            } else {
+                $session->set('_security.main.target_path', $targetPath);
+            }
+        } else {
+            $session->set('_security.main.target_path', $this->urlGenerator->generate('app_tontines_index'));
+        }
+        
+        return new RedirectResponse($this->urlGenerator->generate('pin_verify'));
 
         if ($targetPath = $this->getTargetPath($request->getSession(), $firewallName)) {
             return new RedirectResponse($targetPath);

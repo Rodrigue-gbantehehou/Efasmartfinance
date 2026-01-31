@@ -175,7 +175,7 @@ class SettingsApiController extends AbstractController
                 'security' => [
                     'hasPassword' => !empty($user->getPassword()),
                     'lastPasswordChange' => $user->getPasswordChangedAt() ? $user->getPasswordChangedAt()->format('Y-m-d H:i:s') : null,
-                    'twoFactorEnabled' => false // Update this if you implement 2FA
+                    'pinEnabled' => $settings ? $settings->isPinEnabled() : false
                 ]
             ]);
         }

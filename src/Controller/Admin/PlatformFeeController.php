@@ -11,12 +11,13 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/platform-fees')]
-#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_SUPPORT')]
 class PlatformFeeController extends AbstractController
 {
     #[Route('/', name: 'admin_platform_fees_index', methods: ['GET'])]
     public function index(PlatformFeeRepository $platformFeeRepository): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'fees');
         $fees = $platformFeeRepository->findBy([], ['createdAt' => 'DESC']);
         $now = new \DateTime();
         

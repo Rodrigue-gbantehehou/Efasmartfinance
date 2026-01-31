@@ -1,0 +1,176 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Administration — Guichet{% endblock %}
+
+{% block contentadmin %}
+<div class="min-h-screen bg-green-50">
+    <!-- Header sophistiqué (Inspiré du Dashboard Admin) -->
+    <div class="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-10">
+        <div class="px-6 py-5">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold font-poppins text-gray-900 tracking-tight">Espace Guichet</h1>
+                    <p class="text-sm font-medium text-gray-500 mt-0.5">Gestion des encaissements physiques et suivi du jour</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center space-x-2 bg-green-800p-1.5 rounded-lg border border-green-800">
+                        <span class="w-2 h-2 bg-green-800 rounded-full animate-pulse mx-2"></span>
+                        <span class="pr-3 text-[10px] font-black uppercase tracking-widest text-green-800">Terminal Actif</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenu -->
+    <div class="p-6 space-y-8">
+        
+        <!-- Action Principale : Nouveau Versement -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Bouton Encaisser -->
+            <div class="md:col-span-2 bg-green-800 p-8 rounded-[2.5rem] text-white flex items-center justify-between group hover:shadow-2xl hover:shadow-green-800 transition-all cursor-pointer relative overflow-hidden" onclick="window.location.href='{{ path('admin_caisse_index') }}'">
+                <div class="relative z-10">
+                    <h4 class="text-xs font-black uppercase tracking-[0.2em] opacity-80 mb-2">Opération Prioritaire</h4>
+                    <h2 class="text-3xl font-black font-poppins mb-1">Nouvel Encaissement</h2>
+                    <p class="text-green-800text-sm font-medium opacity-90">Démarrer un versement pour un client physique</p>
+                </div>
+                <div class="w-16 h-16 rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-md group-hover:scale-110 transition-transform">
+                    <i class="fas fa-plus text-2xl"></i>
+                </div>
+                <i class="fas fa-cash-register absolute -right-4 -bottom-4 text-8xl opacity-10 group-hover:rotate-12 transition-transform duration-700"></i>
+            </div>
+
+            <!-- Stats Rapide -->
+            <div class="bg-white rounded-[2.5rem] border border-gray-100 p-8 shadow-sm flex flex-col justify-center">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <span class="text-[9px] font-black text-blue-600 bg-blue-50 px-2.5 py-1 rounded-full uppercase tracking-tighter">Flux du jour</span>
+                </div>
+                <h3 class="text-3xl font-black font-poppins text-gray-900">{{ clients_served }}</h3>
+                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Clients Servis Aujourd'hui</p>
+            </div>
+        </div>
+
+        <!-- Cartes Statistiques Secondaires -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Recette Espèces -->
+            <div class="group bg-white rounded-[2.5rem] border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/5 hover:-translate-y-1 flex items-center gap-4 cursor-pointer">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white">
+                    <i class="fas fa-wallet text-lg"></i>
+                </div>
+                <div >
+                    <h3 class="text-2xl font-bold font-poppins text-gray-900">{{ today_revenue|number_format(0, ',', ' ') }} <span class="text-xs">FCFA</span></h3>
+                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Encaissé (Espèces)</p>
+                </div>
+            </div>
+
+            <!-- Aide & Support -->
+            <div class="group bg-white rounded-[2.5rem] border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/5 hover:-translate-y-1 flex items-center gap-4 cursor-pointer" onclick="window.location.href='{{ path('admin_users') }}'">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center group-hover:bg-indigo-600 group-hover:text-white">
+                    <i class="fas fa-users text-lg"></i>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-gray-900">Annuaire Client</h4>
+                    <p class="text-[10px] font-black text-gray-400 uppercase">Voir Portefeuilles</p>
+                </div>
+            </div>
+
+            <!-- État PDF -->
+            <div class="bg-white rounded-[2.5rem] border border-gray-100 p-6 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-gray-50 text-gray-400 flex items-center justify-center">
+                    <i class="fas fa-file-pdf text-lg"></i>
+                </div>
+                <div>
+                    <h4 class="text-sm font-bold text-gray-900">Service PDF</h4>
+                    <p class="text-[10px] font-black text-green-800 uppercase">Actif & Sécurisé</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Section Tableau & Sidebar -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Historique (Inspiré du Dashboard Admin) -->
+            <div class="lg:col-span-2 bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm">
+                <div class="px-8 py-6 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
+                    <div class="flex items-center gap-3">
+                        <i class="fas fa-history text-gray-400 text-xs"></i>
+                        <h3 class="text-sm font-bold font-poppins text-gray-900 uppercase tracking-widest">Derniers Encaissements</h3>
+                    </div>
+                    <a href="{{ path('admin_transactions') }}" class="text-[10px] font-black text-green-800 hover:text-green-800 uppercase tracking-widest">Voir Journal</a>
+                </div>
+                
+                <div class="divide-y divide-gray-50">
+                    {% for transaction in recent_transactions %}
+                    <div class="flex items-center gap-4 px-8 py-5 hover:bg-green-80020 transition-all group">
+                        <div class="w-12 h-12 rounded-xl bg-gray-100 flex items-center justify-center text-gray-700 font-black text-sm group-hover:bg-green-800 group-hover:text-white transition-colors">
+                            {{ transaction.utilisateur.firstname|first }}{{ transaction.utilisateur.lastname|first }}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-bold text-gray-900">{{ transaction.utilisateur.fullName }}</p>
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ transaction.tontine.name[:30] }}...</p>
+                        </div>
+                        <div class="text-right flex flex-col items-end gap-2">
+                             <div class="text-sm font-black text-gray-900">{{ transaction.amount|number_format(0, ',', ' ') }} FCFA</div>
+                             <div class="flex items-center gap-2">
+                                <span class="text-[9px] font-bold text-gray-400 uppercase">{{ transaction.createdAt|date('H:i') }}</span>
+                                <a href="{{ path('admin_caisse_receipt_download', {id: transaction.id}) }}" class="w-7 h-7 rounded-lg bg-green-800flex items-center justify-center text-green-800 hover:bg-green-800 hover:text-white transition-all shadow-sm">
+                                    <i class="fas fa-download text-[10px]"></i>
+                                </a>
+                             </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-20 p-8">
+                        <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center text-gray-300 mb-4 mx-auto">
+                            <i class="fas fa-cash-register text-2xl"></i>
+                        </div>
+                        <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Aucune opération aujourd'hui</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Sidebar Info/Sécurité -->
+            <div class="space-y-6">
+                <!-- Rappel Sécurité -->
+                <div class="bg-green-800 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-xl">
+                    <h3 class="text-sm font-bold font-poppins uppercase tracking-widest mb-6">Procédures Guichet</h3>
+                    <div class="space-y-5">
+                        <div class="flex gap-4">
+                            <div class="w-8 h-8 rounded-lg bg-green-800/10 flex items-center justify-center shrink-0 border border-green-800/20">
+                                <i class="fas fa-print text-green-800 text-xs"></i>
+                            </div>
+                            <p class="text-xs font-medium text-white leading-relaxed">Remise systématique du reçu au client après validation.</p>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0 border border-amber-500/20">
+                                <i class="fas fa-user-shield text-amber-500 text-xs"></i>
+                            </div>
+                            <p class="text-xs font-medium text-white leading-relaxed">Vérification de l'identité du client pour tout versement > 500k.</p>
+                        </div>
+                    </div>
+                    <div class="mt-8 pt-6 border-t border-white/5">
+                        <p class="text-[9px] font-black text-white uppercase italic">Support Technique</p>
+                        <p class="text-[10px] font-bold text-green-800">Interne: 201 / Mobile: +237 ...</p>
+                    </div>
+                </div>
+
+                <!-- Footer style Platform -->
+                <div class="text-center py-4">
+                    <p class="text-[10px] font-black text-gray-300 uppercase tracking-[0.4em]">
+                        EFA SMART FINANCE &copy; {{ "now"|date("Y") }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap');
+    .font-poppins { font-family: 'Poppins', sans-serif; }
+</style>
+{% endblock %}

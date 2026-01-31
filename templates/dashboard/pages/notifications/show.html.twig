@@ -1,0 +1,223 @@
+{% extends "dashboard/base.html.twig" %}
+
+{% block title %}{{ notification.title }} - EFA SMART FINANCE{% endblock %}
+
+{% block contentdashboard %}
+<div class="min-h-screen py-6 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto">
+        <!-- Back Button -->
+        <div class="mb-6">
+            <a href="{{ path('app_notifications_index') }}" 
+               class="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors group">
+                <i class="fa-solid fa-arrow-left transform group-hover:-translate-x-1 transition-transform"></i>
+                <span class="font-medium">Retour aux notifications</span>
+            </a>
+        </div>
+
+        <!-- Main Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <!-- Header with Avatar and Meta -->
+            <div class="p-6 border-b border-gray-100">
+                <div class="flex items-start gap-4">
+                    <!-- Avatar -->
+                    <div class="relative flex-shrink-0">
+                        <div class="h-16 w-16 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-md
+                            {% if 'tontine' in notification.title|lower or 'tontine' in notification.message|lower %}
+                                bg-gradient-to-br from-purple-500 to-purple-600
+                            {% elseif 'portefeuille' in notification.title|lower or 'wallet' in notification.message|lower or 'dépôt' in notification.title|lower %}
+                                bg-gradient-to-br from-blue-500 to-blue-600
+                            {% elseif 'retrait' in notification.title|lower %}
+                                bg-gradient-to-br from-orange-500 to-orange-600
+                            {% elseif 'transaction' in notification.title|lower %}
+                                bg-gradient-to-br from-cyan-500 to-cyan-600
+                            {% elseif 'système' in notification.title|lower or 'compte' in notification.title|lower %}
+                                bg-gradient-to-br from-gray-500 to-gray-600
+                            {% else %}
+                                bg-gradient-to-br from-green-500 to-green-600
+                            {% endif %}">
+                            <i class="fa-solid 
+                                {% if 'tontine' in notification.title|lower or 'tontine' in notification.message|lower %}fa-piggy-bank
+                                {% elseif 'portefeuille' in notification.title|lower or 'wallet' in notification.message|lower or 'dépôt' in notification.title|lower %}fa-wallet
+                                {% elseif 'retrait' in notification.title|lower %}fa-hand-holding-dollar
+                                {% elseif 'transaction' in notification.title|lower %}fa-exchange-alt
+                                {% elseif 'système' in notification.title|lower or 'compte' in notification.title|lower %}fa-cog
+                                {% else %}fa-bell
+                                {% endif %}">
+                            </i>
+                        </div>
+                        
+                        <!-- Status badge on avatar -->
+                        <div class="absolute -bottom-1 -right-1 h-6 w-6 rounded-full border-2 border-white flex items-center justify-center
+                            {% if notification.type == 'success' %}bg-green-500
+                            {% elseif notification.type == 'warning' %}bg-yellow-500
+                            {% elseif notification.type == 'danger' %}bg-red-500
+                            {% else %}bg-blue-500{% endif %}">
+                            <i class="fa-solid text-white text-[10px]
+                                {% if notification.type == 'success' %}fa-check
+                                {% elseif notification.type == 'warning' %}fa-exclamation
+                                {% elseif notification.type == 'danger' %}fa-times
+                                {% else %}fa-info{% endif %}">
+                            </i>
+                        </div>
+                    </div>
+
+                    <!-- Meta Info -->
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-2 flex-wrap">
+                            <!-- Source Badge -->
+                            <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold
+                                {% if 'tontine' in notification.title|lower or 'tontine' in notification.message|lower %}
+                                    bg-purple-100 text-purple-700
+                                {% elseif 'portefeuille' in notification.title|lower or 'wallet' in notification.message|lower or 'dépôt' in notification.title|lower %}
+                                    bg-blue-100 text-blue-700
+                                {% elseif 'retrait' in notification.title|lower %}
+                                    bg-orange-100 text-orange-700
+                                {% elseif 'transaction' in notification.title|lower %}
+                                    bg-cyan-100 text-cyan-700
+                                {% elseif 'système' in notification.title|lower or 'compte' in notification.title|lower %}
+                                    bg-gray-100 text-gray-700
+                                {% else %}
+                                    bg-green-100 text-green-700
+                                {% endif %}">
+                                {% if 'tontine' in notification.title|lower or 'tontine' in notification.message|lower %}
+                                    <i class="fa-solid fa-piggy-bank mr-1.5"></i>Tontine
+                                {% elseif 'portefeuille' in notification.title|lower or 'wallet' in notification.message|lower or 'dépôt' in notification.title|lower %}
+                                    <i class="fa-solid fa-wallet mr-1.5"></i>Portefeuille
+                                {% elseif 'retrait' in notification.title|lower %}
+                                    <i class="fa-solid fa-hand-holding-dollar mr-1.5"></i>Retrait
+                                {% elseif 'transaction' in notification.title|lower %}
+                                    <i class="fa-solid fa-exchange-alt mr-1.5"></i>Transaction
+                                {% elseif 'système' in notification.title|lower or 'compte' in notification.title|lower %}
+                                    <i class="fa-solid fa-cog mr-1.5"></i>Système
+                                {% else %}
+                                    <i class="fa-solid fa-bell mr-1.5"></i>Notification
+                                {% endif %}
+                            </span>
+                            
+                            <!-- Timestamp -->
+                            <span class="text-xs text-gray-500 font-medium">
+                                <i class="fa-regular fa-clock mr-1"></i>
+                                <span class="relative-time" data-timestamp="{{ notification.createdAt|date('U') }}">
+                                    {{ notification.createdAt|date('d/m/Y à H:i') }}
+                                </span>
+                            </span>
+                        </div>
+                        
+                        <!-- Title -->
+                        <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-1 leading-tight">
+                            {{ notification.title }}
+                        </h1>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="flex items-center gap-2">
+                        {% if not notification.isRead %}
+                        <form action="{{ path('app_notifications_mark_read', {id: notification.id}) }}" method="POST">
+                            <button type="submit" 
+                                    class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" 
+                                    title="Marquer comme lu">
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                        </form>
+                        {% endif %}
+                        
+                        <form action="{{ path('app_notifications_delete', {id: notification.id}) }}" 
+                              method="POST" 
+                              onsubmit="return confirm('Supprimer cette notification ?');">
+                            <button type="submit" 
+                                    class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors" 
+                                    title="Supprimer">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-6 md:p-8">
+                <div class="prose prose-gray max-w-none">
+                    {{ notification.message|raw }}
+                </div>
+            </div>
+
+            <!-- Link Action (if exists) -->
+            {% if notification.link %}
+            <div class="p-6 bg-gray-50 border-t border-gray-100">
+                <a href="{{ notification.link }}" 
+                   target="_blank"
+                   class="inline-flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white rounded-lg font-semibold transition-colors shadow-sm hover:shadow-md">
+                    <i class="fa-solid fa-external-link"></i>
+                    Ouvrir le lien associé
+                </a>
+                <p class="mt-3 text-xs text-gray-500 flex items-center gap-1.5">
+                    <i class="fa-solid fa-info-circle"></i>
+                    Ce lien vous redirigera vers une page externe ou sécurisée.
+                </p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Footer Actions -->
+        <div class="mt-6 flex items-center justify-between">
+            <a href="{{ path('app_notifications_index') }}" 
+               class="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+                ← Toutes les notifications
+            </a>
+            
+            {% if not notification.isRead %}
+            <form action="{{ path('app_notifications_mark_read', {id: notification.id}) }}" method="POST">
+                <button type="submit" 
+                        class="text-sm px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg font-medium transition-colors">
+                    <i class="fa-solid fa-check mr-1.5"></i>
+                    Marquer comme lu
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Convert timestamp to relative time (Facebook-style)
+    function updateRelativeTime() {
+        const el = document.querySelector('.relative-time');
+        if (!el) return;
+        
+        const timestamp = parseInt(el.dataset.timestamp);
+        const now = Math.floor(Date.now() / 1000);
+        const diff = now - timestamp;
+        
+        let relativeTime;
+        if (diff < 60) {
+            relativeTime = 'À l\'instant';
+        } else if (diff < 3600) {
+            const minutes = Math.floor(diff / 60);
+            relativeTime = `Il y a ${minutes} min`;
+        } else if (diff < 86400) {
+            const hours = Math.floor(diff / 3600);
+            relativeTime = `Il y a ${hours}h`;
+        } else if (diff < 604800) {
+            const days = Math.floor(diff / 86400);
+            relativeTime = `Il y a ${days}j`;
+        } else {
+            const date = new Date(timestamp * 1000);
+            relativeTime = date.toLocaleDateString('fr-FR', { 
+                day: 'numeric', 
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+        }
+        
+        el.textContent = relativeTime;
+    }
+    
+    // Update time immediately and every minute
+    updateRelativeTime();
+    setInterval(updateRelativeTime, 60000);
+});
+</script>
+{% endblock %}

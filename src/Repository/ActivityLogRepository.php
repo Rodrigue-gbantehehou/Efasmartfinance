@@ -40,4 +40,18 @@ class ActivityLogRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function countSecurityAlertsToday(): int
+    {
+        $today = new \DateTimeImmutable('today');
+        
+        return $this->createQueryBuilder('a')
+            ->select('COUNT(a.id)')
+            ->where('a.actions LIKE :delete OR a.actions LIKE :deactivate')
+            ->andWhere('a.createdAt >= :today')
+            ->setParameter('delete', '%delete%')
+            ->setParameter('deactivate', '%deactivate%')
+            ->setParameter('today', $today)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

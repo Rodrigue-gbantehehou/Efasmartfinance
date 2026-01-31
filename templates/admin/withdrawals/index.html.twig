@@ -1,78 +1,184 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Gestion des retraits{% endblock %}
+{% block title %}Gestion des retraits - EFA SMART FINANCE{% endblock %}
 
 {% block contentadmin %}
-<div class="px-4 sm:px-6 lg:px-8">
-    <div class="sm:flex sm:items-center">
-        <div class="sm:flex-auto">
-            <h1 class="text-2xl font-semibold text-gray-900">Gestion des retraits</h1>
-            <p class="mt-2 text-sm text-gray-700">Consultez et gérez les demandes de retrait des utilisateurs.</p>
+<div class="min-h-screen bg-green-50-gray-50/50">
+    <!-- Header Premium -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
+        <div class="px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-900">Gestion des Retraits</h1>
+                    <p class="text-sm text-gray-500">Validez et suivez les demandes de retrait des utilisateurs.</p>
+                </div>
+                
+                <div class="flex items-center gap-3">
+                    <div class="relative hidden md:block">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fa-solid fa-magnifying-glass text-gray-400 text-sm"></i>
+                        </div>
+                        <input type="text" id="withdrawalSearch" placeholder="Rechercher un utilisateur ou ID..." 
+                               class="block w-64 pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 sm:text-sm">
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-    
-    <div class="mt-8 flex flex-col">
-        <div class="-my-2 -mx-4 overflow-x-auto sm:-mx-6 lg:-mx-8">
-            <div class="inline-block min-w-full py-2 align-middle md:px-6 lg:px-8">
-                <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                    <table class="min-w-full divide-y divide-gray-300">
-                        <thead class="bg-gray-50">
+    </header>
+
+    <main class="py-10">
+        <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 gap-6 mb-10 sm:grid-cols-2 lg:grid-cols-4">
+                <!-- Pending Card -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 p-3 bg-yellow-50 rounded-xl">
+                            <i class="fa-solid fa-clock-rotate-left text-yellow-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">En attente</p>
+                            <h3 class="text-xl font-bold text-gray-900">{{ stats.pending_count }} demande(s)</h3>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-yellow-600 font-semibold">{{ stats.pending_amount|number_format(0, ',', ' ') }} FCFA</span>
+                        <span class="text-gray-400 ml-2">à traiter</span>
+                    </div>
+                </div>
+
+                <!-- Approved Card -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 p-3 bg-green-50 rounded-xl">
+                            <i class="fa-solid fa-check-double text-green-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Total versé</p>
+                            <h3 class="text-xl font-bold text-gray-900">{{ stats.total_approved|number_format(0, ',', ' ') }} FCFA</h3>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-green-600 font-medium">Fonds décaissés avec succès</span>
+                    </div>
+                </div>
+
+                <!-- Volume Card -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 p-3 bg-blue-50 rounded-xl">
+                            <i class="fa-solid fa-chart-line text-blue-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Volume Total</p>
+                            <h3 class="text-xl font-bold text-gray-900">{{ stats.total_count }}</h3>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-gray-500">Nombre de demandes historiques</span>
+                    </div>
+                </div>
+
+                <!-- Efficiency Card -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0 p-3 bg-purple-50 rounded-xl">
+                            <i class="fa-solid fa-bolt text-purple-600 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <p class="text-sm font-medium text-gray-500">Taux de succès</p>
+                            <h3 class="text-xl font-bold text-gray-900">98.5%</h3>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm">
+                        <span class="text-purple-600 font-medium">Traitement rapide actif</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table Card -->
+            <div class="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+                <div class="px-8 py-6 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
+                    <h2 class="text-lg font-bold text-gray-900">Dernières demandes</h2>
+                    <div class="flex items-center gap-2">
+                         <button class="filter-btn active px-4 py-2 text-sm font-medium bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-gray-50 transition-all text-green-700 border-green-200" data-statut="all">Tout</button>
+                         <button class="filter-btn px-4 py-2 text-sm font-medium bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-gray-50 transition-all text-gray-600" data-statut="pending">En attente</button>
+                         <button class="filter-btn px-4 py-2 text-sm font-medium bg-white border border-gray-200 rounded-xl shadow-sm hover:bg-gray-50 transition-all text-gray-600" data-statut="approved">Approuvés</button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-100">
+                        <thead class="bg-gray-50/50">
                             <tr>
-                                <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">ID</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Utilisateur</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Montant</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Frais de tontine</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Statut</th>
-                                <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Date</th>
-                                <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
-                                    <span class="sr-only">Actions</span>
-                                </th>
+                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Référence</th>
+                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Utilisateur</th>
+                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Montant</th>
+                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Net à payer</th>
+                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Statut</th>
+                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Date</th>
+                                <th class="px-8 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200 bg-white">
+                        <tbody class="divide-y divide-gray-50" id="withdrawalsBody">
                             {% for withdrawal in withdrawals %}
-                            <tr>
-                                <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">#{{ withdrawal.id }}</td>
-                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                    {{ withdrawal.utilisateur.fullName ?? withdrawal.utilisateur.email }}
+                            <tr class="withdrawal-row hover:bg-gray-50/50 transition-colors" data-statut="{{ withdrawal.statut }}" data-search="{{ withdrawal.utilisateur.fullName|lower }} {{ withdrawal.utilisateur.email|lower }} #{{ withdrawal.id }}">
+                                <td class="px-8 py-5 whitespace-nowrap text-sm font-bold text-gray-900">#{{ withdrawal.id }}</td>
+                                <td class="px-8 py-5 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center text-green-700 font-bold text-xs">
+                                            {{ withdrawal.utilisateur.firstname|first|upper }}{{ withdrawal.utilisateur.lastname|first|upper }}
+                                        </div>
+                                        <div class="ml-3">
+                                            <div class="text-sm font-bold text-gray-900">{{ withdrawal.utilisateur.fullName }}</div>
+                                            <div class="text-xs text-gray-400">{{ withdrawal.utilisateur.email }}</div>
+                                        </div>
+                                    </div>
                                 </td>
-                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-900">
-                                    <div class="font-medium">{{ (withdrawal.totalAmount - withdrawal.amount)|number_format(0, ',', ' ') }} FCFA</div>
-                                    <div class="text-xs text-gray-500">Net: {{ withdrawal.amount|number_format(0, ',', ' ') }} FCFA</div>
+                                <td class="px-8 py-5 whitespace-nowrap">
+                                    <div class="text-sm font-bold text-gray-900">{{ withdrawal.totalAmount|number_format(0, ',', ' ') }} FCFA</div>
+                                    <div class="text-xs text-gray-400">Total retrait</div>
                                 </td>
-                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                    <div class="font-medium">{{ withdrawal.totalAmount|number_format(0, ',', ' ') }} FCFA</div>
-                                    <div class="text-xs text-gray-500">Frais: {{ (withdrawal.totalAmount - withdrawal.amount)|number_format(0, ',', ' ') }} FCFA</div>
+                                <td class="px-8 py-5 whitespace-nowrap">
+                                    <div class="text-sm font-bold text-green-700">{{ withdrawal.amount|number_format(0, ',', ' ') }} FCFA</div>
+                                    <div class="text-xs text-gray-400">Frais déduits</div>
                                 </td>
-                                <td class="whitespace-nowrap px-3 py-4">
+                                <td class="px-8 py-5 whitespace-nowrap">
                                     {% if withdrawal.statut == 'approved' %}
-                                        <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
-                                            Approuvé
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-700">
+                                            <i class="fa-solid fa-check-circle mr-1.5"></i> Approuvé
                                         </span>
                                     {% elseif withdrawal.statut == 'rejected' %}
-                                        <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-medium text-red-800">
-                                            Rejeté
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-700">
+                                            <i class="fa-solid fa-circle-xmark mr-1.5"></i> Rejeté
                                         </span>
                                     {% else %}
-                                        <span class="inline-flex items-center rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-medium text-yellow-800">
-                                            En attente
+                                        <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700">
+                                            <i class="fa-solid fa-clock-rotate-left mr-1.5"></i> En attente
                                         </span>
                                     {% endif %}
                                 </td>
-                                <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                <td class="px-8 py-5 whitespace-nowrap text-sm text-gray-500">
                                     {{ withdrawal.requestedAt ? withdrawal.requestedAt|date('d/m/Y H:i') : 'N/A' }}
                                 </td>
-                                <td class="relative whitespace-nowrap py-4 pl-3 pr-4 text-right text-sm font-medium sm:pr-6">
-                                    <div class="flex justify-end space-x-2">
-                                        <a href="{{ path('admin_withdrawal_show', {'id': withdrawal.id}) }}" class="text-indigo-600 hover:text-indigo-900">Voir</a>
+                                <td class="px-8 py-5 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="flex justify-end gap-2">
+                                        <a href="{{ path('admin_withdrawal_show', {'id': withdrawal.id}) }}" 
+                                           class="p-2 text-gray-400 hover:text-green-600 transition-colors" title="Détails">
+                                            <i class="fa-solid fa-eye text-lg"></i>
+                                        </a>
                                         {% if withdrawal.statut == 'pending' %}
-                                            <form method="post" action="{{ path('admin_withdrawal_approve', {'id': withdrawal.id}) }}" class="inline">
+                                            <form method="post" action="{{ path('admin_withdrawal_approve', {'id': withdrawal.id}) }}" class="inline" onsubmit="return confirm('Approuver ce paiement ?');">
                                                 <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ withdrawal.id) }}">
-                                                <button type="submit" class="text-green-600 hover:text-green-900">Approuver</button>
+                                                <button type="submit" class="p-2 text-gray-400 hover:text-green-700 transition-colors" title="Approuver">
+                                                    <i class="fa-solid fa-circle-check text-lg"></i>
+                                                </button>
                                             </form>
-                                            <form method="post" action="{{ path('admin_withdrawal_reject', {'id': withdrawal.id}) }}" class="inline">
+                                            <form method="post" action="{{ path('admin_withdrawal_reject', {'id': withdrawal.id}) }}" class="inline" onsubmit="return confirm('Rejeter cette demande ?');">
                                                 <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ withdrawal.id) }}">
-                                                <button type="submit" class="text-red-600 hover:text-red-900">Rejeter</button>
+                                                <button type="submit" class="p-2 text-gray-400 hover:text-red-600 transition-colors" title="Rejeter">
+                                                    <i class="fa-solid fa-circle-xmark text-lg"></i>
+                                                </button>
                                             </form>
                                         {% endif %}
                                     </div>
@@ -80,8 +186,14 @@
                             </tr>
                             {% else %}
                             <tr>
-                                <td colspan="6" class="px-3 py-4 text-sm text-gray-500 text-center">
-                                    Aucun retrait trouvé.
+                                <td colspan="7" class="px-8 py-20 text-center">
+                                    <div class="flex flex-col items-center">
+                                        <div class="h-16 w-16 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                                            <i class="fa-solid fa-money-bill-transfer text-gray-300 text-3xl"></i>
+                                        </div>
+                                        <h3 class="text-gray-900 font-bold">Aucun retrait trouvé</h3>
+                                        <p class="text-gray-500 text-sm">Les demandes apparaîtront ici dès qu'elles seront soumises.</p>
+                                    </div>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -90,6 +202,39 @@
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('withdrawalSearch');
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const rows = document.querySelectorAll('.withdrawal-row');
+
+    function applyFilters() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const activeStatut = document.querySelector('.filter-btn.active').dataset.statut;
+
+        rows.forEach(row => {
+            const matchesSearch = row.dataset.search.includes(searchTerm);
+            const matchesStatut = activeStatut === 'all' || row.dataset.statut === activeStatut;
+            
+            row.style.display = (matchesSearch && matchesStatut) ? '' : 'none';
+        });
+    }
+
+    searchInput.addEventListener('input', applyFilters);
+
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            filterBtns.forEach(b => {
+                b.classList.remove('active', 'text-green-700', 'border-green-200');
+                b.classList.add('text-gray-600');
+            });
+            btn.classList.add('active', 'text-green-700', 'border-green-200');
+            applyFilters();
+        });
+    });
+});
+</script>
 {% endblock %}

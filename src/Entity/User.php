@@ -9,15 +9,13 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Scheb\TwoFactorBundle\Model\Totp\TwoFactorInterface as TotpTwoFactorInterface;
-use Scheb\TwoFactorBundle\Model\Email\TwoFactorInterface as EmailTwoFactorInterface;
-use Scheb\TwoFactorBundle\Model\Totp\TotpConfigurationInterface;
+
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_UUID', fields: ['uuid'])]
 #[UniqueEntity(fields: ['uuid'], message: 'There is already an account with this uuid')]
-class User implements UserInterface, PasswordAuthenticatedUserInterface, TotpTwoFactorInterface, EmailTwoFactorInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -93,17 +91,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TotpTwo
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $documentFront = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $documentBack = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $selfie = null;
 
-    /**
-     * @var Collection<int, Wallets>
-     */
-    #[ORM\OneToMany(targetEntity: Wallets::class, mappedBy: 'utilisateur')]
-    private Collection $wallets;
+
 
     /**
      * @var Collection<int, ContactSupport>
@@ -134,6 +126,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TotpTwo
      */
     #[ORM\OneToMany(targetEntity: NotificationPreferences::class, mappedBy: 'utilisateur')]
     private Collection $notificationPreferences;
+
+    #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $notifications;
 
     /**
      * @var Collection<int, SecuritySettings>
@@ -171,8 +166,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TotpTwo
     #[ORM\OneToMany(targetEntity: Withdrawals::class, mappedBy: 'utilisateur')]
     private Collection $withdrawals;
 
-    #[ORM\OneToOne(mappedBy: 'user', targetEntity: TwoFactorAuth::class, cascade: ['persist', 'remove'])]
-    private ?TwoFactorAuth $twoFactorAuth = null;
+
+
+    #[ORM\OneToOne(mappedBy: 'user', targetEntity: PinAuth::class, cascade: ['persist', 'remove'])]
+    private ?PinAuth $pinAuth = null;
 
     public function __construct()
     {
@@ -183,7 +180,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TotpTwo
         $this->transactions = new ArrayCollection();
         $this->cookieConsents = new ArrayCollection();
         $this->factures = new ArrayCollection();
-        $this->wallets = new ArrayCollection();
+
         $this->contactSupports = new ArrayCollection();
         $this->userTermsAcceptances = new ArrayCollection();
         $this->userSettings = new ArrayCollection();
@@ -192,6 +189,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TotpTwo
         $this->activityLogs = new ArrayCollection();
         $this->securityLogs = new ArrayCollection();
         $this->withdrawals = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
+
+        // PinAuth will be created after registration
     }
 
     public function getId(): ?int
@@ -352,11 +352,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TotpTwo
         return $this->lastname;
     }
 
-    public function setLastname(?string $lastname): static
+    public function setLastname(?string $lastname): self
     {
         $this->lastname = $lastname;
 
         return $this;
+    }
+
+    public function getFullName(): string
+    {
+        return trim($this->getFirstname() . ' ' . $this->getLastname());
     }
 
     public function getPhoneNumber(): ?string
@@ -449,35 +454,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TotpTwo
         return $this;
     }
 
-    /**
-     * @return Collection<int, Wallets>
-     */
-    public function getWallets(): Collection
-    {
-        return $this->wallets;
-    }
 
-    public function addWallet(Wallets $wallet): static
-    {
-        if (!$this->wallets->contains($wallet)) {
-            $this->wallets->add($wallet);
-            $wallet->setUtilisateur($this);
-        }
-
-        return $this;
-    }
-
-    public function removeWallet(Wallets $wallet): static
-    {
-        if ($this->wallets->removeElement($wallet)) {
-            // set the owning side to null (unless already changed)
-            if ($wallet->getUtilisateur() === $this) {
-                $wallet->setUtilisateur(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, ContactSupport>
@@ -685,16 +662,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TotpTwo
         return $this;
     }
 
-    public function getDocumentBack(): ?string
-    {
-        return $this->documentBack;
-    }
-
-    public function setDocumentBack(?string $documentBack): static
-    {
-        $this->documentBack = $documentBack;
-        return $this;
-    }
 
     public function getSelfie(): ?string
     {
@@ -875,37 +842,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TotpTwo
         return $this;
     }
 
-    public function isTwoFactorEnabled(): bool
-    {
-        return $this->twoFactorAuth && $this->twoFactorAuth->isEnabled();
-    }
 
-    public function getTotpSecret(): ?string
-    {
-        return $this->twoFactorAuth ? $this->twoFactorAuth->getTotpSecret() : null;
-    }
-
-    public function getBackupCodes(): ?array
-    {
-        return $this->twoFactorAuth ? $this->twoFactorAuth->getBackupCodesArray() : null;
-    }
-
-    public function getTwoFactorAuth(): ?TwoFactorAuth
-    {
-        return $this->twoFactorAuth;
-    }
-
-    public function setTwoFactorAuth(?TwoFactorAuth $twoFactorAuth): static
-    {
-        $this->twoFactorAuth = $twoFactorAuth;
-
-        // Set the owning side of the relation if necessary
-        if ($twoFactorAuth && $twoFactorAuth->getUser() !== $this) {
-            $twoFactorAuth->setUser($this);
-        }
-
-        return $this;
-    }
 
     public function getLatestCookieConsent(): ?CookieConsent
     {
@@ -924,71 +861,63 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface, TotpTwo
     }
 
     // ========================================
-    // Méthodes pour TwoFactorInterface (scheb/2fa-totp)
+    // Méthodes pour PinAuth
     // ========================================
 
-    public function isTotpAuthenticationEnabled(): bool
+    public function getPinAuth(): ?PinAuth
     {
-        return $this->isTwoFactorEnabled() && $this->twoFactorAuth->getMethod() === 'totp';
+        return $this->pinAuth;
     }
 
-    public function getTotpAuthenticationUsername(): string
+    public function setPinAuth(?PinAuth $pinAuth): static
     {
-        return $this->email ?: $this->uuid;
-    }
+        $this->pinAuth = $pinAuth;
 
-    public function getTotpAuthenticationConfiguration(): ?TotpConfigurationInterface
-    {
-        if (!$this->twoFactorAuth || !$this->twoFactorAuth->getTotpSecret()) {
-            return null;
+        // Set the owning side of the relation if necessary
+        if ($pinAuth && $pinAuth->getUser() !== $this) {
+            $pinAuth->setUser($this);
         }
 
-        return new class($this->twoFactorAuth->getTotpSecret()) implements TotpConfigurationInterface {
-            public function __construct(private string $secret) {}
-            
-            public function getSecret(): string
-            {
-                return $this->secret;
-            }
-            
-            public function getAlgorithm(): string
-            {
-                return 'sha1';
-            }
-            
-            public function getPeriod(): int
-            {
-                return 30;
-            }
-            
-            public function getDigits(): int
-            {
-                return 6;
-            }
-        };
+        return $this;
     }
 
-    /* 2FA Email Implementation */
-
-    public function isEmailAuthEnabled(): bool
+    public function hasPinAuth(): bool
     {
-        return $this->twoFactorAuth && $this->twoFactorAuth->isEnabled() && $this->twoFactorAuth->getMethod() === 'email';
+        return $this->pinAuth !== null && $this->pinAuth->isEnabled();
     }
 
-    public function getEmailAuthRecipient(): string
+    public function mustChangePin(): bool
     {
-        return (string) $this->email;
+        return $this->pinAuth !== null && $this->pinAuth->getMustChangePin();
     }
 
-    public function getEmailAuthCode(): ?string
+    /**
+     * @return Collection<int, Notification>
+     */
+    public function getNotifications(): Collection
     {
-        return $this->twoFactorAuth ? $this->twoFactorAuth->getEmailCode() : null;
+        return $this->notifications;
     }
 
-    public function setEmailAuthCode(string $code): void
+    public function addNotification(Notification $notification): static
     {
-        if ($this->twoFactorAuth) {
-            $this->twoFactorAuth->setEmailCode($code);
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications->add($notification);
+            $notification->setUser($this);
         }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): static
+    {
+        if ($this->notifications->removeElement($notification)) {
+            // set the owning side to null (unless already changed)
+            if ($notification->getUser() === $this) {
+                $notification->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }

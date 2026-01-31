@@ -1,0 +1,108 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Broadcast Messages{% endblock %}
+
+{% block contentadmin %}
+<div class="min-h-screen bg-green-50 font-poppins p-8">
+    <div class="max-w-7xl mx-auto">
+        
+        {# Header #}
+        <div class="mb-8 flex justify-between items-center">
+            <div>
+                <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-green-800 mb-2">
+                    📢 Broadcast Messages
+                </h1>
+                <p class="text-slate-600 text-lg">Envoyez des messages groupés à vos utilisateurs</p>
+            </div>
+            <a href="{{ path('admin_broadcast_create') }}" class="px-6 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors font-semibold inline-flex items-center gap-2">
+                ✉️ Nouveau Broadcast
+            </a>
+        </div>
+
+        {# Broadcasts List #}
+        <div class="bg-white rounded-3xl p-8 shadow-lg border-2 border-slate-100">
+            <h2 class="text-2xl font-bold text-slate-800 mb-6">📋 Historique des Broadcasts</h2>
+            
+            <div class="space-y-4">
+                {% for broadcast in broadcasts %}
+                    <div class="border-2 border-slate-100 rounded-2xl p-6 hover:border-green-200 transition-all">
+                        <div class="flex justify-between items-start mb-4">
+                            <div class="flex-1">
+                                <h3 class="text-xl font-bold text-slate-800 mb-2">{{ broadcast.title }}</h3>
+                                <div class="flex gap-3 text-sm text-slate-600">
+                                    <span>📅 {{ broadcast.createdAt|date('d/m/Y H:i') }}</span>
+                                    <span>👤 {{ broadcast.createdBy ? broadcast.createdBy.firstname ~ ' ' ~ broadcast.createdBy.lastname : 'N/A' }}</span>
+                                    <span>🎯 {{ broadcast.targetAudience|replace({'_': ' '})|title }}</span>
+                                </div>
+                            </div>
+                            <div class="flex gap-2">
+                                {% if broadcast.status == 'draft' %}
+                                    <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-semibold">📝 Brouillon</span>
+                                {% elseif broadcast.status == 'scheduled' %}
+                                    <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold">⏰ Planifié</span>
+                                {% elseif broadcast.status == 'sent' %}
+                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">✓ Envoyé</span>
+                                {% else %}
+                                    <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-semibold">❌ Échec</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-4 p-4 bg-slate-50 rounded-xl">
+                            <p class="text-slate-700 line-clamp-2">{{ broadcast.content|striptags|slice(0, 200) }}...</p>
+                        </div>
+
+                        {% if broadcast.stats %}
+                            <div class="flex gap-4 mb-4 text-sm">
+                                <div class="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-lg">
+                                    ✓ {{ broadcast.stats.sent ?? 0 }} envoyés
+                                </div>
+                                <div class="px-3 py-1 bg-red-50 text-red-700 rounded-lg">
+                                    ❌ {{ broadcast.stats.failed ?? 0 }} échecs
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <div class="flex gap-2">
+                            <a href="{{ path('admin_broadcast_show', {id: broadcast.id}) }}" 
+                               class="px-4 py-2 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors font-semibold text-sm">
+                                👁️ Voir
+                            </a>
+                            
+                            {% if broadcast.status == 'draft' %}
+                                <form method="post" action="{{ path('admin_broadcast_send', {id: broadcast.id}) }}" class="inline">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('send' ~ broadcast.id) }}">
+                                    <button type="submit" 
+                                            onclick="return confirm('Voulez-vous vraiment envoyer ce broadcast ?')"
+                                            class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-semibold text-sm">
+                                        📤 Envoyer
+                                    </button>
+                                </form>
+                            {% endif %}
+
+                            <form method="post" action="{{ path('admin_broadcast_delete', {id: broadcast.id}) }}" class="inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ broadcast.id) }}">
+                                <button type="submit" 
+                                        onclick="return confirm('Voulez-vous vraiment supprimer ce broadcast ?')"
+                                        class="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors font-semibold text-sm">
+                                    🗑️ Supprimer
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="text-center py-12 text-slate-400">
+                        Aucun broadcast créé pour le moment
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap');
+    .font-poppins { font-family: 'Poppins', sans-serif; }
+</style>
+{% endblock %}

@@ -315,30 +315,32 @@ document.addEventListener('DOMContentLoaded', function() {
     // Vérifier le consentement existant
     async function checkConsent() {
         try {
-            const response = await fetch('{{ path("api_cookie_consent_check") }}');
-            const data = await response.json();
-            
-            console.log('Consentement vérifié:', data);
-            
-            if (!data.hasConsent) {
-                // Afficher la bannière seulement si pas de consentement
-                showCookieBanner();
-            } else {
-                // Pré-remplir les préférences existantes si disponibles
-                if (data.consent) {
+            const response = await fetch('{{ path("api_cookie_consent_check") }}', {
+                headers: { 'Accept': 'application/json' }
+            });
+
+            // Vérifier si la réponse est du JSON
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                const data = await response.json();
+                console.log('Consentement vérifié:', data);
+                
+                if (!data.hasConsent) {
+                    showCookieBanner();
+                } else if (data.consent) {
                     document.getElementById('analytics-cookies').checked = data.consent.analyticsCookies;
                     document.getElementById('marketing-cookies').checked = data.consent.marketingCookies;
                     document.getElementById('preferences-cookies').checked = data.consent.preferencesCookies;
-                    
-                    // Charger les scripts selon les préférences
                     loadScriptsBasedOnConsent(data.consent);
                 }
+            } else {
+                console.warn('Réponse non-JSON reçue de api_cookie_consent_check');
+                showCookieBanner();
             }
             
-            return data.hasConsent;
+            return true;
         } catch (error) {
             console.error('Erreur vérification consentement:', error);
-            // En cas d'erreur, afficher la bannière par sécurité
             showCookieBanner();
             return false;
         }
@@ -477,37 +479,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     'X-Requested-With': 'XMLHttpRequest'
                 },
                 body: JSON.stringify(consentData)
             });
             
-            const data = await response.json();
-            
-            if (data.success) {
-                // Fermer les panneaux
-                cookieBanner.classList.remove('show');
-                settingsPanel.classList.remove('show');
+            // Vérifier si la réponse est du JSON
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                const data = await response.json();
                 
-                setTimeout(() => {
-                    cookieBanner.classList.add('hidden');
-                    settingsPanel.classList.add('hidden');
-                }, 300);
-                
-                // Supprimer l'état "fermé manuellement" car maintenant on a un vrai consentement
-                localStorage.removeItem('cookie_banner_closed');
-                
-                // Afficher une notification discrète
-                showNotification('Vos préférences ont été enregistrées', 'success');
-                
-                // Charger les scripts autorisés
-                loadScriptsBasedOnConsent(consentData);
-                
-                // Optionnel: Recharger la page pour appliquer les nouveaux scripts
-                // Décommentez la ligne ci-dessous si vous voulez recharger la page
-                // setTimeout(() => { location.reload(); }, 1000);
+                if (data.success) {
+                    // Fermer les panneaux
+                    cookieBanner.classList.remove('show');
+                    settingsPanel.classList.remove('show');
+                    
+                    setTimeout(() => {
+                        cookieBanner.classList.add('hidden');
+                        settingsPanel.classList.add('hidden');
+                    }, 300);
+                    
+                    localStorage.removeItem('cookie_banner_closed');
+                    showNotification('Vos préférences ont été enregistrées', 'success');
+                    loadScriptsBasedOnConsent(consentData);
+                } else {
+                    showNotification(data.message || 'Erreur lors de l\'enregistrement', 'error');
+                }
             } else {
-                showNotification(data.message || 'Erreur lors de l\'enregistrement', 'error');
+                console.error('Réponse non-JSON reçue de api_cookie_consent');
+                showNotification('Erreur de communication avec le serveur', 'error');
             }
         } catch (error) {
             console.error('Erreur sauvegarde:', error);

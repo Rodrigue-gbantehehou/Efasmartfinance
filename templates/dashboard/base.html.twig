@@ -33,7 +33,7 @@
       theme: {
         extend: {
           colors: {
-            green-700: '#008040',
+            'green-700': '#008040',
             secondary: '#FBBF24',
             accent: '#059669',
             warning: '#F59E0B',
@@ -273,6 +273,13 @@
       overscroll-behavior-y: contain;
     }
     
+    /* Centralized background color management */
+    :root {
+      --app-bg-primary: #F0F9F1; /* bg-green-50 equivalent - MODIFIER ICI POUR CHANGER LE FOND */
+      --app-bg-secondary: #FFFFFF;
+      --app-bg-tertiary: #DDEFE0; /* bg-green-100 equivalent */
+    }
+    
     /* Selection color */
     ::selection {
       background-color: rgba(16, 185, 129, 0.3);
@@ -359,7 +366,7 @@
   {% include 'dashboard/links/_css.html.twig' %}
 </head>
 
-<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col safe-top safe-bottom">
+<body class="text-gray-800 min-h-screen flex flex-col safe-top safe-bottom" style="background-color: var(--app-bg-primary);">
 <!-- Flash Messages - Version Centrée -->
 <div id="flash-messages" class="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none p-4">
   {% for label, messages in app.flashes %}
@@ -457,7 +464,7 @@
     {% include "dashboard/partiales/sidebardesktop.html.twig" %}
 
     <!-- Main Content -->
-    <main id="main-content" class="flex-1 min-w-0 flex flex-col overflow-y-auto scrollbar-hide" role="main">
+    <main id="main-content" class="flex-1 min-w-0 flex flex-col overflow-y-auto scrollbar-hide pb-24 md:pb-0" role="main">
       <!-- Desktop Topbar -->
       <div class="flex-1">
         {% block contentdashboard %}
@@ -793,5 +800,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 
-{% include 'dashboard/links/_js.html.twig' %}
+  {% include 'dashboard/links/_js.html.twig' %}
+  {% block javascripts %}{% endblock %}
 </html>

@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class CookieConsentController extends AbstractController
@@ -50,7 +51,7 @@ class CookieConsentController extends AbstractController
             $data
         );
 
-        return $this->json([
+        $response = new JsonResponse([
             'success' => true,
             'consent' => [
                 'id' => $consent->getId(),
@@ -59,6 +60,14 @@ class CookieConsentController extends AbstractController
                 'userId' => $user ? $user->getId() : null
             ]
         ]);
+
+        // Attacher le cookie à la réponse
+        $cookie = $this->cookieConsentManager->createCookie($data);
+        if ($cookie) {
+            $response->headers->setCookie($cookie);
+        }
+
+        return $response;
 
     } catch (\InvalidArgumentException $e) {
         return $this->json([

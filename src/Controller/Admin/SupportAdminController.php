@@ -12,12 +12,16 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Psr\Log\LoggerInterface;
 
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 #[Route('/admin/support')]
+#[IsGranted('ROLE_SUPPORT')]
 class SupportAdminController extends AbstractController
 {
     #[Route('', name: 'admin_support')]
     public function index(ContactSupportRepository $contactSupportRepository): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'support');
         $tickets = $contactSupportRepository->findBy([], ['createdAt' => 'DESC']);
         
         return $this->render('admin/pages/support/index.html.twig', [
@@ -28,6 +32,7 @@ class SupportAdminController extends AbstractController
     #[Route('/ticket/{id}', name: 'admin_support_ticket_show', methods: ['GET'])]
     public function show(ContactSupport $ticket): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'support');
         return $this->render('admin/pages/support/show.html.twig', [
             'ticket' => $ticket,
         ]);
@@ -36,6 +41,7 @@ class SupportAdminController extends AbstractController
     #[Route('/ticket/{id}/respond', name: 'admin_support_ticket_respond', methods: ['POST'])]
     public function respond(Request $request, ContactSupport $ticket, EntityManagerInterface $entityManager, EmailService $emailService, LoggerInterface $logger): Response
     {
+        $this->denyAccessUnlessGranted('EDIT_MODULE', 'support');
         $response = trim($request->request->get('response', ''));
         
         if (empty($response)) {
@@ -88,6 +94,7 @@ class SupportAdminController extends AbstractController
     #[Route('/ticket/{id}/close', name: 'admin_support_ticket_close', methods: ['POST'])]
     public function close(ContactSupport $ticket, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('EDIT_MODULE', 'support');
         if ($ticket->isClosed()) {
             $ticket->reopen();
             $message = 'Le ticket a été rouvert avec succès.';

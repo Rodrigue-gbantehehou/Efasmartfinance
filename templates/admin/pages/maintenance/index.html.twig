@@ -1,0 +1,120 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Mode Maintenance{% endblock %}
+
+{% block contentadmin %}
+<div class="min-h-screen bg-green-50 from-slate-50 via-orange-50/30 to-slate-100 font-poppins p-8">
+    <div class="max-w-5xl mx-auto">
+        
+        {# Header #}
+        <div class="mb-8">
+            <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-orange-800 mb-2">
+                🔧 Mode Maintenance
+            </h1>
+            <p class="text-slate-600 text-lg">Gérez l'accès au site pendant les opérations de maintenance</p>
+        </div>
+
+        {# Status Card #}
+        <div class="bg-white rounded-3xl p-8 shadow-lg border-2 border-slate-100 mb-6">
+            <div class="flex justify-between items-center mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800">Statut Actuel</h2>
+                    <p class="text-slate-600">Le mode maintenance est actuellement 
+                        {% if settings.isMaintenanceMode %}
+                            <span class="font-bold text-orange-600">ACTIVÉ</span>
+                        {% else %}
+                            <span class="font-bold text-green-600">DÉSACTIVÉ</span>
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="text-6xl">
+                    {% if settings.isMaintenanceMode %}
+                        🔧
+                    {% else %}
+                        ✅
+                    {% endif %}
+                </div>
+            </div>
+
+            {% if settings.isMaintenanceMode %}
+                <div class="p-4 bg-orange-50 border-2 border-orange-200 rounded-xl mb-4">
+                    <div class="flex items-start gap-3">
+                        <span class="text-2xl">⚠️</span>
+                        <div>
+                            <div class="font-bold text-orange-800">Site en maintenance</div>
+                            <div class="text-sm text-orange-700">
+                                Activé le {{ settings.maintenanceStartedAt|date('d/m/Y à H:i') }}
+                            </div>
+                            <div class="text-sm text-orange-600 mt-2">
+                                💡 Les utilisateurs non-admin ne peuvent pas accéder au site
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+
+            {# Toggle Form #}
+            <form method="post" action="{{ path('admin_maintenance_toggle') }}" class="space-y-4">
+                <input type="hidden" name="_token" value="{{ csrf_token('toggle_maintenance') }}">
+                
+                {% if not settings.isMaintenanceMode %}
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Message de maintenance</label>
+                        <textarea name="message" rows="3" 
+                                  class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-orange-500 focus:outline-none"
+                                  placeholder="Le site est actuellement en maintenance...">{{ settings.maintenanceMessage }}</textarea>
+                    </div>
+                {% endif %}
+
+                <button type="submit" 
+                        onclick="return confirm('Voulez-vous vraiment {{ settings.isMaintenanceMode ? 'désactiver' : 'activer' }} le mode maintenance ?')"
+                        class="w-full px-6 py-4 {% if settings.isMaintenanceMode %}bg-green-500 hover:bg-green-600{% else %}bg-orange-500 hover:bg-orange-600{% endif %} text-white rounded-xl transition-colors font-bold text-lg">
+                    {% if settings.isMaintenanceMode %}
+                        ✅ Désactiver le Mode Maintenance
+                    {% else %}
+                        🔧 Activer le Mode Maintenance
+                    {% endif %}
+                </button>
+            </form>
+        </div>
+
+        {# Update Message (when active) #}
+        {% if settings.isMaintenanceMode %}
+            <div class="bg-white rounded-3xl p-8 shadow-lg border-2 border-slate-100">
+                <h2 class="text-2xl font-bold text-slate-800 mb-4">Modifier le Message</h2>
+                <form method="post" action="{{ path('admin_maintenance_update_message') }}" class="space-y-4">
+                    <input type="hidden" name="_token" value="{{ csrf_token('update_message') }}">
+                    
+                    <div>
+                        <label class="block text-sm font-bold text-slate-700 mb-2">Message affiché aux utilisateurs</label>
+                        <textarea name="message" rows="4" 
+                                  class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-orange-500 focus:outline-none">{{ settings.maintenanceMessage }}</textarea>
+                    </div>
+
+                    <button type="submit" 
+                            class="px-6 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors font-bold">
+                        💾 Mettre à Jour le Message
+                    </button>
+                </form>
+            </div>
+        {% endif %}
+
+        {# Info Box #}
+        <div class="mt-6 p-6 bg-blue-50 border-2 border-blue-200 rounded-2xl">
+            <h3 class="font-bold text-blue-800 mb-2">ℹ️ Informations Importantes</h3>
+            <ul class="text-sm text-blue-700 space-y-1">
+                <li>✓ Les administrateurs (ROLE_ADMIN et supérieur) peuvent toujours accéder au site</li>
+                <li>✓ Les routes admin, profiler et assets restent accessibles</li>
+                <li>✓ Les utilisateurs normaux verront la page de maintenance</li>
+                <li>✓ Le code HTTP 503 (Service Unavailable) sera retourné</li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap');
+    .font-poppins { font-family: 'Poppins', sans-serif; }
+</style>
+{% endblock %}

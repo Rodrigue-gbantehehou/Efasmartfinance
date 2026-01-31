@@ -9,12 +9,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 #[Route('/admin/settings')]
+#[IsGranted('ROLE_SUPPORT')]
 class SettingAdminController extends AbstractController
 {
     #[Route('', name: 'admin_settings')]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'settings');
         // Récupérer les paramètres actuels (à adapter selon votre logique métier)
         $settings = [
             'site_name' => 'EFA SMART FINANCE',
@@ -42,6 +46,7 @@ class SettingAdminController extends AbstractController
     #[Route('/email', name: 'admin_settings_email')]
     public function email(): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'settings');
         // Page de configuration des emails
         return $this->render('admin/settings/email.html.twig');
     }
@@ -49,6 +54,7 @@ class SettingAdminController extends AbstractController
     #[Route('/notifications', name: 'admin_settings_notifications')]
     public function notifications(): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'settings');
         // Page de configuration des notifications
         return $this->render('admin/settings/notifications.html.twig');
     }

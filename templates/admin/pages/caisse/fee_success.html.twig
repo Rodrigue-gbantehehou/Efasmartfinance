@@ -1,0 +1,55 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Frais Réglés — EFA SMART FINANCE{% endblock %}
+
+{% block contentadmin %}
+<div class="min-h-screen bg-green-50 flex items-center justify-center p-6">
+    <div class="max-w-md w-full bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-emerald-50 text-center">
+        <!-- Success Banner -->
+        <div class="bg-amber-600 p-10 relative overflow-hidden">
+            <div class="relative z-10">
+                <div class="w-20 h-20 bg-white/20 rounded-3xl flex items-center justify-center mx-auto mb-6 backdrop-blur-md">
+                    <i class="fas fa-file-invoice-dollar text-white text-4xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-white font-poppins">Frais Règlementés !</h2>
+                <p class="text-amber-100 text-sm mt-2">La tontine est désormais activée pour les versements.</p>
+            </div>
+            <!-- Decorative circle -->
+            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-white/10 rounded-full"></div>
+        </div>
+
+        <div class="p-10 space-y-8 text-gray-900">
+            <!-- Recap -->
+            <div class="space-y-4">
+                <div class="flex justify-between items-center text-sm border-b border-gray-50 pb-4">
+                    <span class="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Facture N°</span>
+                    <span class="font-bold text-gray-900">{{ facture.numero }}</span>
+                </div>
+                <div class="flex justify-between items-center text-sm border-b border-gray-50 pb-4">
+                    <span class="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Client</span>
+                    <span class="font-bold text-gray-900">{{ user.fullName }}</span>
+                </div>
+                <div class="flex justify-between items-center text-sm">
+                    <span class="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Montant Collecté</span>
+                    <span class="text-xl font-black text-amber-600">{{ transaction.amount|number_format(0, ',', ' ') }} FCFA</span>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="space-y-3">
+                <a href="{{ path('admin_caisse_receipt_download', {'id': transaction.id}) }}" target="_blank"
+                   class="w-full flex items-center justify-center gap-3 py-5 bg-amber-600 text-white rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-amber-700 transition-all shadow-xl shadow-amber-200">
+                    <i class="fas fa-file-pdf"></i> Télécharger la Facture
+                </a>
+                
+                <a href="{{ path('admin_caisse_user_tontines', {'id': user.id}) }}" 
+                   class="w-full flex items-center justify-center py-5 bg-gray-50 text-gray-400 rounded-2xl text-sm font-bold uppercase tracking-widest hover:bg-gray-100 transition-all">
+                    Retour aux Tontines
+                </a>
+            </div>
+
+            <p class="text-[10px] text-gray-400 italic">La facture de frais de service est également envoyée par email au client (si configuré) et archivée dans son espace personnel.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

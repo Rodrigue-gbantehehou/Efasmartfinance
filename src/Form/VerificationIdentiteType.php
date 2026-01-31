@@ -102,22 +102,6 @@ class VerificationIdentiteType extends AbstractType
                     ])
                 ]
             ])
-            ->add('documentBack', FileType::class, [
-                'label' => 'Verso du document d\'identité',
-                'mapped' => false,
-                'required' => true,
-                'constraints' => [
-                    new File([
-                        'maxSize' => '5M',
-                        'mimeTypes' => [
-                            'image/jpeg',
-                            'image/png',
-                            'application/pdf',
-                        ],
-                        'mimeTypesMessage' => 'Veuillez télécharger un fichier image (JPEG, PNG) ou PDF valide',
-                    ])
-                ]
-            ])
             ->add('documentNumber', TextType::class, [
                 'label' => 'Numéro du document',
                 'required' => true,

@@ -10,18 +10,21 @@ use App\Service\ActivityLogger;
 use App\Repository\UserRepository;
 use App\Service\UniqueCodeGenerator;
 use App\Repository\TontineRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\TransactionRepository;
+use App\Repository\WithdrawalsRepository;
+use App\Repository\BroadcastMessageRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/admin')]
-//#[IsGranted('ROLE_ADMIN')]
+#[IsGranted('ROLE_USER')]
 class DashboardAdminController extends AbstractController
 {
     public function __construct(
@@ -32,11 +35,21 @@ class DashboardAdminController extends AbstractController
         private UserPasswordHasherInterface $passwordHasher,
         private UniqueCodeGenerator $uniqueCodeGenerator,
         private ActivityLogger $activityLogger,
+        private WithdrawalsRepository $withdrawalsRepository,
+        private BroadcastMessageRepository $broadcastRepository,
     ) {
     }
     
     #[Route('/', name: 'admin_dashboard')]
     public function dashboard(): Response {
+        if ($this->isGranted('ROLE_CAISSIER') && 
+            !$this->isGranted('ROLE_FINANCE') && 
+            !$this->isGranted('ROLE_ADMIN') && 
+            !$this->isGranted('ROLE_SUPER_ADMIN')) {
+            return $this->redirectToRoute('admin_caisse_dashboard');
+        }
+
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'dashboard');
         // Données pour le graphique des revenus (7 derniers jours)
         $endDate = new \DateTime();
         $startDate = (clone $endDate)->modify('-6 days');
@@ -75,9 +88,11 @@ class DashboardAdminController extends AbstractController
             'new_tontines_month' => $this->tontineRepository->countNewTontinesThisMonth(),
             'transaction_volume_month' => $this->transactionRepository->getMonthlyVolume(),
             'satisfaction_rate' => $this->calculateSatisfactionRate(),
-            'active_tontines_percentage' => $this->calculateActiveTontinesPercentage(),
-            'success_rate' => 98.7, // Taux de succès des transactions
             'tontines_today' => $this->tontineRepository->countTontinesToday(),
+            'pending_withdrawals' => $this->withdrawalsRepository->countPending(),
+            'pending_withdrawals_amount' => $this->withdrawalsRepository->getPendingAmount(),
+            'pending_verifications' => $this->userRepository->countPendingVerification(),
+            'security_alerts' => $this->entityManager->getRepository(ActivityLog::class)->countSecurityAlertsToday(),
         ];
         
         // Get recent activities
@@ -117,26 +132,48 @@ class DashboardAdminController extends AbstractController
             'transaction_count' => $stats['total_transactions'],
             'support_ticket_count' => $this->getSupportTicketCount(),
             'online_users' => $this->getOnlineUsersCount(),
+            'system_status' => $this->getSystemStatus(),
+            'recent_broadcasts' => $this->broadcastRepository->findBy([], ['createdAt' => 'DESC'], 3),
         ]);
     }
     
     #[Route('/users', name: 'admin_users')]
-    public function usersList(): Response
+    public function usersList(Request $request): Response
     {
-        $users = $this->userRepository->findAll();
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'users');
+        $filter = $request->query->get('filter');
+        
+        if ($filter === 'unverified') {
+            $allUsers = $this->userRepository->findBy(['isVerified' => [false, null]]);
+        } else {
+            $allUsers = $this->userRepository->findAll();
+        }
+        
+        // Un Super Admin peut voir tout le monde. 
+        // Les autres administrateurs ne voient pas les Super Admins dans la liste.
+        $canSeeSuperAdmin = $this->isGranted('ROLE_SUPER_ADMIN');
+        
+        $users = array_filter($allUsers, function(User $user) use ($canSeeSuperAdmin) {
+            if ($canSeeSuperAdmin) {
+                return true;
+            }
+            return !in_array('ROLE_SUPER_ADMIN', $user->getRoles());
+        });
         
         return $this->render('admin/pages/users/list.html.twig', [
             'users' => $users,
+            'current_filter' => $filter,
         ]);
     }
     
     #[Route('/users/{id}/details', name: 'admin_users_details')]
     public function userDetails(int $id): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'users');
         $user = $this->userRepository->createQueryBuilder('u')
             ->leftJoin('u.tontines', 't')
             ->leftJoin('u.transactions', 'tr')
-            ->leftJoin('u.wallets', 'w')
+
             ->leftJoin('u.contactSupports', 'cs')
             ->leftJoin('u.userTermsAcceptances', 'uta')
             ->leftJoin('u.activityLogs', 'al')
@@ -155,7 +192,7 @@ class DashboardAdminController extends AbstractController
         $stats = [
             'tontines_count' => $user->getTontines()->count(),
             'transactions_count' => $user->getTransactions()->count(),
-            'wallets_count' => $user->getWallets()->count(),
+
             'withdrawals_count' => $user->getWithdrawals()->count(),
             'activity_logs_count' => $user->getActivityLogs()->count(),
             'security_logs_count' => $user->getSecurityLogs()->count(),
@@ -170,6 +207,7 @@ class DashboardAdminController extends AbstractController
     #[Route('/users/create', name: 'admin_user_create', methods: ['GET', 'POST'])]
     public function createUser(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('EDIT_MODULE', 'users');
         $user = new User();
         $form = $this->createForm(UserType::class, $user, [
             'is_edit' => false
@@ -224,6 +262,7 @@ class DashboardAdminController extends AbstractController
     #[Route('/users/{id}/edit', name: 'admin_users_edit', methods: ['GET', 'POST'])]
     public function editUser(Request $request, int $id, UserRepository $userRepository): Response
     {
+        $this->denyAccessUnlessGranted('EDIT_MODULE', 'users');
         $user = $userRepository->find($id);
         
         if (!$user) {
@@ -311,6 +350,7 @@ class DashboardAdminController extends AbstractController
     #[Route('/audit/logs', name: 'admin_audit_logs')]
     public function auditLogs(Request $request): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'audit');
         $logs = $this->entityManager->getRepository(ActivityLog::class)
             ->createQueryBuilder('a')
             ->leftJoin('a.utilisateur', 'u')
@@ -329,39 +369,49 @@ class DashboardAdminController extends AbstractController
         ]);
     }
     
+    #[Route('/audit/log/{id}', name: 'admin_audit_log_detail')]
+    public function auditLogDetail(ActivityLog $log): Response
+    {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'audit');
+        return $this->render('admin/pages/audit/log_detail.html.twig', [
+            'log' => $log,
+        ]);
+    }
+
     private function exportLogsToCsv(array $logs): Response
     {
         $filename = 'logs-audit-' . date('Y-m-d') . '.csv';
         
-        $response = new Response();
+        $response = new StreamedResponse(function () use ($logs) {
+            $handle = fopen('php://output', 'w+');
+            
+            // En-têtes CSV
+            fputcsv($handle, [
+                'Date',
+                'Utilisateur',
+                'Email',
+                'Action',
+                'Détails',
+                'Adresse IP'
+            ], ';');
+            
+            // Données
+            foreach ($logs as $log) {
+                fputcsv($handle, [
+                    $log->getCreatedAt() ? $log->getCreatedAt()->format('d/m/Y H:i:s') : '',
+                    $log->getUtilisateur() ? ($log->getUtilisateur()->getFirstName() . ' ' . $log->getUtilisateur()->getLastName()) : 'Système',
+                    $log->getUtilisateur() ? ($log->getUtilisateur()->getEmail() ?? 'N/A') : 'Système',
+                    $log->getActions(),
+                    $log->getDescription(),
+                    $log->getIpAdress()
+                ], ';');
+            }
+            
+            fclose($handle);
+        });
+
         $response->headers->set('Content-Type', 'text/csv');
         $response->headers->set('Content-Disposition', 'attachment; filename="' . $filename . '"');
-        
-        $handle = fopen('php://output', 'w+');
-        
-        // En-têtes CSV
-        fputcsv($handle, [
-            'Date',
-            'Utilisateur',
-            'Email',
-            'Action',
-            'Détails',
-            'Adresse IP'
-        ], ';');
-        
-        // Données
-        foreach ($logs as $log) {
-            fputcsv($handle, [
-                $log->getCreatedAt() ? $log->getCreatedAt()->format('d/m/Y H:i:s') : '',
-                $log->getUtilisateur() ? ($log->getUtilisateur()->getFirstName() . ' ' . $log->getUtilisateur()->getLastName()) : 'Système',
-                $log->getUtilisateur() ? ($log->getUtilisateur()->getEmail() ?? 'N/A') : 'Système',
-                $log->getActions(),
-                $log->getDescription(),
-                $log->getIpAdress()
-            ], ';');
-        }
-        
-        fclose($handle);
         
         return $response;
     }
@@ -633,6 +683,11 @@ class DashboardAdminController extends AbstractController
     #[Route('/users/{id}/deactivate', name: 'admin_users_desactivate', methods: ['POST'])]
     public function deactivateUser(Request $request, User $user): Response
     {
+        if (in_array('ROLE_SUPER_ADMIN', $user->getRoles())) {
+            $this->addFlash('error', 'Le compte Super Admin ne peut pas être désactivé.');
+            return $this->redirectToRoute('admin_users');
+        }
+
         if ($this->isCsrfTokenValid('deactivate'.$user->getId(), $request->request->get('_token'))) {
             $user->setIsActive(false);
             $this->entityManager->flush();
@@ -661,6 +716,11 @@ class DashboardAdminController extends AbstractController
     #[Route('/users/{id}/delete', name: 'admin_user_delete', methods: ['POST'])]
     public function deleteUser(Request $request, User $user): Response
     {
+        if (in_array('ROLE_SUPER_ADMIN', $user->getRoles())) {
+            $this->addFlash('error', 'Le compte Super Admin ne peut pas être supprimé.');
+            return $this->redirectToRoute('admin_users');
+        }
+
         if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
             $this->entityManager->remove($user);
             $this->entityManager->flush();

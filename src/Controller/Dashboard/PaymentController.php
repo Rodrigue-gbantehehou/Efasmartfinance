@@ -5,7 +5,7 @@ namespace App\Controller\Dashboard;
 use App\Entity\User;
 use App\Entity\Tontine;
 use App\Entity\Facture;
-use App\Entity\Wallets;
+
 use App\Entity\PlatformFee;
 use App\Entity\Transaction;
 use App\Service\PdfService;
@@ -15,9 +15,7 @@ use App\Entity\TontinePoint;
 use Psr\Log\LoggerInterface;
 use App\Service\EmailService;
 use App\Service\ActivityLogger;
-use App\Entity\WalletTransactions;
-use App\Service\Payment\PayPalService;
-use App\Service\Payment\FedaPayService;
+
 use App\Service\Payment\KkiaPayService;
 use Doctrine\ORM\EntityManagerInterface;
 use Twig\Environment as TwigEnvironment;
@@ -35,9 +33,7 @@ final class PaymentController extends AbstractController
     public function __construct(
         private EntityManagerInterface $em,
         private Security $security,
-        private FedaPayService $fedaPayService,
         private KkiaPayService $kkiaPayService,
-        private PayPalService $payPalService,
         private ActivityLogger $activityLogger,
         private EmailService $emailService,
         private TwigEnvironment $twig,
@@ -62,8 +58,8 @@ final class PaymentController extends AbstractController
         $amount  = (int) ($data['amount'] ?? 0);
         $method  = $data['method'] ?? null;
 
-        if (!$tontine || $amount <= 0 || !in_array($method, ['fedapay', 'kkiapay', 'paypal'])) {
-            return $this->json(['success' => false, 'message' => 'Données invalides'], 400);
+        if (!$tontine || $amount <= 0 || $method !== 'kkiapay') {
+            return $this->json(['success' => false, 'message' => 'Données invalides ou méthode non supportée'], 400);
         }
 
         // Vérifier si l'utilisateur est le créateur de la tontine
@@ -71,10 +67,7 @@ final class PaymentController extends AbstractController
         $currentUserId = $user->getUserIdentifier();
         $isMember = $tontineOwner && $tontineOwner->getUserIdentifier() === $currentUserId;
 
-        // Logs de débogage
-        error_log("Tontine Owner Email: " . ($tontineOwner ? $tontineOwner->getEmail() : 'null'));
-        error_log("Current User Email: " . $currentUserId);
-        error_log("Is Member: " . ($isMember ? 'true' : 'false'));
+
 
         if (!$isMember) {
             return $this->json([
@@ -100,11 +93,7 @@ final class PaymentController extends AbstractController
         $this->em->flush();
 
         try {
-            $initData = match ($method) {
-                'fedapay' => $this->fedaPayService->initPayment($payment),
-                'kkiapay' => $this->kkiaPayService->initPayment($payment),
-                'paypal'  => $this->payPalService->initPayment($payment),
-            };
+            $initData = $this->kkiaPayService->initPayment($payment);
 
             return $this->json([
                 'success' => true,
@@ -263,24 +252,43 @@ final class PaymentController extends AbstractController
     #[Route('/verify', name: 'app_tontine_payment_verify', methods: ['POST'])]
 public function verifyPayment(Request $request, EntityManagerInterface $em): JsonResponse
 {
+    $this->logger->info('=== DÉBUT VÉRIFICATION PAIEMENT ===');
+    
     $data = json_decode($request->getContent(), true);
     $paymentId = $data['payment_id'] ?? 0;
     $transactionId = $data['transaction_id'] ?? '';
+
+    $this->logger->info('Données reçues', [
+        'payment_id' => $paymentId,
+        'transaction_id' => $transactionId,
+        'raw_data' => $data
+    ]);
 
     $payment = $this->em->getRepository(Transaction::class)->find($paymentId);
 
     $user = $this->getUser();
     if (!$payment) {
+        $this->logger->error('Paiement non trouvé', ['payment_id' => $paymentId]);
         return new JsonResponse([
             'success' => false,
             'message' => 'Paiement non trouvé'
         ], 404);
     }
 
+    $this->logger->info('Paiement trouvé', [
+        'payment_id' => $payment->getId(),
+        'current_status' => $payment->getStatut(),
+        'amount' => $payment->getAmount(),
+        'payment_method' => $payment->getPaymentMethod()
+    ]);
+
     // Vérifier si l'utilisateur est autorisé
     $currentUser = $this->security->getUser();
     if ($payment->getUtilisateur()->getId() !== $currentUser->getId()) {
-        error_log("Accès refusé - Utilisateur ID: " . $currentUser->getId() . " n'est pas le propriétaire du paiement");
+        $this->logger->error("Accès refusé - Utilisateur non autorisé", [
+            'payment_user_id' => $payment->getUtilisateur()->getId(),
+            'current_user_id' => $currentUser->getId()
+        ]);
         return new JsonResponse([
             'success' => false,
             'message' => 'Non autorisé',
@@ -292,14 +300,23 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
     }
 
     try {
-        $verification = match ($payment->getPaymentMethod()) {
-            'fedapay' => $this->fedaPayService->verifyPayment($payment, $transactionId),
-            'kkiapay' => $this->kkiaPayService->verifyPayment($payment, $transactionId),
-            'paypal' => $this->payPalService->verifyPayment($payment, $transactionId),
-            default => throw new \Exception('Méthode non supportée')
-        };
+        if ($payment->getPaymentMethod() !== 'kkiapay') {
+            throw new \Exception('Méthode de paiement non supportée');
+        }
+        
+        $this->logger->info('Appel KkiaPayService pour vérification', [
+            'transaction_id' => $transactionId
+        ]);
+        
+        $verification = $this->kkiaPayService->verifyPayment($payment, $transactionId);
+
+        $this->logger->info('Résultat de la vérification KkiaPay', [
+            'verification' => $verification
+        ]);
 
         if ($verification['success']) {
+            $this->logger->info('Paiement vérifié avec succès, mise à jour du statut');
+            
             // 1. Mettre à jour le statut du paiement d'abord
             $payment->setStatut('completed');
             $payment->setExternalReference($transactionId);
@@ -308,49 +325,19 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
             // 2. Appliquer le paiement à la tontine
             $tontine = $payment->getTontine();
             
-            // 3. Gestion du surplus et des points
-            $amountPaid = $payment->getAmount();
-            $amountPerPoint = $tontine->getAmountPerPoint();
-            
-            // Calcul du surplus
-            $surplus = $amountPaid % $amountPerPoint;
-            $validAmount = $amountPaid - $surplus;
-
-            if ($validAmount <= 0) {
-                throw new \Exception('Le montant payé est inférieur au montant de la tontine.');
-            }
-
-            // Gestion du surplus
-            if ($surplus > 0) {
-                $wallet = $this->em->getRepository(Wallets::class)->findOneBy([
-                    'utilisateur' => $payment->getUtilisateur()
-                ]);
-
-                if (!$wallet) {
-                    $wallet = new Wallets();
-                    $wallet->setUtilisateur($payment->getUtilisateur());
-                    $wallet->setBalance(0);
-                }
-
-                $wallet->setBalance($wallet->getBalance() + $surplus);
-                $wallet->setUpdatedAt(new \DateTimeImmutable());
-
-                $transactionWallet = new WalletTransactions();
-                $transactionWallet->setTransactions($payment);
-                $transactionWallet->setWallet($wallet);
-                $transactionWallet->setAmount($surplus);
-                $transactionWallet->setCreatedAt(new \DateTimeImmutable());
-                $transactionWallet->setReason('Surplus de paiement tontine');
-
-                $this->em->persist($transactionWallet);
-            }
+            $this->logger->info('Application du paiement à la tontine', [
+                'tontine_id' => $tontine->getId(),
+                'amount' => $payment->getAmount()
+            ]);
 
             // Appliquer le paiement à la tontine
             $tontine->applyPayment(
-                $validAmount,
+                $payment->getAmount(),
                 $payment,
                 $payment->getPaymentMethod()
             );
+
+            $this->logger->info('Paiement appliqué à la tontine avec succès');
 
             // Journalisation
             $this->activityLogger->log(
@@ -360,6 +347,8 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
                 $payment->getId(),
                 'Paiement de ' . $payment->getAmount() . ' FCFA effectué'
             );
+
+            $this->logger->info('Génération de la facture');
 
             // Créer et enregistrer la facture avant de générer le PDF
             $facture = new Facture();
@@ -373,6 +362,8 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
             
             $em->persist($facture);
             $em->flush();
+            
+            $this->logger->info('Facture créée', ['facture_id' => $facture->getId()]);
             
             // Préparer les données pour le PDF
             $pdfData = [
@@ -389,6 +380,8 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
                 'facture-' . $facture->getNumero()
             );
             
+            $this->logger->info('PDF généré', ['pdf_path' => $pdfPath]);
+            
             // Mettre à jour la facture avec le chemin du PDF
             $facture->setFichier('factures/' . basename($pdfPath));
             $em->persist($facture);
@@ -397,6 +390,8 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
             $payment->setInvoicePath('factures/' . basename($pdfPath));
             $em->persist($payment);
             $em->flush();
+            
+            $this->logger->info('Facture et paiement mis à jour avec le PDF');
             
             try {
                 // Générer le contenu de l'email
@@ -455,6 +450,8 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
                 }
             }
 
+            $this->logger->info('=== FIN VÉRIFICATION PAIEMENT - SUCCÈS ===');
+
             return new JsonResponse([
                 'success' => true,
                 'message' => 'Paiement validé avec succès',
@@ -462,6 +459,11 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
                 'invoice_sent' => true
             ]);
         } else {
+            $this->logger->warning('Échec de la vérification du paiement', [
+                'verification_message' => $verification['message'] ?? 'Aucun message',
+                'verification_data' => $verification
+            ]);
+            
             $payment->setStatut('failed');
             $em->flush();
 
@@ -484,9 +486,17 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
                 ];
             }
 
+            $this->logger->info('=== FIN VÉRIFICATION PAIEMENT - ÉCHEC ===');
+
             return new JsonResponse($payload);
         }
     } catch (\Exception $e) {
+        $this->logger->error('Exception lors de la vérification du paiement', [
+            'exception' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+            'payment_id' => $paymentId
+        ]);
+        
         $payment->setStatut('failed');
         $this->em->flush();
 
@@ -497,6 +507,8 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
             $payment->getId(),
             'Paiement de ' . $payment->getAmount() . ' FCFA échoué'
         );
+
+        $this->logger->info('=== FIN VÉRIFICATION PAIEMENT - EXCEPTION ===');
 
         return new JsonResponse([
             'success' => false,
@@ -531,11 +543,7 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
     #[Route('/callback', name: 'app_tontine_payment_callback')]
     public function handleCallback(Request $request): Response
     {
-        // LOG IMPORTANT pour debug
-        error_log('=== FEDAPAY CALLBACK RECEIVED ===');
-        error_log('GET Params: ' . json_encode($request->query->all()));
-        error_log('POST Params: ' . json_encode($request->request->all()));
-        error_log('Headers: ' . json_encode($request->headers->all()));
+
 
 
         $method = $request->query->get('method') ?? $request->request->get('method');
@@ -558,20 +566,10 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
         }
 
         try {
-            // Traitement selon la méthode
-            switch ($method) {
-                case 'fedapay':
-                    $result = $this->handleFedaPayCallback($payment, $request);
-                    break;
-                case 'kkiapay':
-                    $result = $this->handleKkiaPayCallback($payment, $request);
-                    break;
-                case 'paypal':
-                    $result = $this->handlePayPalCallback($payment, $request);
-                    break;
-                default:
-                    throw new \Exception('Méthode de paiement non supportée');
+            if ($method !== 'kkiapay') {
+                throw new \Exception('Méthode de paiement non supportée');
             }
+            $result = $this->handleKkiaPayCallback($payment, $request);
 
             if ($result['success']) {
                 // Rediriger vers la page de succès
@@ -593,40 +591,7 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
         }
     }
 
-    private function handleFedaPayCallback(Transaction $payment, Request $request): array
-    {
-        // Récupérer les données de callback FedaPay
-        $transactionId = $request->query->get('transaction_id');
-        $status = $request->query->get('status');
 
-        // Vérifier avec l'API FedaPay
-        $verification = $this->fedaPayService->verifyCallback($transactionId);
-
-        if ($verification['success'] && $verification['status'] === 'approved') {
-            // Mettre à jour le paiement
-            $payment->setStatut('completed');
-            $payment->setExternalReference($transactionId);
-            $payment->setCreatedAt(new \DateTimeImmutable());
-
-            // Créditer la tontine
-            $this->creditTontine($payment);
-
-            $this->em->flush();
-
-            return [
-                'success' => true,
-                'transaction_id' => $transactionId
-            ];
-        }
-
-        $payment->setStatut('failed');
-        $this->em->flush();
-
-        return [
-            'success' => false,
-            'message' => 'Paiement échoué ou annulé'
-        ];
-    }
 
     private function handleKkiaPayCallback(Transaction $payment, Request $request): array
     {
@@ -755,43 +720,7 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
         }
     }
 
-    private function handlePayPalCallback(Transaction $payment, Request $request): array
-    {
-        // PayPal utilise généralement des webhooks, mais pour les boutons JS:
-        $orderId = $request->query->get('token') ?? $request->query->get('paymentId');
 
-        if (!$orderId) {
-            return [
-                'success' => false,
-                'message' => 'ID de commande manquant'
-            ];
-        }
-
-        // Vérifier la commande PayPal
-        $verification = $this->payPalService->verifyOrder($orderId);
-
-        if ($verification['success'] && $verification['status'] === 'COMPLETED') {
-            $payment->setStatut('completed');
-            $payment->setExternalReference($orderId);
-            $payment->setCreatedAt(new \DateTimeImmutable());
-
-            $this->creditTontine($payment);
-            $this->em->flush();
-
-            return [
-                'success' => true,
-                'transaction_id' => $orderId
-            ];
-        }
-
-        $payment->setStatut('failed');
-        $this->em->flush();
-
-        return [
-            'success' => false,
-            'message' => 'Paiement PayPal échoué'
-        ];
-    }
 
     private function creditTontine(Transaction $payment): void
     {

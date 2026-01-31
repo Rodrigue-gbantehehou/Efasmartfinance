@@ -115,54 +115,20 @@ final class WithdrawalsController extends AbstractController
                 return $this->redirectToRoute('app_tontines_show', ['id' => $tontine->getId()]);
             }
 
-            try {
-                // Créer la demande de retrait
-                $withdrawal = new Withdrawals();
-                $withdrawal->setUtilisateur($user);
-                $withdrawal->setTontine($tontine);
-                $withdrawal->setAmount($amount);
-                $withdrawal->setTotalAmount($amount);
-                $withdrawal->setMethod($data['payment_method'] ?? 'mobile_money');
-                $withdrawal->setStatut('pending');
-                $withdrawal->setRequestedAt(new \DateTimeImmutable());
-                $withdrawal->setReason('Demande de retrait de ' . number_format($amount, 0, ',', ' ') . ' FCFA');
+            // Stocker les données en session pour la confirmation après PIN
+            $request->getSession()->set('pending_withdrawal', [
+                'tontine_id' => $tontine->getId(),
+                'amount' => $amount,
+                'method' => $data['withdrawal_method'] ?? 'mobile_money',
+                'phone_number' => $data['phone_number'] ?? null,
+                'withdrawal_type' => $data['withdrawal_type'],
+                'fee_payment_method' => $data['fee_payment_method'] ?? null
+            ]);
 
-                // Effectuer le retrait du montant demandé
-                $tontine->withdraw($amount);
-                
-                $em->persist($withdrawal);
-                $em->flush();
+            // Définir le chemin de retour après vérification du PIN
+            $request->getSession()->set('_security.main.target_path', $this->generateUrl('app_withdrawal_confirm'));
 
-                // Mettre à jour le statut de la tontine si nécessaire
-                if ($tontine->isComplete()) {
-                    $tontine->setStatut('completed');
-                    $tontine->setEndedAt(new \DateTimeImmutable());
-                    $em->persist($tontine);
-                    $em->flush();
-                    $message = 'Votre demande de retrait a été soumise avec succès et la tontine a été clôturée.';
-                } else {
-                    $message = 'Votre demande de retrait a été soumise avec succès.';
-                }
-
-                $this->addFlash('success', $message);
-
-                // Log de l'activité
-                $this->activityLogger->log(
-                    $user,
-                    'WITHDRAWAL_REQUEST',
-                    'Withdrawal',
-                    $withdrawal->getId(),
-                    sprintf(
-                        'Nouvelle demande de retrait - Montant: %s FCFA',
-                        number_format($amount, 0, ',', ' ')
-                    )
-                );
-
-                return $this->redirectToRoute('app_tontines_show', ['id' => $tontine->getId()]);
-            } catch (\Exception $e) {
-                $this->addFlash('error', 'Une erreur est survenue lors de la soumission de votre demande : ' . $e->getMessage());
-                return $this->redirectToRoute('app_withdrawal_request', ['id' => $tontine->getId()]);
-            }
+            return $this->redirectToRoute('pin_verify');
         }
 
         return $this->render('dashboard/pages/withdrawals/request.html.twig', [
@@ -170,6 +136,96 @@ final class WithdrawalsController extends AbstractController
             'tontine' => $tontine,
             'availableAmount' => $tontine->getAvailableWithdrawalAmount()
         ]);
+    }
+
+    /**
+     * Finalise la demande de retrait après vérification du PIN
+     */
+    #[Route('/withdrawals/confirm', name: 'app_withdrawal_confirm', methods: ['GET'])]
+    public function confirmWithdrawal(Request $request, EntityManagerInterface $em): Response
+    {
+        $session = $request->getSession();
+        
+        // Vérifier si le PIN a été validé récemment
+        if (!$session->get('pin_verified')) {
+            $this->addFlash('error', 'Veuillez d\'abord valider votre identité avec votre code PIN.');
+            return $this->redirectToRoute('app_withdrawals_index');
+        }
+
+        $pendingData = $session->get('pending_withdrawal');
+        if (!$pendingData) {
+            $this->addFlash('error', 'Aucune demande de retrait en attente.');
+            return $this->redirectToRoute('app_withdrawals_index');
+        }
+
+        /** @var User $user */
+        $user = $this->getUser();
+        $tontine = $em->getRepository(Tontine::class)->find($pendingData['tontine_id']);
+
+        if (!$tontine || $tontine->getUtilisateur() !== $user) {
+            $session->remove('pending_withdrawal');
+            $this->addFlash('error', 'Données de retrait invalides.');
+            return $this->redirectToRoute('app_tontines_index');
+        }
+
+        $amount = $pendingData['amount'];
+
+        try {
+            // Créer la demande de retrait
+            $withdrawal = new Withdrawals();
+            $withdrawal->setUtilisateur($user);
+            $withdrawal->setTontine($tontine);
+            $withdrawal->setAmount($amount);
+            $withdrawal->setTotalAmount($amount);
+            $withdrawal->setMethod($pendingData['method']);
+            // Si numéro de téléphone présent, on peut le stocker (si l'entité le supporte, sinon dans raison)
+            $reason = 'Demande de retrait de ' . number_format($amount, 0, ',', ' ') . ' FCFA';
+            if ($pendingData['phone_number']) {
+                $reason .= ' (Vers: ' . $pendingData['phone_number'] . ')';
+            }
+            $withdrawal->setReason($reason);
+            $withdrawal->setStatut('pending');
+            $withdrawal->setRequestedAt(new \DateTimeImmutable());
+
+            // Effectuer le retrait du montant demandé
+            $tontine->withdraw($amount);
+            
+            $em->persist($withdrawal);
+            $em->flush();
+
+            // Mettre à jour le statut de la tontine si nécessaire
+            if ($tontine->isComplete()) {
+                $tontine->setStatut('completed');
+                $tontine->setEndedAt(new \DateTimeImmutable());
+                $em->persist($tontine);
+                $em->flush();
+            }
+
+            // Nettoyer la session
+            $session->remove('pending_withdrawal');
+            // On garde pin_verified pour le reste de la session ou on peut le reset
+            // $session->remove('pin_verified'); 
+
+            $this->addFlash('success', 'Votre demande de retrait a été validée avec succès après vérification PIN.');
+
+            // Log de l'activité
+            $this->activityLogger->log(
+                $user,
+                'WITHDRAWAL_REQUEST',
+                'Withdrawal',
+                $withdrawal->getId(),
+                sprintf(
+                    'Retrait validé par PIN - Montant: %s FCFA',
+                    number_format($amount, 0, ',', ' ')
+                )
+            );
+
+            return $this->redirectToRoute('app_withdrawals_index');
+
+        } catch (\Exception $e) {
+            $this->addFlash('error', 'Une erreur est survenue lors de la finalisation : ' . $e->getMessage());
+            return $this->redirectToRoute('app_withdrawal_request', ['id' => $tontine->getId()]);
+        }
     }
 
 

@@ -1,67 +1,134 @@
 {% extends 'admin/base.html.twig' %}
 
-
-{% block title %}Frais pour la tontine {{ tontine.name }}{% endblock %}
+{% block title %}Détail Prélèvements — {{ tontine.name }}{% endblock %}
 
 {% block contentadmin %}
-    <div class="container-fluid">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="h3 mb-0">Frais pour la tontine</h1>
-                <h2 class="h4 text-muted">{{ tontine.name }}</h2>
+<div class="min-h-screen bg-green-50 p-6 lg:p-8">
+    <!-- Header -->
+    <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div>
+            <div class="flex items-center gap-3 mb-2">
+                <a href="{{ path('app_admin_fees') }}" class="group flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-gray-100 text-gray-400 hover:text-emerald-600 hover:border-emerald-100 transition-all shadow-sm">
+                    <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
+                </a>
+                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Retour au Dashboard Revenue</span>
             </div>
-            <a href="{{ path('app_admin_fees') }}" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-1"></i> Retour
-            </a>
+            <h1 class="text-3xl font-bold font-poppins text-gray-900 tracking-tight">Audit par Tontine</h1>
+            <p class="text-gray-500 font-medium mt-1">Analyse détaillée des commissions générées par <span class="text-emerald-600 font-bold underline decoration-emerald-200 underline-offset-4">{{ tontine.name }}</span></p>
         </div>
+    </div>
 
-        <div class="card">
-            <div class="card-header">
-                <div class="d-flex justify-content-between align-items-center">
-                    <span>Détail des frais</span>
-                    <span class="badge bg-green-700">{{ fees|length }} types de frais</span>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Main Stats & Table -->
+        <div class="lg:col-span-2 space-y-8">
+            <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
+                <div class="p-8 border-b border-gray-50 bg-gray-50/30 flex items-center justify-between">
+                    <div>
+                        <h3 class="text-lg font-bold text-gray-900">Registre des Prélèvements</h3>
+                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Détails par type de service</p>
+                    </div>
+                    <span class="px-4 py-1.5 bg-emerald-50 text-emerald-600 rounded-xl text-[10px] font-bold uppercase tracking-widest border border-emerald-100">{{ fees|length }} Sources</span>
                 </div>
-            </div>
-            <div class="card-body p-0">
+
                 {% if fees is not empty %}
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Type de frais</th>
-                                    <th class="text-end">Montant</th>
-                                    <th class="text-end">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for fee in fees %}
-                                    <tr>
-                                        <td>{{ fee.type|trans }}</td>
-                                        <td class="text-end">{{ fee.total|number_format(2, ',', ' ') }} FCFA</td>
-                                        <td class="text-end">
-                                            <a href="#" class="btn btn-sm btn-outline-green-700">
-                                                <i class="fas fa-search"></i> Détails
-                                            </a>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                            <tfoot class="table-light">
-                                <tr>
-                                    <th>Total</th>
-                                    <th class="text-end">{{ total|number_format(2, ',', ' ') }} FCFA</th>
-                                    <th></th>
-                                </tr>
-                            </tfoot>
-                        </table>
-                    </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-white border-b border-gray-50">
+                                <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Service</th>
+                                <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Montant Collecté</th>
+                                <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-50">
+                            {% for fee in fees %}
+                            <tr class="group hover:bg-gray-50 transition-all duration-300">
+                                <td class="px-8 py-6">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-xl bg-gray-50 flex items-center justify-center text-emerald-600">
+                                            <i class="fas fa-tag text-xs"></i>
+                                        </div>
+                                        <span class="font-bold text-gray-900 text-sm font-poppins">{{ fee.type|trans }}</span>
+                                    </div>
+                                </td>
+                                <td class="px-8 py-6 text-right font-bold text-gray-900 text-sm">
+                                    {{ fee.total|number_format(0, ',', ' ') }} <span class="text-[10px] text-gray-400">FCFA</span>
+                                </td>
+                                <td class="px-8 py-6 text-right">
+                                    <button class="text-[10px] font-bold text-emerald-600 uppercase tracking-widest hover:underline">Voir Transactions</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot class="bg-gray-50/50">
+                            <tr>
+                                <td class="px-8 py-6 text-sm font-bold text-gray-500 uppercase tracking-widest">Total Consolidé</td>
+                                <td class="px-8 py-6 text-right text-xl font-black font-poppins text-emerald-600">
+                                    {{ total|number_format(0, ',', ' ') }} <span class="text-xs">FCFA</span>
+                                </td>
+                                <td class="px-8 py-6"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
                 {% else %}
-                    <div class="p-4 text-center text-muted">
-                        <i class="fas fa-info-circle fa-2x mb-3"></i>
-                        <p class="mb-0">Aucun frais enregistré pour cette tontine</p>
+                <div class="p-20 text-center">
+                    <div class="w-20 h-20 rounded-[2rem] bg-gray-50 text-gray-200 flex items-center justify-center text-3xl mx-auto mb-4">
+                        <i class="fas fa-folder-open"></i>
                     </div>
+                    <p class="text-gray-400 font-medium">Aucun frais enregistré pour cette tontine.</p>
+                </div>
                 {% endif %}
             </div>
         </div>
+
+        <!-- Sidebar Info -->
+        <div class="space-y-8">
+            <div class="bg-[#1e293b] rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-8 opacity-10">
+                    <i class="fas fa-vault text-8xl"></i>
+                </div>
+                <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-8">Identité Cercle</h3>
+                <div class="flex items-center gap-5 mb-8">
+                    <div class="w-16 h-16 rounded-2xl bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center text-2xl text-emerald-400 font-bold">
+                        {{ tontine.name|first }}
+                    </div>
+                    <div>
+                        <p class="text-lg font-bold text-white leading-tight font-poppins">{{ tontine.name }}</p>
+                        <p class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mt-1">#{{ tontine.tontinecode }}</p>
+                    </div>
+                </div>
+                <div class="space-y-4 pt-8 border-t border-white/10">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-gray-400">Total Points</span>
+                        <span class="font-bold">{{ tontine.totalPoints }}</span>
+                    </div>
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-gray-400">Valeur Point</span>
+                        <span class="font-bold">{{ tontine.amountPerPoint|number_format(0, ',', ' ') }} FCFA</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm">
+                <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-6 border-b border-gray-50 pb-4">Actions Analytics</h3>
+                <div class="space-y-3">
+                    <button class="w-full px-6 py-4 bg-gray-50 hover:bg-emerald-50 text-gray-600 hover:text-emerald-700 rounded-2xl text-xs font-bold uppercase tracking-widest transition-all text-left flex items-center justify-between">
+                        Exporter l'historique
+                        <i class="fas fa-file-csv"></i>
+                    </button>
+                    <button class="w-full px-6 py-4 bg-gray-50 hover:bg-emerald-50 text-gray-600 hover:text-emerald-700 rounded-2xl text-xs font-bold uppercase tracking-widest transition-all text-left flex items-center justify-between">
+                        Générer Facture Globale
+                        <i class="fas fa-file-pdf"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
     </div>
+</div>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap');
+    .font-poppins { font-family: 'Poppins', sans-serif; }
+</style>
 {% endblock %}

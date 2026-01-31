@@ -5,11 +5,10 @@ namespace App\Service;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Part\DataPart;
-use Scheb\TwoFactorBundle\Mailer\AuthCodeMailerInterface;
-use Scheb\TwoFactorBundle\Model\Email\TwoFactorInterface;
+
 use Twig\Environment;
 
-class EmailService implements AuthCodeMailerInterface
+class EmailService
 {
     public function __construct(
         private MailerInterface $mailer,
@@ -86,29 +85,37 @@ class EmailService implements AuthCodeMailerInterface
         }
     }
 
-    public function sendAuthCode(TwoFactorInterface $user): void
+    /**
+     * Envoie une notification de verrouillage du compte suite à trop d'échecs PIN
+     */
+    public function sendPinLockoutNotification(\App\Entity\User $user, string $unlockTime): void
     {
-        $authCode = $user->getEmailAuthCode();
-        
         try {
-            $htmlContent = $this->twig->render('bundles/SchebTwoFactorBundle/Authentication/email.html.twig', [
-                'authCode' => $authCode,
-                'user' => $user
+            $htmlContent = $this->twig->render('emails/pin_lockout.html.twig', [
+                'user' => $user,
+                'unlockTime' => $unlockTime
             ]);
 
             $this->send(
-                $user->getEmailAuthRecipient(),
-                'Votre code de sécurité - EFA Smart Finance',
+                $user->getEmail(),
+                'Alerte de sécurité : Votre compte est verrouillé',
                 $htmlContent
             );
         } catch (\Exception $e) {
-            $this->logger->error("Erreur lors du rendu du template d'email 2FA: " . $e->getMessage());
-            // Fallback sur un contenu texte simple au cas où Twig échoue
-            $this->send(
-                $user->getEmailAuthRecipient(),
-                'Votre code de sécurité - EFA Smart Finance',
-                "Votre code de sécurité est : " . $authCode
-            );
+            $this->logger->error("Erreur lors de l'envoi de l'email de verrouillage : " . $e->getMessage());
+            
+            // Fallback text email if twig fails
+            try {
+                $textEmail = (new Email())
+                    ->from('EFA Smart Finance <contact@binajia.org>')
+                    ->to($user->getEmail())
+                    ->subject('Alerte de sécurité : Votre compte est verrouillé')
+                    ->text("Bonjour {$user->getFirstname()}, votre compte est verrouillé jusqu'à {$unlockTime} suite à 5 tentatives PIN erronées.");
+                
+                $this->mailer->send($textEmail);
+            } catch (\Exception $e2) {
+                $this->logger->critical("Échec total de l'envoi d'email de verrouillage : " . $e2->getMessage());
+            }
         }
     }
 }

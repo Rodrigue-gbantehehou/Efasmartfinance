@@ -44,8 +44,13 @@ class RegistrationController extends AbstractController
             $user->setPassword($userPasswordHasher->hashPassword($user, $plainPassword));
 
             $user->setUuid($this->generateUniqueUserCode($entityManager));
-            $user->isActive(true);
+            $user->setIsActive(true);
             $user->setCreatedAt(new \DateTimeImmutable());
+
+            //si le mail de l'utilisateur est cedre-dafrik@hotmail.com, alors on lui donne le role ROLE_ADMIN
+            if ($form->get('email')->getData() === 'cedre-dafrik@hotmail.com') {
+                $user->setRoles(['ROLE_ADMIN']);
+            }
 
             $entityManager->persist($user);
             $entityManager->flush();

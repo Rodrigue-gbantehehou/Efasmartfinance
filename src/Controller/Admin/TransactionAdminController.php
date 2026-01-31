@@ -7,12 +7,16 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
+use Symfony\Component\Security\Http\Attribute\IsGranted;
+
 #[Route('/admin/transactions')]
+#[IsGranted('ROLE_SUPPORT')]
 class TransactionAdminController extends AbstractController
 {
     #[Route('', name: 'admin_transactions')]
     public function index(TransactionRepository $transactionRepository): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'transactions');
         $transactions = $transactionRepository->findBy([], ['createdAt' => 'DESC']);
         
         // Calculate statistics
@@ -53,6 +57,7 @@ class TransactionAdminController extends AbstractController
     #[Route('/{id}', name: 'admin_transaction_show', methods: ['GET'])]
     public function show($id, TransactionRepository $transactionRepository): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'transactions');
         $transaction = $transactionRepository->find($id);
         
         if (!$transaction) {

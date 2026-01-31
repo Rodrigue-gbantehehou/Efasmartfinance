@@ -1,0 +1,136 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Détails du Broadcast - {{ broadcast.title }}{% endblock %}
+
+{% block contentadmin %}
+<div class="min-h-screen bg-green-50 font-poppins p-8">
+    <div class="max-w-5xl mx-auto">
+        
+        {# Navigation/Header #}
+        <div class="mb-8 flex justify-between items-center">
+            <div>
+                <a href="{{ path('admin_broadcast') }}" class="text-green-600 hover:text-green-800 flex items-center gap-2 mb-4 transition-colors">
+                    ← Retour à la liste
+                </a>
+                <h1 class="text-4xl font-black text-slate-800">
+                    📢 {{ broadcast.title }}
+                </h1>
+            </div>
+            <div class="flex gap-3">
+                {% if broadcast.status == 'draft' %}
+                    <form method="post" action="{{ path('admin_broadcast_send', {id: broadcast.id}) }}" class="inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token('send' ~ broadcast.id) }}">
+                        <button type="submit" 
+                                onclick="return confirm('Voulez-vous vraiment envoyer ce broadcast ?')"
+                                class="px-6 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors font-semibold shadow-lg shadow-green-100 flex items-center gap-2">
+                            📤 Envoyer maintenant
+                        </button>
+                    </form>
+                {% endif %}
+                
+                <form method="post" action="{{ path('admin_broadcast_delete', {id: broadcast.id}) }}" class="inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ broadcast.id) }}">
+                    <button type="submit" 
+                            onclick="return confirm('Voulez-vous vraiment supprimer ce broadcast ?')"
+                            class="px-6 py-3 bg-red-100 text-red-700 rounded-xl hover:bg-red-200 transition-colors font-semibold flex items-center gap-2">
+                        🗑️ Supprimer
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {# Main Content #}
+            <div class="lg:col-span-2 space-y-8">
+                <div class="bg-white rounded-3xl p-8 shadow-lg border-2 border-slate-100">
+                    <h2 class="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                        📄 Contenu du message
+                    </h2>
+                    <div class="prose max-w-none p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                        {{ broadcast.content|raw }}
+                    </div>
+                </div>
+            </div>
+
+            {# Sidebar Info #}
+            <div class="space-y-8">
+                {# Info Card #}
+                <div class="bg-white rounded-3xl p-8 shadow-lg border-2 border-slate-100">
+                    <h2 class="text-xl font-bold text-slate-800 mb-6">ℹ️ Informations</h2>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center py-2 border-b border-slate-50">
+                            <span class="text-slate-500">Statut</span>
+                            {% if broadcast.status == 'draft' %}
+                                <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-xs font-bold uppercase tracking-wider">Brouillon</span>
+                            {% elseif broadcast.status == 'scheduled' %}
+                                <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs font-bold uppercase tracking-wider">Planifié</span>
+                            {% elseif broadcast.status == 'sent' %}
+                                <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold uppercase tracking-wider">Envoyé</span>
+                            {% else %}
+                                <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold uppercase tracking-wider">Échec</span>
+                            {% endif %}
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-slate-50">
+                            <span class="text-slate-500">Type</span>
+                            <span class="font-semibold text-slate-800">{{ broadcast.type|upper }}</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-slate-50">
+                            <span class="text-slate-500">Audience</span>
+                            <span class="font-semibold text-slate-800">{{ broadcast.targetAudience|replace({'_': ' '})|title }}</span>
+                        </div>
+                        <div class="flex justify-between items-center py-2 border-b border-slate-50">
+                            <span class="text-slate-500">Créé le</span>
+                            <span class="font-semibold text-slate-800">{{ broadcast.createdAt|date('d/m/Y H:i') }}</span>
+                        </div>
+                        {% if broadcast.sentAt %}
+                            <div class="flex justify-between items-center py-2 border-b border-slate-50">
+                                <span class="text-slate-500">Envoyé le</span>
+                                <span class="font-semibold text-slate-800">{{ broadcast.sentAt|date('d/m/Y H:i') }}</span>
+                            </div>
+                        {% endif %}
+                        <div class="flex justify-between items-center py-2">
+                            <span class="text-slate-500">Auteur</span>
+                            <span class="font-semibold text-slate-800 text-right">
+                                {{ broadcast.createdBy ? broadcast.createdBy.firstname ~ ' ' ~ broadcast.createdBy.lastname : 'Système' }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {# Stats Card #}
+                {% if broadcast.stats %}
+                <div class="bg-green-600 rounded-3xl p-8 shadow-lg shadow-green-200 text-white">
+                    <h2 class="text-xl font-bold mb-6">📊 Statistiques d'envoi</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-4 bg-white/10 rounded-2xl">
+                            <p class="text-green-100 text-sm mb-1">Total</p>
+                            <p class="text-3xl font-black">{{ broadcast.stats.total_recipients ?? 0 }}</p>
+                        </div>
+                        <div class="p-4 bg-white/10 rounded-2xl">
+                            <p class="text-green-100 text-sm mb-1">Envoyés</p>
+                            <p class="text-3xl font-black text-emerald-300">{{ broadcast.stats.sent ?? 0 }}</p>
+                        </div>
+                        <div class="p-4 bg-white/10 rounded-2xl">
+                            <p class="text-green-100 text-sm mb-1">Échecs</p>
+                            <p class="text-3xl font-black text-rose-300">{{ broadcast.stats.failed ?? 0 }}</p>
+                        </div>
+                        <div class="p-4 bg-white/10 rounded-2xl">
+                            <p class="text-green-100 text-sm mb-1">Succès</p>
+                            <p class="text-3xl font-black">
+                                {{ broadcast.stats.total_recipients > 0 ? ((broadcast.stats.sent / broadcast.stats.total_recipients) * 100)|round : 0 }}%
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap');
+    .font-poppins { font-family: 'Poppins', sans-serif; }
+</style>
+{% endblock %}

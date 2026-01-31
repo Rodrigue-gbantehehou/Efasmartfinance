@@ -16,6 +16,31 @@ class WithdrawalsRepository extends ServiceEntityRepository
         parent::__construct($registry, Withdrawals::class);
     }
 
+    public function countPending(): int
+    {
+        return $this->count(['statut' => 'pending']);
+    }
+
+    public function getTotalApprovedAmount(): float
+    {
+        return (float) $this->createQueryBuilder('w')
+            ->select('SUM(w.amount)')
+            ->where('w.statut = :status')
+            ->setParameter('status', 'approved')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function getPendingAmount(): float
+    {
+        return (float) $this->createQueryBuilder('w')
+            ->select('SUM(w.amount)')
+            ->where('w.statut = :status')
+            ->setParameter('status', 'pending')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
     //    /**
     //     * @return Withdrawals[] Returns an array of Withdrawals objects
     //     */

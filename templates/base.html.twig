@@ -1,49 +1,144 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="{{ asset('images/logovert.png') }}" type="image/png">
-        <title>EFA SMART FINANCE — Tontines & Épargne</title>
-        <meta name="description" content="Gérez vos tontines et vos plans d’épargne (hebdo, mensuel, trimestriel, semestriel) en toute simplicité. Paiement Mobile Money, virement, carte bancaire. Calendrier et rappels intégrés." />
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-        {% include 'links/_links_css.html.twig' %}
 
-       <script>
-            tailwind.config = {
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{% block title %}Welcome!{% endblock %}</title>
+    <link rel="icon" href="{{ asset('images/logovert.png') }}" type="image/png">
+    <title>EFA SMART FINANCE — Tontines & Épargne</title>
+    <meta name="description"
+        content="Gérez vos tontines et vos plans d’épargne (hebdo, mensuel, trimestriel, semestriel) en toute simplicité. Paiement Mobile Money, virement, carte bancaire. Calendrier et rappels intégrés." />
+
+    <!-- Google Fonts - Poppins -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    {% include 'links/_links_css.html.twig' %}
+
+    <script>
+        tailwind.config = {
             theme: {
                 extend: {
-                colors: {
-                    green-700: '#1a4d2e',    // vert foncé
-                    secondary: '#ffcc00ff',  // jaune
-                    accent: '#2e7d32',     // vert moyen
-                    light: '#f8f9fa',      // fond clair
-                }
+                    fontFamily: {
+                        'sans': ['Poppins', 'system-ui', '-apple-system', 'sans-serif'],
+                        'poppins': ['Poppins', 'sans-serif']
+                    },
+                    colors: {
+                        // Vert - Couleur principale
+                        'green': {
+                            50: '#F0F9F1',
+                            100: '#DDEFE0',
+                            200: '#BBE2C2',
+                            300: '#89CC95',
+                            400: '#4FAA5B',
+                            500: '#008000', // Vibrant
+                            600: '#006400', // Référence demandée
+                            700: '#005600',
+                            800: '#004800', 
+                            900: '#003300',
+                        },
+                        // Jaune - Couleur secondaire
+                        'yellow': {
+                            50: '#FFFDE7',
+                            100: '#FFF9C4',
+                            200: '#FFF59D',
+                            300: '#FFF176',
+                            400: '#FFEE58',
+                            500: '#FFEB3B',
+                            600: '#FDD835',
+                            700: '#FBC02D',
+                            800: '#F9A825',
+                            900: '#F57F17',
+                        },
+                        // Alias pour compatibilité
+                        'primary': {
+                            50: '#F0F9F1',
+                            100: '#DDEFE0',
+                            200: '#BBE2C2',
+                            300: '#89CC95',
+                            400: '#4FAA5B',
+                            500: '#008000',
+                            600: '#006400',
+                            700: '#005600',
+                            800: '#004800',
+                            900: '#003300',
+                        },
+                        'secondary': {
+                            50: '#FFFDE7',
+                            100: '#FFF9C4',
+                            200: '#FFF59D',
+                            300: '#FFF176',
+                            400: '#FFEE58',
+                            500: '#FFEB3B',
+                            600: '#FDD835',
+                            700: '#FBC02D',
+                            800: '#F9A825',
+                            900: '#F57F17',
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.6s ease-out',
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'scale-in': 'scaleIn 0.4s ease-out',
+                        'slide-in-right': 'slideInRight 0.5s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' }
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.95)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' }
+                        },
+                        slideInRight: {
+                            '0%': { opacity: '0', transform: 'translateX(30px)' },
+                            '100%': { opacity: '1', transform: 'translateX(0)' }
+                        }
+                    }
                 }
             }
-            }
-        </script>
-      
+        }
+    </script>
+    
+    <style>
+        /* Centralized background color management */
+        :root {
+            --app-bg-primary: #F0F9F1; /* bg-green-50 equivalent - MODIFIER ICI POUR CHANGER LE FOND */
+            --app-bg-secondary: #FFFFFF;
+            --app-bg-tertiary: #DDEFE0; /* bg-green-100 equivalent */
+        }
+    </style>
 
-    </head>
-    <body class="bg-gray-50 font-sans">
-        {% block header %}
-            {% include 'partials/header.html.twig' %}
-        {% endblock %}
 
-        {% block body %}{% endblock %}
- 
-        {% block footer %}
-            {% include 'partials/footer.html.twig' %}
-        {% endblock %}
+</head>
 
-        {% include 'links/_links_js.html.twig' %}
-        
-        {% block cookie_banner %}
-            {% include 'cookie_consent/banner.html.twig' %}
-        {% endblock %}
-    </body>
+<body class="font-sans" style="background-color: var(--app-bg-primary);">
+    {% block header %}
+    {% include 'partials/header.html.twig' %}
+    {% endblock %}
+
+    {% block body %}{% endblock %}
+
+    {% block footer %}
+    {% include 'partials/footer.html.twig' %}
+    {% endblock %}
+
+    {% include 'links/_links_js.html.twig' %}
+    {% block javascripts %}{% endblock %}
+
+    {% block cookie_banner %}
+    {% include 'cookie_consent/banner.html.twig' %}
+    {% endblock %}
+</body>
 
 </html>

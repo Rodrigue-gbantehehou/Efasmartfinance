@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Psr\Log\LoggerInterface;
 
 #[Route('/admin/withdrawals')]
+#[IsGranted('ROLE_SUPPORT')]
 class WithdrawalAdminController extends AbstractController
 {
     public function __construct(private ActivityLogger $logger)
@@ -23,16 +24,26 @@ class WithdrawalAdminController extends AbstractController
     #[Route('', name: 'admin_withdrawals')]
     public function index(WithdrawalsRepository $withdrawalRepository): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'withdrawals');
         $withdrawals = $withdrawalRepository->findBy([], ['requestedAt' => 'DESC']);
+        
+        $stats = [
+            'pending_count' => $withdrawalRepository->countPending(),
+            'pending_amount' => $withdrawalRepository->getPendingAmount(),
+            'total_approved' => $withdrawalRepository->getTotalApprovedAmount(),
+            'total_count' => count($withdrawals),
+        ];
         
         return $this->render('admin/withdrawals/index.html.twig', [
             'withdrawals' => $withdrawals,
+            'stats' => $stats,
         ]);
     }
 
     #[Route('/{id}', name: 'admin_withdrawal_show', methods: ['GET'])]
     public function show(Withdrawals $withdrawal): Response
     {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'withdrawals');
         return $this->render('admin/withdrawals/show.html.twig', [
             'withdrawal' => $withdrawal,
         ]);
@@ -41,6 +52,7 @@ class WithdrawalAdminController extends AbstractController
     #[Route('/{id}/approve', name: 'admin_withdrawal_approve', methods: ['POST'])]
     public function approve(Request $request, Withdrawals $withdrawal, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('EDIT_MODULE', 'withdrawals');
         if ($this->isCsrfTokenValid('approve'.$withdrawal->getId(), $request->request->get('_token'))) {
             $withdrawal->setStatut('approved');
             $withdrawal->setProcessedAt(new \DateTimeImmutable());
@@ -67,6 +79,7 @@ class WithdrawalAdminController extends AbstractController
     #[Route('/{id}/reject', name: 'admin_withdrawal_reject', methods: ['POST'])]
     public function reject(Request $request, Withdrawals $withdrawal, EntityManagerInterface $entityManager): Response
     {
+        $this->denyAccessUnlessGranted('EDIT_MODULE', 'withdrawals');
         if ($this->isCsrfTokenValid('reject'.$withdrawal->getId(), $request->request->get('_token'))) {
             $withdrawal->setStatut('rejected');
             $withdrawal->setProcessedAt(new \DateTimeImmutable());

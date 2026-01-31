@@ -22,8 +22,11 @@ class TestEmailCommand extends Command
     private string $adminEmail;
     private string $supportEmail;
 
-    public function __construct(MailerInterface $mailer, string $adminEmail, string $supportEmail)
-    {
+    public function __construct(
+        MailerInterface $mailer,
+        string $adminEmail = 'admin@efasmartfinance.com',
+        string $supportEmail = 'support@efasmartfinance.com'
+    ) {
         parent::__construct();
         $this->mailer = $mailer;
         $this->adminEmail = $adminEmail;

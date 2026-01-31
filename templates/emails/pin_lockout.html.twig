@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 10px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            width: 100px;
+        }
+
+        .content {
+            margin-bottom: 30px;
+        }
+
+        .alert {
+            background-color: #fff5f5;
+            border-left: 4px solid #f56565;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background-color: #2f855a;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://binajia.org/images/logovert.png" alt="EFA Smart Finance" class="logo">
+            <h2 style="color: #c53030;">Alerte de Sécurité</h2>
+        </div>
+        <div class="content">
+            <p>Bonjour {{ user.firstname }},</p>
+            <p>Nous vous informons que votre accès sécurisé (Code PIN) a été <strong>temporairement verrouillé</strong>
+                suite à 5 tentatives de saisie incorrectes.</p>
+
+            <div class="alert">
+                <p><strong>Détails du verrouillage :</strong></p>
+                <ul>
+                    <li>Code PIN : 5 échecs consécutifs</li>
+                    <li>Verrouillé jusqu'à : {{ unlockTime }} (Heure locale)</li>
+                </ul>
+            </div>
+
+            <p>Si vous avez oublié votre code PIN ou si vous souhaitez le changer dès maintenant pour sécuriser votre
+                compte, vous pouvez utiliser notre page de récupération sécurisée :</p>
+
+            <p style="text-align: center;">
+                <a href="{{ absolute_url(path('pin_recovery')) }}" class="btn">Récupérer mon accès PIN</a>
+            </p>
+
+            <p>Si vous n'êtes pas à l'origine de ces tentatives, veuillez <strong>contacter immédiatement notre service
+                    client</strong> ou votre administrateur principal pour sécuriser vos fonds.</p>
+
+            <p>Merci de votre confiance,</p>
+            <p>L'équipe Sécurité EFA Smart Finance</p>
+        </div>
+        <div class="footer">
+            &copy; {{ "now"|date("Y") }} EFA SMART FINANCE. Tous droits réservés.<br>
+            Ceci est un message automatique, merci de ne pas y répondre.
+        </div>
+    </div>
+</body>
+
+</html>
