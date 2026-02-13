@@ -1,18 +1,18 @@
- <aside id="sidebar" class="hidden md:flex md:w-72 bg-white border-r border-gray-100 flex-col flex-shrink-0">
+ <aside id="sidebar" class="hidden md:flex md:w-72 bg-gradient-to-b from-green-700 via-green-600 to-green-700 border-r border-green-800 flex-col flex-shrink-0 shadow-xl">
       <div class="px-5 py-4 flex items-center gap-3">
         <a href="{{ path('app_home') }}">
-        <img src="{{asset('images/logovert.png')}}" alt="Logo" class="h-20 "/>
+        <img src="{{asset('images/estm.png')}}" alt="Logo" class="h-20 brightness-0 invert"/>
                 </a>
       </div>
       
-      <div class="px-4 py-3 border-y border-gray-100">
+      <div class="px-4 py-3 border-y border-green-500/30">
         <div class="flex items-center gap-3">
-          <div class="h-10 w-10 rounded-full bg-green-700/10 flex items-center justify-center text-green-700">
+          <div class="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center text-white backdrop-blur-sm">
             <i class="fa-solid fa-user"></i>
           </div>
           <div>
-            <div class="font-semibold text-sm">Bienvenue, <span id="userName"></span></div>
-            <div class="text-xs text-gray-500">{{ app.user.firstname ~ ' ' ~ app.user.lastname }}</div>
+            <div class="font-semibold text-sm text-white">Bienvenue, <span id="userName"></span></div>
+            <div class="text-xs text-green-100">{{ app.user.firstname ~ ' ' ~ app.user.lastname }}</div>
           </div>
         </div>
       </div>
@@ -22,13 +22,13 @@
             {% if is_granted('VIEW_MODULE', 'dashboard') %}
                 {% if is_granted('ROLE_CAISSIER') and not is_granted('ROLE_FINANCE') and not is_granted('ROLE_ADMIN') %}
                      <a href="{{ path('admin_caisse_dashboard') }}" 
-                        class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {{ app.request.get('_route') == 'admin_caisse_dashboard' ? 'bg-[#008040] text-white shadow-lg' : 'text-gray-400 hover:bg-emerald-50 hover:text-[#008040]' }}">
+                        class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {{ app.request.get('_route') == 'admin_caisse_dashboard' ? 'bg-white/20 text-white shadow-lg' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
                         <i class="fas fa-home w-6 transition-transform duration-200 group-hover:scale-110"></i>
                         <span class="ml-3 font-medium">Tableau de Bord</span>
                     </a>
                 {% else %}
                     <a href="{{ path('admin_dashboard') }}" 
-                        class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {{ app.request.get('_route') == 'admin_dashboard' ? 'bg-[#008040] text-white shadow-lg' : 'text-gray-400 hover:bg-emerald-50 hover:text-[#008040]' }}">
+                        class="flex items-center px-4 py-3 rounded-xl transition-all duration-200 group {{ app.request.get('_route') == 'admin_dashboard' ? 'bg-white/20 text-white shadow-lg' : 'text-white/80 hover:bg-white/10 hover:text-white' }}">
                         <i class="fas fa-home w-6 transition-transform duration-200 group-hover:scale-110"></i>
                         <span class="ml-3 font-medium">Tableau de Bord</span>
                     </a>
@@ -37,21 +37,21 @@
         
         <!-- Tableau de bord Financier -->
         {% if is_granted('VIEW_MODULE', 'financial') %}
-        <a href="{{ path('admin_financial_dashboard') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') == 'admin_financial_dashboard' ? 'bg-[#006400]/5 text-[#006400]' : '' }}">
+        <a href="{{ path('admin_financial_dashboard') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/10 text-white touch-target transition-all duration-200 {{ app.request.get('_route') == 'admin_financial_dashboard' ? 'bg-white/20 shadow-md' : '' }}">
           <i class="fa-solid fa-chart-pie w-6"></i><span>Finances</span>
         </a>
         {% endif %}
         
         <!-- Gestion des utilisateurs -->
         {% if is_granted('VIEW_MODULE', 'users') %}
-        <a href="{{ path('admin_users') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_users' ? 'bg-[#006400]/5 text-[#006400]' : '' }}">
+        <a href="{{ path('admin_users') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/10 text-white touch-target transition-all duration-200 {{ app.request.get('_route') starts with 'admin_users' ? 'bg-white/20 shadow-md' : '' }}">
           <i class="fa-solid fa-users w-6"></i><span>Utilisateurs</span>
         </a>
         {% endif %}
         
         <!-- Demandes d'activation -->
         {% if is_granted('VIEW_MODULE', 'users') %}
-        <a href="{{ path('admin_account_activations') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_account_activations' ? 'bg-[#006400]/5 text-[#006400]' : '' }}">
+        <a href="{{ path('admin_account_activations') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/10 text-white touch-target transition-all duration-200 {{ app.request.get('_route') starts with 'admin_account_activations' ? 'bg-white/20 shadow-md' : '' }}">
           <i class="fa-solid fa-user-check w-6"></i>
           <span>Activation de comptes</span>
       
@@ -60,93 +60,93 @@
         
         <!-- Gestion des tontines -->
         {% if is_granted('VIEW_MODULE', 'tontines') %}
-        <a href="{{ path('admin_tontines') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_tontines' ? 'bg-[#006400]/5 text-[#006400]' : '' }}">
+        <a href="{{ path('admin_tontines') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/10 text-white touch-target transition-all duration-200 {{ app.request.get('_route') starts with 'admin_tontines' ? 'bg-white/20 shadow-md' : '' }}">
           <i class="fa-solid fa-piggy-bank w-6"></i><span>Tontines</span>
         </a>
         {% endif %}
         
         <!-- Gestion des transactions -->
         {% if is_granted('VIEW_MODULE', 'transactions') %}
-        <a href="{{ path('admin_transactions') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_transactions' ? 'bg-[#006400]/5 text-[#006400]' : '' }}">
+        <a href="{{ path('admin_transactions') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/10 text-white touch-target transition-all duration-200 {{ app.request.get('_route') starts with 'admin_transactions' ? 'bg-white/20 shadow-md' : '' }}">
           <i class="fa-solid fa-money-bill-transfer w-6"></i><span>Transactions</span>
         </a>
         {% endif %}
         
         <!-- Demandes de retrait -->
         {% if is_granted('VIEW_MODULE', 'withdrawals') %}
-        <a href="{{ path('admin_withdrawals') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_withdrawals' ? 'bg-[#006400]/5 text-[#006400]' : '' }}">
+        <a href="{{ path('admin_withdrawals') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/10 text-white touch-target transition-all duration-200 {{ app.request.get('_route') starts with 'admin_withdrawals' ? 'bg-white/20 shadow-md' : '' }}">
           <i class="fa-solid fa-hand-holding-dollar w-6"></i><span>Retraits</span>
         </a>
         {% endif %}
 
         <!-- Guichet Caisse -->
         {% if is_granted('VIEW_MODULE', 'caisse') %}
-        <a href="{{ path('admin_caisse_index') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_caisse' ? 'bg-[#006400]/5 text-[#006400]' : '' }}">
-          <i class="fa-solid fa-cash-register w-6 text-emerald-600"></i><span class="font-bold text-emerald-700">Guichet Caisse</span>
+        <a href="{{ path('admin_caisse_index') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/10 text-white touch-target transition-all duration-200 {{ app.request.get('_route') starts with 'admin_caisse' ? 'bg-white/20 shadow-md' : '' }}">
+          <i class="fa-solid fa-cash-register w-6"></i><span class="font-bold">Guichet Caisse</span>
         </a>
         {% endif %}
         
         <!-- Rapports et analyses -->
         {% if is_granted('VIEW_MODULE', 'reports') %}
-        <a href="{{ path('admin_reports') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_reports' ? 'bg-[#006400]/5 text-[#006400]' : '' }}">
+        <a href="{{ path('admin_reports') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/10 text-white touch-target transition-all duration-200 {{ app.request.get('_route') starts with 'admin_reports' ? 'bg-white/20 shadow-md' : '' }}">
           <i class="fa-solid fa-chart-line w-6"></i><span>Rapports</span>
         </a>
         {% endif %}
         
         <!-- Frais de transfert -->
         {% if is_granted('VIEW_MODULE', 'fees') %}
-        <a href="{{ path('admin_platform_fees_index') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_platform_fees' ? 'bg-[#006400]/5 text-[#006400]' : '' }}">
+        <a href="{{ path('admin_platform_fees_index') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/10 text-white touch-target transition-all duration-200 {{ app.request.get('_route') starts with 'admin_platform_fees' ? 'bg-white/20 shadow-md' : '' }}">
           <i class="fa-solid fa-money-bill-transfer w-6"></i><span>Frais de transfert</span>
         </a>
         {% endif %}
         
         <!-- Factures -->
         {% if is_granted('VIEW_MODULE', 'invoices') %}
-        <a href="{{ path('admin_invoices') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_invoice' ? 'bg-[#006400]/5 text-[#006400]' : '' }}">
+        <a href="{{ path('admin_invoices') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/10 text-white touch-target transition-all duration-200 {{ app.request.get('_route') starts with 'admin_invoice' ? 'bg-white/20 shadow-md' : '' }}">
           <i class="fa-solid fa-file-invoice w-6"></i><span>Factures</span>
         </a>
         {% endif %}
         
         <!-- Support -->
         {% if is_granted('VIEW_MODULE', 'support') %}
-        <a href="{{ path('admin_support') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_support' ? 'bg-[#006400]/5 text-[#006400]' : '' }}">
+        <a href="{{ path('admin_support') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/10 text-white touch-target transition-all duration-200 {{ app.request.get('_route') starts with 'admin_support' ? 'bg-white/20 shadow-md' : '' }}">
           <i class="fa-solid fa-headset w-6"></i><span>Support</span>
         </a>
         {% endif %}
         
         <!-- Audit Logs -->
         {% if is_granted('VIEW_MODULE', 'audit') %}
-        <a href="{{ path('admin_audit_logs') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_audit' ? 'bg-[#006400]/5 text-[#006400]' : '' }}">
+        <a href="{{ path('admin_audit_logs') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/10 text-white touch-target transition-all duration-200 {{ app.request.get('_route') starts with 'admin_audit' ? 'bg-white/20 shadow-md' : '' }}">
           <i class="fa-solid fa-clipboard-list w-6"></i><span>Audit</span>
         </a>
         {% endif %}
         
         <!-- Broadcast -->
         {% if is_granted('VIEW_MODULE', 'broadcast') %}
-        <a href="{{ path('admin_broadcast') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_broadcast' ? 'bg-[#006400]/5 text-[#006400]' : '' }}">
+        <a href="{{ path('admin_broadcast') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/10 text-white touch-target transition-all duration-200 {{ app.request.get('_route') starts with 'admin_broadcast' ? 'bg-white/20 shadow-md' : '' }}">
           <i class="fa-solid fa-bullhorn w-6"></i><span>Broadcast</span>
         </a>
         {% endif %}
         
         <!-- Maintenance -->
         {% if is_granted('VIEW_MODULE', 'maintenance') %}
-        <a href="{{ path('admin_maintenance') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_maintenance' ? 'bg-[#006400]/5 text-[#006400]' : '' }}">
+        <a href="{{ path('admin_maintenance') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/10 text-white touch-target transition-all duration-200 {{ app.request.get('_route') starts with 'admin_maintenance' ? 'bg-white/20 shadow-md' : '' }}">
           <i class="fa-solid fa-wrench w-6"></i><span>Maintenance</span>
         </a>
         {% endif %}
         
         <!-- Paramètres -->
         {% if is_granted('VIEW_MODULE', 'settings') %}
-        <a href="{{ path('admin_settings') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-gray-100 touch-target {{ app.request.get('_route') starts with 'admin_settings' ? 'bg-[#006400]/5 text-[#006400]' : '' }}">
+        <a href="{{ path('admin_settings') }}" class="flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-white/10 text-white touch-target transition-all duration-200 {{ app.request.get('_route') starts with 'admin_settings' ? 'bg-white/20 shadow-md' : '' }}">
           <i class="fa-solid fa-sliders w-6"></i><span>Paramètres</span>
         </a>
         {% endif %}
       </nav>
       
-      <div class="p-4 border-t border-gray-100 flex-shrink-0">
-        <a href="{{path('app_logout')}}" class="w-full inline-flex items-center justify-center gap-2 px-3 py-3 rounded-lg border border-gray-200 hover:bg-gray-50 touch-target">
+      <div class="p-4 border-t border-green-500/30 flex-shrink-0">
+        <a href="{{path('app_logout')}}" class="w-full inline-flex items-center justify-center gap-2 px-3 py-3 rounded-lg border border-white/30 hover:bg-white/10 text-white touch-target transition-all duration-200">
           <i class="fa-solid fa-right-from-bracket"></i> <span>Se déconnecter</span>
         </a>
-        <p class="text-xs text-gray-400 text-center mt-3">© <span id="year"></span> EFA SMART FINANCE</p>
+        <p class="text-xs text-green-100 text-center mt-3">© <span id="year"></span> EFA SMART FINANCE</p>
       </div>
     </aside>

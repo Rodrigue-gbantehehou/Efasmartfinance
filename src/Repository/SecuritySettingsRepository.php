@@ -40,4 +40,8 @@ class SecuritySettingsRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function getSettings(): ?SecuritySettings
+    {
+        return $this->findOneBy([]);
+    }
 }

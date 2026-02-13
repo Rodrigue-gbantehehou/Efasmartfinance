@@ -9,7 +9,7 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div>
                 <h1 class="text-3xl font-bold font-poppins text-gray-900 tracking-tight">Tontines</h1>
-                <p class="text-sm font-medium text-gray-500 mt-1 uppercase tracking-widest">Gestion du patrimoine et des cercles</p>
+                <p class="text-sm font-medium text-gray-600 mt-1 uppercase tracking-widest">Gestion du patrimoine et des Tontines</p>
             </div>
             <div class="flex items-center gap-3">
                  <div class="h-12 w-12 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-emerald-600 shadow-sm transition-transform hover:scale-110">
@@ -23,7 +23,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         {% set statsConfig = [
             { label: 'Total Tontines', value: tontines|length, icon: 'vault', color: 'emerald' },
-            { label: 'Cercles Actifs', value: tontines|filter(t => t.statut == 'active')|length, icon: 'arrows-spin', color: 'blue' },
+            { label: 'Tontines Actives', value: tontines|filter(t => t.statut == 'active')|length, icon: 'arrows-spin', color: 'green' },
             { label: 'En Formation', value: tontines|filter(t => t.statut == 'en_attente')|length, icon: 'hourglass-start', color: 'amber' },
             { label: 'Archives', value: tontines|filter(t => t.statut == 'terminee')|length, icon: 'box-archive', color: 'gray' }
         ] %}
@@ -35,7 +35,7 @@
                     <i class="fas fa-{{ stat.icon }}"></i>
                 </div>
                 <div>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ stat.label }}</p>
+                    <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest">{{ stat.label }}</p>
                     <p class="text-2xl font-bold font-poppins text-gray-900">{{ stat.value }}</p>
                 </div>
             </div>
@@ -63,7 +63,7 @@
                         <option value="active">Active</option>
                         <option value="terminee">Terminée</option>
                     </select>
-                    <button id="reset-filters" class="w-14 h-14 bg-white border border-gray-100 rounded-2xl flex items-center justify-center text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all shadow-sm">
+                    <button id="reset-filters" class="w-14 h-14 bg-white border border-gray-100 rounded-2xl flex items-center justify-center text-gray-600 hover:text-red-500 hover:bg-red-50 transition-all shadow-sm">
                         <i class="fas fa-rotate-right"></i>
                     </button>
                 </div>
@@ -75,12 +75,12 @@
             <table class="w-full">
                 <thead>
                     <tr class="text-left bg-gray-50/50">
-                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Identité Cercle</th>
-                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Volume Global</th>
-                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Administrateur</th>
-                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Temporalité</th>
-                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">État</th>
-                        <th class="px-8 py-5 text-right text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Action</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-600 uppercase tracking-[0.2em]">Identité Tontine</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-600 uppercase tracking-[0.2em]">Volume Global</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-600 uppercase tracking-[0.2em]">Administrateur</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-600 uppercase tracking-[0.2em]">Temporalité</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-600 uppercase tracking-[0.2em]">État</th>
+                        <th class="px-8 py-5 text-right text-[10px] font-bold text-gray-600 uppercase tracking-[0.2em]">Action</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -97,7 +97,7 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold text-gray-900 leading-tight">{{ tontine.name }}</p>
-                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-tight mt-0.5">#{{ tontine.tontinecode }}</p>
+                                    <p class="text-[10px] font-bold text-gray-600 uppercase tracking-tight mt-0.5">#{{ tontine.tontinecode }}</p>
                                 </div>
                             </div>
                         </td>
@@ -109,29 +109,29 @@
                         </td>
                         <td class="px-8 py-6">
                             <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-500">
+                                <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-[10px] font-bold text-gray-600">
                                     {{ tontine.utilisateur.firstname|first }}
                                 </div>
                                 <div>
                                     <p class="text-xs font-bold text-gray-900">{{ tontine.utilisateur.firstname }} {{ tontine.utilisateur.lastname }}</p>
-                                    <p class="text-[9px] font-bold text-gray-400 uppercase tracking-tighter">ID: {{ tontine.utilisateur.uuid|slice(0, 8) }}</p>
+                                    <p class="text-[9px] font-bold text-gray-600 uppercase tracking-tighter">ID: {{ tontine.utilisateur.uuid|slice(0, 8) }}</p>
                                 </div>
                             </div>
                         </td>
                         <td class="px-8 py-6">
                              <div class="flex flex-col">
                                 <span class="text-xs font-bold text-gray-700">{{ tontine.startDate ? tontine.startDate|date('d M Y') : 'Non planifiée' }}</span>
-                                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">{{ tontine.frequency == 'monthly' ? 'Cycle Mensuel' : 'Fréquence variable' }}</span>
+                                <span class="text-[10px] font-bold text-gray-600 uppercase tracking-tighter">{{ tontine.frequency == 'monthly' ? 'Cycle Mensuel' : 'Fréquence variable' }}</span>
                             </div>
                         </td>
                         <td class="px-8 py-6">
                             {% set statusConfig = {
                                 'en_attente': { class: 'bg-amber-50 text-amber-600 border-amber-100', icon: 'fa-hourglass-half' },
                                 'active': { class: 'bg-emerald-50 text-emerald-600 border-emerald-100', icon: 'fa-arrow-trend-up' },
-                                'terminee': { class: 'bg-gray-50 text-gray-500 border-gray-100', icon: 'fa-check-double' },
+                                'terminee': { class: 'bg-gray-50 text-gray-600 border-gray-100', icon: 'fa-check-double' },
                                 'annulee': { class: 'bg-red-50 text-red-600 border-red-100', icon: 'fa-ban' }
                             } %}
-                            {% set config = statusConfig[tontine.statut] ?? { class: 'bg-gray-50 text-gray-400', icon: 'fa-question' } %}
+                            {% set config = statusConfig[tontine.statut] ?? { class: 'bg-gray-50 text-gray-600', icon: 'fa-question' } %}
                             
                             <span class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-[9px] font-bold uppercase tracking-widest border {{ config.class }}">
                                 <i class="fas {{ config.icon }} text-[8px]"></i>
@@ -141,7 +141,7 @@
                         <td class="px-8 py-6 text-right">
                             <div class="flex justify-end gap-2">
                                 <a href="{{ path('admin_tontine_show', {'id': tontine.id}) }}" 
-                                   class="w-9 h-9 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-emerald-600 hover:border-emerald-100 transition-all shadow-sm">
+                                   class="w-9 h-9 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-600 hover:text-emerald-600 hover:border-emerald-100 transition-all shadow-sm">
                                     <i class="fas fa-eye text-xs"></i>
                                 </a>
                                 {% if tontine.statut == 'en_attente' %}
@@ -165,8 +165,8 @@
                                 <div class="w-20 h-20 rounded-[2.5rem] bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-300 text-3xl mx-auto mb-6">
                                     <i class="fas fa-folder-open"></i>
                                 </div>
-                                <h3 class="text-lg font-bold text-gray-900 leading-tight">Aucun cercle identifié</h3>
-                                <p class="text-sm font-medium text-gray-400 mt-2">La plateforme ne contient actuellement aucune tontine.</p>
+                                <h3 class="text-lg font-bold text-gray-900 leading-tight">Aucun Tontine identifié</h3>
+                                <p class="text-sm font-medium text-gray-600 mt-2">La plateforme ne contient actuellement aucune tontine.</p>
                             </div>
                         </td>
                     </tr>
@@ -178,11 +178,11 @@
         <!-- Footer / Pagination -->
         {% if tontines|length > 10 %}
         <div class="px-8 py-6 bg-gray-50/50 border-t border-gray-50 flex items-center justify-between">
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+            <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest">
                 Affichage de <span class="text-gray-900">1-10</span> sur <span class="text-gray-900">{{ tontines|length }}</span> unités
             </p>
             <div class="flex gap-2">
-                <button class="px-4 py-2 bg-white border border-gray-100 rounded-xl text-[10px] font-bold uppercase tracking-widest text-gray-400 hover:text-emerald-600 transition-all shadow-sm disabled:opacity-50" disabled>Précédent</button>
+                <button class="px-4 py-2 bg-white border border-gray-100 rounded-xl text-[10px] font-bold uppercase tracking-widest text-gray-600 hover:text-emerald-600 transition-all shadow-sm disabled:opacity-50" disabled>Précédent</button>
                 <button class="px-4 py-2 bg-white border border-gray-100 rounded-xl text-[10px] font-bold uppercase tracking-widest text-gray-900 hover:border-emerald-200 transition-all shadow-sm">Suivant</button>
             </div>
         </div>

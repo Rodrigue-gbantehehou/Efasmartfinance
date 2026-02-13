@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}À propos - EFA SMART FINANCE{% endblock %}
+
+{% block body %}
+<!-- Hero Section (Exactly like Contact) -->
+<div class="relative bg-green-700 text-white py-16 md:py-24">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">À propos de EFA Smart Finance</h1>
+        <p class="text-xl text-gray-100 max-w-3xl mx-auto">Redonner confiance aux épargnants grâce à l'innovation digitale.</p>
+    </div>
+    <div class="absolute bottom-0 left-0 right-0 h-12 bg-white transform translate-y-1/2 rounded-t-3xl"></div>
+</div>
+
+<!-- Main Content Container (Inspired by Contact pattern) -->
+<div class="container mx-auto px-4 py-16 md:py-24 -mt-12 relative z-10">
+    <div class="max-w-6xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden p-8 md:p-16 space-y-20">
+        
+        <!-- Intro & Image -->
+        <div class="grid lg:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <h2 class="text-3xl font-black text-slate-900 leading-tight">Notre Vision</h2>
+                <div class="h-1.5 w-20 bg-yellow-500 rounded-full"></div>
+                <p class="text-lg text-slate-600 leading-relaxed">
+                    Chez <span class="font-bold text-green-700">EFA Smart Finance</span>, nous croyons que chacun mérite un accès sûr et transparent à l’épargne. Inspirée des tontines traditionnelles, notre solution digitale met fin aux risques du passé – trahison, disparition des tontiniers, absence de compétence ou d’autorisation – pour offrir une expérience moderne, fiable et inclusive.
+                </p>
+                <div class="pt-4">
+                    <a href="{{ path('app_register') }}" class="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-green-700 text-white font-bold hover:bg-green-800 transition-all shadow-lg hover:shadow-green-900/20">
+                        S'inscrire maintenant
+                        <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="relative">
+                <img src="{{ asset('images/hero_success.png') }}" alt="Vision" class="rounded-2xl shadow-lg border-4 border-gray-50">
+            </div>
+        </div>
+
+        <!-- Mission -->
+        <div class="bg-green-50 rounded-3xl p-10 text-center space-y-6">
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800">Notre Mission</h2>
+            <p class="text-xl text-gray-700 font-medium italic">
+                "Redonner confiance aux épargnants et leur permettre de réaliser leurs projets personnels en toute sérénité."
+            </p>
+        </div>
+
+        <!-- Services -->
+        <div class="space-y-12">
+            <div class="text-center">
+                <h2 class="text-3xl font-bold text-gray-900">Ce que nous offrons</h2>
+                <p class="text-gray-600 mt-2">Une solution complète et sécurisée</p>
+            </div>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="p-6 border border-gray-100 rounded-2xl hover:shadow-md transition-shadow bg-gray-50/50">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-green-700 mb-4">
+                        <i class="fas fa-calendar-check text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Individuelle et Flexible</h3>
+                    <p class="text-gray-600 text-sm">Gestion quotidienne, hebdomadaire ou mensuelle adaptée à vos besoins.</p>
+                </div>
+                <div class="p-6 border border-gray-100 rounded-2xl hover:shadow-md transition-shadow bg-gray-50/50">
+                    <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center text-yellow-700 mb-4">
+                        <i class="fas fa-qrcode text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Suivi en Temps Réel</h3>
+                    <p class="text-gray-600 text-sm">Une carte digitale personnelle avec QR code pour un suivi transparent.</p>
+                </div>
+                <div class="p-6 border border-gray-100 rounded-2xl hover:shadow-md transition-shadow bg-gray-50/50">
+                    <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-green-700 mb-4">
+                        <i class="fas fa-shield-alt text-xl"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-900 mb-2">Sécurité Maximale</h3>
+                    <p class="text-gray-600 text-sm">Paiements via Mobile Money, carte bancaire, USSD ou virement.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Values -->
+        <div class="grid md:grid-cols-2 gap-8">
+            <div class="space-y-4">
+                <h2 class="text-2xl font-bold text-gray-900">Nos Valeurs</h2>
+                <div class="h-1 bg-yellow-500 w-16"></div>
+                <ul class="space-y-6 mt-6">
+                    <li class="flex gap-4">
+                        <div class="mt-1 text-green-700"><i class="fas fa-check-circle"></i></div>
+                        <div>
+                            <h4 class="font-bold text-gray-900">Confiance</h4>
+                            <p class="text-gray-600 text-sm">Fin des abus et des tontiniers non autorisés.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-4">
+                        <div class="mt-1 text-green-700"><i class="fas fa-check-circle"></i></div>
+                        <div>
+                            <h4 class="font-bold text-gray-900">Solidarité</h4>
+                            <p class="text-gray-600 text-sm">Une épargne qui renforce l’autonomie individuelle.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="space-y-4 md:pt-10">
+                <ul class="space-y-6">
+                    <li class="flex gap-4">
+                        <div class="mt-1 text-green-700"><i class="fas fa-check-circle"></i></div>
+                        <div>
+                            <h4 class="font-bold text-gray-900">Innovation</h4>
+                            <p class="text-gray-600 text-sm">Digitaliser une pratique ancestrale pour la modernité.</p>
+                        </div>
+                    </li>
+                    <li class="flex gap-4">
+                        <div class="mt-1 text-green-700"><i class="fas fa-check-circle"></i></div>
+                        <div>
+                            <h4 class="font-bold text-gray-900">Impact social</h4>
+                            <p class="text-gray-600 text-sm">Inclusion financière et autonomisation des individus.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Final CTA -->
+        <div class="pt-10 border-t border-gray-100 text-center space-y-6">
+            <h2 class="text-2xl font-bold text-gray-900">Pourquoi nous choisir ?</h2>
+            <p class="text-gray-600 max-w-2xl mx-auto italic">
+                "Nous ne sommes pas seulement une plateforme d’épargne : nous sommes un partenaire de confiance, qui vous accompagne dans la réalisation de vos projets personnels."
+            </p>
+            <div class="pt-4">
+                <a href="{{ path('app_register') }}" class="px-10 py-4 bg-green-700 text-white font-bold rounded-xl hover:bg-green-800 transition-all shadow-lg">
+                    Rejoindre la communauté EFA
+                </a>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

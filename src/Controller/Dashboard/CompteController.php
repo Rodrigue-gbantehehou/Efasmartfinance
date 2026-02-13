@@ -22,9 +22,6 @@ class CompteController extends AbstractController
     #[Route('/mon-compte/verification-identite', name: 'app_compte_verification')]
     public function verificationIdentite(Request $request): Response
     {
-        // Debug: Vérifier que la méthode est appelée
-        dump('Méthode verificationIdentite appelée');
-
         /** @var User $user */
         $user = $this->getUser();
 

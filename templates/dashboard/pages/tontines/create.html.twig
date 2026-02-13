@@ -1,0 +1,979 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}Créer une Tontine - EFA{% endblock %}
+
+{% block contentdashboard %}
+  <!-- Header de Page Premium -->
+  <header class="bg-gradient-to-r from-green-700 via-green-600 to-green-700 text-white sticky top-0 z-30 shadow-lg border-b border-green-500/30">
+    <div class="max-w-6xl mx-auto px-4 py-3 sm:py-4">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="h-8 w-8 sm:h-10 sm:w-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+            <i class="fas fa-plus-circle text-white text-base sm:text-lg"></i>
+          </div>
+          <div>
+            <h1 class="text-sm sm:text-lg font-bold">Création de Tontine</h1>
+            <p class="text-[10px] sm:text-xs text-green-100 flex items-center">
+              <span class="mr-2">Étape <span id="headerStep">1</span>/3</span>
+              <span id="headerStepLabel" class="hidden sm:inline">Selection de la formule</span>
+            </p>
+          </div>
+        </div>
+        
+        <a href="{{ path('app_tontines_index') }}" class="p-2 hover:bg-white/10 rounded-lg transition-colors">
+          <i class="fas fa-times text-lg"></i>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-4 sm:py-8 bg-green-700">
+    <!-- En-tête (Masqué sur mobile car doublon avec le header fixe) -->
+    <div class="hidden sm:block mb-8 text-center">
+      <h1 class="text-2xl font-black text-white mb-2">Créer une nouvelle tontine</h1>
+      <p class="text-white">Choisissez le type qui correspond à vos revenus</p>
+    </div>
+
+    <!-- Indicateur de progression (Compact) -->
+    <div class="flex items-center mb-4 sm:mb-8 bg-black/10 p-2 sm:p-0 rounded-xl sm:bg-transparent">
+      <div class="flex-1 h-1.5 sm:h-2 bg-gray-200/20 sm:bg-gray-200 rounded-full overflow-hidden">
+        <div id="progress" class="h-full bg-yellow-500 rounded-full transition-all duration-300" style="width: 33%">
+        </div>
+      </div>
+      <div class="ml-3 sm:ml-4 text-[10px] sm:text-sm text-white font-black uppercase tracking-widest">
+        ÉTAPE <span id="stepNum">1</span>/3
+      </div>
+    </div>
+
+    <!-- Conteneur Principal -->
+    <div class="bg-green-50 rounded-[1.25rem] sm:rounded-[2rem] shadow-2xl p-3 sm:p-8 lg:p-12 mb-6 sm:mb-10 border border-white">
+      <!-- ÉTAPE 1 : Type de tontine -->
+      <div id="step1" class="step active">
+        <div class="text-center mb-4 sm:mb-10">
+          <h2 class="text-xl sm:text-3xl font-black text-green-700 tracking-tight">Quel type de tontine ?</h2>
+          <p class="text-xs sm:text-base text-gray-400 mt-1 sm:mt-2 font-medium">Sélectionnez votre rythme financier</p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-10">
+          <!-- Tontine Journalière -->
+          <label class="relative group cursor-pointer tontine-type-card">
+            <input type="radio" name="tontineType" value="daily" class="sr-only">
+            <div
+              class="tontine-card h-full p-4 sm:p-8 border-2 border-green-200 rounded-[1.5rem] sm:rounded-[2rem] bg-slate-50 transition-all duration-300 hover:border-green-700/30 hover:shadow-xl group-active:scale-[0.98] flex flex-col items-center text-center">
+              <div
+                class="w-10 h-10 sm:w-16 sm:h-16 bg-yellow-100 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-6 transition-transform group-hover:scale-110 shadow-sm shadow-yellow-200">
+                <i class="fas fa-clock text-green-700 text-base sm:text-2xl"></i>
+              </div>
+
+              <h3 class="font-black text-gray-900 text-lg mb-2">Journalière</h3>
+              <p class="text-xs text-gray-600 font-bold uppercase tracking-widest mb-2">Versement quotidien</p>
+
+              <div class="space-y-3 w-full">
+                <div
+                  class="flex items-center justify-center space-x-2 text-xl font-semibold text-gray-600 bg-white py-2 px-3 rounded-xl border border-gray-100">
+                  <i class="fas fa-calendar-alt text-yellow-500"></i>
+                  <span>1 à 12 mois</span>
+                </div>
+              </div>
+
+              <div class="mt-2 w-full">
+                <p class="text-base sm:text-xl text-gray-600 leading-relaxed">
+                  Pour les <span class="font-bold text-gray-800">commerçants</span> et revenus quotidiens.
+                </p>
+              </div>
+
+              <!-- Checkmark Absolu -->
+              <div
+                class="checkmark absolute top-4 right-4 w-8 h-8 rounded-full border-2 border-slate-200 bg-white flex items-center justify-center transition-all">
+                <i class="fas fa-check text-white text-xs opacity-0"></i>
+              </div>
+            </div>
+          </label>
+
+          <!-- Tontine Hebdomadaire -->
+          <label class="relative group cursor-pointer tontine-type-card">
+            <input type="radio" name="tontineType" value="weekly" class="sr-only">
+            <div
+              class="tontine-card h-full p-4 sm:p-8 border-2 border-green-200 rounded-[1.5rem] sm:rounded-[2rem] bg-slate-50 transition-all duration-300 hover:border-green-700/30 hover:shadow-xl group-active:scale-[0.98] flex flex-col items-center text-center">
+              <div
+                class="w-10 h-10 sm:w-16 sm:h-16 bg-yellow-100 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-6 transition-transform group-hover:scale-110 shadow-sm shadow-yellow-200">
+                <i class="fas fa-calendar-week text-green-700 text-base sm:text-2xl"></i>
+              </div>
+
+              <h3 class="font-black text-gray-900 text-xl mb-2">Hebdomadaire</h3>
+              <p class="text-xs text-gray-600 font-bold uppercase tracking-widest mb-2">Chaque semaine</p>
+
+              <div class="space-y-3 w-full">
+                <div
+                  class="flex items-center justify-center space-x-2 text-xl font-semibold text-gray-600 bg-white py-2 px-3 rounded-xl border border-gray-100">
+                  <i class="fas fa-calendar-alt text-yellow-500"></i>
+                  <span>1 à 12 mois</span>
+                </div>
+
+              </div>
+
+              <div class="mt-2 w-full">
+                <p class="text-base sm:text-xl text-gray-600 leading-relaxed">
+                  Pour les <span class="font-bold text-gray-800">artisans</span> et prestataires.
+                </p>
+              </div>
+
+              <div
+                class="checkmark absolute top-4 right-4 w-8 h-8 rounded-full border-2 border-slate-200 bg-white flex items-center justify-center transition-all">
+                <i class="fas fa-check text-white text-xs opacity-0"></i>
+              </div>
+            </div>
+          </label>
+
+          <!-- Tontine Mensuelle -->
+          <label class="relative group cursor-pointer tontine-type-card">
+            <input type="radio" name="tontineType" value="monthly" class="sr-only">
+            <div
+              class="tontine-card h-full p-4 sm:p-8 border-2 border-green-200 rounded-[1.5rem] sm:rounded-[2rem] bg-slate-50 transition-all duration-300 hover:border-green-700/30 hover:shadow-xl group-active:scale-[0.98] flex flex-col items-center text-center">
+              <div
+                class="w-10 h-10 sm:w-16 sm:h-16 bg-yellow-100 rounded-xl sm:rounded-2xl flex items-center justify-center mb-3 sm:mb-6 transition-transform group-hover:scale-110 shadow-sm shadow-yellow-200">
+                <i class="fas fa-wallet text-green-700 text-base sm:text-2xl"></i>
+              </div>
+
+              <h3 class="font-black text-slate-900 text-xl mb-2">Mensuelle</h3>
+              <p class="text-xs text-slate-500 font-bold uppercase tracking-widest mb-2">Une fois par mois</p>
+
+              <div class="space-y-3 w-full">
+                <div
+                  class="flex items-center justify-center space-x-2 text-xl font-semibold text-slate-600 bg-white py-2 px-3 rounded-xl border border-green-200">
+                  <i class="fas fa-calendar-alt text-yellow-500"></i>
+                  <span>1 à 12 mois</span>
+                </div>
+              </div>
+
+              <div class="mt-2 w-full">
+                <p class="text-base  sm:text-xl text-slate-500 leading-relaxed">
+                  Pour les <span class="font-bold text-slate-800">salariés</span> et revenus fixes.
+                </p>
+              </div>
+
+              <div
+                class="checkmark absolute top-4 right-4 w-8 h-8 rounded-full border-2 border-slate-200 bg-white flex items-center justify-center transition-all">
+                <i class="fas fa-check text-white text-xs opacity-0"></i>
+              </div>
+            </div>
+          </label>
+        </div>
+
+        <div class="bg-green-700 rounded-3xl p-4 sm:p-6 border border-green-700 shadow-xl overflow-hidden relative group">
+          <div class="absolute -right-4 -bottom-4 opacity-10 transition-transform group-hover:scale-125 duration-700">
+            <i class="fas fa-shield-alt text-8xl text-white"></i>
+          </div>
+          <p class="text-sm text-slate-300 flex items-start relative z-10">
+            <i class="fas fa-info-circle mr-3 mt-0.5 text-yellow-500"></i>
+            <span>Optimisez votre épargne : Vous pouvez gérer jusqu'à <strong class="text-white">3 tontines
+                actives</strong> simultanément.</span>
+          </p>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 2 : Configuration -->
+      <div id="step2" class="step hidden">
+        <div class="text-center mb-4 sm:mb-10">
+          <h2 class="text-xl sm:text-3xl font-black text-green-800 tracking-tight">Paramétrage</h2>
+          <p id="typeDescription"
+            class="text-[10px] sm:text-base text-slate-400 mt-1 sm:mt-2 font-medium italic underline decoration-yellow-500 underline-offset-4">Configurez
+            votre tontine</p>
+        </div>
+
+        <div class="space-y-10">
+          <!-- Durée -->
+          <div class="relative">
+            <label for="duration"
+              class="block text-[10px] sm:text-sm font-black text-slate-900 uppercase tracking-widest mb-2 sm:mb-4 flex items-center">
+              <i class="fas fa-history mr-2 text-green-800"></i>
+              Durée (en mois)
+            </label>
+            <div class="relative group">
+              <input type="number" id="duration" min="1" max="12" step="1" value="1"
+                class="w-full px-4 py-3 sm:px-8 sm:py-5 bg-slate-50 border-2 border-green-500 rounded-xl sm:rounded-2xl focus:border-green-700 focus:bg-white focus:ring-[8px] sm:focus:ring-[12px] focus:ring-green-50 transition-all outline-none font-black text-lg sm:text-2xl text-slate-900 placeholder:text-slate-200">
+              <span
+                class="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 text-slate-400 font-black text-xs sm:text-lg group-focus-within:text-green-700 transition-colors uppercase">Mois</span>
+            </div>
+            <p id="durationInfo" class="text-xs text-slate-400 mt-3 font-medium flex items-center">
+              La durée de la tontine est limitée entre 1 et 12 mois.
+            </p>
+          </div>
+
+          <!-- Montant -->
+          <div class="space-y-3 sm:space-y-4">
+            <label class="block text-[10px] sm:text-sm font-black text-slate-900 uppercase tracking-widest mb-2 sm:mb-4 flex items-center">
+              <i class="fas fa-money-bill-wave mr-2 text-green-800"></i>
+              Montant par versement
+            </label>
+            <div class="relative group">
+              <span
+                class="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 text-slate-400 font-black text-xs sm:text-lg group-focus-within:text-green-700 transition-colors uppercase">FCFA</span>
+              <input type="number" id="amount" min="100" step="100"
+                class="w-full pl-14 sm:pl-20 pr-4 sm:pr-8 py-3 sm:py-5 bg-slate-50 border-2 border-green-500 rounded-xl sm:rounded-2xl focus:border-green-700 focus:bg-white focus:ring-[8px] sm:focus:ring-[12px] focus:ring-green-50 transition-all outline-none font-black text-lg sm:text-2xl text-slate-900 placeholder:text-slate-200"
+                placeholder="100">
+            </div>
+
+            <!-- Suggestions Modernes 
+            <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3 mt-4">
+              <button type="button" data-amount="100"
+                class="amount-btn py-3 px-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-600 hover:border-green-700 hover:text-green-700 transition-all active:scale-95 shadow-sm">100</button>
+              <button type="button" data-amount="500"
+                class="amount-btn py-3 px-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-600 hover:border-green-700 hover:text-green-700 transition-all active:scale-95 shadow-sm">500</button>
+              <button type="button" data-amount="1000"
+                class="amount-btn py-3 px-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-600 hover:border-green-700 hover:text-green-700 transition-all active:scale-95 shadow-sm">1
+                000</button>
+              <button type="button" data-amount="2000"
+                class="amount-btn py-3 px-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-600 hover:border-green-700 hover:text-green-700 transition-all active:scale-95 shadow-sm">2
+                000</button>
+              <button type="button" data-amount="5000"
+                class="amount-btn py-3 px-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-600 hover:border-green-700 hover:text-green-700 transition-all active:scale-95 shadow-sm">5
+                000</button>
+              <button type="button" data-amount="10000"
+                class="amount-btn py-3 px-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-600 hover:border-green-700 hover:text-green-700 transition-all active:scale-95 shadow-sm">10
+                000</button>
+            </div>-->
+          </div>
+
+          <!-- Date de début -->
+          <div class="space-y-4">
+            <label class="block text-sm font-black text-slate-900 uppercase tracking-widest  flex items-center">
+              <i class="fas fa-calendar-alt mr-2 text-green-800"></i>
+              Date de lancement
+            </label>
+            <input type="date" id="startDate"
+              class="w-full px-6 py-4 sm:px-8 sm:py-5 bg-slate-50 border-2 border-green-500 rounded-2xl focus:border-green-700 focus:bg-white transition-all outline-none font-bold text-slate-700">
+          </div>
+
+          <!-- Prévisualisation Premium -->
+          <div id="preview"
+            class="hidden bg-green-700 rounded-[2rem] p-6 sm:p-8 text-white relative overflow-hidden group shadow-2xl shadow-green-900/30">
+            <div class="absolute -right-6 -bottom-6 opacity-10 rotate-12 transition-transform group-hover:scale-125">
+              <i class="fas fa-piggy-bank text-9xl"></i>
+            </div>
+
+            <h3 class="font-black text-sm sm:text-xl uppercase tracking-widest text-yellow-500 mb-4 sm:mb-8 flex items-center">
+              Prévisualisation
+            </h3>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-8 mb-6 sm:mb-10">
+              <div class="bg-white/5 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-white/10">
+                <div id="previewPoints" class="text-xl sm:text-3xl font-black text-white">--</div>
+                <div class="text-[10px] sm:text-sm font-bold text-slate-400 uppercase tracking-widest mt-1">Versements</div>
+              </div>
+              <div class="bg-white/5 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-white/10">
+                <div id="previewTotal" class="text-xl sm:text-3xl font-black text-green-400">--</div>
+                <div class="text-[10px] sm:text-sm font-bold text-slate-400 uppercase tracking-widest mt-1">Total Brut</div>
+              </div>
+            </div>
+
+            <div class="space-y-4 relative z-10">
+              <div class="flex justify-between text-sm">
+                <span class="text-white font-medium">Frais de service :</span>
+                <span id="previewFees" class="font-black text-yellow-500">--</span>
+              </div>
+              <div class="pt-6 border-t border-white/10">
+                <div class="flex justify-between items-end">
+                  <div>
+                    <p class="text-xl font-black text-slate-400 uppercase tracking-widest mb-1">Montant Net à Recevoir
+                    </p>
+                    <span id="previewNet" class="text-4xl font-black text-white tracking-tighter">--</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 3 : Confirmation -->
+      <div id="step3" class="step hidden">
+        <input type="hidden" id="tontine_csrf" value="{{ csrf_token('tontine_create') }}">
+        <div class="text-center mb-4 sm:mb-10">
+          <h2 class="text-xl sm:text-3xl font-black text-slate-900 tracking-tight">Récapitulatif</h2>
+          <p class="text-xs sm:text-base text-slate-400 mt-1 sm:mt-2 font-medium">Vérifiez vos informations</p>
+        </div>
+
+        <!-- Carte récapitulative Premium -->
+        <div class="bg-slate-50 rounded-[1.5rem] sm:rounded-[2.5rem] border-2 border-green-200 p-4 sm:p-10 mb-10 relative overflow-hidden">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 relative z-10">
+            <div class="space-y-4 sm:space-y-6">
+              <div class="bg-white p-4 sm:p-6 rounded-3xl border border-green-200 shadow-sm">
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 sm:mb-2">Formule choisie</p>
+                <div class="flex items-center">
+                  <span id="confirmType" class="text-lg sm:text-xl font-black text-slate-900">--</span>
+                </div>
+              </div>
+ 
+              <div class="grid grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4">
+                <div class="bg-white p-4 sm:p-6 rounded-3xl border border-green-200 shadow-sm">
+                  <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 text-center sm:text-left">Durée</p>
+                  <span id="confirmDuration" class="text-base sm:text-lg font-black text-slate-900 block text-center sm:text-left">--</span>
+                </div>
+                <div class="bg-white p-4 sm:p-6 rounded-3xl border border-green-200 shadow-sm">
+                  <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 text-center sm:text-left">Versements</p>
+                  <span id="confirmPoints" class="text-base sm:text-lg font-black text-slate-900 block text-center sm:text-left">--</span>
+                </div>
+              </div>
+            </div>
+ 
+            <div
+              class="bg-green-700 rounded-[1.5rem] sm:rounded-[2rem] p-6 sm:p-8 text-white flex flex-col justify-between shadow-xl shadow-green-900/20">
+              <div class="space-y-3 sm:space-y-4">
+                <div class="flex justify-between items-center text-xs sm:text-sm">
+                  <span class="opacity-60">Total à cotiser :</span>
+                  <span id="confirmTotal" class="font-bold">--</span>
+                </div>
+                <div class="flex justify-between items-center text-xs sm:text-sm text-yellow-400 font-bold">
+                  <span>Frais de service :</span>
+                  <span id="confirmFees">--</span>
+                </div>
+              </div>
+              <div class="mt-6 sm:mt-8 pt-4 sm:pt-8 border-t border-white/10">
+                <p class="text-[10px] font-black opacity-60 uppercase tracking-widest mb-1 sm:mb-2">Total à Recevoir</p>
+                <div id="confirmNet" class="text-2xl sm:text-4xl font-black text-white tracking-tighter">--</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-4">
+          <!-- Select pour les suggestions -->
+          <div class="relative group">
+            <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Choisir un projet
+              type</label>
+            <div class="relative">
+              <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none text-green-700">
+                <i class="fas fa-list-ul"></i>
+              </div>
+              <select id="projectSelect"
+                class="w-full pl-12 sm:pl-14 pr-10 sm:pr-12 py-4 sm:py-5 bg-slate-50 border-2 border-slate-50 rounded-2xl focus:border-green-700 focus:bg-white transition-all outline-none font-bold text-slate-900 appearance-none cursor-pointer">
+                <option value="" disabled selected>Sélectionnez un type de projet...</option>
+                <optgroup label="Immobilier & Patrimoine">
+                  <option value="Achat de terrain">Achat de terrain</option>
+                  <option value="Achat de maison">Achat de maison</option>
+                  <option value="Construction / Rénovation">Construction / Rénovation</option>
+                </optgroup>
+                <optgroup label="Transport">
+                  <option value="Achat de voiture">Achat de voiture</option>
+                  <option value="Achat de moto">Achat de moto</option>
+                </optgroup>
+                <optgroup label="Famille & Éducation">
+                  <option value="Frais de scolarité">Frais de scolarité</option>
+                  <option value="Mariage / Cérémonie">Mariage / Cérémonie</option>
+                  <option value="Épargne Naissance">Épargne Naissance</option>
+                </optgroup>
+                <optgroup label="Business & Investissement">
+                  <option value="Fonds de commerce / Business">Fonds de commerce / Business</option>
+                  <option value="Achat de stock / Marchandises">Achat de stock / Marchandises</option>
+                  <option value="Projet Agricole">Projet Agricole</option>
+                  <option value="Épargne Retraite">Épargne Retraite</option>
+                </optgroup>
+                <optgroup label="Équipement & Loisirs">
+                  <option value="Achat Électroménager">Achat Électroménager</option>
+                  <option value="Épargne Voyage / Vacances">Épargne Voyage / Vacances</option>
+                  <option value="Achat Appareils (iPhone, PC...)">Achat Appareils (iPhone, PC...)</option>
+                </optgroup>
+                <optgroup label="Prévoyance">
+                  <option value="Fonds d'urgence">Fonds d'urgence</option>
+                  <option value="Santé / Bien-être">Santé / Bien-être</option>
+                </optgroup>
+                <option value="other">Autre (Saisie personnalisée...)</option>
+              </select>
+              <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none text-slate-400">
+                <i class="fas fa-chevron-down text-xs"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Champ libre (affiché si 'Autre' est choisi) -->
+          <div id="customNameContainer" class="hidden animate-fade-in mt-4">
+            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 px-1">Saisie
+              personnalisée</label>
+            <div class="relative group">
+              <div class="absolute inset-y-0 left-0 pl-4 sm:pl-6 flex items-center pointer-events-none text-yellow-500">
+                <i class="fas fa-edit"></i>
+              </div>
+              <input type="text" id="name" maxlength="30"
+                class="w-full pl-10 sm:pl-14 pr-16 sm:pr-20 py-4 sm:py-5 bg-slate-50 border-2 border-green-200 rounded-2xl focus:border-green-700 focus:bg-white transition-all outline-none font-bold text-slate-900"
+                placeholder="Ex: Mon beau projet...">
+              <span id="charCount"
+                class="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 text-[10px] sm:text-xs font-black text-slate-300">0/30</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conditions -->
+        <label
+          class="flex items-center space-x-4 cursor-pointer group p-4 rounded-2xl hover:bg-slate-50 transition-all border border-transparent hover:border-green-200 mt-8">
+          <div class="relative">
+            <input type="checkbox" id="terms" class="peer sr-only">
+            <div
+              class="w-6 h-6 border-2 border-slate-200 rounded-lg group-hover:border-green-700 transition-all peer-checked:bg-green-700 peer-checked:border-green-700 flex items-center justify-center">
+              <i class="fas fa-check text-white text-xs opacity-0 peer-checked:opacity-100"></i>
+            </div>
+          </div>
+          <span class="text-sm font-medium text-slate-500">
+            J'accepte les <a href="{{ path('app_cgu') }}" class="text-green-700 font-bold hover:underline">conditions générales</a> et je
+            valide les frais de gestion.
+          </span>
+        </label>
+      </div>
+
+      <!-- Barre de navigation Action -->
+      <div class="flex items-center justify-between pt-6 sm:pt-12 border-t border-green-200">
+        <button id="btnBack"
+          class="px-8 py-5 text-xs text-slate-400 font-bold uppercase tracking-widest text-xs hover:text-green-700 transition-all hidden">
+          <i class="fas fa-arrow-left mr-2"></i> Retour
+        </button>
+
+        <button id="btnNext"
+          class="ml-auto text-sm bg-green-700 hover:bg-yellow-500 hover:text-green-900 text-white font-black py-3 sm:py-4 px-8 sm:px-10 rounded-2xl transition-all shadow-xl shadow-green-900/20 active:scale-[0.98] disabled:opacity-30 disabled:pointer-events-none flex items-center group"
+          disabled>
+          <span>Continuer</span>
+          <i class="fas fa-chevron-right ml-3 text-xs opacity-50 group-hover:translate-x-1 transition-transform"></i>
+        </button>
+
+        <button id="btnCreate"
+          class="ml-auto text-sm bg-green-700 hover:bg-yellow-500 hover:text-green-900 text-white font-black py-3 sm:py-4 px-8 sm:px-10 rounded-2xl transition-all shadow-xl shadow-green-900/20 active:scale-[0.98] disabled:opacity-30 disabled:pointer-events-none hidden"
+          disabled>
+          Créer ma tontine <i class="fas fa-check-circle ml-3"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Informations -->
+    <div class="text-center  space-y-1 text-sm text-white">
+      <p>Vous pouvez avoir jusqu'à 3 tontines actives</p>
+      <p>Toutes vos épargnes sont 100% sécurisées</p>
+    </div>
+    <!-- Modal de chargement -->
+    <div id="loadingModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+      <div class="bg-white p-6 rounded-lg shadow-xl text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
+        <p class="text-gray-700">Traitement en cours...</p>
+      </div>
+    </div>
+
+    <!-- Modal de succès -->
+    <div id="successModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+      <div class="bg-white p-6 rounded-lg shadow-xl text-center">
+        <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Succès !</h3>
+        <p class="text-gray-700 mb-4">Votre tontine a été créée avec succès.</p>
+        <p class="text-sm text-gray-600">Redirection en cours...</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+<style>
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  }
+
+  .tontine-card.active {
+    border-color: #15803d !important;
+    /* green-700 */
+    background-color: #f0fdf4 !important;
+    /* green-50 */
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  }
+
+  .tontine-card.active .checkmark {
+    background-color: #15803d !important;
+    border-color: #15803d !important;
+  }
+
+  .tontine-card.active .checkmark i {
+    opacity: 1 !important;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+  }
+
+  input[type="number"] {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
+</style>
+
+<script>
+  // Données
+  var data = {
+    type: null,
+    amount: null,
+    duration: 1,
+    startDate: new Date().toISOString().split('T')[0],
+    name: ''
+  };
+
+  var step = 1;
+
+  // Informations des types de tontines
+  var tontineTypes = {
+    daily: {
+      name: 'Tontine Journalière',
+      icon: '',
+      color: 'green',
+      minDuration: 1,
+      maxDuration: 12,
+      description: 'Versement chaque jour',
+      pointsPerMonth: 31
+    },
+    weekly: {
+      name: 'Tontine Hebdomadaire',
+      icon: '',
+      color: 'green',
+      minDuration: 1,
+      maxDuration: 12,
+      description: 'Versement chaque semaine',
+      pointsPerMonth: 4
+    },
+    monthly: {
+      name: 'Tontine Mensuelle',
+      icon: '',
+      color: 'green',
+      minDuration: 1,
+      maxDuration: 12,
+      description: 'Versement une fois par mois',
+      pointsPerMonth: 1
+    }
+  };
+
+  // Formater la monnaie
+  function formatCurrency(amount) {
+    if (!amount) return '--';
+    return new Intl.NumberFormat('fr-FR').format(amount) + ' FCFA';
+  }
+
+  // Calculer les points selon le type
+  function calculatePoints() {
+    if (!data.type || !data.duration) return 0;
+    var type = tontineTypes[data.type];
+    return data.duration * type.pointsPerMonth;
+  }
+
+  // Mettre à jour l'interface étape 2
+  function updateStep2() {
+    try {
+      if (!data.type) return;
+      var type = tontineTypes[data.type];
+      if (!type) return;
+
+      // Mettre à jour la description
+      var typeDescription = document.getElementById('typeDescription');
+      if (typeDescription) {
+        typeDescription.textContent = type.description || '';
+      }
+
+      // Mettre à jour le slider/input de durée
+      var durationInput = document.getElementById('duration');
+      if (durationInput) {
+        durationInput.min = type.minDuration || 1;
+        durationInput.max = type.maxDuration || 12;
+
+        // Ajuster la valeur si hors limites
+        var minVal = parseInt(durationInput.min);
+        var maxVal = parseInt(durationInput.max);
+        if (data.duration < minVal) {
+          data.duration = minVal;
+          durationInput.value = minVal;
+        } else if (data.duration > maxVal) {
+          data.duration = maxVal;
+          durationInput.value = maxVal;
+        }
+      }
+
+      // Info durée
+      var durationInfo = document.getElementById('durationInfo');
+      if (durationInfo) {
+        if (data.type === 'monthly') {
+          durationInfo.innerHTML = '<i class="fas fa-exclamation-triangle mr-2 text-yellow-600"></i> La tontine a une durée minimale de 1  à 12 mois)';
+          durationInfo.className = 'text-xs text-yellow-600 mt-3 font-bold flex items-center';
+        } else {
+          durationInfo.innerHTML = '<i class="fas fa-info-circle mr-2 text-yellow-500"></i> La durée de la tontine est limitée entre 1 et 12 mois.';
+          durationInfo.className = 'text-xs text-slate-400 mt-3 font-medium flex items-center';
+        }
+      }
+    } catch (e) {
+      console.error("Error in updateStep2:", e);
+    }
+  }
+
+  // Mettre à jour la prévisualisation
+  function updatePreview() {
+    try {
+      var preview = document.getElementById('preview');
+      if (!preview) return;
+
+      if (data.amount >= 100 && data.type) {
+        preview.classList.remove('hidden');
+        var points = calculatePoints();
+        var total = points * data.amount;
+        var fees = Math.round(calculateFees());
+        var net = (data.type === 'daily') ? total - fees : total;
+
+        var pPoints = document.getElementById('previewPoints');
+        var pTotal = document.getElementById('previewTotal');
+        var pFees = document.getElementById('previewFees');
+        var pNet = document.getElementById('previewNet');
+
+        if (pPoints) pPoints.textContent = points;
+        if (pTotal) pTotal.textContent = formatCurrency(total);
+        if (pFees) pFees.textContent = formatCurrency(fees);
+        if (pNet) pNet.textContent = formatCurrency(net);
+      } else {
+        preview.classList.add('hidden');
+      }
+    } catch (e) {
+      console.error("Error in updatePreview:", e);
+    }
+  }
+
+  function calculateFees() {
+    if (!data.type || !data.amount || !data.duration) return 0;
+    var amount = data.amount;
+    var duration = data.duration;
+    switch (data.type) {
+      case 'daily': return amount * duration;
+      case 'weekly': return (amount / 4) * duration;
+      case 'monthly': return (amount / 30) * duration;
+      default: return 0;
+    }
+  }
+
+  // Mettre à jour le récapitulatif final
+  function updateSummary() {
+    if (!data.type) return;
+    var type = tontineTypes[data.type];
+    var points = calculatePoints();
+    var total = points * data.amount;
+    var fees = Math.round(calculateFees());
+    var net = (data.type === 'daily') ? total - fees : total;
+    
+
+    var cType = document.getElementById('confirmType');
+    var cDuration = document.getElementById('confirmDuration');
+    var cPoints = document.getElementById('confirmPoints');
+    var cTotal = document.getElementById('confirmTotal');
+    var cFees = document.getElementById('confirmFees');
+    var cNet = document.getElementById('confirmNet');
+
+    if (cType) cType.textContent = type.name;
+    if (cDuration) cDuration.textContent = data.duration + ' mois';
+    if (cPoints) cPoints.textContent = points + ' ';
+    if (cTotal) cTotal.textContent = formatCurrency(total);
+    if (cFees) cFees.textContent = formatCurrency(fees);
+    if (cNet) cNet.textContent = formatCurrency(net);
+  }
+
+  // Mettre à jour l'interface
+  // VERSION: 2026-02-12-10:40 - RENAMED TO AVOID CONFLICT
+  function updateTontineFormUI() {
+    try {
+      console.log('=== updateTontineFormUI START ===', 'step:', step, 'data.type:', data.type);
+      
+      var progress = document.getElementById('progress');
+      if (progress) progress.style.width = (step * 33) + '%';
+
+      var stepNumLabel = document.getElementById('stepNum');
+      if (stepNumLabel) stepNumLabel.textContent = step;
+
+      var steps = document.querySelectorAll('.step');
+      for (var i = 0; i < steps.length; i++) {
+        steps[i].classList.add('hidden');
+        steps[i].classList.remove('active');
+      }
+
+      var currentStep = document.getElementById('step' + step);
+      if (currentStep) {
+        currentStep.classList.remove('hidden');
+        currentStep.classList.add('active');
+      }
+
+      var bBack = document.getElementById('btnBack');
+      var bNext = document.getElementById('btnNext');
+      var bCreate = document.getElementById('btnCreate');
+
+      console.log('=== Buttons found ===', 'bBack:', !!bBack, 'bNext:', !!bNext, 'bCreate:', !!bCreate);
+
+      if (bBack) {
+         if (step === 1) bBack.classList.add('hidden');
+         else bBack.classList.remove('hidden');
+      }
+      if (bNext) {
+         if (step === 3) bNext.classList.add('hidden');
+         else bNext.classList.remove('hidden');
+      }
+      if (bCreate) {
+         if (step === 3) bCreate.classList.remove('hidden');
+         else bCreate.classList.add('hidden');
+      }
+
+      var hStep = document.getElementById('headerStep');
+      var hStepLabel = document.getElementById('headerStepLabel');
+      if (hStep) hStep.textContent = step;
+      if (hStepLabel) {
+        var labels = ['Selection de la formule', 'Paramétrage', 'Confirmation'];
+        hStepLabel.textContent = labels[step - 1];
+      }
+
+      if (step === 1) {
+        console.log('=== Step 1 Logic ===', 'data.type:', data.type, 'bNext exists:', !!bNext);
+        if (bNext) {
+          bNext.disabled = !data.type;
+          console.log('=== Continue button state ===', 'disabled:', bNext.disabled);
+        }
+      } else if (step === 2) {
+        var t = data.type ? tontineTypes[data.type] : null;
+        var vDur = t && data.duration >= t.minDuration && data.duration <= t.maxDuration;
+        if (bNext) bNext.disabled = !(data.amount >= 100 && vDur);
+      } else if (step === 3) {
+        var nVal = data.name && data.name.trim().length > 0;
+        var tCheck = document.getElementById('terms') ? document.getElementById('terms').checked : false;
+        if (bCreate) bCreate.disabled = !(nVal && tCheck);
+      }
+      
+      console.log('=== updateUI END ===');
+    } catch (error) {
+      console.error('ERROR in updateUI:', error);
+    }
+  }
+
+  function setupTontineCards() {
+    var cards = document.querySelectorAll('.tontine-type-card');
+    cards.forEach(function(card) {
+      var radio = card.querySelector('input[type="radio"]');
+      var cardDiv = card.querySelector('.tontine-card');
+      card.addEventListener('click', function() {
+        if (radio) {
+          radio.checked = true;
+          data.type = radio.value;
+          console.log('Card clicked, data.type set to:', data.type);
+          document.querySelectorAll('.tontine-card').forEach(function(div) {
+            div.classList.remove('active');
+            div.classList.remove('border-green-700/30');
+            div.classList.add('border-green-200');
+          });
+          if (cardDiv) {
+            cardDiv.classList.add('active');
+            cardDiv.classList.add('border-green-700/30');
+            cardDiv.classList.remove('border-green-200');
+          }
+          console.log('About to call updateTontineFormUI, step:', step, 'data.type:', data.type);
+          updateTontineFormUI();
+          if (step === 1) {
+            updateStep2();
+            updatePreview();
+          }
+        }
+      });
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    setupTontineCards();
+
+    document.querySelectorAll('.amount-btn').forEach(function(btn) {
+      btn.addEventListener('click', function () {
+        var amt = parseInt(this.dataset.amount);
+        var amtInput = document.getElementById('amount');
+        if (amtInput) {
+          amtInput.value = amt;
+          data.amount = amt;
+          updateTontineFormUI();
+          updatePreview();
+        }
+      });
+    });
+
+    var amtInput = document.getElementById('amount');
+    if (amtInput) {
+      amtInput.addEventListener('input', function () {
+        data.amount = parseInt(this.value) || 0;
+        updateTontineFormUI();
+        updatePreview();
+      });
+    }
+
+    var durInput = document.getElementById('duration');
+    if (durInput) {
+      durInput.addEventListener('input', function () {
+        var val = parseInt(this.value);
+        if (val > 12) { val = 12; this.value = 12; }
+        else if (val < 1) { val = isNaN(val) ? 1 : val; }
+        data.duration = val;
+        updateTontineFormUI();
+        updatePreview();
+      });
+      durInput.addEventListener('blur', function () {
+        var val = parseInt(this.value);
+        if (isNaN(val) || val < 1) { this.value = 1; data.duration = 1; }
+        else if (val > 12) { this.value = 12; data.duration = 12; }
+        updateTontineFormUI();
+        updatePreview();
+      });
+    }
+
+    var startInput = document.getElementById('startDate');
+    if (startInput) {
+      var tdy = new Date().toISOString().split('T')[0];
+      startInput.min = tdy;
+      startInput.value = tdy;
+      startInput.addEventListener('change', function () { data.startDate = this.value; });
+    }
+
+    var nInput = document.getElementById('name');
+    var cCount = document.getElementById('charCount');
+    if (nInput && cCount) {
+      nInput.addEventListener('input', function () {
+        data.name = this.value;
+        cCount.textContent = this.value.length + '/30';
+        updateTontineFormUI();
+      });
+    }
+
+    var pSelect = document.getElementById('projectSelect');
+    var cNameCont = document.getElementById('customNameContainer');
+    if (pSelect) {
+      pSelect.addEventListener('change', function () {
+        if (this.value === 'other') {
+          if (cNameCont) cNameCont.classList.remove('hidden');
+          if (nInput) nInput.value = '';
+          data.name = '';
+        } else {
+          if (cNameCont) cNameCont.classList.add('hidden');
+          data.name = this.value;
+          if (nInput) nInput.value = this.value;
+        }
+        updateTontineFormUI();
+      });
+    }
+
+    var termsCb = document.getElementById('terms');
+    if (termsCb) termsCb.addEventListener('change', updateTontineFormUI);
+
+    var bNext = document.getElementById('btnNext');
+    if (bNext) {
+      bNext.addEventListener('click', function () {
+        if (step === 1 && !data.type) return;
+        if (step === 2) {
+          var ty = tontineTypes[data.type];
+          if (!data.amount || data.amount < 100) return;
+          if (data.duration < ty.minDuration || data.duration > ty.maxDuration) return;
+        }
+        step++;
+        if (step === 2) { updateStep2(); updatePreview(); }
+        else if (step === 3) { updateSummary(); }
+        updateTontineFormUI();
+      });
+    }
+
+    var bBack = document.getElementById('btnBack');
+    if (bBack) {
+      bBack.addEventListener('click', function () {
+        step--;
+        updateTontineFormUI();
+      });
+    }
+
+    var bCreate = document.getElementById('btnCreate');
+    if (bCreate) {
+      bCreate.addEventListener('click', async function () {
+        var nInputVal = document.getElementById('name') ? document.getElementById('name').value : '';
+        var termsCheckedFlg = document.getElementById('terms') ? document.getElementById('terms').checked : false;
+        if (!nInputVal.trim() || !termsCheckedFlg) return;
+
+        try {
+          var resCount = await fetch('{{ path("app_tontine_count") }}');
+          var countRes = await resCount.json();
+          if (countRes.count >= 3) {
+            alert('Vous avez atteint le nombre maximum de tontines actives (3).');
+            return;
+          }
+        } catch (e) { console.error(e); }
+
+        var originalTxt = this.innerHTML;
+        this.innerHTML = '<span class="animate-pulse">Création en cours...</span>';
+        this.disabled = true;
+
+        var loadModal = document.getElementById('loadingModal');
+        if (loadModal) loadModal.classList.remove('hidden');
+
+        try {
+          var cToken = document.getElementById('tontine_csrf') ? document.getElementById('tontine_csrf').value : '';
+          if (!cToken) throw new Error('Token de sécurité manquant');
+
+          var reqData = {
+            name: data.name,
+            amount: parseFloat(data.amount),
+            period: data.type,
+            duration: parseInt(data.duration),
+            startDate: data.startDate || new Date().toISOString().split('T')[0],
+            _token: cToken
+          };
+
+          var response = await fetch('{{ path("app_tontine_create") }}', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'X-Requested-With': 'XMLHttpRequest',
+              'X-CSRF-TOKEN': cToken
+            },
+            credentials: 'same-origin',
+            body: JSON.stringify(reqData)
+          });
+
+          var result = await response.json();
+          if (loadModal) loadModal.classList.add('hidden');
+
+          if (response.ok && result.success) {
+            var succModal = document.getElementById('successModal');
+            if (succModal) {
+              succModal.classList.remove('hidden');
+              setTimeout(function() { window.location.href = '{{ path("app_dashboard") }}'; }, 3000);
+            } else {
+              window.location.href = '{{ path("app_dashboard") }}';
+            }
+          } else {
+            alert(result.message || 'Une erreur est survenue.');
+            this.innerHTML = originalTxt;
+            this.disabled = false;
+          }
+        } catch (err) {
+          console.error(err);
+          if (loadModal) loadModal.classList.add('hidden');
+          alert(err.message || 'Erreur de connexion.');
+          this.innerHTML = originalTxt;
+          this.disabled = false;
+        }
+      });
+    }
+    updateTontineFormUI();
+  });
+
+</script>
+
+{% endblock %}

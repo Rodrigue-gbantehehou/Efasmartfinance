@@ -3,12 +3,12 @@
 {% block title %}Gestion des Factures{% endblock %}
 
 {% block contentadmin %}
-<div class="min-h-screen bg-green-50 from-slate-50 via-purple-50/30 to-slate-100 font-poppins p-8">
+<div class="min-h-screen bg-green-50 from-slate-50 via-green-50/30 to-slate-100 font-poppins p-8">
     <div class="max-w-7xl mx-auto">
         
         {# Header #}
         <div class="mb-8">
-            <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-purple-800 mb-2">
+            <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-green-800 mb-2">
                 📄 Gestion des Factures
             </h1>
             <p class="text-slate-600 text-lg">Consultez, renvoyez et téléchargez vos factures</p>
@@ -16,7 +16,7 @@
 
         {# Stats Cards #}
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-3xl p-6 shadow-lg border-2 border-purple-100">
+            <div class="bg-white rounded-3xl p-6 shadow-lg border-2 border-green-100">
                 <div class="text-3xl font-black text-slate-800">{{ totalFactures }}</div>
                 <div class="text-sm text-slate-500 font-semibold">Total Factures</div>
             </div>
@@ -28,8 +28,8 @@
                 <div class="text-3xl font-black text-orange-600">{{ totalImpayees }}</div>
                 <div class="text-sm text-slate-500 font-semibold">En attente</div>
             </div>
-            <div class="bg-white rounded-3xl p-6 shadow-lg border-2 border-blue-100">
-                <div class="text-3xl font-black text-blue-600">{{ montantTotal|number_format(0, ',', ' ') }}</div>
+            <div class="bg-white rounded-3xl p-6 shadow-lg border-2 border-green-100">
+                <div class="text-3xl font-black text-green-600">{{ montantTotal|number_format(0, ',', ' ') }}</div>
                 <div class="text-sm text-slate-500 font-semibold">FCFA Total</div>
             </div>
         </div>
@@ -40,11 +40,11 @@
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Recherche</label>
                     <input type="text" name="search" value="{{ filters.search }}" placeholder="Numéro, email, nom..." 
-                           class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-purple-500 focus:outline-none">
+                           class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Statut</label>
-                    <select name="statut" class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-purple-500 focus:outline-none">
+                    <select name="statut" class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none">
                         <option value="">Tous</option>
                         <option value="payee" {{ filters.statut == 'payee' ? 'selected' : '' }}>Payée</option>
                         <option value="impayee" {{ filters.statut == 'impayee' ? 'selected' : '' }}>Impayée</option>
@@ -53,15 +53,15 @@
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Date début</label>
                     <input type="date" name="date_debut" value="{{ filters.date_debut }}" 
-                           class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-purple-500 focus:outline-none">
+                           class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-slate-700 mb-2">Date fin</label>
                     <input type="date" name="date_fin" value="{{ filters.date_fin }}" 
-                           class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-purple-500 focus:outline-none">
+                           class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none">
                 </div>
                 <div class="md:col-span-4 flex gap-3">
-                    <button type="submit" class="px-6 py-2 bg-purple-500 text-white rounded-xl hover:bg-purple-600 transition-colors font-semibold">
+                    <button type="submit" class="px-6 py-2 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors font-semibold">
                         🔍 Filtrer
                     </button>
                     <a href="{{ path('admin_invoices') }}" class="px-6 py-2 bg-slate-200 text-slate-700 rounded-xl hover:bg-slate-300 transition-colors font-semibold">
@@ -102,7 +102,7 @@
                                     <td class="py-4 px-4">
                                         <input type="checkbox" name="invoice_ids[]" value="{{ facture.id }}" class="invoice-checkbox w-5 h-5 rounded border-2 border-slate-300">
                                     </td>
-                                    <td class="py-4 px-4 font-mono text-sm font-bold text-purple-600">{{ facture.numero }}</td>
+                                    <td class="py-4 px-4 font-mono text-sm font-bold text-green-600">{{ facture.numero }}</td>
                                     <td class="py-4 px-4">
                                         {% if facture.client %}
                                             <div class="font-semibold text-slate-800">{{ facture.client.firstname }} {{ facture.client.lastname }}</div>
@@ -123,7 +123,7 @@
                                     <td class="py-4 px-4">
                                         <div class="flex gap-2">
                                             <a href="{{ path('admin_invoice_show', {id: facture.id}) }}" 
-                                               class="px-3 py-1 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors text-sm font-semibold"
+                                               class="px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-semibold"
                                                title="Voir détails">
                                                 👁️
                                             </a>
@@ -133,7 +133,7 @@
                                                 ⬇
                                             </a>
                                             <button type="button" onclick="resendInvoice({{ facture.id }}, '{{ facture.numero }}', '{{ csrf_token('resend' ~ facture.id) }}')" 
-                                                    class="px-3 py-1 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 transition-colors text-sm font-semibold"
+                                                    class="px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-semibold"
                                                     title="Renvoyer par email">
                                                 ✉️
                                             </button>

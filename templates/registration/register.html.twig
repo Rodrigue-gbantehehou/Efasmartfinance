@@ -13,7 +13,6 @@
       theme: {
         extend: {
           colors: {
-            green-700: '#1a4d2e',
             secondary: '#f6c90e',
             accent: '#2e7d32',
             light: '#f8f9fa',
@@ -35,7 +34,7 @@
         
       </div><div class=" mb-6">
 					<h1 class="text-xl font-extrabold text-green-700 leading-tight">INSCRIPTION</h1>
-					<p class="text-sm text-gray-500">Création de compte</p>
+					<p class="text-sm text-gray-6000">Création de compte</p>
 				</div>
     {% for flash_error in app.flashes('verify_email_error') %}
         <div class="alert alert-danger" role="alert">{{ flash_error }}</div>
@@ -75,7 +74,7 @@
               }
             }) }}
             <button type="button" 
-                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-700 focus:outline-none"
                     id="toggle-password"
                     aria-label="Afficher le mot de passe">
               <i class="far fa-eye" id="toggle-icon"></i>
@@ -89,11 +88,11 @@
 
         <label class="inline-flex items-center gap-2 text-sm">
         {{ form_row(registrationForm.agreeTerms ,{' attr': {'class': 'rounded border-gray-300 text-green-700 focus:ring-secondary'}}) }}
-          <span class="text-gray-600">J’accepte les CGU et la Politique de confidentialité</span>
+          <span class="text-gray-600">J’accepte les <a class="text-green-700 hover:text-accent" href="{{path('app_cgu')}}">CGU</a> et la <a class="text-green-700 hover:text-accent" href="{{path('app_ethics')}}">Politique de confidentialité</a></span>
         </label>
 
         <button type="submit"
-                class="w-full bg-green-600 text-white font-bold py-2.5 rounded-lg hover:bg-yellow-500 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary">
+                class="w-full bg-green-700 text-white font-bold py-2.5 rounded-lg hover:bg-yellow-500 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary">
           Créer mon compte
         </button>
       {{ form_end(registrationForm) }}

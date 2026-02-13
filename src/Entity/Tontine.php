@@ -19,8 +19,8 @@ class Tontine
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $tontineCode = null;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $amountPerPoint = null;
+    #[ORM\Column(type: 'decimal', precision: 15, scale: 2, nullable: true)]
+    private ?string $amountPerPoint = null;
 
     #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $totalPoints = null;
@@ -70,8 +70,8 @@ class Tontine
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $name = null;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $totalPay = 0;
+    #[ORM\Column(type: 'decimal', precision: 15, scale: 2, nullable: true)]
+    private ?string $totalPay = '0.00';
 
     /**
      * @var Collection<int, Withdrawals>
@@ -118,14 +118,35 @@ class Tontine
         return $this->amountPerPoint * $this->totalPoints;
     }
     
-    public function getDuration(): ?int
+        public function getDuration(): ?int
     {
-        if (!$this->startDate || !$this->nextDueDate) {
+        if (!$this->totalPoints || !$this->frequency) {
             return null;
         }
-        
-        $interval = $this->startDate->diff($this->nextDueDate);
-        return (int) $interval->format('%m'); // Retourne la durée en mois
+
+        return match ($this->frequency) {
+            'daily'   => (int) ceil($this->totalPoints / 31),
+            'weekly'  => (int) ceil($this->totalPoints / 4),
+            'monthly' => (int) $this->totalPoints,
+            default   => 1,
+        };
+    }
+
+    /**
+     * Calcule les frais de service à déduire selon la fréquence
+     * (Daily: 1 jour/mois, Weekly: 1/4 jour/mois, Monthly: 1/30 jour/mois)
+     */
+    public function getDeductedServiceFee(): int
+    {
+        $months = $this->getDuration() ?? 1;
+        $montantParPoint = (float)($this->amountPerPoint ?? 0);
+
+        return (int) match ($this->frequency) {
+            'daily'   => $months * $montantParPoint,
+            'weekly'  => $months * ($montantParPoint / 4),
+            'monthly' => $months * ($montantParPoint / 30),
+            default   => 0,
+        };
     }
     
     public function getAvailableBalance(): float
@@ -373,12 +394,12 @@ class Tontine
         return $this;
     }
 
-    public function getTotalPay(): ?int
+    public function getTotalPay(): ?string
     {
         return $this->totalPay;
     }
 
-    public function setTotalPay(?int $totalPay): static
+    public function setTotalPay(?string $totalPay): static
     {
         $this->totalPay = $totalPay;
 
@@ -470,14 +491,14 @@ class Tontine
     public function isPartiallyWithdrawn(): bool
     {
         $withdrawnAmount = $this->getWithdrawnAmount();
-        $totalPay = $this->getTotalPay();
         
-        return $withdrawnAmount > 0 && $withdrawnAmount < $totalPay;
+        if ($this->frequency === 'daily') {
+            return $withdrawnAmount > 0 && $this->getAvailableWithdrawalAmount() > 0;
+        }
+
+        return $withdrawnAmount > 0 && $withdrawnAmount < $this->getTotalPay();
     }
 
-    /**
-     * Calcule le montant total retiré de la tontine
-     */
     /**
      * Calcule le montant total déjà retiré de la tontine
      */
@@ -492,11 +513,14 @@ class Tontine
     }
 
     /**
-     * Récupère le montant disponible pour retrait
+     * Récupère le montant disponible pour retrait (Net de frais)
      */
     public function getAvailableWithdrawalAmount(): int
     {
-        return max(0, $this->getTotalPay() - $this->getWithdrawnAmount());
+        $basis = $this->getTotalPay() - $this->getWithdrawnAmount();
+        
+        // On déduit toujours les frais de service du solde disponible
+        return max(0, $basis - $this->getDeductedServiceFee());
     }
     
     /**
@@ -542,7 +566,7 @@ class Tontine
      */
     public function getRemainingAmount(): int
     {
-        return $this->getTotalPay() - $this->getWithdrawnAmount();
+        return $this->getAvailableWithdrawalAmount();
     }
 
     /**
@@ -550,7 +574,11 @@ class Tontine
      */
     public function isFullyWithdrawn(): bool
     {
-        return $this->getRemainingAmount() === 0;
+        if ($this->frequency === 'daily') {
+             return $this->getAvailableWithdrawalAmount() === 0 && ($this->getWithdrawnAmount() > 0 || ($this->getTotalPay() > 0 && $this->getTotalPay() <= $this->getDeductedServiceFee()));
+        }
+
+        return $this->getAvailableWithdrawalAmount() === 0 && $this->getWithdrawnAmount() > 0;
     }
 
     /**

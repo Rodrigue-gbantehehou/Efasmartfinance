@@ -10,16 +10,16 @@
             <div class="flex items-center justify-between h-20">
                 <div>
                     <h1 class="text-2xl font-bold text-gray-900">Journal d'Audit</h1>
-                    <p class="text-sm text-gray-500">Traçabilité complète des actions système et utilisateurs.</p>
+                    <p class="text-sm text-gray-600">Traçabilité complète des actions système et utilisateurs.</p>
                 </div>
                 
                 <div class="flex items-center gap-3">
                     <div class="relative hidden md:block">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fa-solid fa-magnifying-glass text-gray-400 text-sm"></i>
+                            <i class="fa-solid fa-magnifying-glass text-gray-600 text-sm"></i>
                         </div>
                         <input type="text" id="logSearch" placeholder="Rechercher une action, entité..." 
-                               class="block w-64 pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 sm:text-sm transition-all shadow-sm">
+                               class="block w-64 pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-50 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 sm:text-sm transition-all shadow-sm">
                     </div>
                     <a href="{{ path('admin_audit_logs', {'export': 'csv'}) }}" class="flex items-center gap-2 px-4 py-2 bg-green-700 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-green-800 transition-all shadow-lg shadow-green-100">
                         <i class="fa-solid fa-file-csv"></i> Exporter
@@ -35,15 +35,15 @@
             <!-- Filter Bar -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 mb-10 flex flex-wrap items-center gap-4">
                 <div class="flex items-center gap-2">
-                    <span class="text-xs font-bold text-gray-400 uppercase ml-2">Filtrer par type :</span>
+                    <span class="text-xs font-bold text-gray-600 uppercase ml-2">Filtrer par type :</span>
                     <button class="type-filter active px-4 py-2 text-xs font-bold rounded-xl bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all border border-transparent" data-type="all">Tous</button>
-                    <button class="type-filter px-4 py-2 text-xs font-bold rounded-xl bg-white border border-gray-100 text-gray-500 hover:border-green-200 hover:text-green-700 transition-all" data-type="create">Création</button>
-                    <button class="type-filter px-4 py-2 text-xs font-bold rounded-xl bg-white border border-gray-100 text-gray-500 hover:border-amber-200 hover:text-amber-700 transition-all" data-type="update">Modif</button>
-                    <button class="type-filter px-4 py-2 text-xs font-bold rounded-xl bg-white border border-gray-100 text-gray-500 hover:border-red-200 hover:text-red-700 transition-all" data-type="delete">Suppr</button>
+                    <button class="type-filter px-4 py-2 text-xs font-bold rounded-xl bg-white border border-gray-100 text-gray-600 hover:border-green-200 hover:text-green-700 transition-all" data-type="create">Création</button>
+                    <button class="type-filter px-4 py-2 text-xs font-bold rounded-xl bg-white border border-gray-100 text-gray-600 hover:border-amber-200 hover:text-amber-700 transition-all" data-type="update">Modif</button>
+                    <button class="type-filter px-4 py-2 text-xs font-bold rounded-xl bg-white border border-gray-100 text-gray-600 hover:border-red-200 hover:text-red-700 transition-all" data-type="delete">Suppr</button>
                 </div>
                 <div class="h-6 w-px bg-gray-100 hidden md:block"></div>
                 <div class="flex items-center gap-2">
-                    <span class="text-xs font-bold text-gray-400 uppercase">Période :</span>
+                    <span class="text-xs font-bold text-gray-600 uppercase">Période :</span>
                     <input type="date" id="dateFilter" class="bg-gray-50 border-none rounded-lg text-xs font-bold text-gray-700 focus:ring-1 focus:ring-green-500">
                 </div>
             </div>
@@ -73,7 +73,7 @@
                         {% if log.actions|lower == 'create' %}{% set color = 'green' %}
                         {% elseif log.actions|lower == 'update' %}{% set color = 'amber' %}
                         {% elseif log.actions|lower == 'delete' %}{% set color = 'red' %}
-                        {% elseif log.actions|lower == 'login' %}{% set color = 'blue' %}
+                        {% elseif log.actions|lower == 'login' %}{% set color = 'green' %}
                         {% endif %}
                         
                         <div class="absolute -left-[41px] top-1 h-6 w-6 rounded-full border-4 border-white shadow-sm ring-2 ring-{{ color }}-100 bg-{{ color }}-500 z-10"></div>
@@ -85,7 +85,7 @@
                                         <span class="text-[10px] font-black uppercase tracking-wider text-{{ color }}-600 px-2 py-0.5 bg-{{ color }}-50 rounded-md border border-{{ color }}-100">
                                             {{ log.actions|capitalize }}
                                         </span>
-                                        <span class="text-xs font-bold text-gray-400">{{ log.createdAt|date('H:i') }}</span>
+                                        <span class="text-xs font-bold text-gray-600">{{ log.createdAt|date('H:i') }}</span>
                                         {% if log.entityType %}
                                             <span class="text-[10px] font-bold text-gray-300 uppercase">/ {{ log.entityType }}</span>
                                         {% endif %}
@@ -107,7 +107,7 @@
                                     </div>
                                 </div>
                                 
-                                <a href="{{ path('admin_audit_log_detail', {'id': log.id}) }}" class="h-10 w-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-400 hover:bg-gray-900 hover:text-white transition-all shadow-inner">
+                                <a href="{{ path('admin_audit_log_detail', {'id': log.id}) }}" class="h-10 w-10 flex items-center justify-center rounded-xl bg-gray-50 text-gray-600 hover:bg-gray-900 hover:text-white transition-all shadow-inner">
                                     <i class="fa-solid fa-arrow-right-long"></i>
                                 </a>
                             </div>
@@ -121,7 +121,7 @@
                             <i class="fa-solid fa-timeline text-gray-200 text-4xl"></i>
                         </div>
                         <h3 class="text-gray-900 font-bold">Aucune trace d'activité</h3>
-                        <p class="text-gray-500 text-sm">Le journal est actuellement vide.</p>
+                        <p class="text-gray-600 text-sm">Le journal est actuellement vide.</p>
                     </div>
                 {% endfor %}
             </div>
@@ -168,10 +168,10 @@ document.addEventListener('DOMContentLoaded', function() {
         btn.addEventListener('click', () => {
             typeFilters.forEach(b => {
                 b.classList.remove('active', 'bg-gray-100', 'text-gray-600', 'border-transparent');
-                b.classList.add('bg-white', 'text-gray-500', 'border-gray-100');
+                b.classList.add('bg-white', 'text-gray-600', 'border-gray-100');
             });
             btn.classList.add('active', 'bg-gray-100', 'text-gray-600', 'border-transparent');
-            btn.classList.remove('bg-white', 'text-gray-500', 'border-gray-100');
+            btn.classList.remove('bg-white', 'text-gray-600', 'border-gray-100');
             applyFilters();
         });
     });
@@ -198,10 +198,10 @@ document.addEventListener('DOMContentLoaded', function() {
 .bg-red-50 { --tw-bg-opacity: 1; background-color: rgb(254 242 242 / var(--tw-bg-opacity)); }
 .border-red-100 { --tw-border-opacity: 1; border-color: rgb(254 226 226 / var(--tw-border-opacity)); }
 
-.ring-blue-100 { --tw-ring-opacity: 1; --tw-ring-color: rgb(219 234 254 / var(--tw-ring-opacity)); }
-.bg-blue-500 { --tw-bg-opacity: 1; background-color: rgb(59 130 246 / var(--tw-bg-opacity)); }
-.text-blue-600 { --tw-text-opacity: 1; color: rgb(37 99 235 / var(--tw-text-opacity)); }
-.bg-blue-50 { --tw-bg-opacity: 1; background-color: rgb(239 246 255 / var(--tw-bg-opacity)); }
-.border-blue-100 { --tw-border-opacity: 1; border-color: rgb(219 234 254 / var(--tw-border-opacity)); }
+.ring-green-100 { --tw-ring-opacity: 1; --tw-ring-color: rgb(219 234 254 / var(--tw-ring-opacity)); }
+.bg-green-500 { --tw-bg-opacity: 1; background-color: rgb(59 130 246 / var(--tw-bg-opacity)); }
+.text-green-600 { --tw-text-opacity: 1; color: rgb(37 99 235 / var(--tw-text-opacity)); }
+.bg-green-50 { --tw-bg-opacity: 1; background-color: rgb(239 246 255 / var(--tw-bg-opacity)); }
+.border-green-100 { --tw-border-opacity: 1; border-color: rgb(219 234 254 / var(--tw-border-opacity)); }
 </style>
 {% endblock %}

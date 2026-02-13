@@ -7,11 +7,11 @@
     <div class="max-w-2xl mx-auto space-y-8">
         <!-- Header -->
         <div class="flex items-center justify-between">
-            <a href="{{ path('admin_caisse_user_tontines', {'id': user.id}) }}" class="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-emerald-600 transition-colors uppercase tracking-widest">
+            <a href="{{ path('admin_caisse_user_tontines', {'id': user.id}) }}" class="flex items-center gap-2 text-sm font-bold text-gray-600 hover:text-emerald-600 transition-colors uppercase tracking-widest">
                 <i class="fas fa-arrow-left"></i> Choix tontine
             </a>
             <div class="text-right">
-                <h4 class="text-xs font-black text-gray-400 uppercase tracking-widest">Nouveau Versement</h4>
+                <h4 class="text-xs font-black text-gray-600 uppercase tracking-widest">Nouveau Versement</h4>
                 <p class="text-lg font-bold text-gray-900">{{ user.fullName }}</p>
             </div>
         </div>
@@ -23,10 +23,10 @@
                     <div class="space-y-1">
                         <span class="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Tontine sélectionnée</span>
                         <h2 class="text-2xl font-bold font-poppins">{{ tontine.name }}</h2>
-                        <p class="text-xs text-gray-400">ID: {{ tontine.tontineCode }} | {{ tontine.frequency|capitalize }}</p>
+                        <p class="text-xs text-gray-600">ID: {{ tontine.tontineCode }} | {{ tontine.frequency|capitalize }}</p>
                     </div>
                     <div class="text-right">
-                        <p class="text-xs font-bold text-gray-400 uppercase">Montant par point</p>
+                        <p class="text-xs font-bold text-gray-600 uppercase">Montant par point</p>
                         <p class="text-2xl font-black text-emerald-400">{{ tontine.amountPerPoint|number_format(0, ',', ' ') }} <span class="text-xs font-semibold">FCFA</span></p>
                     </div>
                 </div>
@@ -36,7 +36,7 @@
             <!-- Formulaire -->
             <form action="{{ path('admin_caisse_process_payment', {'id': tontine.id}) }}" method="POST" class="p-10 space-y-8">
                 <div class="space-y-4">
-                    <label class="block text-xs font-black text-gray-400 uppercase tracking-widest ml-1">Montant Encaissé (en espèces)</label>
+                    <label class="block text-xs font-black text-gray-600 uppercase tracking-widest ml-1">Montant Encaissé (en espèces)</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
                             <i class="fas fa-wallet text-emerald-500"></i>
@@ -49,11 +49,11 @@
                             max="{{ (tontine.totalPoints * tontine.amountPerPoint) - tontine.totalPay }}"
                             step="{{ tontine.amountPerPoint }}">
                         <div class="absolute inset-y-0 right-0 pr-6 flex items-center pointer-events-none">
-                            <span class="font-black text-gray-400">FCFA</span>
+                            <span class="font-black text-gray-600">FCFA</span>
                         </div>
                     </div>
                     <div class="flex justify-between items-center mt-1 px-1">
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                        <p class="text-[10px] text-gray-600 font-bold uppercase tracking-wider">
                             <i class="fas fa-info-circle mr-1"></i> Multiple de {{ tontine.amountPerPoint|number_format(0, ',', ' ') }} FCFA
                         </p>
                         <p class="text-[10px] text-emerald-600 font-bold uppercase tracking-wider">
@@ -78,7 +78,7 @@
                     <button type="submit" class="flex-1 py-5 bg-gray-900 text-white rounded-[1.5rem] text-sm font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl shadow-gray-200">
                         Confirmer l'Encaissement <i class="fas fa-check-circle ml-2"></i>
                     </button>
-                    <a href="{{ path('admin_caisse_user_tontines', {'id': user.id}) }}" class="px-8 py-5 bg-gray-100 text-gray-400 rounded-[1.5rem] text-sm font-bold uppercase tracking-widest hover:bg-gray-200 transition-all text-center">
+                    <a href="{{ path('admin_caisse_user_tontines', {'id': user.id}) }}" class="px-8 py-5 bg-gray-100 text-gray-600 rounded-[1.5rem] text-sm font-bold uppercase tracking-widest hover:bg-gray-200 transition-all text-center">
                         Annuler
                     </a>
                 </div>

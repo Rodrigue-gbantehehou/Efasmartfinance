@@ -10,16 +10,16 @@
             <div class="flex items-center justify-between h-20">
                 <div>
                     <h1 class="text-2xl font-bold text-gray-900">Gestion des Retraits</h1>
-                    <p class="text-sm text-gray-500">Validez et suivez les demandes de retrait des utilisateurs.</p>
+                    <p class="text-sm text-gray-600">Validez et suivez les demandes de retrait des utilisateurs.</p>
                 </div>
                 
                 <div class="flex items-center gap-3">
                     <div class="relative hidden md:block">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fa-solid fa-magnifying-glass text-gray-400 text-sm"></i>
+                            <i class="fa-solid fa-magnifying-glass text-gray-600 text-sm"></i>
                         </div>
                         <input type="text" id="withdrawalSearch" placeholder="Rechercher un utilisateur ou ID..." 
-                               class="block w-64 pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 sm:text-sm">
+                               class="block w-64 pl-10 pr-3 py-2 border border-gray-300 rounded-xl leading-5 bg-white placeholder-gray-50 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500 sm:text-sm">
                     </div>
                 </div>
             </div>
@@ -37,13 +37,13 @@
                             <i class="fa-solid fa-clock-rotate-left text-yellow-600 text-xl"></i>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">En attente</p>
+                            <p class="text-sm font-medium text-gray-600">En attente</p>
                             <h3 class="text-xl font-bold text-gray-900">{{ stats.pending_count }} demande(s)</h3>
                         </div>
                     </div>
                     <div class="mt-4 flex items-center text-sm">
                         <span class="text-yellow-600 font-semibold">{{ stats.pending_amount|number_format(0, ',', ' ') }} FCFA</span>
-                        <span class="text-gray-400 ml-2">à traiter</span>
+                        <span class="text-gray-600 ml-2">à traiter</span>
                     </div>
                 </div>
 
@@ -54,7 +54,7 @@
                             <i class="fa-solid fa-check-double text-green-600 text-xl"></i>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">Total versé</p>
+                            <p class="text-sm font-medium text-gray-600">Total versé</p>
                             <h3 class="text-xl font-bold text-gray-900">{{ stats.total_approved|number_format(0, ',', ' ') }} FCFA</h3>
                         </div>
                     </div>
@@ -66,32 +66,32 @@
                 <!-- Volume Card -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                     <div class="flex items-center">
-                        <div class="flex-shrink-0 p-3 bg-blue-50 rounded-xl">
-                            <i class="fa-solid fa-chart-line text-blue-600 text-xl"></i>
+                        <div class="flex-shrink-0 p-3 bg-green-50 rounded-xl">
+                            <i class="fa-solid fa-chart-line text-green-600 text-xl"></i>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">Volume Total</p>
+                            <p class="text-sm font-medium text-gray-600">Volume Total</p>
                             <h3 class="text-xl font-bold text-gray-900">{{ stats.total_count }}</h3>
                         </div>
                     </div>
                     <div class="mt-4 flex items-center text-sm">
-                        <span class="text-gray-500">Nombre de demandes historiques</span>
+                        <span class="text-gray-600">Nombre de demandes historiques</span>
                     </div>
                 </div>
 
                 <!-- Efficiency Card -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                     <div class="flex items-center">
-                        <div class="flex-shrink-0 p-3 bg-purple-50 rounded-xl">
-                            <i class="fa-solid fa-bolt text-purple-600 text-xl"></i>
+                        <div class="flex-shrink-0 p-3 bg-green-50 rounded-xl">
+                            <i class="fa-solid fa-bolt text-green-600 text-xl"></i>
                         </div>
                         <div class="ml-4">
-                            <p class="text-sm font-medium text-gray-500">Taux de succès</p>
-                            <h3 class="text-xl font-bold text-gray-900">98.5%</h3>
+                            <p class="text-sm font-medium text-gray-600">Taux de succès</p>
+                            <h3 class="text-xl font-bold text-gray-900">{{ stats.success_rate|number_format(1, '.', ' ') }}%</h3>
                         </div>
                     </div>
                     <div class="mt-4 flex items-center text-sm">
-                        <span class="text-purple-600 font-medium">Traitement rapide actif</span>
+                        <span class="text-green-600 font-medium">Traitement rapide actif</span>
                     </div>
                 </div>
             </div>
@@ -111,13 +111,13 @@
                     <table class="min-w-full divide-y divide-gray-100">
                         <thead class="bg-gray-50/50">
                             <tr>
-                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Référence</th>
-                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Utilisateur</th>
-                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Montant</th>
-                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Net à payer</th>
-                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Statut</th>
-                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-400 uppercase tracking-wider">Date</th>
-                                <th class="px-8 py-4 text-right text-xs font-bold text-gray-400 uppercase tracking-wider">Actions</th>
+                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Référence</th>
+                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Utilisateur</th>
+                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Montant</th>
+                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Net à payer</th>
+                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Statut</th>
+                                <th class="px-8 py-4 text-left text-xs font-bold text-gray-600 uppercase tracking-wider">Date</th>
+                                <th class="px-8 py-4 text-right text-xs font-bold text-gray-600 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50" id="withdrawalsBody">
@@ -131,17 +131,17 @@
                                         </div>
                                         <div class="ml-3">
                                             <div class="text-sm font-bold text-gray-900">{{ withdrawal.utilisateur.fullName }}</div>
-                                            <div class="text-xs text-gray-400">{{ withdrawal.utilisateur.email }}</div>
+                                            <div class="text-xs text-gray-600">{{ withdrawal.utilisateur.email }}</div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-8 py-5 whitespace-nowrap">
                                     <div class="text-sm font-bold text-gray-900">{{ withdrawal.totalAmount|number_format(0, ',', ' ') }} FCFA</div>
-                                    <div class="text-xs text-gray-400">Total retrait</div>
+                                    <div class="text-xs text-gray-600">Total retrait</div>
                                 </td>
                                 <td class="px-8 py-5 whitespace-nowrap">
                                     <div class="text-sm font-bold text-green-700">{{ withdrawal.amount|number_format(0, ',', ' ') }} FCFA</div>
-                                    <div class="text-xs text-gray-400">Frais déduits</div>
+                                    <div class="text-xs text-gray-600">Frais déduits</div>
                                 </td>
                                 <td class="px-8 py-5 whitespace-nowrap">
                                     {% if withdrawal.statut == 'approved' %}
@@ -158,25 +158,25 @@
                                         </span>
                                     {% endif %}
                                 </td>
-                                <td class="px-8 py-5 whitespace-nowrap text-sm text-gray-500">
+                                <td class="px-8 py-5 whitespace-nowrap text-sm text-gray-600">
                                     {{ withdrawal.requestedAt ? withdrawal.requestedAt|date('d/m/Y H:i') : 'N/A' }}
                                 </td>
                                 <td class="px-8 py-5 whitespace-nowrap text-right text-sm font-medium">
                                     <div class="flex justify-end gap-2">
                                         <a href="{{ path('admin_withdrawal_show', {'id': withdrawal.id}) }}" 
-                                           class="p-2 text-gray-400 hover:text-green-600 transition-colors" title="Détails">
+                                           class="p-2 text-gray-600 hover:text-green-600 transition-colors" title="Détails">
                                             <i class="fa-solid fa-eye text-lg"></i>
                                         </a>
                                         {% if withdrawal.statut == 'pending' %}
                                             <form method="post" action="{{ path('admin_withdrawal_approve', {'id': withdrawal.id}) }}" class="inline" onsubmit="return confirm('Approuver ce paiement ?');">
                                                 <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ withdrawal.id) }}">
-                                                <button type="submit" class="p-2 text-gray-400 hover:text-green-700 transition-colors" title="Approuver">
+                                                <button type="submit" class="p-2 text-gray-600 hover:text-green-700 transition-colors" title="Approuver">
                                                     <i class="fa-solid fa-circle-check text-lg"></i>
                                                 </button>
                                             </form>
                                             <form method="post" action="{{ path('admin_withdrawal_reject', {'id': withdrawal.id}) }}" class="inline" onsubmit="return confirm('Rejeter cette demande ?');">
                                                 <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ withdrawal.id) }}">
-                                                <button type="submit" class="p-2 text-gray-400 hover:text-red-600 transition-colors" title="Rejeter">
+                                                <button type="submit" class="p-2 text-gray-600 hover:text-red-600 transition-colors" title="Rejeter">
                                                     <i class="fa-solid fa-circle-xmark text-lg"></i>
                                                 </button>
                                             </form>
@@ -192,7 +192,7 @@
                                             <i class="fa-solid fa-money-bill-transfer text-gray-300 text-3xl"></i>
                                         </div>
                                         <h3 class="text-gray-900 font-bold">Aucun retrait trouvé</h3>
-                                        <p class="text-gray-500 text-sm">Les demandes apparaîtront ici dès qu'elles seront soumises.</p>
+                                        <p class="text-gray-600 text-sm">Les demandes apparaîtront ici dès qu'elles seront soumises.</p>
                                     </div>
                                 </td>
                             </tr>

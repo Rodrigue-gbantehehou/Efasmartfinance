@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Repository\SecuritySettingsRepository;
 
 #[Route('/dashboard/api/settings')]
 class SettingsApiController extends AbstractController
@@ -163,10 +164,11 @@ class SettingsApiController extends AbstractController
     }
     
     #[Route('/security', name: 'api_settings_security', methods: ['GET', 'POST', 'PUT'])]
-    public function handleSecuritySettings(Request $request): JsonResponse
+    public function handleSecuritySettings(Request $request, SecuritySettingsRepository $settingsRepo): JsonResponse
     {
         /** @var User $user */
         $user = $this->security->getUser();
+        $settings = $settingsRepo->getSettings();    
         
         // Handle GET request - Return current security settings
         if ($request->isMethod('GET')) {

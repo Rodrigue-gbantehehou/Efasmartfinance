@@ -1,0 +1,110 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mentions légales - EFA SMART FINANCE{% endblock %}
+
+{% block body %}
+<!-- Hero Section -->
+<div class="relative bg-green-700 text-white py-16 md:py-24">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-3xl md:text-5xl font-bold mb-4">Mentions Légales</h1>
+        <p class="text-xl text-gray-100 max-w-3xl mx-auto">Cadre juridique et informations réglementaires de la plateforme.</p>
+    </div>
+    <div class="absolute bottom-0 left-0 right-0 h-12 bg-white transform translate-y-1/2 rounded-t-3xl"></div>
+</div>
+
+<!-- Main Content -->
+<div class="container mx-auto px-4 py-16 md:py-24 -mt-6 md:-mt-12 relative z-10">
+    <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden p-6 md:p-12 space-y-12">
+        
+        <!-- 1. Éditeur du site -->
+        <section class="space-y-6">
+            <div class="flex items-center gap-4 text-green-700">
+                <i class="fas fa-building text-2xl"></i>
+                <h2 class="text-2xl font-bold text-slate-900">1. Éditeur du site</h2>
+            </div>
+            <div class="bg-slate-50 p-8 rounded-3xl border border-slate-100">
+                <p class="text-slate-600 mb-4 italic">Le site <strong>efasmartfinance.com</strong> est édité par :</p>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="space-y-2">
+                        <p class="font-bold text-slate-800 text-lg">EFA Smart Finance</p>
+                        <p class="text-slate-500 text-sm">Siège social : [Adresse complète au Bénin]</p>
+                        <p class="text-slate-500 text-sm">Immatriculation : [RCCM / NIF]</p>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="text-slate-500 text-sm"><i class="fas fa-phone-alt mr-2 text-green-600"></i> +229 01 46 10 10 50</p>
+                        <p class="text-slate-500 text-sm"><i class="fas fa-envelope mr-2 text-green-600"></i> contact@efasmartfinance.com</p>
+                        <p class="text-slate-500 text-sm mt-4 pt-2 border-t border-slate-200">
+                            <strong>Responsable de la publication :</strong><br>
+                            M. David Ibrahim Babangida AKPANON
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Hébergeur -->
+        <section class="space-y-4">
+            <h3 class="text-xl font-bold text-slate-900">2. Hébergeur du site</h3>
+            <p class="text-slate-600 text-sm leading-relaxed">
+                Le site est hébergé par : [Nom de l’hébergeur], [Adresse complète], [Téléphone].
+            </p>
+        </section>
+
+        <!-- 3. Propriété intellectuelle -->
+        <section class="space-y-4">
+            <div class="flex items-center gap-3 text-green-700">
+                <i class="fas fa-copyright"></i>
+                <h3 class="text-xl font-bold text-slate-900">3. Propriété intellectuelle</h3>
+            </div>
+            <p class="text-slate-600 text-sm leading-relaxed">
+                L’ensemble du contenu du site (textes, images, logos, vidéos, graphismes) est la propriété exclusive de <strong>EFA Smart Finance</strong>, sauf mention contraire. Toute reproduction ou modification est interdite conformément au <strong>Code du numérique (Loi n°2017-20)</strong>.
+            </p>
+        </section>
+
+        <!-- 4. Données personnelles -->
+        <section class="space-y-6">
+            <div class="flex items-center gap-3 text-green-700">
+                <i class="fas fa-user-shield"></i>
+                <h3 class="text-xl font-bold text-slate-900">4. Données personnelles</h3>
+            </div>
+            <div class="space-y-4 text-sm text-slate-600">
+                <p>
+                    Les informations collectées sont utilisées uniquement dans le cadre des services proposés par <strong>EFA Smart Finance</strong>. Conformément à la <strong>Loi n°2009-09</strong>, vous disposez d’un droit d’accès, de rectification et de suppression.
+                </p>
+                <div class="p-4 bg-green-50 rounded-xl border border-green-100 flex gap-4">
+                    <i class="fas fa-shield-alt text-green-600 mt-1"></i>
+                    <p class="text-xs">
+                        Les données KYC sont <strong>cryptées et protégées</strong> pour garantir votre sécurité. Nous appliquons les standards <strong>RGPD</strong>, <strong>KYC/AML</strong>, et <strong>ISO/IEC 27001</strong>.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Responsabilité -->
+        <section class="space-y-4">
+            <h3 class="text-xl font-bold text-slate-900">5. Responsabilité</h3>
+            <div class="grid md:grid-cols-2 gap-8 text-sm text-slate-500 leading-relaxed">
+                <p>EFA Smart Finance s’engage à fournir un service fiable, mais ne peut être tenu responsable en cas d’interruption technique ou de force majeure.</p>
+                <p>L’utilisateur est seul responsable de l’utilisation de son espace personnel et de la confidentialité de ses identifiants.</p>
+            </div>
+        </section>
+
+        <!-- 6. Loi applicable -->
+        <section class="pt-10 border-t border-slate-100">
+            <div class="bg-green-900 text-white p-8 rounded-[2rem] space-y-6">
+                <h2 class="text-xl font-bold">6. Loi applicable</h2>
+                <div class="grid md:grid-cols-2 gap-4 text-sm text-white">
+                    <ul class="space-y-2">
+                        <li class="flex gap-2"><i class="fas fa-balance-scale opacity-50"></i> Code du numérique (2018)</li>
+                        <li class="flex gap-2"><i class="fas fa-balance-scale opacity-50"></i> Protection des données (2009)</li>
+                    </ul>
+                    <p class="italic border-l border-slate-700 pl-4">
+                        Soumis aux dispositions relatives à la cybersécurité et à la lutte contre la cybercriminalité en République du Bénin.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock %}

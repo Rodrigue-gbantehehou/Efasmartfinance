@@ -11,10 +11,10 @@
                 <div class="w-10 h-10 rounded-xl bg-gray-900 text-white flex items-center justify-center shadow-lg">
                     <i class="fas fa-headset text-sm"></i>
                 </div>
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Support & Relation Client</span>
+                <span class="text-xs font-bold text-gray-600 uppercase tracking-widest">Support & Relation Client</span>
             </div>
             <h1 class="text-3xl font-bold font-poppins text-gray-900 tracking-tight">Gestion des Tickets</h1>
-            <p class="text-gray-500 font-medium mt-1">Supervisez et répondez aux demandes d'assistance de la communauté.</p>
+            <p class="text-gray-600 font-medium mt-1">Supervisez et répondez aux demandes d'assistance de la communauté.</p>
         </div>
         <div class="flex items-center gap-3">
             <div class="px-4 py-2 bg-emerald-50 rounded-xl border border-emerald-100 flex items-center gap-3">
@@ -28,14 +28,14 @@
     <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 mb-8">
         <div class="flex flex-col md:flex-row gap-6">
             <div class="flex-grow space-y-2">
-                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Filtrer par Sujet ou Utilisateur</label>
+                <label class="text-[10px] font-bold text-gray-600 uppercase tracking-widest ml-1">Filtrer par Sujet ou Utilisateur</label>
                 <div class="relative group">
                     <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 group-focus-within:text-emerald-500 transition-colors"></i>
                     <input type="text" id="search-input" placeholder="Sujet, email, nom..." class="w-full h-12 pl-11 pr-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-emerald-500/20 text-sm font-medium transition-all">
                 </div>
             </div>
             <div class="w-full md:w-64 space-y-2">
-                <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">État du Ticket</label>
+                <label class="text-[10px] font-bold text-gray-600 uppercase tracking-widest ml-1">État du Ticket</label>
                 <select id="status-filter" class="w-full h-12 px-4 bg-gray-50 border-none rounded-xl focus:ring-2 focus:ring-emerald-500/20 text-sm font-medium">
                     <option value="">Tous les états</option>
                     <option value="nouveau">Ouvert / Nouveau</option>
@@ -52,11 +52,11 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-gray-50/50 border-b border-gray-50">
-                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">ID</th>
-                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Sujet & Aperçu</th>
-                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Utilisateur</th>
-                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Date de création</th>
-                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Action</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-600 uppercase tracking-widest">ID</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-600 uppercase tracking-widest">Sujet & Aperçu</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-600 uppercase tracking-widest">Utilisateur</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-600 uppercase tracking-widest">Date de création</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-600 uppercase tracking-widest text-right">Action</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -68,7 +68,7 @@
                         <td class="px-8 py-6">
                             <div class="max-w-md">
                                 <h4 class="text-sm font-bold text-gray-900 font-poppins">{{ ticket.sujet }}</h4>
-                                <p class="text-xs text-gray-400 mt-1 line-clamp-1 italic">"{{ ticket.description }}"</p>
+                                <p class="text-xs text-gray-600 mt-1 line-clamp-1 italic">"{{ ticket.description }}"</p>
                             </div>
                         </td>
                         <td class="px-8 py-6">
@@ -79,15 +79,15 @@
                                     </div>
                                     <div>
                                         <div class="text-xs font-bold text-gray-700">{{ ticket.utilisateur.firstname }} {{ ticket.utilisateur.lastname }}</div>
-                                        <div class="text-[10px] text-gray-400">{{ ticket.utilisateur.email }}</div>
+                                        <div class="text-[10px] text-gray-600">{{ ticket.utilisateur.email }}</div>
                                     </div>
                                 </div>
                             {% else %}
-                                <span class="text-[10px] font-bold text-gray-400 uppercase italic">Utilisateur Anonyme</span>
+                                <span class="text-[10px] font-bold text-gray-600 uppercase italic">Utilisateur Anonyme</span>
                             {% endif %}
                         </td>
                         <td class="px-8 py-6">
-                            <div class="flex items-center gap-2 text-gray-400">
+                            <div class="flex items-center gap-2 text-gray-600">
                                 <i class="far fa-clock text-[10px]"></i>
                                 <span class="text-[10px] font-bold">{{ ticket.createdAt ? ticket.createdAt|date('d/m/Y H:i') : 'N/A' }}</span>
                             </div>
@@ -105,7 +105,7 @@
                                 <i class="fas fa-check-circle"></i>
                             </div>
                             <h4 class="text-lg font-bold text-gray-900 font-poppins">Aucun ticket en attente</h4>
-                            <p class="text-gray-400 text-sm mt-1">Bon travail ! Tous les dossiers semblent être à jour.</p>
+                            <p class="text-gray-600 text-sm mt-1">Bon travail ! Tous les dossiers semblent être à jour.</p>
                         </td>
                     </tr>
                     {% endfor %}

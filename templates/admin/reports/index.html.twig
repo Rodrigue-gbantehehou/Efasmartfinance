@@ -22,7 +22,7 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Utilisateurs</dt>
+                            <dt class="text-sm font-medium text-gray-600 truncate">Utilisateurs</dt>
                             <dd class="flex items-baseline">
                                 <div class="text-2xl font-semibold text-gray-900">{{ stats.total_users|number_format(0, ',', ' ') }}</div>
                                 <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
@@ -47,7 +47,7 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Tontines actives</dt>
+                            <dt class="text-sm font-medium text-gray-600 truncate">Tontines actives</dt>
                             <dd class="flex items-baseline">
                                 <div class="text-2xl font-semibold text-gray-900">{{ stats.active_tontines|number_format(0, ',', ' ') }}</div>
                                 <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
@@ -71,7 +71,7 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Transactions</dt>
+                            <dt class="text-sm font-medium text-gray-600 truncate">Transactions</dt>
                             <dd class="flex items-baseline">
                                 <div class="text-2xl font-semibold text-gray-900">{{ stats.total_transactions|number_format(0, ',', ' ') }}</div>
                                 <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
@@ -95,9 +95,9 @@
                     </div>
                     <div class="ml-5 w-0 flex-1">
                         <dl>
-                            <dt class="text-sm font-medium text-gray-500 truncate">Volume total</dt>
+                            <dt class="text-sm font-medium text-gray-600 truncate">Volume total</dt>
                             <dd class="flex items-baseline">
-                                <div class="text-2xl font-semibold text-gray-900">{{ (stats.total_volume ?? 0)|format_currency('F CFA') }}</div>
+                                <div class="text-2xl font-semibold text-gray-900">{{ (stats.total_volume ?? 0)  }}  F CFA</div>
                                 <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
                                     <i class="fas fa-arrow-up"></i>
                                     23%
@@ -134,7 +134,7 @@
     <div class="mt-8 bg-white shadow rounded-lg overflow-hidden">
         <div class="px-4 py-5 sm:px-6">
             <h3 class="text-lg leading-6 font-medium text-gray-900">Exporter des données</h3>
-            <p class="mt-1 text-sm text-gray-500">Générez des rapports personnalisés au format Excel ou PDF.</p>
+            <p class="mt-1 text-sm text-gray-600">Générez des rapports personnalisés au format Excel ou PDF.</p>
         </div>
         <div class="border-t border-gray-200 px-4 py-5 sm:p-6">
             <form action="{{ path('admin_reports') }}" method="POST" class="space-y-6">

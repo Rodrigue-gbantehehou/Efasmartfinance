@@ -1,0 +1,137 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confidentialité - EFA SMART FINANCE{% endblock %}
+
+{% block body %}
+<!-- Hero Section -->
+<div class="relative bg-green-700 text-white py-16 md:py-24">
+    <div class="container mx-auto px-4 text-center">
+        <h1 class="text-3xl md:text-5xl font-bold mb-4">Politique de Confidentialité</h1>
+        <p class="text-xl text-gray-100 max-w-3xl mx-auto">Votre sécurité et la protection de vos données sont notre priorité absolue.</p>
+    </div>
+    <div class="absolute bottom-0 left-0 right-0 h-12 bg-white transform translate-y-1/2 rounded-t-3xl"></div>
+</div>
+
+<!-- Main Content -->
+<div class="container mx-auto px-4 py-16 md:py-24 -mt-6 md:-mt-12 relative z-10">
+    <div class="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden p-6 md:p-12 space-y-12">
+        
+        <!-- Intro -->
+        <div class="space-y-6">
+            <p class="text-lg text-slate-600 leading-relaxed">
+                Chez <span class="font-bold text-green-700">EFA Smart Finance</span>, la sécurité et la confidentialité de nos utilisateurs sont une priorité absolue. Nous appliquons des standards élevés pour garantir que vos informations personnelles et vos fonds restent protégés à tout moment, conformément aux lois en vigueur en République du Bénin et aux normes internationales.
+            </p>
+        </div>
+
+        <!-- Protection des données -->
+        <section class="space-y-6">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center text-green-700">
+                    <i class="fas fa-user-shield text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900">Protection des données</h2>
+            </div>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                    <ul class="space-y-4 text-slate-600">
+                        <li class="flex gap-3">
+                            <i class="fas fa-check text-green-600 mt-1"></i>
+                            <span>Toutes vos informations personnelles sont <strong>cryptées</strong> et stockées de manière sécurisée.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <i class="fas fa-check text-green-600 mt-1"></i>
+                            <span>Aucun tiers non autorisé n’a accès à vos données.</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="p-6 bg-slate-50 rounded-2xl border border-slate-100">
+                    <ul class="space-y-4 text-slate-600">
+                        <li class="flex gap-3">
+                            <i class="fas fa-check text-green-600 mt-1"></i>
+                            <span>Vos transactions sont protégées par des protocoles de sécurité avancés.</span>
+                        </li>
+                        <li class="flex gap-3">
+                            <i class="fas fa-info-circle text-green-600 mt-1"></i>
+                            <span class="text-sm">Conformément à la <strong>Loi n°2009-09</strong>, vous disposez d’un droit d’accès, de rectification et de suppression.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Carte digitale -->
+        <section class="space-y-6">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center text-yellow-700">
+                    <i class="fas fa-id-card text-xl"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-900">Carte digitale sécurisée</h2>
+            </div>
+            <div class="bg-gradient-to-br from-green-50 to-white border border-green-100 p-8 rounded-3xl flex flex-col md:flex-row gap-8 items-center">
+                <div class="flex-1 space-y-4">
+                    <p class="text-slate-600">
+                        Chaque utilisateur dispose d’une <strong>carte digitale personnelle avec code numérique et QR code</strong>, garantissant une traçabilité unique et sécurisée.
+                    </p>
+                    <p class="text-slate-600">
+                        Le QR code et le code numérique permettent un accès direct à vos informations sans risque de falsification.
+                    </p>
+                </div>
+                <div class="w-32 h-32 bg-white p-4 rounded-2xl shadow-inner border border-dashed border-slate-300 flex items-center justify-center">
+                    <i class="fas fa-qrcode text-5xl text-slate-300"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- Accessibilité & Engagement -->
+        <div class="grid md:grid-cols-2 gap-8">
+            <section class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center text-green-700">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">Accès 24/7</h3>
+                </div>
+                <p class="text-slate-600 text-sm leading-relaxed">
+                    Consultez vos tontines et effectuez vos retraits <strong>à tout moment</strong> depuis votre espace protégé par authentification renforcée.
+                </p>
+            </section>
+            <section class="space-y-6">
+                <div class="flex items-center gap-4">
+                    <div class="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center text-orange-700">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-900">Engagement</h3>
+                </div>
+                <ul class="text-sm text-slate-600 space-y-2">
+                    <li>• Transparence totale des transactions</li>
+                    <li>• Fiabilité et protection des fonds</li>
+                    <li>• Cadre légal moderne et professionnel</li>
+                </ul>
+            </section>
+        </div>
+
+        <!-- Cadre Légal -->
+        <section class="pt-8 border-t border-slate-100 space-y-8">
+            <h2 class="text-2xl font-bold text-slate-900 text-center">Cadre légal applicable</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="space-y-4">
+                    <h4 class="font-bold text-green-700 uppercase text-xs tracking-widest">Au Bénin</h4>
+                    <ul class="space-y-3 text-sm text-slate-600">
+                        <li class="flex gap-2"><i class="fas fa-file-contract mt-1 opacity-50"></i><span>Code du numérique (2018)</span></li>
+                        <li class="flex gap-2"><i class="fas fa-file-contract mt-1 opacity-50"></i><span>Protection des données (2009)</span></li>
+                    </ul>
+                </div>
+                <div class="space-y-4">
+                    <h4 class="font-bold text-green-700 uppercase text-xs tracking-widest">À l’international</h4>
+                    <ul class="space-y-3 text-sm text-slate-600">
+                        <li class="flex gap-2"><i class="fas fa-globe mt-1 opacity-50"></i><span>RGPD (Union Européenne)</span></li>
+                        <li class="flex gap-2"><i class="fas fa-users-cog mt-1 opacity-50"></i><span>Normes KYC / AML</span></li>
+                        <li class="flex gap-2"><i class="fas fa-shield-virus mt-1 opacity-50"></i><span>ISO/IEC 27001</span></li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </div>
+</div>
+{% endblock %}

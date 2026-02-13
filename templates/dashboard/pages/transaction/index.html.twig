@@ -1,662 +1,356 @@
 {% extends 'dashboard/base.html.twig' %}
 
-{% block title %}Gestion des Transactions - Administration{% endblock %}
+{% block title %}Mes Transactions - EFA Smart Finance{% endblock %}
 
 {% block contentdashboard %}
-<div class="space-y-6 p-6 ">
-    <!-- Fil d'Ariane 
-    <nav class="mb-6 bg-white rounded-xl border border-gray-200 overflow-hidden" aria-label="Breadcrumb">
-        <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-            <li class="inline-flex items-center">
-                <a href="{{ path('admin_dashboard') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-green-600 transition-colors duration-200">
-                    <svg class="w-3 h-3 me-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                        <path d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L4 10.414V18a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z"/>
-                    </svg>
-                    Tableau de bord
-                </a>
-            </li>
-            <li aria-current="page">
-                <div class="flex items-center">
-                    <svg class="rtl:rotate-180 w-3 h-3 text-gray-400 mx-1" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>
-                    </svg>
-                    <span class="ms-1 text-sm font-medium text-gray-500 md:ms-2">Transactions</span>
-                </div>
-            </li>
-        </ol>
-    </nav>-->
-
-    <!-- En-tête avec titre et actions -->
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-        <div>
-            <h2 class="text-2xl font-bold text-gray-900">Gestion des Transactions</h2>
-            <p class="mt-2 text-sm text-gray-600">Suivez et gérez toutes les transactions financières de la plateforme</p>
-        </div>
-       
-    </div>
-
-    <!-- Cartes de statistiques 
-    <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div class="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-xl shadow-sm p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-lg bg-green-100 border border-green-200">
-                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-green-700">Total des entrées</p>
-                    <p class="text-2xl font-bold text-gray-900 mt-1">{{ totalEntrees|number_format(0, ',', ' ') }} FCFA</p>
-                    <p class="text-xs text-green-600 mt-1">
-                        <span class="inline-flex items-center">
-                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                            </svg>
-                            +12% ce mois
+    <!-- Content Wrapper -->
+    <div class="flex-1 min-w-0 flex flex-col h-full bg-gradient-to-b from-green-50/20 to-white">
+        <!-- Desktop Topbar -->
+        <header class="hidden md:block bg-gradient-to-r from-green-700 via-green-600 to-green-700 text-white sticky top-0 z-30 flex-shrink-0 shadow-lg">
+            <div class="max-w-[1400px] mx-auto px-6 py-3">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <a href="{{ path('app_dashboard') }}" class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 transition-colors backdrop-blur-sm">
+                            <span class="text-sm font-medium">Tableau de bord</span>
+                        </a>
+                        <i class="fa-solid fa-chevron-right text-xs text-white/60"></i>
+                        <span class="px-3 py-1 rounded-lg bg-white/20 backdrop-blur-sm text-sm font-semibold">
+                            Historique des transactions
                         </span>
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-gradient-to-br from-red-50 to-red-100 border border-red-200 rounded-xl shadow-sm p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-lg bg-red-100 border border-red-200">
-                    <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-                    </svg>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-red-700">Total des sorties</p>
-                    <p class="text-2xl font-bold text-gray-900 mt-1">{{ totalSorties|number_format(0, ',', ' ') }} FCFA</p>
-                    <p class="text-xs text-red-600 mt-1">
-                        <span class="inline-flex items-center">
-                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                            </svg>
-                            +8% ce mois
-                        </span>
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-gradient-to-br from-green-50 to-green-100 border border-green-200 rounded-xl shadow-sm p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-lg bg-green-100 border border-green-200">
-                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                    </svg>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-green-700">Solde total</p>
-                    <p class="text-2xl font-bold text-gray-900 mt-1">{{ (totalEntrees - totalSorties)|number_format(0, ',', ' ') }} FCFA</p>
-                    <p class="text-xs {{ (totalEntrees - totalSorties) >= 0 ? 'text-green-600' : 'text-red-600' }} mt-1">
-                        {% set difference = totalEntrees - totalSorties %}
-                        {% set pourcentage = totalEntrees > 0 ? (difference / totalEntrees * 100)|round : 0 %}
-                        {% if difference >= 0 %}
-                            <span class="inline-flex items-center">
-                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                                </svg>
-                                Bénéfice: {{ pourcentage }}%
-                            </span>
-                        {% else %}
-                            <span class="inline-flex items-center">
-                                <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                                </svg>
-                                Déficit: {{ pourcentage|abs }}%
-                            </span>
-                        {% endif %}
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 border border-yellow-200 rounded-xl shadow-sm p-6">
-            <div class="flex items-center">
-                <div class="p-3 rounded-lg bg-yellow-100 border border-yellow-200">
-                    <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-medium text-yellow-600">Transactions ce mois</p>
-                    <p class="text-2xl font-bold text-gray-900 mt-1">{{ transactionsMois|length }}</p>
-                    <div class="flex items-center mt-1">
-                        <div class="w-full bg-yellow-200 rounded-full h-1.5">
-                            <div class="bg-yellow-600 h-1.5 rounded-full" style="width: 75%"></div>
-                        </div>
-                        <span class="text-xs text-yellow-600 ml-2">75% du mois</span>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>-->
+        </header>
 
-    <!-- Filtres avancés -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-100 p-6">
-        <div class="flex items-center justify-between mb-4">
-            <h3 class="text-lg font-bold text-gray-900">Filtres avancés</h3>
-            <button type="button" id="toggle-filters" class="inline-flex items-center text-sm text-green-600 hover:text-green-800">
-                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                </svg>
-                Afficher les filtres
-            </button>
-        </div>
-
-        <div id="filters-container" class="hidden space-y-4">
-            <!-- Barre de recherche -->
-            <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <svg class="h-5 w-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                    </svg>
-                </div>
-                <input type="text" id="search-input" class="block w-full pl-10 pr-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200" placeholder="Rechercher par ID, référence, utilisateur...">
-            </div>
-
-            <!-- Filtres en ligne -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Type -->
-                <div>
-                    <label for="type-filter" class="block text-sm font-medium text-gray-700 mb-1">Type de transaction</label>
-                    <select id="type-filter" class="block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200">
-                        <option value="">Tous les types</option>
-                        <option value="depot">Dépôt</option>
-                        <option value="retrait">Retrait</option>
-                        <option value="transfert">Transfert</option>
-                        <option value="paiement">Paiement</option>
-                        <option value="remboursement">Remboursement</option>
-                        <option value="frais">Frais</option>
-                    </select>
+        <!-- Content Area -->
+        <div class="flex-1 overflow-y-auto h-0 min-h-0">
+            <div class="max-w-[1400px] mx-auto px-4 md:px-6 py-6 space-y-6">
+                <!-- En-tête de la page -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h1 class="text-xl md:text-2xl font-black text-gray-900 tracking-tight">Mes Transactions</h1>
+                        <p class="text-sm text-gray-500 font-medium">Consultez l'historique complet de vos opérations</p>
+                    </div>
+                    <a href="{{ path('app_transaction_export', app.request.query.all) }}" class="flex items-center justify-center gap-2 px-5 py-3 bg-green-600 border border-green-100 rounded-2xl text-xs font-black uppercase tracking-widest text-white shadow-sm hover:bg-green-500 transition-all active:scale-95 group">
+                        <i class="fas fa-file-excel text-white group-hover:scale-110 transition-transform"></i>
+                        Exporter
+                    </a>
                 </div>
 
-                <!-- Statut -->
-                <div>
-                    <label for="status-filter" class="block text-sm font-medium text-gray-700 mb-1">Statut</label>
-                    <select id="status-filter" class="block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200">
-                        <option value="">Tous les statuts</option>
-                        <option value="completed">Complétée</option>
-                        <option value="pending">En attente</option>
-                        <option value="failed">Échouée</option>
-                        <option value="cancelled">Annulée</option>
-                        <option value="refunded">Remboursée</option>
-                    </select>
+                <!-- Barre de Recherche et Filtres -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 space-y-4">
+                    <div class="flex flex-col lg:flex-row items-stretch lg:items-center gap-4">
+                        <div class="relative flex-1">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                            <input type="text" id="search-input" placeholder="Référence, montant, type..." 
+                                   class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border-none rounded-xl text-sm font-bold focus:ring-2 focus:ring-green-500 transition-all">
+                        </div>
+
+                        <div class="flex items-center p-1 bg-green-50 rounded-xl overflow-x-auto whitespace-nowrap scrollbar-hide gap-1">
+                            <button data-type="" class="quick-filter-btn px-4 py-2 rounded-lg text-xs font-bold transition-all bg-green-600 text-white shadow-sm">Tous</button>
+                            <button data-type="completed" class="quick-filter-btn px-4 py-2 rounded-lg text-xs font-bold transition-all text-green-700 hover:bg-green-100">Succès</button>
+                            <button data-type="pending" class="quick-filter-btn px-4 py-2 rounded-lg text-xs font-bold transition-all text-green-700 hover:bg-green-100">En attente</button>
+                            <button data-type="failed" class="quick-filter-btn px-4 py-2 rounded-lg text-xs font-bold transition-all text-green-700 hover:bg-green-100">Échec</button>
+                        </div>
+
+                       
+                    </div>
                 </div>
 
-                <!-- Montant -->
-                <div>
-                    <label for="amount-range" class="block text-sm font-medium text-gray-700 mb-1">Montant</label>
-                    <select id="amount-range" class="block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200">
-                        <option value="">Tous les montants</option>
-                        <option value="0-10000">0 - 10,000 FCFA</option>
-                        <option value="10000-50000">10,000 - 50,000 FCFA</option>
-                        <option value="50000-200000">50,000 - 200,000 FCFA</option>
-                        <option value="200000-500000">200,000 - 500,000 FCFA</option>
-                        <option value="500000+">500,000 FCFA+</option>
-                    </select>
+                <!-- Liste des transactions -->
+                <div class="space-y-4">
+                    <!-- Desktop Table -->
+                    <div class="hidden md:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-100">
+                            <thead class="bg-gray-50/50">
+                                <tr>
+                                    <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                        {{ knp_pagination_sortable(transactions, 'Référence', 't.id') }}
+                                    </th>
+                                    <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                        Méthode
+                                    </th>
+                                    <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                        {{ knp_pagination_sortable(transactions, 'Montant', 't.amount') }}
+                                    </th>
+                                    <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                        {{ knp_pagination_sortable(transactions, 'Date', 't.createdAt') }}
+                                    </th>
+                                    <th class="px-6 py-4 text-center text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                        {{ knp_pagination_sortable(transactions, 'Statut', 't.statut') }}
+                                    </th>
+                                    <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-50">
+                                {% for transaction in transactions %}
+                                <tr class="transaction-item hover:bg-green-50/50 transition-colors"
+                                    data-id="{{ transaction.id }}"
+                                    data-reference="{{ transaction.externalReference ?? transaction.id }}"
+                                    data-type="{{ transaction.type }}"
+                                    data-status="{{ transaction.statut }}"
+                                    data-search="{{ transaction.externalReference }} {{ transaction.amount }} {{ transaction.type }}">
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2">
+                                            <div class="flex flex-col">
+                                                <div class="text-xs font-bold text-gray-900">{{ transaction.externalReference ?? transaction.id }}</div>
+                                                <div class="text-[10px] text-gray-400 font-medium">Réf. transaction</div>
+                                            </div>
+                                            <button type="button" class="copy-btn text-gray-400 hover:text-green-600 transition-colors" data-copy="{{ transaction.externalReference ?? transaction.id }}">
+                                                <i class="fas fa-copy text-xs"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="text-xs font-bold text-gray-900 uppercase">{{ transaction.paymentMethod|replace({'_': ' '}) }}</div>
+                                        <div class="text-[10px] text-gray-400 font-medium">{{ transaction.Tontine ? transaction.Tontine.getName() : 'Global' }}</div>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <div class="text-sm font-black text-gray-900">{{ transaction.amount|format_currency('XOF', locale='fr') }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-xs font-bold text-gray-900">{{ transaction.createdAt|date('d/m/Y') }}</div>
+                                        <div class="text-[10px] text-gray-400 font-medium">{{ transaction.createdAt|date('H:i') }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                         {% set sStyles = {
+                                            'completed': 'bg-green-100 text-green-700',
+                                            'pending': 'bg-amber-100 text-amber-700',
+                                            'failed': 'bg-red-100 text-red-700'
+                                        } %}
+                                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider {{ sStyles[transaction.statut] ?? 'bg-gray-100 text-gray-600' }}">
+                                            {{ transaction.statut|capitalize }}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 text-right">
+                                        <button onclick="showTransactionDetails({{ transaction.id }})" class="p-2 text-gray-400 hover:text-green-600 transition-colors">
+                                            <i class="fas fa-eye text-sm"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Mobile Cards Optimisées avec En-têtes colorées -->
+                    <div id="mobile-cards-container" class="md:hidden space-y-4">
+                        {% for transaction in transactions %}
+                             {% set statusConfig = {
+                                'completed': {
+                                    'header': 'bg-green-600',
+                                    'badge': 'bg-green-500/20 text-white',
+                                    'icon': 'fa-check-circle'
+                                },
+                                'pending': {
+                                    'header': 'bg-amber-500',
+                                    'badge': 'bg-amber-400/20 text-white',
+                                    'icon': 'fa-clock'
+                                },
+                                'failed': {
+                                    'header': 'bg-red-600',
+                                    'badge': 'bg-red-500/20 text-white',
+                                    'icon': 'fa-exclamation-circle'
+                                }
+                            } %}
+                            {% set cfg = statusConfig[transaction.statut] ?? {'header': 'bg-gray-600', 'badge': 'bg-gray-500/20 text-white', 'icon': 'fa-question-circle'} %}
+
+                            <div class="transaction-item bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 flex flex-col"
+                                 data-id="{{ transaction.id }}"
+                                 data-status="{{ transaction.statut }}"
+                                 data-type="{{ transaction.type }}"
+                                 data-search="{{ transaction.externalReference }} {{ transaction.amount }} {{ transaction.type }}">
+                                
+                                <div class="{{ cfg.header }} p-4 relative overflow-hidden">
+                                     <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
+                                     <div class="flex items-center justify-between relative z-10">
+                                        <div class="flex items-center gap-3">
+                                            <div class="h-10 w-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white border border-white/30">
+                                                <i class="fas {{ cfg.icon }}"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-[10px] text-white/70 font-bold uppercase tracking-wider">{{ transaction.createdAt|date('d/m/Y • H:i') }}</div>
+                                                <div class="text-sm font-black text-white">{{ transaction.amount|format_currency('XOF', locale='fr') }}</div>
+                                            </div>
+                                        </div>
+                                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider {{ cfg.badge }} border border-white/20 backdrop-blur-sm">
+                                            {{ transaction.statut|capitalize }}
+                                        </span>
+                                     </div>
+                                </div>
+
+                                <div class="p-4 space-y-4">
+                                     <div class="grid grid-cols-2 gap-3">
+                                        <div class="p-3 bg-gray-50 rounded-2xl border border-gray-100">
+                                            <div class="text-[8px] text-gray-400 uppercase font-black tracking-widest mb-1.5">Type</div>
+                                            <div class="text-xs font-bold text-gray-900 truncate uppercase">{{ transaction.paymentMethod|replace({'_': ' '}) }}</div>
+                                        </div>
+                                        <div class="p-3 bg-gray-50 rounded-2xl border border-gray-100">
+                                            <div class="text-[8px] text-gray-400 uppercase font-black tracking-widest mb-1.5">Tontine</div>
+                                            <div class="text-xs font-bold text-gray-900 truncate">{{ transaction.Tontine ? transaction.Tontine.getName() : 'Global' }}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between px-1">
+                                        <div class="flex flex-col">
+                                            <span class="text-[8px] text-gray-400 uppercase font-black tracking-widest mb-1">Référence</span>
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-[10px] font-mono font-bold text-gray-600">
+                                                    {{ transaction.externalReference ? transaction.externalReference|slice(0, 12) : 'TRANS' ~ transaction.id }}...
+                                                </span>
+                                                <button type="button" class="copy-btn text-gray-400 hover:text-green-600 transition-colors" data-copy="{{ transaction.externalReference ?? transaction.id }}">
+                                                    <i class="fas fa-copy text-[10px]"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <button onclick="showTransactionDetails({{ transaction.id }})" class="h-10 w-10 bg-green-50 text-green-600 rounded-xl flex items-center justify-center hover:bg-green-600 hover:text-white transition-all">
+                                            <i class="fas fa-arrow-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
 
-                <!-- Date -->
-                <div>
-                    <label for="date-filter" class="block text-sm font-medium text-gray-700 mb-1">Période</label>
-                    <select id="date-filter" class="block w-full pl-3 pr-10 py-2.5 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 transition-all duration-200">
-                        <option value="">Toute période</option>
-                        <option value="today">Aujourd'hui</option>
-                        <option value="yesterday">Hier</option>
-                        <option value="week">7 derniers jours</option>
-                        <option value="month">30 derniers jours</option>
-                        <option value="quarter">Ce trimestre</option>
-                        <option value="year">Cette année</option>
-                    </select>
+                <!-- Pagination -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 px-6 py-2">
+                    {{ knp_pagination_render(transactions, 'dashboard/partials/_pagination.html.twig') }}
                 </div>
-            </div>
-
-            <!-- Boutons d'action -->
-            <div class="flex flex-wrap justify-end gap-3 pt-4 border-t border-gray-200">
-                <button type="button" id="clear-filters" class="inline-flex items-center px-4 py-2.5 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                    </svg>
-                    Tout effacer
-                </button>
-                <button type="button" id="apply-filters" class="inline-flex items-center px-5 py-2.5 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 shadow-md">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                    </svg>
-                    Appliquer les filtres
-                </button>
             </div>
         </div>
     </div>
 
-    <!-- Tableau des transactions -->
-    <div class="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
-                            <div class="flex items-center">
-                                Transaction
-                                <button type="button" class="ml-1 text-gray-400 hover:text-gray-600">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16V4m0 0L3 8m4-4l4 4m6 0v12m0 0l4-4m-4 4l-4-4" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Type</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Montant</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Parties</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Date</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">Statut</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-100">
-                    {% for transaction in transactions %}
-                    <tr class="hover:bg-gray-50 transition-colors duration-150"
-                        data-id="{{ transaction.id }}"
-                        data-reference="{{ transaction.externalReference ?? transaction.id }}"
-                        data-type="{{ transaction.paymentMethod }}"
-                        data-amount="{{ transaction.amount }}"
-                        data-status="{{ transaction.statut ?? 'unknown' }}"
-                        data-date="{{ transaction.createdAt ? transaction.createdAt|date('Y-m-d') : '' }}"
-                        data-user="{{ transaction.utilisateur ? transaction.utilisateur.email : '' }}"
-                        data-tontine="{{ transaction.Tontine ? transaction.Tontine.getName() : '' }}">
-                        
-                        <!-- ID / Référence -->
-                        <td class="px-6 py-4">
-                            <div class="flex items-center">
-                                <div class="flex-shrink-0 h-9 w-9 rounded-lg bg-gradient-to-br from-green-100 to-green-50 flex items-center justify-center border border-green-200">
-                                    <svg class="h-5 w-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.801 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.801 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
-                                    </svg>
-                                </div>
-                                <div class="ml-4">
-                                    <div class="text-sm font-semibold text-gray-900">
-                                        #{{ loop.index }}
-                                    </div>
-                                    <div class="text-xs text-gray-500">
-                                        {% if transaction.externalReference %}
-                                            {{ transaction.externalReference|slice(0, 20) }}...
-                                        {% else %}
-                                            TRANS{{ transaction.id }}
-                                        {% endif %}
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                        
-                        <!-- Type -->
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            {% set typeConfig = {
-                                'depot': { class: 'bg-green-100 text-green-800 border-green-200', icon: 'download' },
-                                'retrait': { class: 'bg-yellow-100 text-yellow-800 border-yellow-200', icon: 'upload' },
-                                'transfert': { class: 'bg-green-100 text-green-800 border-green-200', icon: 'switch-horizontal' },
-                                'paiement': { class: 'bg-green-100 text-green-800 border-green-200', icon: 'currency-dollar' },
-                                'remboursement': { class: 'bg-yellow-100 text-yellow-800 border-yellow-200', icon: 'refresh' },
-                                'frais': { class: 'bg-red-100 text-red-800 border-red-200', icon: 'receipt-tax' }
-                            } %}
-                            
-                            {% set config = typeConfig[transaction.paymentMethod] ?? { class: 'bg-gray-100 text-gray-800 border-gray-200', icon: 'question-mark' } %}
-                            
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border {{ config.class }}">
-                                <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    {% if config.icon == 'download' %}
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                                    {% elseif config.icon == 'upload' %}
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
-                                    {% elseif config.icon == 'switch-horizontal' %}
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                                    {% elseif config.icon == 'currency-dollar' %}
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    {% elseif config.icon == 'refresh' %}
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                    {% elseif config.icon == 'receipt-tax' %}
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 14V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14l3.5-2 3.5 2 3.5-2 3.5 2z" />
-                                    {% else %}
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    {% endif %}
-                                </svg>
-                                {{ transaction.paymentMethod|replace({'_': ' '})|title }}
-                            </span>
-                        </td>
-                        
-                        <!-- Montant -->
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm font-bold {{ transaction.amount >= 0 ? 'text-green-700' : 'text-red-700' }}">
-                                {% if transaction.amount >= 0 %}+{% else %}-{% endif %}
-                                {{ transaction.amount|abs|number_format(0, ',', ' ') }} FCFA
-                            </div>
-                               
-                        </td>
-                        
-                        <!-- Parties -->
-                        <td class="px-6 py-4">
-                            <div class="space-y-1">
-                                <div class="flex items-center text-sm text-gray-900">
-                                    <svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                    </svg>
-                                    {{ transaction.utilisateur ? transaction.utilisateur.email : 'Système'|slice(0, 20) }}...
-                                </div>
-                                {% if transaction.Tontine %}
-                                <div class="flex items-center text-sm text-gray-600">
-                                    <svg class="w-4 h-4 mr-1.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                    </svg>
-                                    {{ transaction.Tontine.getName()|slice(0, 20) }}...
-                                </div>
-                                {% endif %}
-                            </div>
-                        </td>
-                        
-                        <!-- Date -->
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            <div class="text-sm text-gray-900 font-medium">
-                                {{ transaction.createdAt ? transaction.createdAt|date('d/m/Y') : 'N/A' }}
-                            </div>
-                            <div class="text-xs text-gray-500">
-                                {{ transaction.createdAt ? transaction.createdAt|date('H:i') : '' }}
-                            </div>
-                        </td>
-                        
-                        <!-- Statut -->
-                        <td class="px-6 py-4 whitespace-nowrap">
-                            {% set statusConfig = {
-                                'completed': { class: 'bg-green-100 text-green-800 border-green-200', icon: 'check-circle' },
-                                'pending': { class: 'bg-yellow-100 text-yellow-800 border-yellow-200', icon: 'clock' },
-                                'failed': { class: 'bg-red-100 text-red-800 border-red-200', icon: 'x-circle' },
-                                'cancelled': { class: 'bg-gray-100 text-gray-800 border-gray-200', icon: 'ban' },
-                                'refunded': { class: 'bg-green-100 text-green-800 border-green-200', icon: 'arrow-left' }
-                            } %}
-                            
-                            {% set config = statusConfig[transaction.statut] ?? { class: 'bg-gray-100 text-gray-800 border-gray-200', icon: 'question-mark' } %}
-                            
-                            <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold border {{ config.class }}">
-                                <svg class="w-3 h-3 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    {% if config.icon == 'check-circle' %}
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    {% elseif config.icon == 'clock' %}
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    {% elseif config.icon == 'x-circle' %}
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    {% elseif config.icon == 'ban' %}
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636" />
-                                    {% elseif config.icon == 'arrow-left' %}
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 15l-3-3m0 0l3-3m-3 3h8M3 12a9 9 0 1118 0 9 9 0 01-18 0z" />
-                                    {% else %}
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    {% endif %}
-                                </svg>
-                                {{ transaction.statut|default('inconnu')|capitalize }}
-                            </span>
-                        </td>
-                        
-                     
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="7" class="px-6 py-12 text-center ">
-                            <div class="flex flex-col items-center justify-center">
-                                <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.801 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.801 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.1251.125H8.25zM6.75 12h.008v.008H6.75V12zm0 3h.008v.008H6.75V15zm0 3h.008v.008H6.75V18z" />
-                                </svg>
-                                <h3 class="text-lg font-medium text-gray-900 mb-2">Aucune transaction trouvée</h3>
-                                <p class="text-gray-500 mb-4">Aucune transaction n'a été enregistrée pour le moment.</p>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+    <!-- Modal pour les détails -->
+    <div id="transactionModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-md z-50 p-4 transition-all flex items-center justify-center">
+        <div class="bg-white rounded-[2.5rem] w-full max-w-md p-6 relative shadow-2xl overflow-hidden scale-90 opacity-0 transition-all duration-300" id="modal-content">
+             <div class="p-2 space-y-6" id="modal-body-content">
+                 <!-- Dynamique -->
+             </div>
+             <button onclick="closeTransactionModal()" class="mt-8 w-full py-4 bg-gray-900 text-white rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-black transition-all">Fermer</button>
         </div>
-        
-        <!-- Pagination -->
-        {% if transactions|length > 10 %}
-        <div class="bg-white px-4 py-4 flex items-center justify-between border-t border-gray-200 sm:px-6">
-            <div class="flex-1 flex justify-between sm:hidden">
-                <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
-                    Précédent
-                </a>
-                <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-200">
-                    Suivant
-                </a>
-            </div>
-            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                <div>
-                    <p class="text-sm text-gray-700">
-                        Affichage de <span class="font-semibold">1</span> à <span class="font-semibold">10</span> sur <span class="font-semibold">{{ transactions|length }}</span> transactions
-                    </p>
-                </div>
-                <div>
-                    <nav class="relative z-0 inline-flex rounded-lg shadow-sm -space-x-px" aria-label="Pagination">
-                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200">
-                            <span class="sr-only">Précédent</span>
-                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                            </svg>
-                        </a>
-                        <a href="#" aria-current="page" class="z-10 bg-green-50 border-green-500 text-green-600 relative inline-flex items-center px-4 py-2 border text-sm font-semibold">
-                            1
-                        </a>
-                        <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">
-                            2
-                        </a>
-                        <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 hidden md:inline-flex relative items-center px-4 py-2 border text-sm font-medium">
-                            3
-                        </a>
-                        <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700">
-                            ...
-                        </span>
-                        <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 hidden md:inline-flex relative items-center px-4 py-2 border text-sm font-medium">
-                            8
-                        </a>
-                        <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-lg border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 transition-colors duration-200">
-                            <span class="sr-only">Suivant</span>
-                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                            </svg>
-                        </a>
-                    </nav>
-                </div>
-            </div>
-        </div>
-        {% endif %}
     </div>
-</div>
 
-<!-- Script pour la recherche et le filtrage -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Variables
-    const searchInput = document.getElementById('search-input');
-    const typeFilter = document.getElementById('type-filter');
-    const statusFilter = document.getElementById('status-filter');
-    const amountFilter = document.getElementById('amount-range');
-    const dateFilter = document.getElementById('date-filter');
-    const clearFiltersBtn = document.getElementById('clear-filters');
-    const applyFiltersBtn = document.getElementById('apply-filters');
-    const toggleFiltersBtn = document.getElementById('toggle-filters');
-    const filtersContainer = document.getElementById('filters-container');
-    const rows = document.querySelectorAll('tbody tr[data-id]');
+{% endblock %}
 
-    // Toggle des filtres
-    toggleFiltersBtn.addEventListener('click', function() {
-        const isVisible = filtersContainer.classList.toggle('hidden');
-        this.innerHTML = isVisible ? 
-            '<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>Afficher les filtres' :
-            '<svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" /></svg>Masquer les filtres';
-    });
-
-    // Fonction de filtrage
-    function filterRows() {
-        const searchTerm = searchInput.value.toLowerCase();
-        const selectedType = typeFilter.value;
-        const selectedStatus = statusFilter.value;
-        const selectedAmount = amountFilter.value;
-        const selectedDate = dateFilter.value;
-
-        // Calculer la date de début selon la période sélectionnée
-        let startDate = null;
-        const today = new Date();
-        
-        if (selectedDate) {
-            switch(selectedDate) {
-                case 'today':
-                    startDate = new Date(today);
-                    break;
-                case 'yesterday':
-                    startDate = new Date(today);
-                    startDate.setDate(today.getDate() - 1);
-                    break;
-                case 'week':
-                    startDate = new Date(today);
-                    startDate.setDate(today.getDate() - 7);
-                    break;
-                case 'month':
-                    startDate = new Date(today);
-                    startDate.setDate(today.getDate() - 30);
-                    break;
-                case 'quarter':
-                    startDate = new Date(today);
-                    startDate.setMonth(today.getMonth() - 3);
-                    break;
-                case 'year':
-                    startDate = new Date(today);
-                    startDate.setFullYear(today.getFullYear() - 1);
-                    break;
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Fonction universelle de copie
+        async function copyToClipboard(text, btnElement = null) {
+            try {
+                if (navigator.clipboard && window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                } else {
+                    const textArea = document.createElement("textarea");
+                    textArea.value = text;
+                    textArea.style.position = "fixed";
+                    textArea.style.left = "-9999px";
+                    document.body.appendChild(textArea);
+                    textArea.focus();
+                    textArea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                }
+                
+                if (btnElement) {
+                    const icon = btnElement.querySelector('i');
+                    const originalClass = icon.className;
+                    icon.className = 'fas fa-check text-green-600';
+                    btnElement.classList.add('scale-110');
+                    setTimeout(() => {
+                        icon.className = originalClass;
+                        btnElement.classList.remove('scale-110');
+                    }, 2000);
+                }
+                return true;
+            } catch (err) {
+                console.error("Copy failed", err);
+                return false;
             }
         }
 
-        let visibleCount = 0;
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.getElementById('search-input');
+            const quickFilterBtns = document.querySelectorAll('.quick-filter-btn');
+            const transactionItems = document.querySelectorAll('.transaction-item');
 
-        rows.forEach(row => {
-            const id = row.getAttribute('data-id').toLowerCase();
-            const reference = row.getAttribute('data-reference').toLowerCase();
-            const type = row.getAttribute('data-type');
-            const status = row.getAttribute('data-status');
-            const amount = parseFloat(row.getAttribute('data-amount'));
-            const dateStr = row.getAttribute('data-date');
-            const user = row.getAttribute('data-user').toLowerCase();
-            const tontine = row.getAttribute('data-tontine').toLowerCase();
-
-            // Vérifier la recherche
-            const matchesSearch = !searchTerm || 
-                id.includes(searchTerm) || 
-                reference.includes(searchTerm) ||
-                user.includes(searchTerm) ||
-                tontine.includes(searchTerm);
-
-            // Vérifier le type
-            const matchesType = !selectedType || type === selectedType;
-
-            // Vérifier le statut
-            const matchesStatus = !selectedStatus || status === selectedStatus;
-
-            // Vérifier le montant
-            let matchesAmount = true;
-            if (selectedAmount) {
-                const [min, max] = selectedAmount.split('-').map(val => {
-                    if (val.endsWith('+')) {
-                        return { min: parseFloat(val), max: Infinity };
-                    }
-                    return parseFloat(val);
-                });
-                
-                if (typeof min === 'object') { // Pour les valeurs avec "+"
-                    matchesAmount = amount >= min.min;
-                } else if (typeof max === 'number') {
-                    matchesAmount = amount >= min && amount <= max;
+            // Délégation pour les boutons de copie
+            document.addEventListener('click', function(e) {
+                const btn = e.target.closest('.copy-btn');
+                if (btn) {
+                    const text = btn.dataset.copy;
+                    if (text) copyToClipboard(text, btn);
                 }
+            });
+
+            function performFilter() {
+                const term = searchInput.value.toLowerCase();
+                // On récupère le statut via le bouton actif (le snippet utilise data-type pour stocker le statut)
+                const activeBtn = Array.from(quickFilterBtns).find(b => b.classList.contains('bg-green-600'));
+                const statusFromBtn = activeBtn ? activeBtn.dataset.type : '';
+
+                transactionItems.forEach(item => {
+                    const itemStatus = item.dataset.status || '';
+                    const itemSearch = (item.dataset.search || '').toLowerCase();
+
+                    const matchesSearch = itemSearch.includes(term);
+                    const matchesStatus = !statusFromBtn || itemStatus === statusFromBtn;
+
+                    item.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
+                });
             }
 
-            // Vérifier la date
-            let matchesDate = true;
-            if (startDate && dateStr) {
-                const rowDate = new Date(dateStr);
-                matchesDate = rowDate >= startDate;
-            }
-
-            // Appliquer tous les filtres
-            if (matchesSearch && matchesType && matchesStatus && matchesAmount && matchesDate) {
-                row.style.display = '';
-                visibleCount++;
-                
-                // Animation d'apparition
-                row.style.opacity = '0';
-                row.style.transform = 'translateY(10px)';
-                setTimeout(() => {
-                    row.style.transition = 'all 0.3s ease';
-                    row.style.opacity = '1';
-                    row.style.transform = 'translateY(0)';
-                }, 50);
-            } else {
-                row.style.display = 'none';
-            }
+            searchInput.addEventListener('input', performFilter);
+            
+            quickFilterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    quickFilterBtns.forEach(b => {
+                        b.classList.remove('bg-green-600', 'text-white', 'shadow-sm');
+                        b.classList.add('text-green-700', 'hover:bg-green-100');
+                    });
+                    this.classList.add('bg-green-600', 'text-white', 'shadow-sm');
+                    this.classList.remove('text-green-700', 'hover:bg-green-100');
+                    performFilter();
+                });
+            });
         });
 
-        // Afficher un message si aucun résultat
-        const noResultsRow = document.querySelector('tbody tr:not([data-id])');
-        if (visibleCount === 0 && !noResultsRow) {
-            const tbody = document.querySelector('tbody');
-            const noResults = `
-                <tr id="no-results">
-                    <td colspan="7" class="px-6 py-12 text-center">
-                        <div class="flex flex-col items-center justify-center">
-                            <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
-                            </svg>
-                            <h3 class="text-lg font-medium text-gray-900 mb-2">Aucun résultat</h3>
-                            <p class="text-gray-500">Aucune transaction ne correspond à vos critères de recherche.</p>
-                            <button type="button" id="clear-filters-no-results" class="mt-4 inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-200">
-                                Réinitialiser les filtres
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            `;
-            tbody.insertAdjacentHTML('beforeend', noResults);
+        function showTransactionDetails(id) {
+            const modal = document.getElementById('transactionModal');
+            const content = document.getElementById('modal-content');
+            const body = document.getElementById('modal-body-content');
             
-            // Ajouter un écouteur d'événement au bouton de réinitialisation
-            document.getElementById('clear-filters-no-results').addEventListener('click', function() {
-                clearFilters();
-                this.closest('tr').remove();
-            });
-        } else if (visibleCount > 0) {
-            const noResultsRow = document.getElementById('no-results');
-            if (noResultsRow) {
-                noResultsRow.remove();
-            }
+            modal.classList.remove('hidden');
+            body.innerHTML = '<div class="flex justify-center py-10"><i class="fas fa-circle-notch fa-spin text-3xl text-green-500"></i></div>';
+            
+            setTimeout(() => {
+                content.classList.remove('scale-90', 'opacity-0');
+            }, 10);
+
+            fetch(`/dashboard/transaction/${id}/details`)
+                .then(r => r.text())
+                .then(html => {
+                    body.innerHTML = html;
+                })
+                .catch(() => {
+                    body.innerHTML = '<p class="text-center text-red-500 font-bold">Erreur de chargement</p>';
+                });
         }
-    }
 
-    // Fonction pour effacer tous les filtres
-    function clearFilters() {
-        searchInput.value = '';
-        typeFilter.value = '';
-        statusFilter.value = '';
-        amountFilter.value = '';
-        dateFilter.value = '';
-        filterRows();
-    }
+        function closeTransactionModal() {
+             const modal = document.getElementById('transactionModal');
+             const content = document.getElementById('modal-content');
+             content.classList.add('scale-90', 'opacity-0');
+             setTimeout(() => {
+                 modal.classList.add('hidden');
+             }, 300);
+        }
+    </script>
 
-    // Écouteurs d'événements
-    searchInput.addEventListener('input', filterRows);
-    typeFilter.addEventListener('change', filterRows);
-    statusFilter.addEventListener('change', filterRows);
-    amountFilter.addEventListener('change', filterRows);
-    dateFilter.addEventListener('change', filterRows);
-    
-    clearFiltersBtn.addEventListener('click', clearFilters);
-    applyFiltersBtn.addEventListener('click', filterRows);
-
-    // Initialiser le filtrage
-    filterRows();
-});
-</script>
+    <style>
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+        .transaction-item { transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1); }
+    </style>
 {% endblock %}

@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}FAQ - Tontine Individuelle - EFA SMART FINANCE{% endblock %}
+{% block title %}FAQ - EFA SMART FINANCE{% endblock %}
 
 {% block body %}
 <!-- Hero Section -->
 <div class="relative bg-green-700 text-white py-16 md:py-24">
     <div class="container mx-auto px-4 text-center">
-        <h1 class="text-4xl md:text-5xl font-bold mb-4">FAQ Tontine Individuelle</h1>
-        <p class="text-xl text-gray-100 max-w-3xl mx-auto">Toutes les réponses à vos questions sur la tontine individuelle</p>
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Foire Aux Questions</h1>
+        <p class="text-xl text-gray-100 max-w-3xl mx-auto">Tout ce qu'il faut savoir sur votre épargne digitale avec EFA Smart Finance.</p>
     </div>
     <div class="absolute bottom-0 left-0 right-0 h-12 bg-white transform translate-y-1/2 rounded-t-3xl"></div>
 </div>
@@ -16,246 +16,171 @@
 <main class="container mx-auto px-4 py-16 md:py-24 -mt-12 relative z-10">
     <!-- Search Bar -->
     <div class="max-w-3xl mx-auto mb-12">
-        <div class="relative">
-            <input type="text" placeholder="Rechercher dans la FAQ..." class="w-full px-6 py-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-green-700 focus:border-transparent shadow-sm">
-            <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-green-700">
+        <div class="relative group">
+            <input type="text" id="faqSearch" placeholder="Rechercher une question..." class="w-full px-6 py-5 rounded-2xl border-none shadow-xl focus:ring-2 focus:ring-green-700 transition-all text-slate-900 placeholder-slate-400">
+            <div class="absolute right-5 top-1/2 transform -translate-y-1/2 text-slate-300 group-focus-within:text-green-700 transition-colors">
                 <i class="fas fa-search text-xl"></i>
-            </button>
+            </div>
         </div>
     </div>
 
-    <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
-        <!-- Category 1: Fonctionnement de la Tontine -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <div class="bg-gray-50 p-6 border-b">
-                <h2 class="text-2xl font-bold text-gray-800 flex items-center">
-                    <i class="fas fa-info-circle text-green-700 mr-3"></i>
-                    Fonctionnement
-                </h2>
-            </div>
-            <div class="divide-y divide-gray-100">
-                <!-- Question 1 -->
-                <div class="p-6">
-                    <button class="faq-toggle flex justify-between items-center w-full text-left group" data-target="faq-1">
-                        <span class="text-lg font-medium text-gray-800 group-hover:text-green-700 transition-colors">Comment créer une tontine ?</span>
-                        <i class="fas fa-chevron-down text-gray-400 group-hover:text-green-700 transition-transform transform"></i>
-                    </button>
-                    <div id="faq-1" class="faq-content mt-3 text-gray-600 hidden">
-                        <p>Pour créer une tontine, suivez ces étapes simples :</p>
-                        <ol class="list-decimal pl-5 mt-2 space-y-2">
-                            <li><strong>Accédez à la section "Tontines"</strong> depuis votre tableau de bord</li>
-                            <li><strong>Cliquez sur "Créer une tontine"</strong> pour commencer</li>
-                            <li><strong>Remplissez les détails</strong> de votre tontine :
-                                <ul class="list-disc pl-5 mt-1 space-y-1">
-                                    <li>Montant de la cotisation</li>
-                                    <li>Fréquence des versements</li>
-                                    <li>Durée de la tontine</li>
-                                </ul>
-                            </li>
-                        </ol>
-                        <p class="mt-3 text-sm text-gray-600">Une fois créée, vous pourrez suivre l'évolution de votre tontine et gérer les paiements directement depuis votre espace personnel.</p>
-                    </div>
-                </div>
-                
-                <!-- Question 2 -->
-                <div class="p-6">
-                    <button class="faq-toggle flex justify-between items-center w-full text-left group" data-target="faq-2">
-                        <span class="text-lg font-medium text-gray-800 group-hover:text-green-700 transition-colors">Quels sont les avantages par rapport à un compte épargne classique ?</span>
-                        <i class="fas fa-chevron-down text-gray-400 group-hover:text-green-700 transition-transform transform"></i>
-                    </button>
-                    <div id="faq-2" class="faq-content mt-3 text-gray-600 hidden">
-                        <p>Notre tontine individuelle offre plusieurs avantages :</p>
-                        <ul class="list-disc pl-5 mt-2 space-y-1">
-                            <li>Une épargne sécurisée et garantie</li>
-                            <li>Une grande flexibilité dans les montants et la fréquence des versements</li>
-                            <li>Un suivi en temps réel de votre épargne</li>
-                            <li>Un accompagnement personnalisé pour atteindre vos objectifs</li>
-                        </ul>
+    <div class="max-w-4xl mx-auto space-y-6">
+        <!-- FAQ Items -->
+        {% set faqs = [
+            {
+                'id': 'q1',
+                'q': '1. Qu’est-ce que EFA Smart Finance ?',
+                'a': 'EFA Smart Finance est une plateforme digitale d’épargne <strong>individuelle</strong>. Chaque utilisateur crée et gère ses propres tontines personnelles, avec une carte digitale dotée d’un QR code et d’un calendrier de tontine pour suivre ses contributions en toute sécurité.'
+            },
+            {
+                'id': 'q2',
+                'q': '2. Combien de tontines puis-je créer ?',
+                'a': 'Chaque utilisateur peut créer <strong>jusqu’à 3 tontines individuelles maximum</strong>. Cela permet de gérer plusieurs projets personnels en parallèle, tout en gardant une organisation claire et sécurisée.'
+            },
+            {
+                'id': 'q3',
+                'q': '3. Comment puis-je contribuer à ma tontine individuelle ?',
+                'a': 'Vous choisissez votre rythme (quotidien, hebdomadaire ou mensuel) et payez via : <br>• Mobile Money <br>• Carte bancaire <br>• Code USSD (sans internet) <br>• Virement bancaire'
+            },
+            {
+                'id': 'q4',
+                'q': '4. Comment suivre mes contributions ?',
+                'a': 'Pour suivre vos contributions : <br>• Rendez-vous sur le site <strong>efasmartfinance.com</strong> et connectez-vous à votre espace personnel. <br>• Consultez votre <strong>calendrier de tontine</strong> pour vérifier vos échéances. <br>• Scannez le <strong>QR code de votre carte digitale</strong> pour accéder instantanément à vos informations. <br>Accessible <strong>24h/24 et 7j/7</strong>, partout et à tout moment.'
+            },
+            {
+                'id': 'q5',
+                'q': '5. Comment effectuer mes retraits ?',
+                'a': '• <strong>À la fin de votre tontine</strong> : vous récupérez l’intégralité de vos fonds. <br>• <strong>À tout moment en cas de besoin</strong> : si vous ne pouvez plus poursuivre votre tontine, vous pouvez effectuer un retrait quand vous le souhaitez. <br>Les retraits sont disponibles <strong>24h/24 et 7j/7</strong>, directement depuis votre espace personnel ou via le QR code de votre carte digitale.'
+            },
+            {
+                'id': 'q6',
+                'q': '6. Est-ce sécurisé ?',
+                'a': 'Oui. Toutes les transactions sont cryptées et vérifiables. Votre carte digitale et votre QR code garantissent une traçabilité totale et une sécurité renforcée.'
+            },
+            {
+                'id': 'q7',
+                'q': '7. Quels types de projets puis-je financer avec EFA Smart Finance ?',
+                'a': '• Achat d’équipements (téléphones, ordinateurs, électroménagers). <br>• Voyages et vacances. <br>• Formations et études. <br>• Fonds d’urgence. <br>• Projets immobiliers ou entrepreneuriaux.'
+            },
+            {
+                'id': 'q8',
+                'q': '8. Qui peut utiliser EFA Smart Finance ?',
+                'a': '• Particuliers et familles. <br>• Jeunes actifs et étudiants. <br>• Diaspora africaine. <br>• Toute personne souhaitant épargner de manière autonome et sécurisée.'
+            }
+        ] %}
+
+        {% for faq in faqs %}
+        <div class="faq-item bg-white border border-slate-100 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden" id="{{ faq.id }}">
+            <button class="faq-toggle w-full px-6 py-6 text-left flex justify-between items-center group focus:outline-none" aria-expanded="false">
+                <span class="text-lg font-bold text-slate-800 group-hover:text-green-700 transition-colors pr-4">{{ faq.q }}</span>
+                <span class="flex-shrink-0 w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-green-100 group-hover:text-green-700 transition-all duration-300">
+                    <i class="fas fa-plus text-xs transition-transform duration-500"></i>
+                </span>
+            </button>
+            <div class="faq-content-wrapper grid grid-rows-[0fr] transition-[grid-template-rows] duration-500 ease-in-out">
+                <div class="overflow-hidden">
+                    <div class="px-6 pb-6 text-slate-600 leading-relaxed pt-2 border-t border-slate-50">
+                        {{ faq.a|raw }}
                     </div>
                 </div>
             </div>
         </div>
-
-        <!-- Category 2: Versements et Retraits -->
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <div class="bg-gray-50 p-6 border-b">
-                <h2 class="text-2xl font-bold text-gray-800 flex items-center">
-                    <i class="fas fa-wallet text-green-700 mr-3"></i>
-                    Versements et Retraits
-                </h2>
-            </div>
-            <div class="divide-y divide-gray-100">
-                <!-- Question 3 
-                <div class="p-6">
-                    <button class="faq-toggle flex justify-between items-center w-full text-left group" data-target="faq-3">
-                        <span class="text-lg font-medium text-gray-800 group-hover:text-green-700 transition-colors">Comment fonctionnent les versements ?</span>
-                        <i class="fas fa-chevron-down text-gray-400 group-hover:text-green-700 transition-transform transform"></i>
-                    </button>
-                    <div id="faq-3" class="faq-content mt-3 text-gray-600 hidden">
-                        <p>Les versements dans votre tontine individuelle sont simples :</p>
-                        <ul class="list-disc pl-5 mt-2 space-y-2">
-                            <li>Allez sur votre tableau de bord , Choisissez la tontine concernée</li>
-                            <li>Sélectionnez la fréquence qui vous convient (quotidien, hebdomadaire, mensuel)</li>
-                            <li>Activez le prélèvement automatique pour ne jamais oublier un versement</li>
-                            <li>Suivez l'évolution de votre épargne en temps réel</li>
-                        </ul>
-                        <p class="mt-3 text-sm text-gray-500">Vous pouvez modifier ou suspendre vos versements à tout moment depuis votre espace client.</p>
-                    </div>
-                </div>-->
-                
-                <!-- Question 4 -->
-                <div class="p-6">
-                    <button class="faq-toggle flex justify-between items-center w-full text-left group" data-target="faq-4">
-                        <span class="text-lg font-medium text-gray-800 group-hover:text-green-700 transition-colors">Comment retirer mon argent ?</span>
-                        <i class="fas fa-chevron-down text-gray-400 group-hover:text-green-700 transition-transform transform"></i>
-                    </button>
-                    <div id="faq-4" class="faq-content mt-3 text-gray-600 hidden">
-                        <p>Pour effectuer un retrait :</p>
-                        <ol class="list-decimal pl-5 mt-2 space-y-2">
-                            <li>Connectez-vous à votre espace client</li>
-                            <li>Allez dans la section "Mes Tontines"</li>
-                            <li>Choisissez la Tontine dans laquelle vous souhaitez faire le retrait</li>
-                            <li>Cliquez sur "Effectuer un retrait"</li>
-                            <li>Entrez le montant à retirer</li>
-                            <li>Choisissez votre méthode de retrait préférée</li>
-                            <li>Confirmez la demande</li>
-                        </ol>
-                        <p class="mt-3 text-sm text-gray-500">votre demande de retrait est traitée dans les plus brefs délais (24h ou 48h)</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-       
-
-        <!-- Category 4: Questions Courantes 
-        <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <div class="bg-gray-50 p-6 border-b">
-                <h2 class="text-2xl font-bold text-gray-800 flex items-center">
-                    <i class="fas fa-question-circle text-green-700 mr-3"></i>
-                    Questions Courantes
-                </h2>
-            </div>
-            <div class="divide-y divide-gray-100">
-                <div class="p-6">
-                    <button class="faq-toggle flex justify-between items-center w-full text-left group" data-target="faq-7">
-                        <span class="text-lg font-medium text-gray-800 group-hover:text-green-700 transition-colors">Puis-je suspendre ou modifier mes versements ?</span>
-                        <i class="fas fa-chevron-down text-gray-400 group-hover:text-green-700 transition-transform transform"></i>
-                    </button>
-                    <div id="faq-7" class="faq-content mt-3 text-gray-600 hidden">
-                        <p>Oui, vous avez une totale flexibilité :</p>
-                        <ul class="list-disc pl-5 mt-2 space-y-2">
-                            <li><strong>Modifier le montant :</strong> Augmentez ou diminuez le montant de vos versements à tout moment</li>
-                            <li><strong>Suspendre temporairement :</strong> Mettez en pause vos versements pour une durée déterminée</li>
-                            <li><strong>Changer de fréquence :</strong> Passez de mensuel à hebdomadaire ou inversement</li>
-                            <li><strong>Arrêter définitivement :</strong> Vous pouvez clôturer votre épargne à tout moment</li>
-                        </ul>
-                        <p class="mt-3 text-sm text-gray-500">Ces modifications s'effectuent depuis votre espace client, rubrique "Mon épargne".</p>
-                    </div>
-                </div>
-                
-                <div class="p-6">
-                    <button class="faq-toggle flex justify-between items-center w-full text-left group" data-target="faq-8">
-                        <span class="text-lg font-medium text-gray-800 group-hover:text-green-700 transition-colors">Quelles sont les garanties sur mon épargne ?</span>
-                        <i class="fas fa-chevron-down text-gray-400 group-hover:text-green-700 transition-transform transform"></i>
-                    </button>
-                    <div id="faq-8" class="faq-content mt-3 text-gray-600 hidden">
-                        <p>Votre épargne est protégée par plusieurs garanties :</p>
-                        <ul class="list-disc pl-5 mt-2 space-y-2">
-                            <li><strong>Sécurité des fonds :</strong> Votre épargne est placée sur des comptes sécurisés et réglementés</li>
-                            <li><strong>Confidentialité :</strong> Vos données sont chiffrées et protégées</li>
-                            <li><strong>Disponibilité :</strong> Vos fonds restent disponibles à tout moment</li>
-                            <li><strong>Transparence :</strong> Relevés détaillés et historiques complets de toutes vos opérations</li>
-                        </ul>
-                        <p class="mt-3">Notre service client est à votre disposition pour toute question supplémentaire sur la sécurité de votre épargne.</p>
-                    </div>
-                </div>
-            </div>
-        </div>-->
+        {% endfor %}
     </div>
 
     <!-- Contact CTA -->
-    <div class="mt-16 bg-gradient-to-r from-green-700 to-green-700/90 text-white rounded-2xl p-8 md:p-12 text-center">
-        <h2 class="text-2xl md:text-3xl font-bold mb-4">Vous ne trouvez pas la réponse à votre question ?</h2>
-        <p class="text-lg mb-6 max-w-2xl mx-auto">Notre équipe de support est disponible pour vous aider 7j/7 de 8h à 22h.</p>
-        <a href="{{ path('app_contact') }}" class="inline-flex items-center justify-center bg-white text-green-700 font-semibold px-8 py-3 rounded-lg hover:bg-gray-100 transition-colors">
-            <i class="fas fa-envelope mr-2"></i>
-            Contactez-nous
-        </a>
+    <div class="mt-20 max-w-4xl mx-auto">
+        <div class="bg-gradient-to-br from-green-600 to-green-800 rounded-[2.5rem] p-10 md:p-16 text-center text-white relative overflow-hidden shadow-2xl">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+            <div class="relative z-10">
+                <h2 class="text-2xl md:text-4xl font-black mb-6">Vous avez encore des questions ?</h2>
+                <p class="text-green-100 mb-10 text-lg opacity-90 max-w-2xl mx-auto">Notre équipe est à votre disposition pour vous accompagner dans vos projets d'épargne.</p>
+                <div class="flex flex-wrap justify-center gap-4">
+                    <a href="{{ path('app_contact') }}" class="px-8 py-4 bg-white text-green-700 font-bold rounded-xl hover:bg-yellow-400 hover:text-green-950 transition-all shadow-xl">
+                        <i class="fas fa-paper-plane mr-2"></i> Posez votre question
+                    </a>
+                    <a href="tel:+2290146101050" class="px-8 py-4 bg-green-500/20 text-white font-bold rounded-xl border border-white/20 hover:bg-green-500/30 transition-all">
+                        <i class="fas fa-phone-alt mr-2"></i> Appelez-nous
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </main>
 
-<!-- JavaScript pour les fonctionnalités de la FAQ -->
+<style>
+    /* Accordion Logic with CSS Grid for smooth height transition */
+    .faq-item.is-active {
+        border-color: #dcfce7; /* bg-green-100 */
+        background-color: #f0f9f1; /* bg-green-50/10 */
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    }
+
+    .faq-item.is-active .faq-content-wrapper {
+        grid-template-rows: 1fr;
+    }
+
+    .faq-item.is-active .fa-plus {
+        transform: rotate(45deg);
+    }
+
+    .faq-item.is-active .faq-toggle span:first-child {
+        color: #15803d; /* text-green-700 */
+    }
+
+    .faq-item.is-active .faq-toggle span:last-child {
+        background-color: #dcfce7;
+        color: #15803d;
+    }
+
+    /* Custom scroll behavior if needed */
+    html {
+        scroll-behavior: smooth;
+    }
+</style>
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Gestion des toggles de la FAQ
-    const toggles = document.querySelectorAll('.faq-toggle');
+    const faqItems = document.querySelectorAll('.faq-item');
     
-    toggles.forEach(toggle => {
-        toggle.addEventListener('click', function() {
-            const targetId = this.getAttribute('data-target');
-            const target = document.getElementById(targetId);
-            const icon = this.querySelector('i');
+    faqItems.forEach(item => {
+        const toggle = item.querySelector('.faq-toggle');
+        
+        toggle.addEventListener('click', () => {
+            const isActive = item.classList.contains('is-active');
             
-            // Fermer tous les autres éléments ouverts
-            document.querySelectorAll('.faq-content').forEach(content => {
-                if (content.id !== targetId && !content.classList.contains('hidden')) {
-                    content.classList.add('hidden');
-                    const toggleBtn = document.querySelector(`[data-target="${content.id}"]`);
-                    if (toggleBtn) {
-                        toggleBtn.querySelector('i').classList.remove('rotate-180');
-                    }
-                }
+            // Close all items
+            faqItems.forEach(otherItem => {
+                otherItem.classList.remove('is-active');
+                otherItem.querySelector('.faq-toggle').setAttribute('aria-expanded', 'false');
             });
             
-            // Basculer l'élément actuel
-            target.classList.toggle('hidden');
-            icon.classList.toggle('rotate-180');
+            // Open current if it wasn't active
+            if (!isActive) {
+                item.classList.add('is-active');
+                toggle.setAttribute('aria-expanded', 'true');
+            }
         });
     });
-    
-    // Fonction de recherche
-    const searchInput = document.querySelector('input[type="text"]');
+
+    // Search Logic
+    const searchInput = document.getElementById('faqSearch');
     if (searchInput) {
-        searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase().trim();
             
-            if (searchTerm.length > 2) {
-                document.querySelectorAll('.faq-content').forEach(content => {
-                    const question = content.previousElementSibling.querySelector('span').textContent.toLowerCase();
-                    const answer = content.textContent.toLowerCase();
-                    
-                    if (question.includes(searchTerm) || answer.includes(searchTerm)) {
-                        content.closest('.p-6').style.display = 'block';
-                    } else {
-                        content.closest('.p-6').style.display = 'none';
-                    }
-                });
-            } else {
-                document.querySelectorAll('.p-6').forEach(item => {
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-toggle span').textContent.toLowerCase();
+                const answer = item.querySelector('.px-6.pb-6').textContent.toLowerCase();
+                
+                if (term === '' || question.includes(term) || answer.includes(term)) {
                     item.style.display = 'block';
-                });
-            }
+                } else {
+                    item.style.display = 'none';
+                }
+            });
         });
     }
 });
 </script>
-
-<style>
-/* Animation pour les transitions */
-.faq-content {
-    transition: all 0.3s ease-in-out;
-}
-
-/* Style pour les boutons actifs */
-.faq-toggle[aria-expanded="true"] i {
-    transform: rotate(180deg);
-}
-
-/* Amélioration de l'accessibilité */
-.faq-toggle:focus {
-    outline: 2px solid #1a4d2e;
-    outline-offset: 2px;
-}
-</style>
 {% endblock %}

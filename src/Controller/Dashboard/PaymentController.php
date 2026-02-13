@@ -62,6 +62,10 @@ final class PaymentController extends AbstractController
             return $this->json(['success' => false, 'message' => 'Données invalides ou méthode non supportée'], 400);
         }
 
+        if ($tontine->getStatut() !== 'active') {
+            return $this->json(['success' => false, 'message' => 'Cette tontine n\'est plus active. les paiements sont bloqués.'], 403);
+        }
+
         // Vérifier si l'utilisateur est le créateur de la tontine
         $tontineOwner = $tontine->getUtilisateur();
         $currentUserId = $user->getUserIdentifier();
@@ -108,142 +112,6 @@ final class PaymentController extends AbstractController
             return $this->json([
                 'success' => false,
                 'message' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-
-    /**
-     * Vérifie le paiement des frais de service via KkiaPay
-     * Gère à la fois les requêtes POST (appel initial) et GET (callback de KkiaPay)
-     */
-    #[Route('/verify-fees', name: 'app_tontine_payment_verify_fees', methods: ['POST'])]
-    public function verifyFeesPayment(
-        Request $request,
-        EntityManagerInterface $em
-    ): JsonResponse {
-        // 1️⃣ Lire les données envoyées
-        $data = json_decode($request->getContent(), true);
-
-        if (
-            !$data ||
-            empty($data['transaction_id']) ||
-            empty($data['tontine_id']) ||
-            empty($data['user_id'])
-        ) {
-            return $this->json([
-                'success' => false,
-                'message' => 'Données invalides'
-            ], 400);
-        }
-
-        $transactionId = $data['transaction_id'];
-        $tontineId     = $data['tontine_id'];
-        $userId        = $data['user_id'];
-
-        // 2️⃣ Récupérer les entités
-        $tontine = $em->getRepository(Tontine::class)->find($tontineId);
-        $user    = $em->getRepository(User::class)->find($userId);
-
-        if (!$tontine || !$user) {
-            return $this->json([
-                'success' => false,
-                'message' => 'Tontine ou utilisateur non trouvé'
-            ], 404);
-        }
-
-        // 3️⃣ Vérifier si déjà payé
-        if ($tontine->isFraisPreleves()) {
-            return $this->json([
-                'success' => true,
-                'message' => 'Les frais ont déjà été payés',
-                'already_paid' => true
-            ]);
-        }
-
-        try {
-            // 4️⃣ Vérification Kkiapay
-            $verification = $this->kkiaPayService->verifyTransaction($transactionId);
-
-            if (
-                !$verification ||
-                ($verification['status'] ?? null) !== 'SUCCESS'
-            ) {
-                return $this->json([
-                    'success' => false,
-                    'message' => 'Paiement non validé par Kkiapay'
-                ], 400);
-            }
-
-            // 5️⃣ Récupération SÉCURISÉE du montant payé
-            $amountPaid = 0;
-
-            if (isset($verification['data']['amount'])) {
-                $amountPaid = (float) $verification['data']['amount'];
-            } elseif (isset($verification['amount'])) {
-                $amountPaid = (float) $verification['amount'];
-            }
-
-            if ($amountPaid <= 0) {
-                throw new \Exception('Montant payé invalide ou introuvable');
-            }
-
-            // 6️⃣ Créer la transaction
-            $transaction = new Transaction();
-            $transaction->setTontine($tontine);
-            $transaction->setUtilisateur($user);
-            $transaction->setAmount($amountPaid);
-            $transaction->setType('frais_service');
-            $transaction->setPaymentMethod('online');
-            $transaction->setProvider('kkiapay');
-            $transaction->setStatut('completed');
-            $transaction->setExternalReference($transactionId);
-            $transaction->setCreatedAt(new \DateTimeImmutable());
-
-            $em->persist($transaction);
-
-            // 7️⃣ Enregistrer dans PlatformFee
-            $platformFee = new PlatformFee();
-            $platformFee->setTontine($tontine);
-            $platformFee->setUser($user);
-            $platformFee->setAmount($amountPaid);
-            $platformFee->setStatus('completed');
-            $platformFee->setTransactionId($transactionId);
-            $platformFee->setType('frais_service');
-            $platformFee->setCreatedAt(new \DateTimeImmutable());
-
-            $em->persist($platformFee);
-
-            // 8️⃣ Mettre à jour la tontine
-            $tontine->setFraisPreleves(true);
-            $em->persist($tontine);
-
-            $em->flush();
-
-            // 9️⃣ Journalisation
-            $this->activityLogger->log(
-                $user,
-                'FEES_PAID',
-                'Tontine',
-                $tontine->getId(),
-                'Paiement des frais de service de ' . $amountPaid . ' FCFA'
-            );
-
-            return $this->json([
-                'success' => true,
-                'message' => 'Paiement des frais enregistré avec succès',
-                'amount'  => $amountPaid
-            ]);
-        } catch (\Throwable $e) {
-
-            $this->logger->error('Erreur paiement frais Kkiapay', [
-                'transaction_id' => $transactionId,
-                'exception' => $e->getMessage(),
-            ]);
-
-            return $this->json([
-                'success' => false,
-                'message' => 'Erreur lors du traitement du paiement'
             ], 500);
         }
     }

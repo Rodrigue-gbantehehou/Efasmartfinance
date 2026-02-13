@@ -10,7 +10,7 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 class="text-2xl font-bold font-poppins text-gray-900 tracking-tight">Tableau de Bord</h1>
-                    <p class="text-sm font-medium text-gray-500 mt-0.5">Vue d'ensemble et pilotage de la plateforme</p>
+                    <p class="text-sm font-medium text-gray-600 mt-0.5">Vue d'ensemble et pilotage de la plateforme</p>
                 </div>
                 <div class="flex items-center gap-3">
                     <div class="hidden sm:flex items-center space-x-2 bg-gray-50 p-1 rounded-lg border border-gray-100">
@@ -107,22 +107,18 @@
             <div class="group bg-white rounded-[2rem] border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/5 hover:-translate-y-1">
                 <div class="flex items-center justify-between mb-5">
                     <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center transition-colors group-hover:bg-emerald-600 group-hover:text-white">
-                        <i class="fas fa-users text-lg"></i>
-                    </div>
-                    <div class="text-right">
-                        <span class="block text-[10px] font-black uppercase text-gray-400 tracking-widest">En Ligne</span>
-                        <span class="text-xs font-bold text-emerald-600">{{ online_users }}</span>
+                        <i class="fas fa-hand-holding-dollar text-lg"></i>
                     </div>
                 </div>
                 <div class="space-y-1">
-                    <h3 class="text-3xl font-bold font-poppins text-gray-900">{{ stats.total_users|default(0)|number_format(0, ',', ' ') }}</h3>
-                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Communauté</p>
+                    <h3 class="text-3xl font-bold font-poppins text-gray-900">{{ stats.total_withdrawals_amount|default(0)|number_format(0, ',', ' ') }} <span class="text-sm font-semibold">FCFA</span></h3>
+                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">Total des retraits</p>
                 </div>
                 <div class="mt-6 pt-5 border-t border-gray-50 flex items-center justify-between">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase">
+                    <span class="text-[10px] font-bold text-gray-600 uppercase">
                         +{{ stats.new_users_today|default(0) }} <span class="text-emerald-500">Aujourd'hui</span>
                     </span>
-                    <a href="{{ path('admin_users') }}" class="text-gray-300 hover:text-emerald-600 transition-colors">
+                    <a href="{{ path('admin_withdrawals') }}" class="text-gray-300 hover:text-emerald-600 transition-colors">
                         <i class="fas fa-arrow-right-long"></i>
                     </a>
                 </div>
@@ -137,10 +133,10 @@
                 </div>
                 <div class="space-y-1">
                     <h3 class="text-3xl font-bold font-poppins text-gray-900">{{ stats.active_tontines|default(0) }}</h3>
-                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Tontines Actives</p>
+                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">Tontines Actives</p>
                 </div>
                 <div class="mt-6 pt-5 border-t border-gray-50 flex items-center justify-between">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase italic">
+                    <span class="text-[10px] font-bold text-gray-600 uppercase italic">
                         {{ stats.tontines_today|default(0) }} nouvelles
                     </span>
                     <a href="{{ path('admin_tontines') }}" class="text-gray-300 hover:text-green-600 transition-colors">
@@ -163,10 +159,10 @@
                 </div>
                 <div class="space-y-1">
                     <h3 class="text-3xl font-bold font-poppins text-gray-900">{{ stats.today_transactions|default(0) }}</h3>
-                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">flux aujourd'hui</p>
+                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">flux aujourd'hui</p>
                 </div>
                 <div class="mt-6 pt-5 border-t border-gray-50 flex items-center justify-between">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase">
+                    <span class="text-[10px] font-bold text-gray-600 uppercase">
                         Total: {{ stats.total_transactions|default(0)|number_format(0, ',', ' ') }}
                     </span>
                     <a href="{{ path('admin_transactions') }}" class="text-gray-300 hover:text-violet-600 transition-colors">
@@ -190,10 +186,10 @@
                 </div>
                 <div class="space-y-1">
                     <h3 class="text-3xl font-bold font-poppins text-gray-900">{{ stats.total_revenue|default(0)|number_format(0, ',', ' ') }} <span class="text-sm font-semibold">FCFA</span></h3>
-                    <p class="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Profit plateforme</p>
+                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">Total des Entrées</p>
                 </div>
                 <div class="mt-6 pt-5 border-t border-gray-50 flex items-center justify-between">
-                    <span class="text-[10px] font-bold text-gray-400 uppercase">
+                    <span class="text-[10px] font-bold text-gray-600 uppercase">
                         Moy: {{ stats.avg_transaction|default(0)|number_format(0, ',', ' ') }} / t
                     </span>
                     <a href="{{ path('admin_reports') }}" class="text-gray-300 hover:text-amber-600 transition-colors">
@@ -212,11 +208,11 @@
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10">
                         <div>
                             <h3 class="text-xl font-bold font-poppins text-gray-900">Flux Commissionnel</h3>
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Séquençage hebdomadaire</p>
+                            <p class="text-xs font-bold text-gray-600 uppercase tracking-widest mt-1">Séquençage hebdomadaire</p>
                         </div>
                         <div class="flex items-center bg-gray-50 p-1 rounded-xl border border-gray-100">
                             <button class="px-5 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all bg-white shadow-sm text-emerald-600">7 Jours</button>
-                            <button class="px-5 py-2 text-[10px] font-black uppercase tracking-widest text-gray-400 rounded-lg hover:text-gray-700">30 Jours</button>
+                            <button class="px-5 py-2 text-[10px] font-black uppercase tracking-widest text-gray-600 rounded-lg hover:text-gray-700">30 Jours</button>
                         </div>
                     </div>
                     <div class="h-[350px]">
@@ -229,7 +225,7 @@
                 <div class="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm">
                     <div class="px-8 py-6 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
                         <div class="flex items-center gap-3">
-                            <i class="fas fa-stream text-gray-400 text-xs"></i>
+                            <i class="fas fa-stream text-gray-600 text-xs"></i>
                             <h3 class="text-sm font-bold font-poppins text-gray-900 uppercase tracking-widest">Journal d'Événements</h3>
                         </div>
                         <a href="{{ path('admin_audit_logs') }}" class="text-[10px] font-black text-emerald-600 hover:text-emerald-700 uppercase tracking-widest flex items-center gap-2">
@@ -245,7 +241,7 @@
                             <div class="flex-1 min-w-0">
                                 <p class="text-xs font-bold text-gray-900 truncate">{{ activity.description }}</p>
                                 <div class="flex items-center gap-2 mt-1">
-                                    <span class="text-[10px] font-bold text-gray-400 uppercase">{{ activity.createdAt|date('H:i') }}</span>
+                                    <span class="text-[10px] font-bold text-gray-600 uppercase">{{ activity.createdAt|date('H:i') }}</span>
                                     <span class="w-1 h-1 rounded-full bg-gray-200"></span>
                                     <span class="text-[10px] font-bold text-emerald-600 uppercase">{{ activity.utilisateur ? activity.utilisateur.fullName : 'System' }}</span>
                                 </div>
@@ -256,7 +252,7 @@
                         </div>
                         {% else %}
                         <div class="text-center py-16">
-                            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">Aucune activité récente</p>
+                            <p class="text-xs font-bold text-gray-600 uppercase tracking-widest">Aucune activité récente</p>
                         </div>
                         {% endfor %}
                     </div>
@@ -280,14 +276,14 @@
                         
                         <div class="space-y-6">
                             {% set resources = [
-                                { label: 'CPU Load', value: system_status.server.load|split(' ')[0]|default('2%'), icon: 'fa-microchip', color: 'blue' },
+                                { label: 'CPU Load', value: system_status.server.load|split(' ')[0]|default('2%'), icon: 'fa-microchip', color: 'green' },
                                 { label: 'Memory', value: system_status.memory.percent|default(45) ~ '%', icon: 'fa-memory', color: 'emerald' },
                                 { label: 'Storage', value: system_status.disk.percent|default(12) ~ '%', icon: 'fa-hard-drive', color: 'amber' }
                             ] %}
 
                             {% for res in resources %}
                             <div class="space-y-2">
-                                <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gray-400">
+                                <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gray-600">
                                     <div class="flex items-center gap-2">
                                         <i class="fas {{ res.icon }} text-[9px]"></i>
                                         <span>{{ res.label }}</span>
@@ -303,11 +299,11 @@
 
                         <div class="mt-8 pt-6 border-t border-white/5 grid grid-cols-2 gap-4">
                             <div>
-                                <p class="text-[9px] font-black text-gray-500 uppercase italic">Database</p>
+                                <p class="text-[9px] font-black text-gray-600 uppercase italic">Database</p>
                                 <p class="text-[10px] font-bold text-emerald-400">Stable</p>
                             </div>
                             <div>
-                                <p class="text-[9px] font-black text-gray-500 uppercase italic">PHP Version</p>
+                                <p class="text-[9px] font-black text-gray-600 uppercase italic">PHP Version</p>
                                 <p class="text-[10px] font-bold text-white">{{ system_status.php.version|default('8.1') }}</p>
                             </div>
                         </div>
@@ -322,7 +318,7 @@
                 <div class="bg-white rounded-[2.5rem] border border-gray-100 p-8 shadow-sm">
                     <div class="flex items-center justify-between mb-6">
                         <h3 class="text-sm font-bold font-poppins text-gray-900 uppercase tracking-widest">Annonces</h3>
-                        <a href="{{ path('admin_broadcast') }}" class="w-8 h-8 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all">
+                        <a href="{{ path('admin_broadcast') }}" class="w-8 h-8 rounded-xl bg-gray-50 text-gray-600 flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all">
                             <i class="fas fa-bullhorn text-xs"></i>
                         </a>
                     </div>
@@ -334,7 +330,7 @@
                                 <span class="text-[9px] font-black uppercase text-emerald-600 px-2 py-0.5 bg-emerald-50 rounded-md">
                                     {{ broadcast.type|default('Info') }}
                                 </span>
-                                <span class="text-[9px] font-bold text-gray-400">{{ broadcast.createdAt|date('d M') }}</span>
+                                <span class="text-[9px] font-bold text-gray-600">{{ broadcast.createdAt|date('d M') }}</span>
                             </div>
                             <p class="text-xs font-bold text-gray-900 line-clamp-2 leading-relaxed">
                                 {{ broadcast.title }}

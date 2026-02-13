@@ -3,150 +3,141 @@
 {% block title %}Paramètres - EFA SMART FINANCE{% endblock %}
 
 {% block contentdashboard %}
-<div class="min-h-screen bg-green-50-gray-50">
-    <!-- Mobile Header -->
-    <div class="md:hidden sticky top-0 z-10 bg-white border-b border-gray-100 px-4 py-3">
-        <div class="flex items-center justify-between">
+<div class="min-h-screen bg-green-50/20">
+    <!-- Header Mobile Premium -->
+    <header class="md:hidden bg-gradient-to-r from-green-700 via-green-600 to-green-700 text-white sticky top-0 z-30 flex-shrink-0 shadow-lg">
+        <div class="px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <a href="{{ path('app_dashboard') }}" class="text-gray-500">
-                    <i class="fa-solid fa-arrow-left"></i>
+                <a href="{{ path('app_dashboard') }}" class="h-9 w-9 flex items-center justify-center rounded-xl bg-white/20 backdrop-blur-md border border-white/30">
+                    <i class="fa-solid fa-chevron-left text-sm"></i>
                 </a>
                 <div>
-                    <h1 class="font-semibold text-gray-900">Paramètres</h1>
+                    <h1 class="text-sm font-black uppercase tracking-wider">Paramètres</h1>
+                    <p class="text-[10px] text-white/70 font-medium">Gérez votre compte</p>
                 </div>
             </div>
+            <div class="h-10 w-10 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-xs font-bold">
+                {{ app.user.firstname|first|upper }}{{ app.user.lastname|first|upper }}
+            </div>
         </div>
-    </div>
+    </header>
 
     <!-- Desktop Header -->
-    <div class="hidden md:block bg-white border-b border-gray-100">
-        <div class="max-w-7xl mx-auto px-6 py-4">
-            <div>
-                <h1 class="text-2xl font-bold text-gray-900">Paramètres</h1>
-                <p class="text-gray-600 mt-1">Gérez vos préférences et vos informations</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto px-4 py-4 md:py-6">
-        <!-- Navigation mobile -->
-        <div class="md:hidden mb-6">
-            <div class="flex space-x-2 overflow-x-auto pb-2">
-                <button onclick="showSection('profil')" 
-                        class="px-4 py-2 whitespace-nowrap rounded-full bg-green-700 text-white text-sm font-medium">
-                    Profil
-                </button>
-                <button onclick="showSection('securite')" 
-                        class="px-4 py-2 whitespace-nowrap rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 text-sm font-medium">
-                    Sécurité
-                </button>
-                <button onclick="showSection('notifications')" 
-                        class="px-4 py-2 whitespace-nowrap rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 text-sm font-medium">
-                    Notifications
-                </button>
-              <!--    <button onclick="showSection('compte')" 
-                        class="px-4 py-2 whitespace-nowrap rounded-full bg-gray-200 text-gray-700 hover:bg-gray-300 text-sm font-medium">
-                    Compte
-                </button>-->
-            </div>
-        </div>
-
-        <div class="md:flex md:space-x-6">
-            <!-- Navigation latérale (Desktop) -->
-            <div class="hidden md:block md:w-64 flex-shrink-0">
-                <div class="bg-white rounded-xl border border-gray-100 p-4 sticky top-24">
-                    <nav class="space-y-1">
-                        <button onclick="showSection('profil')" 
-                                class="w-full flex items-center px-4 py-3 text-sm font-medium text-gray-900 bg-green-700/5 rounded-lg">
-                            <i class="fa-solid fa-user-circle mr-3 text-green-700"></i>
-                            Profil
-                        </button>
-                        <button onclick="showSection('securite')" 
-                                class="w-full flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg">
-                            <i class="fa-solid fa-shield-alt mr-3 text-gray-500"></i>
-                            Sécurité
-                        </button>
-                        <button onclick="showSection('notifications')" 
-                                class="w-full flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg">
-                            <i class="fa-solid fa-bell mr-3 text-gray-500"></i>
-                            Notifications
-                        </button>
-                      <!--  <button onclick="showSection('compte')" 
-                                class="w-full flex items-center px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg">
-                            <i class="fa-solid fa-cog mr-3 text-gray-500"></i>
-                            Compte
-                        </button>-->
-                    </nav>
+    <header class="hidden md:block bg-gradient-to-r from-green-700 via-green-600 to-green-700 text-white sticky top-0 z-30 flex-shrink-0 shadow-lg">
+        <div class="max-w-[1400px] mx-auto px-6 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <a href="{{ path('app_dashboard') }}" class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 transition-colors backdrop-blur-sm">
+                        <span class="text-sm font-medium">Tableau de bord</span>
+                    </a>
+                    <i class="fa-solid fa-chevron-right text-xs text-white/60"></i>
+                    <span class="px-3 py-1 rounded-lg bg-white/20 backdrop-blur-sm text-sm font-semibold">
+                        Paramètres
+                    </span>
                 </div>
             </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="max-w-[1400px] mx-auto px-4 md:px-6 py-6 transition-all duration-300">
+        <!-- Navigation mobile optimisée -->
+        <div class="md:hidden mb-6 sticky top-[68px] z-20 bg-green-50/20 py-2 -mx-4 px-4 backdrop-blur-md">
+            <div class="flex items-center p-1 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-x-auto whitespace-nowrap scrollbar-hide gap-1">
+                <button onclick="showSection('profil')" data-section-btn="profil"
+                        class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all bg-green-600 text-white shadow-sm shadow-green-200">
+                    <i class="fa-solid fa-user-circle mr-2"></i>Profil
+                </button>
+                <button onclick="showSection('securite')" data-section-btn="securite"
+                        class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all text-green-700 hover:bg-green-50">
+                    <i class="fa-solid fa-shield-alt mr-2"></i>Sécurité
+                </button>
+                <button onclick="showSection('notifications')" data-section-btn="notifications"
+                        class="px-5 py-2.5 rounded-xl text-xs font-bold transition-all text-green-700 hover:bg-green-50">
+                    <i class="fa-solid fa-bell mr-2"></i>Notifications
+                </button>
+            </div>
+        </div>
+
+        <div class="md:flex md:space-x-8">
+            <!-- Navigation latérale (Desktop) -->
+            <aside class="hidden md:block md:w-72 flex-shrink-0">
+                <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 sticky top-24">
+                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 px-4">Menu Paramètres</h3>
+                    <nav class="space-y-2">
+                        <button onclick="showSection('profil')" data-section-btn="profil"
+                                class="w-full flex items-center px-4 py-3.5 text-sm font-bold text-white bg-green-600 rounded-2xl shadow-lg shadow-green-100 transition-all">
+                            <i class="fa-solid fa-user-circle mr-3 text-lg"></i>
+                            Profil
+                        </button>
+                        <button onclick="showSection('securite')" data-section-btn="securite"
+                                class="w-full flex items-center px-4 py-3.5 text-sm font-bold text-gray-500 hover:bg-green-50 hover:text-green-700 rounded-2xl transition-all">
+                            <i class="fa-solid fa-shield-alt mr-3 text-lg opacity-60"></i>
+                            Sécurité
+                        </button>
+                        <button onclick="showSection('notifications')" data-section-btn="notifications"
+                                class="w-full flex items-center px-4 py-3.5 text-sm font-bold text-gray-500 hover:bg-green-50 hover:text-green-700 rounded-2xl transition-all">
+                            <i class="fa-solid fa-bell mr-3 text-lg opacity-60"></i>
+                            Notifications
+                        </button>
+                    </nav>
+                </div>
+            </aside>
 
             <!-- Sections de contenu -->
-            <div class="flex-1">
+            <div class="flex-1 space-y-6">
                 <!-- Section Profil -->
                 <section id="profil-section" class="section-content active">
-                    <div class="bg-white rounded-xl border border-gray-100 p-5 md:p-6">
-                        <!-- En-tête -->
-                        <div class="flex items-center justify-between mb-6">
-                            <div>
-                                <h2 class="text-xl font-bold text-gray-900">Profil</h2>
-                                <p class="text-gray-600 text-sm mt-1">Gérez vos informations personnelles</p>
+                    <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 p-6 md:p-10">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10">
+                            <div class="flex items-center gap-6">
+                                <div class="relative group">
+                                    <div class="w-24 h-24 md:w-32 md:h-32 rounded-3xl bg-gradient-to-br from-green-600 to-green-400 flex items-center justify-center text-white text-3xl md:text-5xl font-black shadow-2xl shadow-green-200">
+                                        {{ app.user.firstname|first|upper }}{{ app.user.lastname|first|upper }}
+                                    </div>
+                                     <!-- Section Profil 
+                                    <button class="absolute -bottom-2 -right-2 h-10 w-10 bg-white shadow-xl rounded-xl flex items-center justify-center text-green-600 border border-gray-50 hover:scale-110 transition-transform">
+                                        <i class="fas fa-camera"></i>
+                                    </button>-->
+                                </div>
+                                <div>
+                                    <h2 class="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">{{ app.user.firstname }} {{ app.user.lastname }}</h2>
+                                    <p class="text-sm font-bold text-green-600/70 uppercase tracking-widest mt-1">Utilisateur Particulier</p>
+                                    <div class="flex items-center gap-2 mt-4 text-xs font-bold text-gray-400">
+                                        <i class="far fa-calendar-alt"></i>
+                                        Membre depuis {{ app.user.createdAt|date('F Y') }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
-                        <!-- Photo de profil et informations -->
-                        <div class="flex flex-col md:flex-row md:items-start gap-6 mb-8">
-                            <div class="flex-shrink-0">
-                                <div class="w-20 h-20 rounded-full bg-gradient-to-br from-green-700 to-green-400 flex items-center justify-center text-white text-2xl font-bold" id="profile-initials">
-                                    {{ app.user.firstname|first|upper }}{{ app.user.lastname|first|upper }}
+                        <form id="profile-form" class="space-y-8">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Prénom</label>
+                                    <input type="text" value="{{ app.user.firstname }}"
+                                           class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-green-500 transition-all placeholder:text-gray-300">
                                 </div>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold text-gray-900" id="profile-fullname">{{ app.user.firstname }} {{ app.user.lastname }}</h3>
-                                <p class="text-gray-500 text-sm" id="profile-email">{{ app.user.email }}</p>
-                                <p class="text-gray-500 text-sm mt-1">Membre depuis {{ app.user.createdAt|date('F Y') }}</p>
-                            </div>
-                        </div>
-
-                        <!-- Formulaire de profil -->
-                        <form id="profile-form" class="space-y-5">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                <div>
-                                    <label for="firstname" class="block text-sm font-medium text-gray-700 mb-2">Prénom</label>
-                                    <input type="text" id="firstname" name="firstname" value="{{ app.user.firstname }}" 
-                                           class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-green-700 outline-none"
-                                           required>
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nom</label>
+                                    <input type="text" value="{{ app.user.lastname }}"
+                                           class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-green-500 transition-all placeholder:text-gray-300">
                                 </div>
-                                <div>
-                                    <label for="lastname" class="block text-sm font-medium text-gray-700 mb-2">Nom</label>
-                                    <input type="text" id="lastname" name="lastname" value="{{ app.user.lastname }}" 
-                                           class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-green-700 outline-none"
-                                           required>
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Email</label>
+                                    <input type="email" value="{{ app.user.email }}"
+                                           class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-green-500 transition-all placeholder:text-gray-300">
+                                </div>
+                                <div class="space-y-2">
+                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Téléphone</label>
+                                    <input type="tel" value="{{ app.user.phoneNumber ?? '' }}" placeholder="+225 XX XX XX XX"
+                                           class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-green-500 transition-all placeholder:text-gray-300">
                                 </div>
                             </div>
 
-                            <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Adresse email</label>
-                                <input type="email" id="email" name="email" value="{{ app.user.email }}" 
-                                       class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-green-700 outline-none"
-                                       required>
-                            </div>
-
-                            <div>
-                                <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Téléphone</label>
-                                <input type="tel" id="phone" name="phone" value="{{ app.user.phoneNumber ?? '' }}" 
-                                       class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-green-700 outline-none" 
-                                       placeholder="+225 XX XX XX XX">
-                            </div>
-
-                            <div class="pt-5 border-t border-gray-100">
-                                <button type="submit" 
-                                        class="px-6 py-3 bg-green-700 text-white font-medium rounded-lg hover:bg-green-700 active:scale-95 transition-all"
-                                        id="save-profile-btn">
-                                    <span class="flex items-center justify-center">
-                                        <span class="mr-2">Enregistrer les modifications</span>
-                                        <i class="fas fa-spinner fa-spin hidden" id="profile-spinner"></i>
-                                    </span>
+                            <div class="pt-8 border-t border-gray-50">
+                                <button type="submit" class="w-full md:w-auto px-10 py-4 bg-green-600 text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-green-700 transition-all shadow-xl shadow-green-100 active:scale-[0.98]">
+                                    Enregistrer les modifications
                                 </button>
                             </div>
                         </form>
@@ -155,454 +146,152 @@
 
                 <!-- Section Sécurité -->
                 <section id="securite-section" class="section-content hidden">
-                    <div class="bg-white rounded-xl border border-gray-100 p-5 md:p-6">
-                        <div class="mb-6">
-                            <h2 class="text-xl font-bold text-gray-900">Sécurité</h2>
-                            <p class="text-gray-600 text-sm mt-1">Protégez votre compte</p>
+                    <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 p-6 md:p-10">
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-black text-gray-900 tracking-tight">Sécurité</h2>
+                            <p class="text-sm font-medium text-gray-400 mt-1">Protegez l'accès à votre compte</p>
                         </div>
 
-                        <form id="security-form" class="space-y-6">
-                            <!-- Section Mot de passe -->
-                            <div class="p-4 bg-gray-50 rounded-lg border border-gray-100">
-                                <h3 class="font-medium text-gray-900 mb-4">Changer de mot de passe</h3>
-                                
+                        <div class="space-y-6">
+                            <!--
+                            <div class="p-6 md:p-8 bg-amber-50 rounded-3xl border border-amber-100 flex items-start gap-4">
+                                <div class="h-10 w-10 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 flex-shrink-0">
+                                    <i class="fas fa-shield-halved"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-black text-amber-900 uppercase tracking-wider">Double Authentification</h4>
+                                    <p class="text-xs text-amber-700 font-medium mt-1 leading-relaxed">Renforcez la sécurité de votre compte en activant la vérification en deux étapes.</p>
+                                    <button class="mt-4 px-5 py-2.5 bg-amber-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-amber-700 transition-all">S'informer</button>
+                                </div>
+                            </div>-->
+
+                            <form class="space-y-6">
                                 <div class="space-y-4">
-                                    <div>
-                                        <label for="currentPassword" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe actuel</label>
-                                        <div class="relative">
-                                            <input type="password" id="currentPassword" name="currentPassword" class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-green-700 outline-none transition">
-                                            <button type="button" class="toggle-password absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700">
-                                                <i class="far fa-eye-slash"></i>
-                                            </button>
-                                        </div>
+                                    <div class="space-y-2">
+                                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Ancien mot de passe</label>
+                                        <input type="password" class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-green-500 transition-all">
                                     </div>
-
-                                    <div>
-                                        <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-1">Nouveau mot de passe</label>
-                                        <div class="relative">
-                                            <input type="password" id="newPassword" name="newPassword" class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-green-700 outline-none transition">
-                                            <button type="button" class="toggle-password absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700">
-                                                <i class="far fa-eye-slash"></i>
-                                            </button>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div class="space-y-2">
+                                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nouveau mot de passe</label>
+                                            <input type="password" class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-green-500 transition-all">
                                         </div>
-                                        <p class="mt-1 text-xs text-gray-500">Le mot de passe doit contenir au moins 8 caractères</p>
-                                    </div>
-
-                                    <div>
-                                        <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirmer le nouveau mot de passe</label>
-                                        <div class="relative">
-                                            <input type="password" id="confirmPassword" name="confirmPassword" class="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-green-700 outline-none transition">
-                                            <button type="button" class="toggle-password absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700">
-                                                <i class="far fa-eye-slash"></i>
-                                            </button>
+                                        <div class="space-y-2">
+                                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Confirmer mot de passe</label>
+                                            <input type="password" class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-green-500 transition-all">
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Section 2FA 
-                            <div class="p-4 bg-gray-50 rounded-lg border border-gray-100">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <h3 class="font-medium text-gray-900">Authentification à deux facteurs (2FA)</h3>
-                                        <p class="text-sm text-gray-500 mt-1">Ajoutez une couche de sécurité supplémentaire à votre compte</p>
-                                    </div>
-                                    <label class="relative inline-flex items-center cursor-pointer">
-                                        <input type="checkbox" id="enableTwoFactor" class="sr-only peer">
-                                        <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700"></div>
-                                    </label>
+                                <div class="pt-6">
+                                    <button type="submit" class="w-full md:w-auto px-10 py-4 bg-green-600 text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-black transition-all shadow-xl shadow-gray-200 active:scale-[0.98]">
+                                        Mettre à jour le mot de passe
+                                    </button>
                                 </div>
-                            </div>-->
-
-                            <!-- Section Sessions actives 
-                            <div class="p-4 bg-gray-50 rounded-lg border border-gray-100">
-                                <div class="flex items-center justify-between mb-4">
-                                    <div>
-                                        <h3 class="font-medium text-gray-900">Sessions actives</h3>
-                                        <p class="text-sm text-gray-500 mt-1">Gérez les appareils connectés à votre compte</p>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <input type="checkbox" id="logoutOtherDevices" name="logoutOtherDevices" class="h-4 w-4 text-green-700 focus:ring-green-700 border-gray-300 rounded">
-                                        <label for="logoutOtherDevices" class="ml-2 block text-sm text-gray-700">
-                                            Déconnecter tous les autres appareils
-                                        </label>
-                                    </div>
-                                </div>
-
-                                <div id="activeSessionsList" class="space-y-2">
-                                    <div class="flex items-center justify-center py-4">
-                                        <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-green-700"></div>
-                                    </div>
-                                </div>
-                            </div>-->
-
-                            <!-- Bouton de soumission -->
-                            <div class="flex justify-end pt-2">
-                                <button type="submit" class="px-6 py-2.5 bg-green-700 hover:bg-green-700 text-white font-medium rounded-lg transition-colors">
-                                    Enregistrer les modifications
-                                </button>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </section>
 
                 <!-- Section Notifications -->
                 <section id="notifications-section" class="section-content hidden">
-                    <div class="bg-white rounded-xl border border-gray-100 p-5 md:p-6">
-                        <div class="mb-6">
-                            <h2 class="text-xl font-bold text-gray-900">Préférences de notification</h2>
-                            <p class="text-gray-600 text-sm mt-1">Personnalisez comment et quand vous recevez les notifications</p>
-                        </div>
-
-                        <form id="notification-settings-form">
-                            <div class="space-y-6">
-                                <!-- Notifications par email -->
-                                <div class="space-y-3">
-                                    <h3 class="font-medium text-gray-900 flex items-center">
-                                        <i class="fas fa-envelope mr-2 text-green-700"></i>
-                                        Notifications par email
-                                    </h3>
-                                    
-                                    <div class="space-y-3">
-                                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
-                                            <div class="flex-1">
-                                                <h4 class="font-medium text-gray-900">Notifications générales</h4>
-                                                <p class="text-sm text-gray-500 mt-1">Actualités, mises à jour et annonces importantes</p>
-                                            </div>
-                                            <label class="relative inline-flex items-center cursor-pointer">
-                                                <input type="checkbox" name="emailNotifications" class="sr-only peer" checked>
-                                                <div class="w-12 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700"></div>
-                                            </label>
-                                        </div>
-
-                                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
-                                            <div class="flex-1">
-                                                <h4 class="font-medium text-gray-900">Alertes de sécurité</h4>
-                                                <p class="text-sm text-gray-500 mt-1">Connexions suspectes et modifications du compte</p>
-                                            </div>
-                                            <label class="relative inline-flex items-center cursor-pointer">
-                                                <input type="checkbox" name="securityAlerts" class="sr-only peer" checked>
-                                                <div class="w-12 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700"></div>
-                                            </label>
-                                        </div>
-
-                                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
-                                            <div class="flex-1">
-                                                <h4 class="font-medium text-gray-900">Alertes de transaction</h4>
-                                                <p class="text-sm text-gray-500 mt-1">Notifications pour les dépôts, retraits et transferts</p>
-                                            </div>
-                                            <label class="relative inline-flex items-center cursor-pointer">
-                                                <input type="checkbox" name="transactionAlerts" class="sr-only peer" checked>
-                                                <div class="w-12 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700"></div>
-                                            </label>
-                                        </div>
-
-                                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
-                                            <div class="flex-1">
-                                                <h4 class="font-medium text-gray-900">Rappels de paiement</h4>
-                                                <p class="text-sm text-gray-500 mt-1">Rappels pour les échéances de paiement</p>
-                                            </div>
-                                            <label class="relative inline-flex items-center cursor-pointer">
-                                                <input type="checkbox" name="paymentReminders" class="sr-only peer" checked>
-                                                <div class="w-12 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700"></div>
-                                            </label>
-                                        </div>
-
-                                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
-                                            <div class="flex-1">
-                                                <h4 class="font-medium text-gray-900">Newsletter et offres</h4>
-                                                <p class="text-sm text-gray-500 mt-1">Actualités, conseils et offres personnalisées</p>
-                                            </div>
-                                            <label class="relative inline-flex items-center cursor-pointer">
-                                                <input type="checkbox" name="marketingEmail" class="sr-only peer">
-                                                <div class="w-12 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700"></div>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Notifications push -->
-                                <div class="pt-4 border-t border-gray-100">
-                                    <div class="space-y-3">
-                                        <h3 class="font-medium text-gray-900 flex items-center">
-                                            <i class="fas fa-bell mr-2 text-green-700"></i>
-                                            Notifications push
-                                        </h3>
-                                        
-                                        <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-100">
-                                            <div class="flex-1">
-                                                <h4 class="font-medium text-gray-900">Activer les notifications push</h4>
-                                                <p class="text-sm text-gray-500 mt-1">Recevez des alertes en temps réel sur votre appareil</p>
-                                            </div>
-                                            <label class="relative inline-flex items-center cursor-pointer">
-                                                <input type="checkbox" name="pushNotifications" class="sr-only peer">
-                                                <div class="w-12 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-6 after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700"></div>
-                                            </label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Fréquence des notifications 
-                                <div class="pt-4 border-t border-gray-100">
-                                    <h3 class="font-medium text-gray-900 mb-3 flex items-center">
-                                        <i class="fas fa-clock mr-2 text-green-700"></i>
-                                        Fréquence des notifications
-                                    </h3>
-                                    
-                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
-                                            <input type="radio" name="notificationFrequency" value="immediate" class="h-4 w-4 text-green-700 focus:ring-green-700 border-gray-300" checked>
-                                            <span class="ml-3 block text-sm font-medium text-gray-700">En temps réel</span>
-                                        </label>
-                                        
-                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
-                                            <input type="radio" name="notificationFrequency" value="daily" class="h-4 w-4 text-green-700 focus:ring-green-700 border-gray-300">
-                                            <span class="ml-3 block text-sm font-medium text-gray-700">Résumé quotidien</span>
-                                        </label>
-                                        
-                                        <label class="flex items-center p-3 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-50">
-                                            <input type="radio" name="notificationFrequency" value="weekly" class="h-4 w-4 text-green-700 focus:ring-green-700 border-gray-300">
-                                            <span class="ml-3 block text-sm font-medium text-gray-700">Résumé hebdomadaire</span>
-                                        </label>
-                                    </div>
-                                </div>-->
-
-                                <!-- Bouton de soumission -->
-                                <div class="pt-5 border-t border-gray-100 flex justify-end">
-                                    <button type="button" 
-                                            id="save-notification-settings"
-                                            class="px-6 py-2.5 bg-green-700 text-white font-medium rounded-lg hover:bg-green-700 transition-colors duration-200">
-                                        Enregistrer les modifications
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </section>
-
-                <!-- Section Compte -->
-                <section id="compte-section" class="section-content hidden">
-                    <div class="bg-white rounded-xl border border-gray-100 p-5 md:p-6">
-                        <div class="mb-6">
-                            <h2 class="text-xl font-bold text-gray-900">Compte</h2>
-                            <p class="text-gray-600 text-sm mt-1">Gérez les paramètres de votre compte</p>
+                    <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 p-6 md:p-10">
+                        <div class="mb-10">
+                            <h2 class="text-2xl font-black text-gray-900 tracking-tight">Notifications</h2>
+                            <p class="text-sm font-medium text-gray-400 mt-1">Personnalisez vos alertes</p>
                         </div>
 
                         <div class="space-y-4">
-                            <!-- Export données -->
-                            <div class="p-4 bg-green-50 border border-green-100 rounded-lg">
-                                <div class="flex items-start justify-between">
-                                    <div>
-                                        <h3 class="font-medium text-green-900">Exporter mes données</h3>
-                                        <p class="text-sm text-green-700 mt-1">Téléchargez une copie de vos données</p>
-                                    </div>
-                                    <button type="button" 
-                                            class="px-4 py-2 bg-green-100 text-green-700 text-sm font-medium rounded-lg hover:bg-green-200">
-                                        <i class="fa-solid fa-download mr-2"></i> Exporter
-                                    </button>
-                                </div>
-                            </div>
+                            {% set notifs = [
+                                {t: 'Transactions', d: 'Être notifié lors de chaque mouvement de compte', s: true},
+                                {t: 'Sécurité', d: 'Alertes lors de connexions inhabituelles', s: true},
+                                {t: 'Marketing', d: 'Recevoir les nouvelles offres et actualités', s: false},
+                                {t: ' Rappels Tontines', d: 'Rappels automatiques avant les échéances', s: true}
+                            ] %}
 
-                            <!-- Supprimer compte -->
-                            <div class="p-4 bg-red-50 border border-red-100 rounded-lg">
-                                <div class="flex items-start justify-between">
-                                    <div>
-                                        <h3 class="font-medium text-red-900">Supprimer mon compte</h3>
-                                        <p class="text-sm text-red-700 mt-1">Cette action est irréversible</p>
-                                    </div>
-                                    <button type="button" onclick="showDeleteConfirmation()"
-                                            class="px-4 py-2 bg-red-100 text-red-700 text-sm font-medium rounded-lg hover:bg-red-200">
-                                        <i class="fa-solid fa-trash mr-2"></i> Supprimer
-                                    </button>
+                            {% for n in notifs %}
+                            <div class="flex items-center justify-between p-5 md:p-6 bg-gray-50 rounded-3xl border border-gray-100 group hover:bg-white hover:border-green-100 transition-all duration-300">
+                                <div class="flex-1">
+                                    <h4 class="text-sm font-black text-gray-900 uppercase tracking-wider">{{ n.t }}</h4>
+                                    <p class="text-xs text-gray-500 font-medium mt-1">{{ n.d }}</p>
                                 </div>
+                                <label class="relative inline-flex items-center cursor-pointer">
+                                    <input type="checkbox" class="sr-only peer" {{ n.s ? 'checked' : '' }}>
+                                    <div class="w-14 h-7 bg-gray-200 rounded-full peer peer-checked:bg-green-600 transition-colors after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:after:translate-x-7 after:shadow-sm"></div>
+                                </label>
                             </div>
+                            {% endfor %}
+                        </div>
+
+                        <div class="pt-10 flex justify-end">
+                            <button type="button" class="px-8 py-3.5 bg-green-600 text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-green-700 transition-all shadow-xl shadow-green-100 active:scale-[0.98]">
+                                Sauvegarder
+                            </button>
                         </div>
                     </div>
                 </section>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Modal de confirmation suppression -->
-<div id="deleteModal" class="hidden fixed inset-0 bg-black/50 z-50">
-    <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-md">
-            <div class="p-6">
-                <!-- Icon -->
-                <div class="text-center mb-4">
-                    <div class="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-                        <i class="fa-solid fa-exclamation-triangle text-2xl text-red-600"></i>
-                    </div>
-                    <h3 class="text-lg font-bold text-gray-900 mb-2">Supprimer votre compte ?</h3>
-                    <p class="text-gray-600 text-sm">Cette action est définitive. Toutes vos données seront supprimées.</p>
-                </div>
-
-                <!-- Actions -->
-                <div class="space-y-3">
-                    <div class="flex items-center p-3 bg-gray-50 rounded-lg">
-                        <input type="checkbox" id="confirmDelete" class="w-4 h-4 text-red-600 border-gray-300 rounded focus:ring-red-500">
-                        <label for="confirmDelete" class="ml-3 text-sm text-gray-700">Je comprends que cette action est irréversible</label>
-                    </div>
-
-                    <div class="flex gap-3 pt-4">
-                        <button type="button" onclick="closeDeleteModal()" 
-                                class="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 font-medium">
-                            Annuler
-                        </button>
-                        <button type="button" id="confirmDeleteBtn" disabled
-                                class="flex-1 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
-                            Supprimer
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-// Gestion de la navigation entre sections
-function showSection(section) {
-    // Cacher toutes les sections
+function showSection(sectionId) {
+    // Hide all sections
     document.querySelectorAll('.section-content').forEach(el => {
         el.classList.add('hidden');
         el.classList.remove('active');
     });
-    
-    // Afficher la section sélectionnée
-    const targetSection = document.getElementById(section + '-section');
-    targetSection.classList.remove('hidden');
-    targetSection.classList.add('active');
-    
-    // Mettre à jour la navigation active
-    updateActiveNav(section);
-}
 
-function updateActiveNav(activeSection) {
-    // Mettre à jour la navigation desktop
-    document.querySelectorAll('nav button').forEach(button => {
-        const icon = button.querySelector('i');
-        button.classList.remove('bg-green-700/5', 'text-gray-900');
-        button.classList.add('text-gray-700', 'hover:bg-gray-50');
-        icon.classList.remove('text-green-700');
-        icon.classList.add('text-gray-500');
-    });
-    
-    // Trouver le bouton correspondant à la section
-    const activeButton = document.querySelector(`button[onclick="showSection('${activeSection}')"]`);
-    if (activeButton) {
-        activeButton.classList.remove('text-gray-700', 'hover:bg-gray-50');
-        activeButton.classList.add('bg-green-700/5', 'text-gray-900');
-        const icon = activeButton.querySelector('i');
-        if (icon) icon.classList.remove('text-gray-500');
-        icon.classList.add('text-green-700');
-    }
-    
-    // Mettre à jour la navigation mobile
-    document.querySelectorAll('.md\\:hidden button').forEach(button => {
-        button.classList.remove('bg-green-700', 'text-white');
-        button.classList.add('bg-gray-200', 'text-gray-700');
-    });
-    
-    const mobileButton = document.querySelector(`.md\\:hidden button[onclick="showSection('${activeSection}')"]`);
-    if (mobileButton) {
-        mobileButton.classList.remove('bg-gray-200', 'text-gray-700');
-        mobileButton.classList.add('bg-green-700', 'text-white');
-    }
-}
+    // Show selected section
+    const target = document.getElementById(sectionId + '-section');
+    target.classList.remove('hidden');
+    target.classList.add('active');
 
-// Gestion du formulaire de mot de passe
-function togglePasswordForm() {
-    const form = document.getElementById('passwordForm');
-    form.classList.toggle('hidden');
-}
-
-function togglePasswordVisibility(inputId) {
-    const input = document.getElementById(inputId);
-    const button = event.currentTarget;
-    const icon = button.querySelector('i');
-    
-    if (input.type === 'password') {
-        input.type = 'text';
-        icon.classList.remove('fa-eye');
-        icon.classList.add('fa-eye-slash');
-    } else {
-        input.type = 'password';
-        icon.classList.remove('fa-eye-slash');
-        icon.classList.add('fa-eye');
-    }
-}
-
-// Gestion du modal de suppression
-function showDeleteConfirmation() {
-    const modal = document.getElementById('deleteModal');
-    modal.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-}
-
-function closeDeleteModal() {
-    const modal = document.getElementById('deleteModal');
-    modal.classList.add('hidden');
-    document.body.style.overflow = 'auto';
-    document.getElementById('confirmDelete').checked = false;
-    document.getElementById('confirmDeleteBtn').disabled = true;
-}
-
-// Vérification de la confirmation de suppression
-document.getElementById('confirmDelete').addEventListener('change', function() {
-    document.getElementById('confirmDeleteBtn').disabled = !this.checked;
-});
-
-
-
-// Animation pour les transitions
-const style = document.createElement('style');
-style.textContent = `
-    .section-content {
-        animation: fadeIn 0.3s ease-out;
-    }
-    
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
+    // Update nav buttons
+    document.querySelectorAll('[data-section-btn]').forEach(btn => {
+        const isSelected = btn.dataset.sectionBtn === sectionId;
+        
+        // Handle Mobile buttons
+        if (btn.closest('.md\\:hidden')) {
+            if (isSelected) {
+                btn.className = "px-5 py-2.5 rounded-xl text-xs font-bold transition-all bg-green-600 text-white shadow-sm shadow-green-200";
+            } else {
+                btn.className = "px-5 py-2.5 rounded-xl text-xs font-bold transition-all text-green-700 hover:bg-green-50";
+            }
+        } 
+        // Handle Desktop buttons
+        else {
+            if (isSelected) {
+                btn.className = "w-full flex items-center px-4 py-3.5 text-sm font-bold text-white bg-green-600 rounded-2xl shadow-lg shadow-green-100 transition-all";
+                btn.querySelector('i').className = btn.querySelector('i').className.replace('opacity-60', '').trim();
+            } else {
+                btn.className = "w-full flex items-center px-4 py-3.5 text-sm font-bold text-gray-500 hover:bg-green-50 hover:text-green-700 rounded-2xl transition-all";
+                if (!btn.querySelector('i').className.includes('opacity-60')) {
+                    btn.querySelector('i').className += ' opacity-60';
+                }
+            }
         }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
+    });
+
+    // Scroll to top of content on mobile
+    if (window.innerWidth < 768) {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    
-    button:active {
-        transform: scale(0.98);
-    }
-`;
-document.head.appendChild(style);
+}
 </script>
 
 <style>
-/* Optimisations mobile */
-@media (max-width: 768px) {
-    button, a {
-        min-height: 44px;
-        min-width: 44px;
-    }
-    
-    input, select, textarea {
-        font-size: 16px; /* Empêche le zoom sur iOS */
-    }
+.section-content {
+    animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Améliorations d'accessibilité */
-:focus {
-    outline: 2px solid #008040;
-    outline-offset: 2px;
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* Élégant effet au survol */
-button:hover, a:hover {
-    transition: all 0.2s ease;
-}
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
 {% endblock %}

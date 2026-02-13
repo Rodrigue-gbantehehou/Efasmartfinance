@@ -14,14 +14,14 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class TransactionAdminController extends AbstractController
 {
     #[Route('', name: 'admin_transactions')]
-    public function index(TransactionRepository $transactionRepository): Response
+    public function index(TransactionRepository $transactionRepository, \App\Repository\WithdrawalsRepository $withdrawalsRepository): Response
     {
         $this->denyAccessUnlessGranted('VIEW_MODULE', 'transactions');
         $transactions = $transactionRepository->findBy([], ['createdAt' => 'DESC']);
         
         // Calculate statistics
         $totalEntrees = 0;
-        $totalSorties = 0;
+        $totalSorties = $withdrawalsRepository->getTotalApprovedAmount();
         $transactionsCount = count($transactions);
         $transactionsMois = 0;
         
@@ -35,8 +35,6 @@ class TransactionAdminController extends AbstractController
                 str_contains(strtolower($paymentMethod ?? ''), 'entree') ||
                 $transaction->getAmount() > 0) {
                 $totalEntrees += $amount;
-            } else {
-                $totalSorties += abs($amount); // Use absolute value to ensure positive numbers
             }
             
             // Count transactions from the last 30 days

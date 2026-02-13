@@ -6,7 +6,7 @@
 <div class="min-h-screen bg-green-50 p-6 lg:p-8">
     <!-- Breadcrumb & Navigation -->
     <div class="mb-8 flex items-center justify-between">
-        <a href="{{ path('admin_audit_logs') }}" class="group flex items-center gap-2 text-gray-400 hover:text-emerald-600 transition-colors">
+        <a href="{{ path('admin_audit_logs') }}" class="group flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors">
             <div class="w-8 h-8 rounded-lg bg-white border border-gray-100 flex items-center justify-center shadow-sm group-hover:border-emerald-100 group-hover:bg-emerald-50">
                 <i class="fas fa-arrow-left text-xs"></i>
             </div>
@@ -50,9 +50,9 @@
                 <div class="p-8 border-b border-gray-50 flex items-center justify-between">
                     <div>
                         <h3 class="text-sm font-bold font-poppins text-gray-900">Données & Métadonnées</h3>
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Analyse brute du message</p>
+                        <p class="text-[10px] text-gray-600 font-bold uppercase tracking-widest mt-1">Analyse brute du message</p>
                     </div>
-                    <div class="w-10 h-10 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center">
+                    <div class="w-10 h-10 rounded-xl bg-gray-50 text-gray-600 flex items-center justify-center">
                         <i class="fas fa-code"></i>
                     </div>
                 </div>
@@ -72,7 +72,7 @@
         <div class="space-y-8">
             <!-- Actor Profile -->
             <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8 group">
-                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 border-b border-gray-50 pb-4">Agent Responsable</p>
+                <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest mb-6 border-b border-gray-50 pb-4">Agent Responsable</p>
                 <div class="flex items-center gap-4 mb-6">
                     <div class="w-14 h-14 rounded-2xl bg-slate-900 text-white flex items-center justify-center text-xl font-black uppercase shadow-lg shadow-slate-100">
                         {{ log.utilisateur ? log.utilisateur.firstName|slice(0, 1) : 'S' }}
@@ -96,7 +96,7 @@
 
             <!-- Genesis Card (Time & IP) -->
             <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8">
-                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 border-b border-gray-50 pb-4">Origine de la Séquence</p>
+                <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest mb-6 border-b border-gray-50 pb-4">Origine de la Séquence</p>
                 
                 <div class="space-y-6">
                     <div class="bg-gray-50 rounded-2xl p-4 border border-gray-100 flex items-center gap-4">
@@ -104,9 +104,9 @@
                             <i class="fas fa-calendar-day"></i>
                         </div>
                         <div>
-                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-tight">Date & Heure</p>
+                            <p class="text-[9px] font-black text-gray-600 uppercase tracking-tight">Date & Heure</p>
                             <p class="text-xs font-bold text-gray-900">{{ log.createdAt ? log.createdAt|date('d F Y') : 'N/A' }}</p>
-                            <p class="text-[10px] text-gray-400 font-medium">{{ log.createdAt ? log.createdAt|date('H:i:s') : 'N/A' }}</p>
+                            <p class="text-[10px] text-gray-600 font-medium">{{ log.createdAt ? log.createdAt|date('H:i:s') : 'N/A' }}</p>
                         </div>
                     </div>
 
@@ -115,7 +115,7 @@
                             <i class="fas fa-network-wired"></i>
                         </div>
                         <div>
-                            <p class="text-[9px] font-black text-gray-400 uppercase tracking-tight">Adresse IP Source</p>
+                            <p class="text-[9px] font-black text-gray-600 uppercase tracking-tight">Adresse IP Source</p>
                             <p class="text-xs font-mono font-bold text-gray-900 tracking-wider">{{ log.ipAdress }}</p>
                         </div>
                     </div>
@@ -125,7 +125,7 @@
                         <i class="fas fa-laptop absolute top-4 left-4 text-3xl opacity-10"></i>
                         <div class="relative z-10">
                             <p class="text-[9px] font-black text-emerald-400 uppercase tracking-widest mb-1">Fingerprint Client</p>
-                            <p class="text-[9px] font-medium text-gray-400 italic line-clamp-2" title="{{ log.userAgent }}">
+                            <p class="text-[9px] font-medium text-gray-600 italic line-clamp-2" title="{{ log.userAgent }}">
                                 {{ log.userAgent }}
                             </p>
                         </div>

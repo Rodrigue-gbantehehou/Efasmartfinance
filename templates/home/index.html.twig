@@ -54,7 +54,60 @@
 	<!-- Conteneur principal du slider -->
 	<div id="hero-slider" class="relative">
 		<div id="slider-wrapper" class="flex transition-transform duration-700 ease-in-out">
-	<!-- Slide 3: Projets & Rêves -->
+			<!-- Slide 6: Tradition Modernisée (New) -->
+			<div class="w-full h-[85vh] md:h-[90vh] flex-shrink-0 relative">
+				<div class="absolute inset-0"
+					style="background: url('{{ asset('assets/images/Tontine-heade.jpg') }}') center/cover no-repeat; filter: brightness(0.5);">
+				</div>
+				<div class="absolute inset-0 bg-black/40"></div>
+				<div class="relative h-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row items-center justify-center lg:justify-between gap-8 lg:gap-12">
+					<div class="lg:w-3/5 text-center lg:text-left animate-fade-in-up">
+						<h2 class="font-poppins text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight tracking-tight">
+							<span class="text-white">La tradition</span><br>
+							<span class="text-green-400">modernisée & sécurisée</span>
+						</h2>
+						<p class="text-base sm:text-lg text-gray-200 mb-6 max-w-2xl mx-auto lg:mx-0">
+							Comme dans les tontines traditionnelles, vous cotisez chaque jour pour réaliser vos projets avec sérénité.
+						</p>
+						<!-- Section Exemple -->
+						<div class="bg-green-900/40 backdrop-blur-sm p-5 rounded-2xl border border-green-500/30 mb-8 inline-block text-left">
+							<div class="flex items-start gap-4">
+								<div class="bg-green-500 text-white rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0">
+									<i class="fas fa-info-circle"></i>
+								</div>
+								<div>
+									<h4 class="text-white font-bold mb-1">Exemple concret :</h4>
+									<p class="text-gray-200 text-sm leading-relaxed">
+										Codjo cotise <span class="text-green-400 font-bold">500 Fcfa/jour</span> pendant 31 jours (Total: 15.500 Fcfa).<br>
+										Il récupère <span class="text-white font-bold">15.000 Fcfa</span>. Les 500 Fcfa restants servent de frais de service.
+									</p>
+								</div>
+							</div>
+						</div>
+
+						<div class="flex flex-wrap gap-4 justify-center lg:justify-start">
+							<div class="flex items-center gap-2 text-white text-sm">
+								<i class="fas fa-check-circle text-green-400"></i> Transparence
+							</div>
+							<div class="flex items-center gap-2 text-white text-sm">
+								<i class="fas fa-check-circle text-green-400"></i> Sécurité
+							</div>
+							<div class="flex items-center gap-2 text-white text-sm">
+								<i class="fas fa-check-circle text-green-400"></i> Accessibilité
+							</div>
+						</div>
+					</div>
+					<div class="lg:w-2/5 flex justify-center hidden md:block">
+						<div class="relative group">
+							<div class="absolute -inset-4 bg-green-500/20 rounded-full blur-2xl group-hover:bg-green-500/30 transition-all duration-500"></div>
+							<img src="{{ asset('assets/images/hero_person_2.png') }}" alt="Traditional Tontine Modernized"
+								class="relative z-10 w-full max-w-[320px] md:max-w-[400px] h-auto drop-shadow-2xl animate-float" />
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- Slide 3: Projets & Rêves -->
 			<div class="w-full h-[85vh] md:h-[90vh] flex-shrink-0 relative">
 				<div class="absolute inset-0"
 					style="background: url('{{ asset('assets/images/537.jpg') }}') center/cover no-repeat"></div>
@@ -73,7 +126,7 @@
 						<div class="flex flex-wrap gap-4 justify-center lg:justify-start">
 							<a href="{{path('app_tontine')}}"
 								class="bg-yellow-600 hover:bg-yellow-700 text-white font-bold px-8 py-4 rounded-xl shadow-lg transition-all transform hover:scale-105">
-								Commencer maintenant
+								S'inscrire gratuitement
 							</a>
 						</div>
 					</div>
@@ -114,10 +167,7 @@
 								class="font-poppins font-semibold bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 hover:-translate-y-0.5">
 								<i class="fas fa-plus-circle mr-2"></i>Créer une tontine
 							</a>
-							<a href="{{path('page_tontine')}}"
-								class="font-poppins font-semibold bg-white/10 hover:bg-white/20 backdrop-blur-md text-white border-2 border-white/30 hover:border-white/50 px-8 py-4 rounded-xl transition-all duration-300">
-								<i class="fas fa-arrow-right mr-2"></i>En savoir plus
-							</a>
+						
 						</div>
 					</div>
 					
@@ -193,7 +243,7 @@
 							<div class="flex -space-x-3">
 								<div class="w-10 h-10 rounded-full border-2 border-green-600 bg-gray-300"></div>
 								<div class="w-10 h-10 rounded-full border-2 border-green-600 bg-gray-400"></div>
-								<div class="w-10 h-10 rounded-full border-2 border-green-600 bg-gray-500"></div>
+								<div class="w-10 h-10 rounded-full border-2 border-green-600 bg-gray-50"></div>
 							</div>
 							<p class="text-sm font-medium">+10,000 Utilisateurs actifs</p>
 						</div>
@@ -234,7 +284,7 @@
 								<i class="fas fa-headset text-green-400 text-2xl"></i>
 								<div class="text-left">
 									<p class="text-white font-bold">Support 24/7</p>
-									<p class="text-gray-400 text-xs">Par chat et email</p>
+									<p class="text-white text-xs">Par chat et email</p>
 								</div>
 							</div>
 						</div>
@@ -287,6 +337,8 @@
 				</div>
 			</div>
 
+			
+
 		</div>
 
 		<div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-30">
@@ -302,7 +354,8 @@
 				data-index="4"></button>
 			<button class="slider-dot w-3 h-3 rounded-full bg-white/50 hover:bg-white transition-colors"
 				data-index="5"></button>
-			
+			<button class="slider-dot w-3 h-3 rounded-full bg-white/50 hover:bg-white transition-colors"
+				data-index="6"></button>
 		</div>
 
 		<!-- Flèches de navigation -->
@@ -318,17 +371,17 @@
 </section>
 
 <!-- 2️⃣ SECTION « COMMENT ÇA MARCHE » -->
-<section id="comment-ca-marche" class="py-12 md:py-16 bg-gradient-to-b from-white to-green-50/30">
+<section id="comment-ca-marche" class="py-12 md:py-16 bg-gradient-to-b from-green-700 to-green-900">
 	<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="text-center mb-8 md:mb-12">
 			<div class="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full mb-4">
 				<i class="fas fa-play-circle"></i>
 				<span class="text-sm font-medium">Tutoriel en 3 étapes</span>
 			</div>
-			<h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4">
+			<h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 md:mb-4">
 				Comment ça marche
 			</h2>
-			<p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
+			<p class="text-base sm:text-lg md:text-xl text-white max-w-2xl mx-auto px-4">
 				Simple comme 1, 2, 3. La tontine digitale, sans complication.
 			</p>
 		</div>
@@ -429,17 +482,17 @@
 </section>
 <!-- 4️⃣ SECTION VISUELLE – CARTE DE POINTAGE -->
 
-<section class="py-12 md:py-16 bg-gradient-to-b from-green-700 to-green-900">
+<section class="py-16 bg-gradient-to-br from-green-50 to-white">
 	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="text-center mb-8 md:mb-12">
 			<div class="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full mb-4">
 				<i class="fas fa-chart-line"></i>
 				<span class="text-sm font-medium">Visualisation en temps réel</span>
 			</div>
-			<h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 md:mb-4">
+			<h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-green-800 mb-3 md:mb-4">
 				Une vraie carte de tontine, version digitale
 			</h2>
-			<p class="text-base sm:text-lg md:text-xl text-white max-w-3xl mx-auto">
+			<p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
 				Comme la carte papier traditionnelle, mais avec la fiabilité et la sécurité du numérique.
 			</p>
 		</div>
@@ -509,7 +562,7 @@
 																																				                      transition-all duration-300 hover:scale-105 hover:shadow-md">
 									<div class="text-base sm:text-lg font-bold">{{ i }}</div>
 									<div
-										class="text-xs mt-1 {% if i <= 8 %}text-green-700{% else %}text-gray-500{% endif %}">
+										class="text-xs mt-1 {% if i <= 8 %}text-green-700{% else %}text-gray-600{% endif %}">
 										{% if i <= 8 %}Pointé{% else %}À venir {% endif %} </div>
 									</div>
 									{% endfor %}
@@ -579,11 +632,11 @@
 		</div>
 </section>
 <!-- Section Options de paiement flexibles -->
-<section class="py-16 bg-gradient-to-br from-green-50 to-white">
+<section class="py-12 md:py-16 bg-gradient-to-b from-green-700 to-green-900">
 	<div class="container mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="text-center mb-12">
-			<h2 class="text-3xl font-bold text-gray-900 sm:text-4xl">Options de paiement flexibles</h2>
-			<p class="mt-4 text-lg text-gray-600">Choisissez la méthode qui vous convient le mieux</p>
+			<h2 class="text-3xl font-bold text-white sm:text-4xl">Options de paiement flexibles</h2>
+			<p class="mt-4 text-lg text-white">Choisissez la méthode qui vous convient le mieux</p>
 		</div>
 
 		<div class="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -626,17 +679,17 @@
 	</div>
 </section>
 <!-- 3️⃣ SECTION RASSURANCE -->
-<section class="py-12 md:py-16 bg-gradient-to-b from-green-700 to-green-600">
+<section class="py-16 bg-gradient-to-br from-green-50 to-white">
 	<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="text-center mb-8 md:mb-12">
 			<div class="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full mb-4">
 				<i class="fas fa-shield-alt"></i>
 				<span class="text-sm font-medium">Nos engagements</span>
 			</div>
-			<h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 md:mb-4">
+			<h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-green-900 mb-3 md:mb-4">
 				Votre argent, vos règles.
 			</h2>
-			<p class="text-base sm:text-lg md:text-xl text-white max-w-2xl mx-auto px-4">
+			<p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
 				La confiance, c'est notre priorité. Voici nos engagements :
 			</p>
 		</div>
@@ -724,17 +777,17 @@
 </section>
 
 <!-- 5️⃣ SECTION « POUR VOS OBJECTIFS PERSONNELS » -->
-<section class="py-12 md:py-16  bg-gradient-to-b from-green-50 to-white">
+<section class="py-12 md:py-16 bg-gradient-to-b from-green-700 to-green-900">
 	<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 		<div class="text-center mb-8 md:mb-12">
 			<div class="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full mb-4">
 				<i class="fas fa-user-circle"></i>
 				<span class="text-sm font-medium">Épargne personnelle</span>
 			</div>
-			<h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-3 md:mb-4">
+			<h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-3 md:mb-4">
 				Votre tontine individuelle, vos objectifs
 			</h2>
-			<p class="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
+			<p class="text-base sm:text-lg md:text-xl text-white max-w-2xl mx-auto px-4">
 				Une discipline d'épargne adaptée à vos projets personnels, sans dépendre des autres.
 			</p>
 		</div>
@@ -815,98 +868,54 @@
 			</div>
 		</div>
 
-
-		<!-- Statistiques individuelles 
-						        <div class="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4">
-						            <div class="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200">
-						                <div class="text-2xl md:text-3xl font-bold text-green-800 mb-1">85%</div>
-						                <div class="text-sm text-gray-600">Objectifs atteints</div>
-						            </div>
-						            <div class="text-center p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200">
-						                <div class="text-2xl md:text-3xl font-bold text-green-800 mb-1">3x</div>
-						                <div class="text-sm text-gray-600">Plus d'épargne qu'en solo</div>
-						            </div>
-						            <div class="text-center p-4 bg-gradient-to-br from-yellow-50 to-yellow-100 rounded-xl border border-yellow-200">
-						                <div class="text-2xl md:text-3xl font-bold text-yellow-800 mb-1">30%</div>
-						                <div class="text-sm text-gray-600">De discipline en plus</div>
-						            </div>
-						            <div class="text-center p-4 bg-gradient-to-br from-emerald-50 to-emerald-100 rounded-xl border border-emerald-200">
-						                <div class="text-2xl md:text-3xl font-bold text-emerald-800 mb-1">24h</div>
-						                <div class="text-sm text-gray-600">Accès à vos fonds</div>
-						            </div>
-						        </div>-->
-
-		<!-- Témoignage individuel
-						        <div class="mt-12 bg-gradient-to-r from-green-50 to-green-50 rounded-2xl p-6 md:p-8 border border-green-200">
-						            <div class="flex flex-col md:flex-row items-center gap-6">
-						                <div class="w-20 h-20 rounded-full bg-gradient-to-r from-green-100 to-green-100 flex items-center justify-center flex-shrink-0">
-						                    <i class="fas fa-quote-right text-green-600 text-2xl"></i>
-						                </div>
-						                <div class="text-center md:text-left">
-						                    <p class="text-lg text-gray-700 italic">
-						                        "Grâce à la tontine individuelle, j'ai pu économiser pour mon premier ordinateur en seulement 4 mois. 
-						                        La discipline imposée par le système m'a permis d'atteindre mon objectif sans effort."
-						                    </p>
-						                    <div class="mt-4 flex items-center justify-center md:justify-start gap-3">
-						                        <div class="w-10 h-10 rounded-full bg-gradient-to-r from-green-200 to-green-300 flex items-center justify-center">
-						                            <span class="text-green-800 font-bold">SD</span>
-						                        </div>
-						                        <div>
-						                            <p class="font-medium text-gray-900 text-sm">Souleymane D.</p>
-						                            <p class="text-sm text-gray-600">Étudiant, Dakar</p>
-						                        </div>
-						                    </div>
-						                </div>
-						            </div>
-						        </div> -->
 	</div>
 </section>
 
 
 <!-- 6️⃣ CTA FINAL -->
-<section class="py-12 md:py-16 bg-gradient-to-r from-green-700 via-green-600 to-green-700">
+<section class="py-16 bg-gradient-to-br from-green-50 to-white">
 	<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-		<div class="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
-			<i class="fas fa-rocket text-white"></i>
-			<span class="text-sm font-medium text-white">Prêt à commencer ?</span>
+		<div class="inline-flex items-center gap-2 bg-green-100 backdrop-blur-sm px-4 py-2 rounded-full mb-6">
+			<i class="fas fa-rocket text-green-900"></i>
+			<span class="text-sm font-medium text-green-800">Prêt à commencer ?</span>
 		</div>
 
-		<h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-white mb-4 sm:mb-6">
+		<h2 class="text-2xl sm:text-3xl md:text-4xl font-bold text-green-800 mb-4 sm:mb-6">
 			Prêt à commencer votre tontine ?
 		</h2>
-		<p class="text-base sm:text-lg md:text-xl text-white/90 mb-6 sm:mb-8 max-w-2xl mx-auto">
+		<p class="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 max-w-2xl mx-auto">
 			Rejoignez des milliers de personnes qui épargnent en toute confiance.
 		</p>
 
 		<div class="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4">
 			<!-- Bouton principal -->
 			<a href="{{path('app_tontine')}}"
-				class="bg-white hover:bg-gray-50 text-green-700 font-bold px-6 py-3 sm:px-8 sm:py-4 rounded-xl shadow-lg sm:shadow-2xl hover:shadow-xl sm:hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg">
+				class="bg-green-700 hover:bg-green-800 text-white font-bold px-6 py-3 sm:px-8 sm:py-4 rounded-xl shadow-lg sm:shadow-2xl hover:shadow-xl sm:hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1 text-base sm:text-lg">
 				<i class="fas fa-plus-circle mr-2"></i>
 				Créer ma tontine
 			</a>
 
-			<!-- Bouton secondaire -->
+			<!-- Bouton secondaire 
 			<a href="#accueil"
-				class="bg-transparent hover:bg-white/10 text-white border-2 border-white font-bold px-6 py-3 sm:px-8 sm:py-4 rounded-xl transition-all duration-300 text-base sm:text-lg">
+				class="bg-transparent hover:bg-white/10 text-green-600 border-2 border-green-800 font-bold px-6 py-3 sm:px-8 sm:py-4 rounded-xl transition-all duration-300 text-base sm:text-lg">
 				<i class="fas fa-play-circle mr-2"></i>
 				Voir une démo
-			</a>
+			</a>-->
 		</div>
 
 		<!-- Garantie -->
-		<div class="mt-6 sm:mt-8 text-white/80 text-xs sm:text-sm">
+		<div class="mt-6 sm:mt-8 text-green-900 text-xs sm:text-sm">
 			<div class="flex flex-wrap justify-center gap-4">
 				<div class="flex items-center gap-2">
-					<i class="fas fa-bolt text-green-300"></i>
+					<i class="fas fa-bolt text-green-900"></i>
 					<span>Création en 2 minutes</span>
 				</div>
 				<div class="flex items-center gap-2">
-					<i class="fas fa-ban text-green-300"></i>
+					<i class="fas fa-ban text-green-900"></i>
 					<span>Aucun frais caché</span>
 				</div>
 				<div class="flex items-center gap-2">
-					<i class="fas fa-gift text-green-300"></i>
+					<i class="fas fa-gift text-green-900"></i>
 					<span>Essai gratuit</span>
 				</div>
 			</div>

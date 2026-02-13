@@ -265,13 +265,13 @@
                 
                 <div class="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                        <div class="text-gray-500">Statut</div>
+                        <div class="text-gray-6000">Statut</div>
                         <div class="font-medium {{ tontine.statut == 'active' ? 'text-green-600' : 'text-gray-600' }}">
                             {{ tontine.statut == 'active' ? 'Active' : 'Terminée' }}
                         </div>
                     </div>
                     <div>
-                        <div class="text-gray-500">Fréquence</div>
+                        <div class="text-gray-6000">Fréquence</div>
                         <div class="font-medium">
                             {% if tontine.frequency == 'daily' %}Quotidien
                             {% elseif tontine.frequency == 'weekly' %}Hebdomadaire
@@ -282,7 +282,7 @@
                 </div>
                 
                 <div class="mt-6 pt-4 border-t border-gray-200">
-                    <div class="text-xs text-gray-500">
+                    <div class="text-xs text-gray-6000">
                         Validité: {{ expiryDate|date('d/m/Y') }} • 
                         Généré le: {{ "now"|date('d/m/Y H:i') }}
                     </div>

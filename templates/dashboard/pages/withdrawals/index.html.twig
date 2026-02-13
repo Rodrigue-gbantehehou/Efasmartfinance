@@ -9,7 +9,6 @@
         <header class="hidden md:block bg-gradient-to-r from-green-700 via-green-600 to-green-700 text-white sticky top-0 z-30 flex-shrink-0 shadow-lg">
             <div class="max-w-[1400px] mx-auto px-6 py-3">
                 <div class="flex items-center justify-between">
-                    <!-- Breadcrumb -->
                     <div class="flex items-center gap-3">
                         <a href="{{ path('app_dashboard') }}" class="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-white/10 hover:bg-white/20 transition-colors backdrop-blur-sm">
                             <span class="text-sm font-medium">Tableau de bord</span>
@@ -27,223 +26,174 @@
         <div class="flex-1 overflow-y-auto h-0 min-h-0">
             <div class="max-w-[1400px] mx-auto px-4 md:px-6 py-6 space-y-6">
                 <!-- En-tête de la page -->
-                <div class="flex flex-col  md:flex-row md:items-center justify-between gap-4">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900">Mes demandes de retrait</h1>
-                        <p class="text-gray-600">Suivez l'état de vos demandes de retrait en temps réel</p>
+                        <h1 class="text-xl md:text-2xl font-black text-gray-900 tracking-tight">Mes demandes de retrait</h1>
+                        <p class="text-sm text-gray-500 font-medium">Gérez et suivez l'état de vos retraits</p>
                     </div>
-                    <a href="{{ path('app_tontines_index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        <span>Retour aux tontines</span>
-                    </a>
+                </div>
+
+                <!-- Filtres et Recherche -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-4 space-y-4">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                        <!-- Quick Filters -->
+                        <div class="flex items-center p-1 bg-green-50 rounded-xl w-full lg:w-auto overflow-x-auto whitespace-nowrap scrollbar-hide">
+                            <button class="status-filter-btn px-4 py-2 rounded-lg text-xs font-bold transition-all bg-green-600 text-white shadow-sm" data-status="" data-color="bg-green-600">
+                                Tous
+                            </button>
+                            <button class="status-filter-btn px-4 py-2 rounded-lg text-xs font-bold transition-all text-green-700 hover:bg-amber-500" data-status="pending" data-color="bg-amber-500">
+                                En attente
+                            </button>
+                            <button class="status-filter-btn px-4 py-2 rounded-lg text-xs font-bold transition-all text-green-700 hover:bg-green-500" data-status="approved" data-color="bg-green-600">
+                                Approuvés
+                            </button>
+                            <button class="status-filter-btn px-4 py-2 rounded-lg text-xs font-bold transition-all text-green-700 hover:bg-red-500" data-status="rejected" data-color="bg-red-600">
+                                Rejetés
+                            </button>
+                        </div>
+
+                        <!-- Search -->
+                        <div class="relative flex-1 max-w-md">
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+                            <input type="text" id="search-input" placeholder="Rechercher par tontine ou montant..." 
+                                   class="w-full pl-10 pr-4 py-2.5 bg-gray-50 border-none rounded-xl text-sm focus:ring-2 focus:ring-green-500 transition-all">
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Liste des retraits -->
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
+                <div class="space-y-4">
+                    <div class="hidden md:block bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <table class="min-w-full divide-y divide-gray-100">
+                            <thead class="bg-gray-50/50">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Date
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        <div class="flex items-center">
-                                            <span>Épargne</span>
-                                            <div class="ml-1 cursor-help" title="Montant total de votre épargne dans cette tontine">
-                                                <i class="fas fa-info-circle text-gray-400"></i>
-                                            </div>
-                                        </div>
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        <div class="flex items-center">
-                                            <span>Retrait demandé</span>
-                                            <div class="ml-1 cursor-help" title="Montant que vous avez demandé de retirer">
-                                                <i class="fas fa-info-circle text-gray-400"></i>
-                                            </div>
-                                        </div>
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        <div class="flex items-center">
-                                            <span>Solde restant</span>
-                                            <div class="ml-1 cursor-help" title="Ce qui reste disponible après ce retrait">
-                                                <i class="fas fa-info-circle text-gray-400"></i>
-                                            </div>
-                                        </div>
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Méthode
-                                    </th>
-
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Statut
-                                    </th>
+                                    <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Date & Heure</th>
+                                    <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Tontine</th>
+                                    <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest">Montant</th>
+                                    <th class="px-6 py-4 text-left text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">Statut</th>
+                                    <th class="px-6 py-4 text-right text-[10px] font-black text-gray-400 uppercase tracking-widest">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
+                            <tbody class="divide-y divide-gray-50" id="withdrawals-table-body">
                                 {% for withdrawal in withdrawals %}
-                                    <tr class="hover:bg-gray-50">
-                                        <!-- Date -->
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                            <div class="text-xs text-gray-500 mt-1">Demandé le :</div>
-                                            {{ withdrawal.requestedAt|date('d/m/Y H:i') }}
-                                      
+                                    <tr class="withdrawal-item hover:bg-green-50/50 transition-colors" data-status="{{ withdrawal.statut }}" data-search="{{ withdrawal.tontine ? withdrawal.tontine.getName() : '' }} {{ withdrawal.amount }}">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-xs font-bold text-gray-900">{{ withdrawal.requestedAt|date('d/m/Y') }}</div>
+                                            <div class="text-[10px] text-gray-400 font-medium">{{ withdrawal.requestedAt|date('H:i') }}</div>
                                         </td>
-                                        
-                                        <!-- Épargne totale -->
                                         <td class="px-6 py-4 whitespace-nowrap">
                                             {% if withdrawal.tontine %}
-                                                <div class="flex items-baseline">
-                                                    <span class="text-sm text-gray-900">
-                                                        {{ withdrawal.tontine.getTotalPay()|number_format(0, ',', ' ') }}
-                                                    </span>
-                                                    <span class="ml-1 text-sm text-gray-500">FCFA</span>
-                                                </div>
-                                                <div class="text-xs text-gray-500 mt-1">
-                                                    <i class="fas fa-hashtag text-gray-400"></i> {{ withdrawal.tontine.tontineCode }}
-                                                </div>
+                                                <div class="text-xs font-black text-gray-900">{{ withdrawal.tontine.getName() }}</div>
                                             {% else %}
-                                                <span class="text-gray-400">-</span>
+                                                <span class="text-xs text-gray-400">N/A</span>
                                             {% endif %}
                                         </td>
-                                        
-                                        <!-- Montant du retrait -->
                                         <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="flex items-baseline">
-                                                <span class="text-sm font-bold text-gray-600">
-                                                    {{ withdrawal.amount|number_format(0, ',', ' ') }}
-                                                </span>
-                                                <span class="ml-1 text-sm text-gray-500">FCFA</span>
-                                            </div>
-                                            {% if withdrawal.totalAmount and withdrawal.totalAmount != withdrawal.amount %}
-                                                <div class="text-xs text-gray-500 mt-1">
-                                                    <i class="fas fa-info-circle"></i> 
-                                                    Total: {{ withdrawal.totalAmount|number_format(0, ',', ' ') }} FCFA
-                                                </div>
-                                            {% endif %}
+                                            <div class="text-xs font-black text-gray-900">{{ withdrawal.amount|format_currency('XOF', locale='fr') }}</div>
                                         </td>
-                                        
-                                        <!-- Solde restant -->
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            {% if withdrawal.tontine and withdrawal.statut == 'approved' %}
-                                                {% set remaining = withdrawal.tontine.getAvailableWithdrawalAmount() %}
-                                                {% if remaining > 0 %}
-                                                    <div class="flex items-baseline">
-                                                        <span class="text-sm font-bold text-yellow-600">
-                                                            {{ remaining|number_format(0, ',', ' ') }}
-                                                        </span>
-                                                        <span class="ml-1 text-sm text-gray-500">FCFA</span>
-                                                    </div>
-                                                    <div class="text-sm text-yellow-600 mt-1">
-                                                        <i class="fas fa-exclamation-triangle"></i> Solde disponible
-                                                    </div>
-                                                {% else %}
-                                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                        <i class="fas fa-check-circle mr-1"></i> Terminé
-                                                    </span>
-                                                {% endif %}
-                                            {% else %}
-                                                <span class="text-gray-400">-</span>
-                                            {% endif %}
+                                        <td class="px-6 py-4 whitespace-nowrap text-center">
+                                            {% set statusStyles = {
+                                                'pending': 'bg-amber-100 text-amber-700',
+                                                'approved': 'bg-green-100 text-green-700',
+                                                'rejected': 'bg-red-100 text-red-700'
+                                            } %}
+                                            <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider {{ statusStyles[withdrawal.statut] ?? 'bg-gray-100 text-gray-600' }}">
+                                                {{ withdrawal.statut|capitalize }}
+                                            </span>
                                         </td>
-                                        
-                                        <!-- Méthode -->
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {% if withdrawal.method == 'mobile_money' %}
-                                                <div class="flex items-center">
-                                                    <i class="fas fa-mobile-alt mr-2 text-green-600"></i>
-                                                    <span>Mobile Money</span>
-                                                </div>
-                                                {% if withdrawal.phoneNumber %}
-                                                    <div class="text-xs text-gray-500 mt-1">{{ withdrawal.phoneNumber }}</div>
-                                                {% endif %}
-                                            {% else %}
-                                                <div class="flex items-center">
-                                                    <i class="fas fa-university mr-2 text-green-600"></i>
-                                                    <span>à l'agence</span>
-                                                </div>
-                                            {% endif %}
-                                        </td>
-                                        
-                                        <!-- Détails 
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            <button onclick="showWithdrawalDetails({{ withdrawal.id }})" class="text-green-600 hover:text-green-900">
-                                                <i class="fas fa-eye"></i> Voir
+                                        <td class="px-6 py-4 whitespace-nowrap text-right">
+                                            <button onclick="showWithdrawalDetails({{ withdrawal.id }})" class="p-2 text-gray-400 hover:text-green-600">
+                                                <i class="fas fa-eye"></i>
                                             </button>
-                                        </td>
-                                        -->
-                                        <!-- Statut -->
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            {% if withdrawal.statut == 'pending' %}
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                                                    <i class="fas fa-clock mr-1"></i> En attente
-                                                </span>
-                                            {% elseif withdrawal.statut == 'approved' %}
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                    <i class="fas fa-check-circle mr-1"></i> Approuvé
-                                                </span>
-                                            {% elseif withdrawal.statut == 'rejected' %}
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                    <i class="fas fa-times-circle mr-1"></i> Rejeté
-                                                </span>
-                                            {% else %}
-                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                                    {{ withdrawal.statut }}
-                                                </span>
-                                            {% endif %}
-                                            
-                                            {% if withdrawal.statut == 'approved' and withdrawal.processedAt %}
-                                                <div class="text-xs text-gray-500 mt-1">Traité le {{ withdrawal.processedAt|date('d/m/Y') }}</div>
-                                            {% endif %}
-                                        </td>
-                                {% else %}
-                                    <tr>
-                                        <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
-                                            Aucune demande de retrait trouvée.
                                         </td>
                                     </tr>
                                 {% endfor %}
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Mobile Cards -->
+                    <div class="md:hidden space-y-4" id="withdrawals-mobile-container">
+                        {% for withdrawal in withdrawals %}
+                            {% set statusConfig = {
+                                'pending': {
+                                    'header': 'bg-amber-500',
+                                    'badge': 'bg-amber-400/20 text-white',
+                                    'btn': 'bg-amber-500 text-white hover:bg-amber-600 shadow-amber-200'
+                                },
+                                'approved': {
+                                    'header': 'bg-green-600',
+                                    'badge': 'bg-green-500/20 text-white',
+                                    'btn': 'bg-green-500 text-white hover:bg-green-600 shadow-green-200'
+                                },
+                                'rejected': {
+                                    'header': 'bg-red-600',
+                                    'badge': 'bg-red-500/20 text-white',
+                                    'btn': 'bg-red-500 text-white hover:bg-red-600 shadow-red-200'
+                                }
+                            } %}
+                            {% set cfg = statusConfig[withdrawal.statut] ?? {'header': 'bg-gray-600', 'badge': 'bg-gray-500/20 text-white', 'btn': 'bg-gray-500 text-white hover:bg-gray-600 shadow-gray-200'} %}
+                            
+                            <div class="withdrawal-item bg-white rounded-3xl overflow-hidden shadow-sm border border-gray-100 flex flex-col" data-status="{{ withdrawal.statut }}" data-search="{{ withdrawal.tontine ? withdrawal.tontine.getName() : '' }} {{ withdrawal.amount }}">
+                                <!-- Header Coloré -->
+                                <div class="{{ cfg.header }} p-4 relative overflow-hidden">
+                                    <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
+                                    <div class="flex items-center justify-between relative z-10">
+                                        <div class="flex items-center gap-3">
+                                            <div class="h-10 w-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center text-white border border-white/30">
+                                                <i class="fas fa-money-bill-transfer"></i>
+                                            </div>
+                                            <div>
+                                                <div class="text-[10px] text-white/70 font-bold uppercase tracking-wider">{{ withdrawal.requestedAt|date('d/m/Y • H:i') }}</div>
+                                                <div class="text-sm font-black text-white">{{ withdrawal.amount|format_currency('XOF', locale='fr') }}</div>
+                                            </div>
+                                        </div>
+                                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider {{ cfg.badge }} border border-white/20 backdrop-blur-sm">
+                                            {{ withdrawal.statut|capitalize }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="p-4 space-y-4">
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div class="p-3 bg-gray-50 rounded-2xl border border-gray-100">
+                                            <div class="text-[8px] text-gray-400 uppercase font-black tracking-widest mb-1.5">Tontine</div>
+                                            <div class="text-xs font-bold text-gray-900 truncate">{{ withdrawal.tontine ? withdrawal.tontine.getName() : 'N/A' }}</div>
+                                        </div>
+                                        <div class="p-3 bg-gray-50 rounded-2xl border border-gray-100">
+                                            <div class="text-[8px] text-gray-400 uppercase font-black tracking-widest mb-1.5">Méthode</div>
+                                            <div class="text-xs font-bold text-gray-900">{{ withdrawal.method == 'mobile_money' ? 'M. Money' : "Agence" }}</div>
+                                        </div>
+                                    </div>
+
+                                    <button onclick="showWithdrawalDetails({{ withdrawal.id }})" 
+                                            class="w-full py-3 {{ cfg.btn }} rounded-2xl text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg active:scale-[0.98]">
+                                        <i class="fas fa-info-circle"></i>
+                                        Voir les détails
+                                    </button>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="bg-white rounded-2xl p-12 text-center">
+                                <p class="text-xs text-gray-500">Aucun retrait trouvé.</p>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
 
                 <!-- Pagination -->
-                <div class="flex items-center justify-between px-4 py-3 bg-white border-t border-gray-200 sm:px-6 rounded-b-lg">
-                    
-                    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                        <div>
-                            <p class="text-sm text-gray-700">
-                                Affichage de <span class="font-medium">1</span> à <span class="font-medium">10</span> sur <span class="font-medium">{{ withdrawals|length }}</span> résultats
-                            </p>
-                        </div>
-                    </div>
+                <div class="mt-6">
+                    {{ knp_pagination_render(withdrawals, 'dashboard/partials/_pagination.html.twig') }}
                 </div>
             </div>
         </div>
     </main>
-
-    <!-- Modal Détails du retrait -->
-    <div id="withdrawalDetailsModal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50 p-4">
-        <div class="min-h-screen flex items-center justify-center">
-            <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden">
-                <div class="p-6">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-gray-900">Détails du retrait</h3>
-                        <button onclick="closeModal()" class="text-gray-400 hover:text-gray-500">
-                            <i class="fa-solid fa-times"></i>
-                        </button>
-                    </div>
-                    <div class="space-y-4" id="withdrawalDetailsContent">
-                        <!-- Les détails seront chargés ici via JavaScript -->
-                    </div>
-                    <div class="mt-6 flex justify-end">
-                        <button type="button" onclick="closeModal()" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none">
-                            Fermer
-                        </button>
-                    </div>
-                </div>
-            </div>
+    
+    <!-- Modal -->
+    <div id="withdrawalDetailsModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 p-4 flex items-center justify-center">
+        <div class="bg-white rounded-3xl w-full max-w-md p-6 relative">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400"><i class="fas fa-times"></i></button>
+            <div id="withdrawalDetailsContent"></div>
         </div>
     </div>
 {% endblock %}
@@ -251,87 +201,44 @@
 {% block javascripts %}
     {{ parent() }}
     <script>
-        function showWithdrawalDetails(withdrawalId) {
-            // Ici, vous pouvez faire un appel AJAX pour récupérer les détails du retrait
-            // Pour l'instant, nous allons simplement afficher un message
-            const content = `
-                <div class="space-y-3">
-                    <div>
-                        <p class="text-sm text-gray-500">Date de la demande</p>
-                        <p class="font-medium" id="withdrawalDate">Chargement...</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">Montant</p>
-                        <p class="font-medium" id="withdrawalAmount">Chargement...</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">Méthode</p>
-                        <p class="font-medium" id="withdrawalMethod">Chargement...</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">Statut</p>
-                        <p class="font-medium" id="withdrawalStatus">Chargement...</p>
-                    </div>
-                    <div>
-                        <p class="text-sm text-gray-500">Raison</p>
-                        <p class="font-medium" id="withdrawalReason">Chargement...</p>
-                    </div>
-                </div>
-            `;
-            
-            document.getElementById('withdrawalDetailsContent').innerHTML = content;
-            document.getElementById('withdrawalDetailsModal').classList.remove('hidden');
+        const searchInput = document.getElementById('search-input');
+        const filterBtns = document.querySelectorAll('.status-filter-btn');
+        const withdrawalItems = document.querySelectorAll('.withdrawal-item');
 
-            // Simulation d'un chargement des données
-            fetch(`/api/withdrawals/${withdrawalId}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('withdrawalDate').textContent = new Date(data.requestedAt).toLocaleString('fr-FR');
-                    document.getElementById('withdrawalAmount').textContent = data.amount + ' FCFA';
-                    document.getElementById('withdrawalMethod').textContent = data.method || 'Non spécifiée';
-                    document.getElementById('withdrawalReason').textContent = data.reason || 'Aucune raison fournie';
-                    
-                    let statusText = data.statut;
-                    if (data.statut === 'pending') statusText = 'En attente';
-                    else if (data.statut === 'approved') statusText = 'Approuvé';
-                    else if (data.statut === 'rejected') statusText = 'Rejeté';
-                    
-                    document.getElementById('withdrawalStatus').textContent = statusText;
-                })
-                .catch(error => {
-                    console.error('Erreur:', error);
-                    document.getElementById('withdrawalDetailsContent').innerHTML = `
-                        <div class="text-center py-4">
-                            <i class="fa-solid fa-triangle-exclamation text-yellow-500 text-4xl mb-3"></i>
-                            <p class="text-red-600">Une erreur est survenue lors du chargement des détails.</p>
-                        </div>
-                    `;
-                });
+        function filterWithdrawals() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const activeBtn = Array.from(filterBtns).find(btn => btn.classList.contains('text-white'));
+            const activeStatus = activeBtn ? activeBtn.dataset.status : '';
+
+            withdrawalItems.forEach(item => {
+                const status = item.dataset.status;
+                const searchText = item.dataset.search.toLowerCase();
+                const matchesSearch = searchText.includes(searchTerm);
+                const matchesStatus = !activeStatus || status === activeStatus;
+                item.style.display = matchesSearch && matchesStatus ? '' : 'none';
+            });
         }
 
-        function cancelWithdrawal(withdrawalId) {
-            if (confirm('Êtes-vous sûr de vouloir annuler cette demande de retrait ?')) {
-                // Ici, vous pouvez ajouter le code pour annuler la demande de retrait
-                fetch(`/api/withdrawals/${withdrawalId}/cancel`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        window.location.reload();
-                    } else {
-                        alert('Une erreur est survenue : ' + (data.message || 'Veuillez réessayer plus tard.'));
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur:', error);
-                    alert('Une erreur est survenue lors de l\'annulation de la demande.');
-                });
-            }
+        searchInput.addEventListener('input', filterWithdrawals);
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const color = this.dataset.color;
+                filterBtns.forEach(b => b.classList.remove('bg-green-600', 'bg-amber-500', 'bg-red-600', 'text-white', 'shadow-sm'));
+                this.classList.add(color, 'text-white', 'shadow-sm');
+                filterWithdrawals();
+            });
+        });
+
+        function showWithdrawalDetails(id) {
+            const modal = document.getElementById('withdrawalDetailsModal');
+            const content = document.getElementById('withdrawalDetailsContent');
+            modal.classList.remove('hidden');
+            content.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-green-500 text-2xl"></i></div>';
+            
+            fetch(`/dashboard/withdrawals/${id}`)
+                .then(r => r.text())
+                .then(html => content.innerHTML = html)
+                .catch(() => content.innerHTML = '<p class="text-red-500">Erreur de chargement</p>');
         }
 
         function closeModal() {

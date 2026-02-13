@@ -25,7 +25,7 @@ final class DashboardController extends AbstractController
     public function index(Security $security): Response
     {
         $user = $security->getUser();
-        $tontines = $this->entityManager->getRepository(Tontine::class)->findBy(['utilisateur' => $user]);
+        $tontines = $this->entityManager->getRepository(Tontine::class)->findBy(['utilisateur' => $user], ['statut' => 'ASC', 'id' => 'DESC']);
         
         // Fetch recent transactions
         $transactionsRepo = $this->entityManager->getRepository(\App\Entity\Transaction::class);
@@ -49,6 +49,39 @@ final class DashboardController extends AbstractController
             }
         }
 
+        // Calculate upcoming payments (next 30 days)
+        $upcomingPayments = [];
+        $now = new \DateTime();
+        $limitDate = (clone $now)->modify('+30 days');
+
+        foreach ($tontines as $tontine) {
+            if ($tontine->getStatut() !== 'active') {
+                continue;
+            }
+
+            $nextDueDate = $tontine->getNextDueDate();
+            if (!$nextDueDate) {
+                // effective start date if no next due date
+                $nextDueDate = $tontine->getStartDate();
+            }
+
+            if ($nextDueDate && $nextDueDate >= $now && $nextDueDate <= $limitDate) {
+                $upcomingPayments[] = [
+                    'tontine' => $tontine,
+                    'dueDate' => $nextDueDate,
+                    'amount' => $tontine->getAmountPerPoint() // Assuming 1 point payment
+                ];
+            }
+        }
+
+        // Sort by due date
+        usort($upcomingPayments, function ($a, $b) {
+            return $a['dueDate'] <=> $b['dueDate'];
+        });
+
+        // Limit to 4 items
+        $upcomingPayments = array_slice($upcomingPayments, 0, 4);
+
         $appData = [
             'user' => [
                 'id' =>  $user->getId(),
@@ -66,6 +99,7 @@ final class DashboardController extends AbstractController
             'user' => $appData['user'],
             'tontines' => $tontines,
             'recentTransactions' => $recentTransactions,
+            'upcomingPayments' => $upcomingPayments,
             'totalPaidNotRecovered' => $totalPaidNotRecovered,
             'totalBalance' => $totalBalance,
             'appDataJson' => json_encode($appData, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT),
@@ -99,6 +133,11 @@ final class DashboardController extends AbstractController
         }
 
         $tontines = $this->entityManager->getRepository(Tontine::class)->findBy(['utilisateur' => $user]);
+        
+        // Filtrer pour exclure les tontines "encaissées"
+        $tontines = array_filter($tontines, function($tontine) {
+            return !$tontine->isFullyWithdrawn();
+        });
         
 
         

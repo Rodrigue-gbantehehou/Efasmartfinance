@@ -23,15 +23,15 @@
                     <div class="relative flex-shrink-0">
                         <div class="h-16 w-16 rounded-full flex items-center justify-center text-white font-bold text-2xl shadow-md
                             {% if 'tontine' in notification.title|lower or 'tontine' in notification.message|lower %}
-                                bg-gradient-to-br from-purple-500 to-purple-600
+                                bg-gradient-to-br from-green-500 to-green-600
                             {% elseif 'portefeuille' in notification.title|lower or 'wallet' in notification.message|lower or 'dépôt' in notification.title|lower %}
-                                bg-gradient-to-br from-blue-500 to-blue-600
+                                bg-gradient-to-br from-green-500 to-green-600
                             {% elseif 'retrait' in notification.title|lower %}
                                 bg-gradient-to-br from-orange-500 to-orange-600
                             {% elseif 'transaction' in notification.title|lower %}
                                 bg-gradient-to-br from-cyan-500 to-cyan-600
                             {% elseif 'système' in notification.title|lower or 'compte' in notification.title|lower %}
-                                bg-gradient-to-br from-gray-500 to-gray-600
+                                bg-gradient-to-br from-gray-50 to-gray-600
                             {% else %}
                                 bg-gradient-to-br from-green-500 to-green-600
                             {% endif %}">
@@ -51,7 +51,7 @@
                             {% if notification.type == 'success' %}bg-green-500
                             {% elseif notification.type == 'warning' %}bg-yellow-500
                             {% elseif notification.type == 'danger' %}bg-red-500
-                            {% else %}bg-blue-500{% endif %}">
+                            {% else %}bg-green-500{% endif %}">
                             <i class="fa-solid text-white text-[10px]
                                 {% if notification.type == 'success' %}fa-check
                                 {% elseif notification.type == 'warning' %}fa-exclamation
@@ -67,9 +67,9 @@
                             <!-- Source Badge -->
                             <span class="inline-flex items-center px-2.5 py-1 rounded-lg text-xs font-semibold
                                 {% if 'tontine' in notification.title|lower or 'tontine' in notification.message|lower %}
-                                    bg-purple-100 text-purple-700
+                                    bg-green-100 text-green-700
                                 {% elseif 'portefeuille' in notification.title|lower or 'wallet' in notification.message|lower or 'dépôt' in notification.title|lower %}
-                                    bg-blue-100 text-blue-700
+                                    bg-green-100 text-green-700
                                 {% elseif 'retrait' in notification.title|lower %}
                                     bg-orange-100 text-orange-700
                                 {% elseif 'transaction' in notification.title|lower %}
@@ -95,7 +95,7 @@
                             </span>
                             
                             <!-- Timestamp -->
-                            <span class="text-xs text-gray-500 font-medium">
+                            <span class="text-xs text-gray-600 font-medium">
                                 <i class="fa-regular fa-clock mr-1"></i>
                                 <span class="relative-time" data-timestamp="{{ notification.createdAt|date('U') }}">
                                     {{ notification.createdAt|date('d/m/Y à H:i') }}
@@ -114,7 +114,7 @@
                         {% if not notification.isRead %}
                         <form action="{{ path('app_notifications_mark_read', {id: notification.id}) }}" method="POST">
                             <button type="submit" 
-                                    class="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" 
+                                    class="p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors" 
                                     title="Marquer comme lu">
                                 <i class="fa-solid fa-check"></i>
                             </button>
@@ -150,7 +150,7 @@
                     <i class="fa-solid fa-external-link"></i>
                     Ouvrir le lien associé
                 </a>
-                <p class="mt-3 text-xs text-gray-500 flex items-center gap-1.5">
+                <p class="mt-3 text-xs text-gray-600 flex items-center gap-1.5">
                     <i class="fa-solid fa-info-circle"></i>
                     Ce lien vous redirigera vers une page externe ou sécurisée.
                 </p>
@@ -161,14 +161,14 @@
         <!-- Footer Actions -->
         <div class="mt-6 flex items-center justify-between">
             <a href="{{ path('app_notifications_index') }}" 
-               class="text-sm text-gray-500 hover:text-gray-700 transition-colors">
+               class="text-sm text-gray-600 hover:text-gray-700 transition-colors">
                 ← Toutes les notifications
             </a>
             
             {% if not notification.isRead %}
             <form action="{{ path('app_notifications_mark_read', {id: notification.id}) }}" method="POST">
                 <button type="submit" 
-                        class="text-sm px-4 py-2 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded-lg font-medium transition-colors">
+                        class="text-sm px-4 py-2 bg-green-100 hover:bg-green-200 text-green-700 rounded-lg font-medium transition-colors">
                     <i class="fa-solid fa-check mr-1.5"></i>
                     Marquer comme lu
                 </button>

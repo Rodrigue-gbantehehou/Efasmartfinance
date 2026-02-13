@@ -22,15 +22,19 @@
             <!-- Recap -->
             <div class="space-y-4">
                 <div class="flex justify-between items-center text-sm border-b border-gray-50 pb-4">
-                    <span class="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Client</span>
+                    <span class="text-gray-600 font-bold uppercase tracking-widest text-[10px]">N° Facture</span>
+                    <span class="font-bold text-emerald-700">#{{ transaction.invoicePath|split('-')|last|split('.')|first }}</span>
+                </div>
+                <div class="flex justify-between items-center text-sm border-b border-gray-50 pb-4">
+                    <span class="text-gray-600 font-bold uppercase tracking-widest text-[10px]">Client</span>
                     <span class="font-bold text-gray-900">{{ user.fullName }}</span>
                 </div>
                 <div class="flex justify-between items-center text-sm border-b border-gray-50 pb-4">
-                    <span class="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Tontine</span>
+                    <span class="text-gray-600 font-bold uppercase tracking-widest text-[10px]">Tontine</span>
                     <span class="font-bold text-gray-900">{{ tontine.name }} ({{ tontine.tontineCode }})</span>
                 </div>
                 <div class="flex justify-between items-center text-sm">
-                    <span class="text-gray-400 font-bold uppercase tracking-widest text-[10px]">Montant</span>
+                    <span class="text-gray-600 font-bold uppercase tracking-widest text-[10px]">Montant</span>
                     <span class="text-xl font-black text-emerald-600">{{ transaction.amount|number_format(0, ',', ' ') }} FCFA</span>
                 </div>
             </div>
@@ -43,12 +47,12 @@
                 </a>
                 
                 <a href="{{ path('admin_caisse_index') }}" 
-                   class="w-full flex items-center justify-center py-5 bg-gray-50 text-gray-400 rounded-2xl text-sm font-bold uppercase tracking-widest hover:bg-gray-100 transition-all">
+                   class="w-full flex items-center justify-center py-5 bg-gray-50 text-gray-600 rounded-2xl text-sm font-bold uppercase tracking-widest hover:bg-gray-100 transition-all">
                     Nouveau Versement
                 </a>
             </div>
 
-            <p class="text-[10px] text-gray-400 italic">Le reçu est également disponible dans l'historique des transactions du client.</p>
+            <p class="text-[10px] text-gray-600 italic">Le reçu est également disponible dans l'historique des transactions du client.</p>
         </div>
     </div>
 </div>

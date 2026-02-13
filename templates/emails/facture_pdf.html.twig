@@ -322,6 +322,44 @@
             height: auto;
             margin-bottom: 10px;
         }
+
+        /* Signatures Section */
+        .signatures-section {
+            margin-top: 40px;
+            page-break-inside: avoid;
+        }
+        
+        .signature-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .signature-cell {
+            width: 33.33%;
+            padding: 10px;
+            vertical-align: top;
+            text-align: center;
+        }
+        
+        .signature-label {
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #2d3748;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #008040;
+            padding-bottom: 5px;
+        }
+        
+        .signature-space {
+            height: 60px;
+        }
+        
+        .signature-name {
+            font-size: 10px;
+            color: #718096;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -458,14 +496,24 @@
     </div>
     
     <!-- Payment Notes -->
-    <div class="notes">
-        <div class="notes-title">INFORMATIONS DE PAIEMENT</div>
-        <table width="100%">
+    <!-- Signatures Section -->
+    <div class="signatures-section">
+        <table class="signature-table">
             <tr>
-                <td>
-                    • Les fonds sont immédiatement crédités sur votre compte tontine<br>
-                    • Conservez cette facture pour vos archives<br>
-                    • Pour toute question, contactez-nous à support@efasmartfinance.com
+                <td class="signature-cell">
+                    <div class="signature-label">Le Client</div>
+                    <div class="signature-space"></div>
+                    <div class="signature-name">{{ payment.utilisateur.firstname ~ ' ' ~ payment.utilisateur.lastname }}</div>
+                </td>
+                <td class="signature-cell">
+                    <div class="signature-label">La Caisse</div>
+                    <div class="signature-space"></div>
+                    <div class="signature-name">Signature & Cachet</div>
+                </td>
+                <td class="signature-cell">
+                    <div class="signature-label">Le Manager</div>
+                    <div class="signature-space"></div>
+                    <div class="signature-name">Direction Générale</div>
                 </td>
             </tr>
         </table>

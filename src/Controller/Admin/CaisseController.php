@@ -7,6 +7,7 @@ use App\Entity\Tontine;
 use App\Service\ActivityLogger;
 use App\Repository\UserRepository;
 use App\Repository\TontineRepository;
+use App\Entity\Facture;
 use App\Entity\PlatformFee;
 use App\Entity\Transaction;
 use Doctrine\ORM\EntityManagerInterface;
@@ -91,6 +92,11 @@ class CaisseController extends AbstractController
     #[Route('/process-payment/{id}', name: 'admin_caisse_process_payment', methods: ['POST'])]
     public function processPayment(Request $request, Tontine $tontine): Response
     {
+        if ($tontine->getStatut() !== 'active') {
+            $this->addFlash('error', 'Cette tontine n\'est plus active. les paiements sont bloqués.');
+            return $this->redirectToRoute('admin_caisse_index');
+        }
+
         $amount = (int) $request->request->get('amount');
         $baseAmount = $tontine->getAmountPerPoint();
 
@@ -124,21 +130,35 @@ class CaisseController extends AbstractController
             
             $this->entityManager->persist($transaction);
 
-            // 2. Appliquer le paiement à la tontine
+            // 2. Créer la facture pour avoir un numéro officiel
+            $facture = new Facture();
+            $facture->setNumero($this->numerotationFactureService->genererNumero());
+            $facture->setDateEmission(new \DateTime());
+            $facture->setMontantHT((string)$amount);
+            $facture->setTva('0.00');
+            $facture->setMontantTTC((string)$amount);
+            $facture->setStatut('payee');
+            $facture->setClient($tontine->getUtilisateur());
+            $facture->setDescription('Encaissement espèces - Cotisation tontine : ' . $tontine->getName());
+            $this->entityManager->persist($facture);
+
+            // 3. Appliquer le paiement à la tontine
             $tontine->applyPayment($amount, $transaction, 'cash');
 
-            // 3. Générer le reçu PDF
+            // 4. Générer le reçu PDF
             $pdfPath = $this->pdfService->generateInvoice(
                 [
                     'transaction' => $transaction,
                     'user' => $tontine->getUtilisateur(),
                     'tontine' => $tontine,
+                    'facture' => $facture,
                 ],
                 'emails/recu_caisse_pdf.html.twig',
-                'recu-caisse-' . $transaction->getId()
+                'recu-caisse-' . $facture->getNumero()
             );
 
-            // 4. Mettre à jour la transaction avec le chemin du reçu
+            // 5. Mettre à jour la transaction et la facture avec les chemins
+            $facture->setFichier('factures/' . basename($pdfPath));
             $transaction->setInvoicePath('factures/' . basename($pdfPath));
 
             $this->entityManager->flush();
@@ -169,134 +189,6 @@ class CaisseController extends AbstractController
         }
     }
 
-    #[Route('/fee/{id}', name: 'admin_caisse_fee_form')]
-    public function feeForm(Tontine $tontine): Response
-    {
-        if ($tontine->isFraisPreleves()) {
-            $this->addFlash('info', 'Les frais pour cette tontine sont déjà réglés.');
-            return $this->redirectToRoute('admin_caisse_user_tontines', ['id' => $tontine->getUtilisateur()->getId()]);
-        }
-
-        // Calcul des frais (Reuse logic from TontineFeesController)
-        $months = $tontine->getTotalPoints() ?? 1;
-        $montantParPoint = $tontine->getAmountPerPoint(); 
-        $feePerMonth = 0;
-
-        if($tontine->getfrequency() == 'daily') {
-            $feePerMonth = $montantParPoint * $months / 30;
-            $months = $months / 30;
-        } elseif($tontine->getfrequency() == 'weekly') {
-            $feePerMonth = $montantParPoint * 4 / 30;
-            $months = $months / 4;
-        } elseif($tontine->getfrequency() == 'monthly') {
-            $feePerMonth = $montantParPoint / 30;
-        }
-        
-        $totalFee = (int) ($months * $feePerMonth);
-
-        return $this->render('admin/pages/caisse/fee_payment.html.twig', [
-            'tontine' => $tontine,
-            'user' => $tontine->getUtilisateur(),
-            'totalFee' => $totalFee
-        ]);
-    }
-
-    #[Route('/fee/process/{id}', name: 'admin_caisse_process_fees', methods: ['POST'])]
-    public function processFees(Request $request, Tontine $tontine): Response
-    {
-        if ($tontine->isFraisPreleves()) {
-            $this->addFlash('error', 'Les frais sont déjà réglés.');
-            return $this->redirectToRoute('admin_caisse_user_tontines', ['id' => $tontine->getUtilisateur()->getId()]);
-        }
-
-        $amount = (int) $request->request->get('amount');
-        if ($amount <= 0) {
-            $this->addFlash('error', 'Montant invalide.');
-            return $this->redirectToRoute('admin_caisse_fee_form', ['id' => $tontine->getId()]);
-        }
-
-        $this->entityManager->beginTransaction();
-        try {
-            $user = $tontine->getUtilisateur();
-
-            // 1. Créer la transaction pour les frais
-            $transaction = new Transaction();
-            $transaction->setTontine($tontine);
-            $transaction->setUtilisateur($user);
-            $transaction->setAmount((string)$amount);
-            $transaction->setType('frais_service');
-            $transaction->setPaymentMethod('cash');
-            $transaction->setStatut('completed');
-            $transaction->setCreatedAt(new \DateTimeImmutable());
-            $this->entityManager->persist($transaction);
-
-            // 2. Créer la facture
-            $facture = new \App\Entity\Facture();
-            $facture->setNumero($this->numerotationFactureService->genererNumero());
-            $facture->setDateEmission(new \DateTime());
-            $facture->setMontantHT((string)$amount);
-            $facture->setTva('0.00');
-            $facture->setMontantTTC((string)$amount);
-            $facture->setStatut('payee');
-            $facture->setClient($user);
-            $facture->setDescription('Paiement espèces des frais de service pour la tontine : ' . $tontine->getName());
-            $this->entityManager->persist($facture);
-
-            // 3. Créer l'enregistrement PlatformFee pour le dashboard admin
-            $platformFee = new PlatformFee();
-            $platformFee->setUser($user);
-            $platformFee->setTontine($tontine);
-            $platformFee->setAmount($amount);
-            $platformFee->setType('service_fee');
-            $platformFee->setStatus('collected');
-            $platformFee->setCreatedAt(new \DateTimeImmutable());
-            $this->entityManager->persist($platformFee);
-
-            // 4. Marquer la tontine
-            $tontine->setFraisPreleves(true);
-
-            // 4. Générer le PDF
-            $pdfPath = $this->pdfService->generateInvoice(
-                [
-                    'payment' => $transaction,
-                    'user' => $user,
-                    'facture' => $facture,
-                    'hasPdf' => true
-                ],
-                'emails/facture_frais_pdf.html.twig',
-                'facture-frais-' . $facture->getNumero()
-            );
-
-            $facture->setFichier('factures/' . basename($pdfPath));
-            $transaction->setInvoicePath('factures/' . basename($pdfPath));
-
-            $this->entityManager->flush();
-            $this->entityManager->commit();
-
-            // 5. Log activity
-            $this->activityLogger->log(
-                $this->getUser(),
-                'FEES_PAID_CASH',
-                'Tontine',
-                $tontine->getId(),
-                sprintf('Encaissement espèces des frais de service (%d FCFA) pour %s', $amount, $user->getFullName())
-            );
-
-            $this->addFlash('success', 'Les frais ont été encaissés avec succès.');
-            
-            return $this->render('admin/pages/caisse/fee_success.html.twig', [
-                'transaction' => $transaction,
-                'facture' => $facture,
-                'user' => $user,
-                'tontine' => $tontine
-            ]);
-
-        } catch (\Exception $e) {
-            $this->entityManager->rollback();
-            $this->addFlash('error', 'Erreur lors de l\'encaissement : ' . $e->getMessage());
-            return $this->redirectToRoute('admin_caisse_fee_form', ['id' => $tontine->getId()]);
-        }
-    }
 
     #[Route('/receipt/{id}/download', name: 'admin_caisse_receipt_download')]
     public function downloadReceipt(Transaction $transaction): Response

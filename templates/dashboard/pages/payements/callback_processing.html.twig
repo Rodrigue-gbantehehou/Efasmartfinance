@@ -12,24 +12,24 @@
         
         <div class="bg-gray-50 rounded-lg p-4 mb-6 text-left text-sm">
             <div class="grid grid-cols-2 gap-2">
-                <div class="text-gray-500">ID Transaction:</div>
+                <div class="text-gray-6000">ID Transaction:</div>
                 <div class="font-mono text-gray-900">{{ transaction_id }}</div>
                 
                 {% if status %}
-                <div class="text-gray-500">Statut:</div>
+                <div class="text-gray-6000">Statut:</div>
                 <div class="font-semibold {{ status == 'approved' ? 'text-green-600' : 'text-yellow-600' }}">
                     {{ status|upper }}
                 </div>
                 {% endif %}
                 
                 {% if reference %}
-                <div class="text-gray-500">Référence:</div>
+                <div class="text-gray-6000">Référence:</div>
                 <div class="font-mono text-gray-900">{{ reference }}</div>
                 {% endif %}
             </div>
         </div>
         
-        <div id="processing-message" class="text-sm text-gray-500 mb-4">
+        <div id="processing-message" class="text-sm text-gray-6000 mb-4">
             Vérification du paiement...
         </div>
     </div>

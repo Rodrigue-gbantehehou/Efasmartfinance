@@ -86,18 +86,6 @@ class WithdrawalRequestType extends AbstractType
 
             ]);
 
-            if ($options['tontine']->isFraisPreleves() === false) {
-                $builder->add('fee_payment_method', ChoiceType::class, [
-                'label' => 'Paiement des frais',
-                'mapped' => false, // IMPORTANT : ce n'est pas une propriété de l'entité
-                'required' => true,
-                'choices' => [
-                    'Payer en ligne ' => 'online',
-                    'Payer plus tard' => 'later',
-                ],
-                'expanded' => true,
-            ]);
-            }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

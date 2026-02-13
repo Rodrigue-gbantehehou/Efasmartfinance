@@ -34,7 +34,7 @@ final class TontineController extends AbstractController
             $this->addFlash('error', 'Vous avez atteint le nombre maximum de tontines actives.');
             return $this->redirectToRoute('app_tontines_index');
         }
-        return $this->render('tontine/index.html.twig', [
+        return $this->render('dashboard/pages/tontines/create.html.twig', [
             'controller_name' => 'TontineController',
         ]);
     }
@@ -105,8 +105,10 @@ final class TontineController extends AbstractController
         }
 
         // Date de début
-        $startDate = \DateTime::createFromFormat('Y-m-d', $data['startDate']);
-        if (!$startDate || $startDate < new \DateTime('today')) {
+        $startDate = \DateTime::createFromFormat('!Y-m-d', $data['startDate']);
+        $today = new \DateTime('today');
+
+        if (!$startDate || $startDate < $today) {
             return $this->json([
                 'success' => false,
                 'message' => 'Date de début invalide.'
@@ -115,13 +117,20 @@ final class TontineController extends AbstractController
 
         // 🔢 Calcul du nombre total de versements
         $totalPoints = match ($data['period']) {
-            'daily'   => $data['duration'] * 30,
+            'daily'   => $data['duration'] * 31,
             'weekly'  => $data['duration'] * 4,
             'monthly' => $data['duration'],
         };
 
-        // 💰 Commission 10 %
-        $commission = ($totalPoints * $data['amount']) * 0.10;
+        // 💰 Calcul de la commission selon la fréquence (identique à l'entité Tontine)
+        $durationInMonths = (int) $data['duration'];
+        $commission = match ($data['period']) {
+            'daily'   => $durationInMonths * $data['amount'],
+            'weekly'  => $durationInMonths * ($data['amount'] / 4),
+            'monthly' => $durationInMonths * ($data['amount'] / 30),
+            default   => 0,
+        };
+        $commission = round($commission);
 
         try {
             $tontine = new Tontine();

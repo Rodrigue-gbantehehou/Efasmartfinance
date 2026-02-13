@@ -14,11 +14,11 @@
                 <span class="text-xs font-bold text-emerald-600 uppercase tracking-widest">Revenue Analytics</span>
             </div>
             <h1 class="text-3xl font-bold font-poppins text-gray-900 tracking-tight">Tableau de bord des Commissions</h1>
-            <p class="text-gray-500 font-medium mt-1">Surveillance des flux de services et de la rentabilité opérationnelle.</p>
+            <p class="text-gray-600 font-medium mt-1">Surveillance des flux de services et de la rentabilité opérationnelle.</p>
         </div>
         <div class="flex items-center gap-4">
             <div class="h-14 px-6 bg-white border border-gray-100 rounded-2xl flex items-center gap-3 shadow-sm">
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Actualisé le</span>
+                <span class="text-xs font-bold text-gray-600 uppercase tracking-widest">Actualisé le</span>
                 <span class="text-sm font-bold text-gray-900">{{ currentDate|date('d M Y, H:i') }}</span>
             </div>
         </div>
@@ -37,15 +37,15 @@
                     <span class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-[10px] font-bold uppercase tracking-widest">Aujourd'hui</span>
                 </div>
                 <div>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Total Journalier</p>
+                    <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-1">Total Journalier</p>
                     <p class="text-4xl font-black font-poppins text-gray-900 leading-none">
-                        {{ dailyFees|reduce((total, fee) => total + fee.total, 0)|number_format(0, ',', ' ') }}<span class="text-sm ml-2 font-bold text-gray-400">FCFA</span>
+                        {{ dailyFees|reduce((total, fee) => total + fee.total, 0)|number_format(0, ',', ' ') }}<span class="text-sm ml-2 font-bold text-gray-600">FCFA</span>
                     </p>
                 </div>
                 <div class="mt-8 space-y-3">
                     {% for fee in dailyFees|slice(0, 3) %}
                         <div class="flex justify-between items-center text-xs">
-                            <span class="text-gray-500 font-medium">{{ fee.type|trans }}</span>
+                            <span class="text-gray-600 font-medium">{{ fee.type|trans }}</span>
                             <span class="text-gray-900 font-bold">+{{ fee.total|number_format(0, ',', ' ') }}</span>
                         </div>
                     {% endfor %}
@@ -67,15 +67,15 @@
                     <span class="px-3 py-1 bg-white/10 text-white rounded-lg text-[10px] font-bold uppercase tracking-widest">Ce mois</span>
                 </div>
                 <div>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Performance Mensuelle</p>
+                    <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-1">Performance Mensuelle</p>
                     <p class="text-4xl font-black font-poppins text-white leading-none">
-                        {{ monthlyFees|reduce((total, fee) => total + fee.total, 0)|number_format(0, ',', ' ') }}<span class="text-sm ml-2 font-bold text-gray-400">FCFA</span>
+                        {{ monthlyFees|reduce((total, fee) => total + fee.total, 0)|number_format(0, ',', ' ') }}<span class="text-sm ml-2 font-bold text-gray-600">FCFA</span>
                     </p>
                 </div>
                 <div class="mt-8 space-y-3">
                      {% for fee in monthlyFees|slice(0, 3) %}
                         <div class="flex justify-between items-center text-xs">
-                            <span class="text-gray-400 font-medium">{{ fee.type|trans }}</span>
+                            <span class="text-gray-600 font-medium">{{ fee.type|trans }}</span>
                             <span class="text-white font-bold">{{ fee.total|number_format(0, ',', ' ') }}</span>
                         </div>
                     {% endfor %}
@@ -93,16 +93,16 @@
                     <span class="px-3 py-1 bg-amber-100 text-amber-700 rounded-lg text-[10px] font-bold uppercase tracking-widest">Année {{ currentDate|date('Y') }}</span>
                 </div>
                 <div>
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Volume de Revenue Annuel</p>
+                    <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-1">Volume de Revenue Annuel</p>
                     <p class="text-4xl font-black font-poppins text-gray-900 leading-none">
-                        {{ annualFees|reduce((total, fee) => total + fee.total, 0)|number_format(0, ',', ' ') }}<span class="text-sm ml-2 font-bold text-gray-400">FCFA</span>
+                        {{ annualFees|reduce((total, fee) => total + fee.total, 0)|number_format(0, ',', ' ') }}<span class="text-sm ml-2 font-bold text-gray-600">FCFA</span>
                     </p>
                 </div>
                 <div class="mt-8">
                     <div class="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
                         <div class="bg-amber-500 h-full w-[75%]"></div>
                     </div>
-                    <p class="text-[10px] text-gray-400 font-bold uppercase mt-3">Projection: En hausse de 12%</p>
+                    <p class="text-[10px] text-gray-600 font-bold uppercase mt-3">Projection: En hausse de 12%</p>
                 </div>
             </div>
         </div>
@@ -113,7 +113,7 @@
         <div class="p-8 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
             <div>
                 <h3 class="text-xl font-bold text-gray-900 tracking-tight">Journal d'Audit des Frais</h3>
-                <p class="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Historique consolidé des prélèvements</p>
+                <p class="text-xs font-bold text-gray-600 uppercase tracking-widest mt-1">Historique consolidé des prélèvements</p>
             </div>
             <button class="h-12 px-6 bg-white border border-gray-100 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-600 hover:bg-gray-50 transition-all flex items-center gap-2">
                 <i class="fas fa-download"></i> Rapport Global
@@ -125,10 +125,10 @@
             <table class="w-full text-left border-collapse">
                 <thead>
                     <tr class="bg-white border-b border-gray-50">
-                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Type de Service</th>
-                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Volume Mensuel</th>
-                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Contribution (%)</th>
-                        <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest font-center">Actions</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-600 uppercase tracking-widest">Type de Service</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-600 uppercase tracking-widest">Volume Mensuel</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-600 uppercase tracking-widest">Contribution (%)</th>
+                        <th class="px-8 py-5 text-[10px] font-bold text-gray-600 uppercase tracking-widest font-center">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-50">
@@ -156,7 +156,7 @@
                             </div>
                         </td>
                         <td class="px-8 py-6">
-                            <a href="#" class="h-10 w-10 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all shadow-sm">
+                            <a href="#" class="h-10 w-10 rounded-xl bg-gray-50 text-gray-600 flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all shadow-sm">
                                 <i class="fas fa-magnifying-glass text-xs"></i>
                             </a>
                         </td>
@@ -171,7 +171,7 @@
                 <i class="fas fa-piggy-bank"></i>
             </div>
             <h4 class="text-lg font-bold text-gray-900">Aucun revenu pour le moment</h4>
-            <p class="text-gray-400 text-sm mt-2 max-w-xs">Les transactions de commission apparaîtront ici dès que les services seront sollicités.</p>
+            <p class="text-gray-600 text-sm mt-2 max-w-xs">Les transactions de commission apparaîtront ici dès que les services seront sollicités.</p>
         </div>
         {% endif %}
     </div>

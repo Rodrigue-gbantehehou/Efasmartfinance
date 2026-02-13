@@ -6,7 +6,7 @@
 <div class="min-h-screen bg-green-50 p-6 lg:p-8">
     <!-- Breadcrumb & Back -->
     <div class="mb-8 flex items-center justify-between">
-        <a href="{{ path('admin_support') }}" class="group flex items-center gap-2 text-gray-400 hover:text-emerald-600 transition-colors">
+        <a href="{{ path('admin_support') }}" class="group flex items-center gap-2 text-gray-600 hover:text-emerald-600 transition-colors">
             <div class="w-8 h-8 rounded-lg bg-white border border-gray-100 flex items-center justify-center shadow-sm group-hover:border-emerald-100 group-hover:bg-emerald-50">
                 <i class="fas fa-arrow-left text-xs"></i>
             </div>
@@ -14,7 +14,7 @@
         </a>
         <div class="flex items-center gap-2">
             <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter border
-                {{ ticket.isClosed() ? 'bg-gray-100 text-gray-500 border-gray-200' : 'bg-emerald-50 text-emerald-600 border-emerald-100' }}">
+                {{ ticket.isClosed() ? 'bg-gray-100 text-gray-600 border-gray-200' : 'bg-emerald-50 text-emerald-600 border-emerald-100' }}">
                 Statut: {{ ticket.isClosed() ? 'Clos' : 'Ouvert' }}
             </span>
         </div>
@@ -39,14 +39,14 @@
 
                 {% if ticket.fichier %}
                 <div class="mt-8 pt-8 border-t border-gray-50">
-                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Pièce jointe</p>
+                    <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-4">Pièce jointe</p>
                     <a href="{{ asset('uploads/support/' ~ ticket.fichier) }}" target="_blank" class="inline-flex items-center gap-3 p-4 bg-white border border-gray-100 rounded-xl hover:border-emerald-200 hover:shadow-md transition-all group">
                         <div class="w-10 h-10 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
                             <i class="fas fa-file-image"></i>
                         </div>
                         <div class="text-left">
                             <span class="block text-xs font-bold text-gray-900 uppercase">Visualiser le document</span>
-                            <span class="block text-[10px] text-gray-400">Cliquez pour ouvrir</span>
+                            <span class="block text-[10px] text-gray-600">Cliquez pour ouvrir</span>
                         </div>
                     </a>
                 </div>
@@ -62,7 +62,7 @@
                         </div>
                         <div>
                             <h3 class="text-sm font-bold font-poppins tracking-wide">Réponse Officielle</h3>
-                            <p class="text-[10px] text-gray-400 uppercase tracking-widest">Support Technique</p>
+                            <p class="text-[10px] text-gray-600 uppercase tracking-widest">Support Technique</p>
                         </div>
                     </div>
                 </div>
@@ -70,7 +70,7 @@
                 <div class="p-8 lg:p-10">
                     <form action="{{ path('admin_support_ticket_respond', {'id': ticket.id}) }}" method="POST" class="space-y-6">
                         <div class="space-y-2">
-                            <label for="response" class="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Message à l'utilisateur</label>
+                            <label for="response" class="text-[10px] font-bold text-gray-600 uppercase tracking-widest ml-1">Message à l'utilisateur</label>
                             <textarea id="response" name="response" rows="8" placeholder="Rédigez votre réponse ici..." 
                                 class="w-full p-6 bg-gray-50 border-none rounded-2xl focus:ring-2 focus:ring-emerald-500/20 text-sm font-medium transition-all min-h-[200px]">{{ ticket.reponse ?? '' }}</textarea>
                         </div>
@@ -106,14 +106,14 @@
         <div class="space-y-8">
             <!-- User Card -->
             <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm p-8">
-                <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 border-b border-gray-50 pb-4">Demandeur</p>
+                <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest mb-6 border-b border-gray-50 pb-4">Demandeur</p>
                 {% if ticket.utilisateur %}
                 <div class="text-center">
                     <div class="w-20 h-20 rounded-3xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl font-black uppercase mx-auto mb-4 shadow-inner">
                         {{ ticket.utilisateur.firstname|slice(0, 1) }}{{ ticket.utilisateur.lastname|slice(0, 1) }}
                     </div>
                     <h4 class="text-lg font-bold text-gray-900 font-poppins">{{ ticket.utilisateur.firstname }} {{ ticket.utilisateur.lastname }}</h4>
-                    <p class="text-xs text-gray-500 font-medium mb-6">{{ ticket.utilisateur.email }}</p>
+                    <p class="text-xs text-gray-600 font-medium mb-6">{{ ticket.utilisateur.email }}</p>
                     
                     <a href="{{ path('admin_users_details', {'id': ticket.utilisateur.id}) }}" class="flex items-center justify-center gap-2 w-full py-3 bg-gray-50 rounded-xl text-[10px] font-bold uppercase tracking-widest text-gray-600 hover:bg-emerald-50 hover:text-emerald-600 transition-all border border-transparent hover:border-emerald-100">
                         <i class="fas fa-external-link-alt text-[8px]"></i> Profil Complet
@@ -122,7 +122,7 @@
                 {% else %}
                 <div class="text-center py-6">
                     <i class="fas fa-mask text-3xl text-gray-100 mb-4 block"></i>
-                    <p class="text-xs font-bold text-gray-400 uppercase">Anonymat Total</p>
+                    <p class="text-xs font-bold text-gray-600 uppercase">Anonymat Total</p>
                 </div>
                 {% endif %}
             </div>
@@ -131,14 +131,14 @@
             <div class="bg-[#1e293b] rounded-[2.5rem] p-8 text-white relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16"></div>
                 
-                <p class="text-[10px] font-black text-gray-500 uppercase tracking-widest mb-6">Chronologie</p>
+                <p class="text-[10px] font-black text-gray-600 uppercase tracking-widest mb-6">Chronologie</p>
                 
                 <div class="space-y-8 relative before:absolute before:left-3 before:top-2 before:bottom-2 before:w-[2px] before:bg-white/10">
                     <div class="relative pl-10">
                         <div class="absolute left-0 top-0 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center ring-4 ring-slate-800">
                             <i class="fas fa-plus text-[8px]"></i>
                         </div>
-                        <p class="text-[10px] font-black text-gray-500 uppercase tracking-tighter">Création</p>
+                        <p class="text-[10px] font-black text-gray-600 uppercase tracking-tighter">Création</p>
                         <p class="text-xs font-bold mt-1 tracking-tight">{{ ticket.createdAt|date('d/m/Y H:i') }}</p>
                     </div>
 
@@ -147,7 +147,7 @@
                         <div class="absolute left-0 top-0 w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center ring-4 ring-slate-800">
                             <i class="fas fa-reply text-[8px]"></i>
                         </div>
-                        <p class="text-[10px] font-black text-gray-500 uppercase tracking-tighter">Réponse</p>
+                        <p class="text-[10px] font-black text-gray-600 uppercase tracking-tighter">Réponse</p>
                         <p class="text-xs font-bold mt-1 tracking-tight">{{ ticket.repliedAt|date('d/m/Y H:i') }}</p>
                     </div>
                     {% endif %}
@@ -157,7 +157,7 @@
                         <div class="absolute left-0 top-0 w-6 h-6 rounded-full bg-gray-600 flex items-center justify-center ring-4 ring-slate-800">
                             <i class="fas fa-lock text-[8px]"></i>
                         </div>
-                        <p class="text-[10px] font-black text-gray-500 uppercase tracking-tighter">Clôture</p>
+                        <p class="text-[10px] font-black text-gray-600 uppercase tracking-tighter">Clôture</p>
                         <p class="text-xs font-bold mt-1 tracking-tight">{{ ticket.closedAt|date('d/m/Y H:i') }}</p>
                     </div>
                     {% endif %}

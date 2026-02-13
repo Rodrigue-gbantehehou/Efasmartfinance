@@ -389,7 +389,7 @@
   {% include 'dashboard/links/_css.html.twig' %}
 </head>
 
-<body class="text-gray-800 min-h-screen flex flex-col safe-top safe-bottom" style="background-color: var(--app-bg-primary);">
+<body class="text-gray-800" style="background-color: var(--app-bg-primary);">
 <!-- Flash Messages - Version Centrée -->
 <div id="flash-messages" class="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none p-4">
   {% for label, messages in app.flashes %}
@@ -411,7 +411,7 @@
             {% elseif label == 'info' %}
               <i class="fas fa-info-circle text-green-500 text-3xl"></i>
             {% else %}
-              <i class="fas fa-bell text-gray-500 text-3xl"></i>
+              <i class="fas fa-bell text-gray-600 text-3xl"></i>
             {% endif %}
           </div>
           
@@ -456,7 +456,7 @@
         <!-- Bouton de fermeture en X (optionnel) -->
         <button 
           type="button" 
-          class="absolute top-3 right-3 flash-close-btn text-gray-400 hover:text-gray-600 transition-colors p-1"
+          class="absolute top-3 right-3 flash-close-btn text-gray-600 hover:text-gray-600 transition-colors p-1"
           aria-label="Fermer"
         >
           <i class="fas fa-times text-lg"></i>
@@ -502,9 +502,7 @@
   <!-- Mobile Drawer -->
   {% include "admin/partiales/mobiledrawer.html.twig" %}
   
-  <!-- Bottom Navigation Mobile -->
-  {% include "admin/partiales/bottom_nav_mobile.html.twig" %}
-  
+
   {% for label, messages in app.flashes %}
       {% for message in messages %}
           <div class="alert alert-{{ label }}" role="alert">
@@ -526,7 +524,7 @@
   <!-- Modal Container -->
   <div id="modal-container" class="fixed inset-0 z-40 overflow-y-auto hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
     <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+      <div class="fixed inset-0 bg-gray-50 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
       <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
       <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
         <!-- Modal content will be injected here -->

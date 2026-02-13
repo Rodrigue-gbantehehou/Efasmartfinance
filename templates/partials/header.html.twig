@@ -18,6 +18,8 @@
                     <span class="text-xs hover:text-white lg:text-sm font-medium  text-green-700 hover:bg-green-800 rounded-lg  px-3 lg:px-4 py-2 {{app.request.attributes.get('_route') == 'app_home' ? 'bg-green-800 px-3 lg:px-4 py-2 rounded-lg transition-all text-white transition-colors' : ''}} ">Accueil</span>
                     <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-green-700 to-secondary  group-hover:w-6 lg:group-hover:w-8 transition-all duration-300"></span>
                 </a>
+
+               
                 
                 <a href="{{path('app_tontines_index')}}" class="group  relative px-3 lg:px-4 py-2 transition-all duration-300 ">
                     <span class="text-xs hover:text-white lg:text-sm font-medium  text-green-700 hover:bg-green-800 rounded-lg  px-3 lg:px-4 py-2 {{app.request.attributes.get('_route') == 'app_tontines_index' ? 'bg-green-800/50 px-3 lg:px-4 py-2 rounded-lg transition-all  text-white transition-colors' : ''}}">Mes tontines</span>
@@ -27,6 +29,10 @@
                 <a href="{{ path('app_faq') }}" class="group relative px-3 lg:px-4 py-2 rounded-lg transition-all duration-300">
                     <span class="text-xs hover:text-white lg:text-sm font-medium text-green-700 hover:bg-green-800 rounded-lg  px-3 lg:px-4 py-2 {{app.request.attributes.get('_route') == 'app_faq' ? 'bg-green-800 px-3 lg:px-4 py-2 rounded-lg transition-all text-white transition-colors' : ''}}">FAQ</span>
                     <span class="absolute hover:text-white bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-green-700 to-secondary group-hover:w-6 lg:group-hover:w-8 transition-all duration-300"></span>
+                </a>
+                 <a href="{{ path('app_about') }}" class="group relative px-3 lg:px-4 py-2 rounded-lg transition-all duration-300 ">
+                    <span class="text-xs hover:text-white lg:text-sm font-medium  text-green-700 hover:bg-green-800 rounded-lg  px-3 lg:px-4 py-2 {{app.request.attributes.get('_route') == 'app_about' ? 'bg-green-800 px-3 lg:px-4 py-2 rounded-lg transition-all text-white transition-colors' : ''}} ">À propos</span>
+                    <span class="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-0 h-0.5 bg-gradient-to-r from-green-700 to-secondary  group-hover:w-6 lg:group-hover:w-8 transition-all duration-300"></span>
                 </a>
                 
                 <a href="{{ path('app_contact') }}" class="group relative px-3 lg:px-4 py-2 rounded-lg transition-all duration-300 ">
@@ -52,6 +58,14 @@
                        <span class="text-xs lg:text-sm font-semibold hidden lg:inline">Admin</span>
                    </a>
                    {% endif %}
+
+                   <!-- Compte mobile -->
+                  <a href="{{ path('app_dashboard') }}" class="lg:hidden flex flex-col items-center justify-center space-y-0.5 group">
+                      <div class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-green-700 border border-green-700 text-white shadow-sm hover:bg-green-700/80 transition-all">
+                          <i class="fas fa-user-alt text-xs sm:text-sm"></i>
+                      </div>
+                      <span class="text-[8px] sm:text-[10px] uppercase font-black text-green-800 tracking-tighter">Compte</span>
+                  </a>
                   
                 {% else %}
                   <!-- Connexion desktop -->
@@ -66,20 +80,24 @@
                       <span class="text-xs lg:text-sm font-semibold">S'inscrire</span>
                   </a>
                   
-                  <!-- Boutons mobile visibles sur tablette et mobile -->
-                  <div class="flex items-center space-x-2 sm:hidden">
-                      <a href="{{ path('app_login') }}" class="flex items-center justify-center w-10 h-10 border border-white bg-gradient-to-r from-green-700 to-green-700/90 text-white rounded-lg shadow hover:shadow-lg transition-all">
-                          <i class="fas fa-sign-in-alt text-sm"></i>
-                      </a>
-                  </div>
+                   <!-- Inscription mobile -->
+                  <a href="{{ path('app_register') }}" class="lg:hidden flex flex-col items-center justify-center space-y-0.5 group">
+                      <div class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-green-700 border border-green-700 text-white shadow-sm hover:bg-green-700/80 transition-all">
+                          <i class="fas fa-user-plus text-xs sm:text-sm"></i>
+                      </div>
+                      <span class="text-[8px] sm:text-[10px] uppercase font-black text-green-800 tracking-tighter">Inscription</span>
+                  </a>
                 {% endif %}
                 
                 <!-- Menu mobile toggle -->
-                <button id="openMobileMenu" class="lg:hidden relative w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-green-700 border border-green-700 text-white focus:outline-none hover:bg-green-700/50 transition-colors"
+                <button id="openMobileMenu" class="lg:hidden flex flex-col items-center justify-center space-y-0.5 focus:outline-none group"
                         aria-label="Ouvrir le menu" 
                         aria-controls="mobileMenu" 
                         aria-expanded="false">
-                    <i class="fas fa-bars text-base sm:text-lg"></i>
+                    <div class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-green-700 border border-green-700 text-white shadow-sm hover:bg-green-700/80 transition-all">
+                        <i class="fas fa-bars text-base sm:text-lg"></i>
+                    </div>
+                    <span class="text-[8px] sm:text-[10px] uppercase font-black text-green-800 tracking-tighter">menu</span>
                 </button>
             </div>
         </div>
@@ -92,26 +110,21 @@
      role="presentation"></div>
 
 <!-- Menu mobile -->
-<div id="mobileMenu" class="lg:hidden fixed inset-x-0 top-0 h-full bg-white text-green-700 z-[70] transform translate-x-full transition-transform duration-300 ease-out shadow-2xl"
+<div id="mobileMenu" class="lg:hidden fixed inset-x-0 top-0 h-full bg-green-700 text-white z-[70] transform translate-x-full transition-transform duration-300 ease-out shadow-2xl"
      aria-hidden="true">
     <div class="h-full flex flex-col">
         <!-- Header du menu -->
-        <div class="p-4 sm:p-6 border-b border-gray-200 bg-white">
+        <div class="p-4 sm:p-6 border-b border-white/10 bg-green-800">
             <div class="flex items-center justify-between">
                 <a href="{{ path('app_home') }}" class="flex items-center space-x-3 group" onclick="closeMobileMenu()">
-                    <div class="relative">
+                    <div class="relative p-1">
                         <img src="{{ asset('images/logovert.png') }}" 
                              alt="Logo EFA Smart Finance" 
-                             class="h-20">
-                        <div class="absolute inset-0 bg-gradient-to-r from-green-700/20 to-secondary/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                             class="h-16 brightness-0 invert">
                     </div>
-                     <!--<div class="flex flex-col">
-                        <span class="text-lg sm:text-xl font-bold text-white">EFA SMART</span>
-                        <span class="text-sm text-gray-300">FINANCE</span>
-                    </div>-->
                 </a>
                 <button id="closeMobileMenu" 
-                        class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                        class="w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
                         aria-label="Fermer le menu">
                     <i class="fas fa-times text-lg sm:text-xl"></i>
                 </button>
@@ -122,149 +135,111 @@
         <nav class="flex-1 p-4 sm:p-6 space-y-2 overflow-y-auto">
             <!-- Accueil -->
             <a href="#accueil" 
-               class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-gray-100 transition-all duration-300"
+               class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-white/10 transition-all duration-300"
                onclick="closeMobileMenu()">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                        <i class="fas fa-home text-green-600"></i>
+                    <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                        <i class="fas fa-home text-white"></i>
                     </div>
                     <div>
-                        <span class="font-semibold text-green-800 block">Accueil</span>
+                        <span class="font-semibold text-white block">Accueil</span>
                     </div>
                 </div>
-                <i class="fas fa-chevron-right text-green-500 text-sm"></i>
+                <i class="fas fa-chevron-right text-white/50 text-sm"></i>
             </a>
+
+         
   <!-- Mes tontines -->
             <a href="{{ path('app_tontines_index') }}" 
-               class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-gray-100 transition-all duration-300"
+               class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-white/10 transition-all duration-300"
                onclick="closeMobileMenu()">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-lg bg-yellow-100 flex items-center justify-center">
-                        <i class="fas fa-bank text-yellow-600"></i>
+                    <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                        <i class="fas fa-bank text-white"></i>
                     </div>
                     <div>
-                        <span class="font-semibold text-green-800 block">Mes tontines</span>
+                        <span class="font-semibold text-white block">Mes tontines</span>
                     </div>
                 </div>
-                <i class="fas fa-chevron-right text-green-500 text-sm"></i>
+                <i class="fas fa-chevron-right text-white/50 text-sm"></i>
             </a>
-            <!-- Tontines 
-            <a href="{{path('page_tontine')}}" 
-               class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-gray-100 transition-all duration-300"
-               onclick="closeMobileMenu()">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
-                        <i class="fas fa-users text-green-300"></i>
-                    </div>
-                    <div>
-                        <span class="font-semibold text-green-800 block">Tontines</span>
-                    </div>
-                </div>
-                <i class="fas fa-chevron-right text-green-500 text-sm"></i>
-            </a>-->
-
-           
-
+        
             <!-- Sécurité -->
             <a href="{{ path('app_faq') }}" 
-               class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-gray-100 transition-all duration-300"
+               class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-white/10 transition-all duration-300"
                onclick="closeMobileMenu()">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                        <i class="fas fa-question-circle text-green-600"></i>
+                    <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                        <i class="fas fa-question-circle text-white"></i>
                     </div>
                     <div>
-                        <span class="font-semibold text-green-800 block">FAQ</span>
+                        <span class="font-semibold text-white block">FAQ</span>
                     </div>
                 </div>
-                <i class="fas fa-chevron-right text-green-500 text-sm"></i>
+                <i class="fas fa-chevron-right text-white/50 text-sm"></i>
             </a>
 
-            <!-- Support 
-            <a href="{{ path('app_faq') }}" 
-               class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-gray-100 transition-all duration-300"
+          
+               <!-- À propos -->
+            <a href="{{ path('app_about') }}" 
+               class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-white/10 transition-all duration-300"
                onclick="closeMobileMenu()">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                        <i class="fas fa-question-circle text-green-600"></i>
+                    <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center text-white">
+                        <i class="fas fa-info-circle"></i>
                     </div>
                     <div>
-                        <span class="font-semibold text-green-800 block">Support</span>
+                        <span class="font-semibold text-white block">À propos</span>
                     </div>
                 </div>
-                <i class="fas fa-chevron-right text-green-500 text-sm"></i>
-            </a>-->
+                <i class="fas fa-chevron-right text-white/50 text-sm"></i>
+            </a>
 
             <a href="{{ path('app_contact') }}" 
-               class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-gray-100 transition-all duration-300"
+               class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-white/10 transition-all duration-300"
                onclick="closeMobileMenu()">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                        <i class="fas fa-envelope text-green-600"></i>
+                    <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                        <i class="fas fa-envelope text-white"></i>
                     </div>
                     <div>
-                        <span class="font-semibold text-green-800 block">Contact</span>
+                        <span class="font-semibold text-white block">Contact</span>
                     </div>
                 </div>
-                <i class="fas fa-chevron-right text-green-500 text-sm"></i>
+                <i class="fas fa-chevron-right text-white/50 text-sm"></i>
             </a>
-          <!-- contact   <a href="{{ path('app_tutoriels') }}" 
-               class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-gray-100 transition-all duration-300"
-               onclick="closeMobileMenu()">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
-                        <i class="fas fa-graduation-cap text-green-300"></i>
-                    </div>
-                    <div>
-                        <span class="font-semibold text-green-800 block">Tutoriels</span>
-                    </div>
-                </div>
-                <i class="fas fa-chevron-right text-green-500 text-sm"></i>
-            </a>
-            <a href="{{ path('app_blog') }}" 
-               class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-gray-100 transition-all duration-300"
-               onclick="closeMobileMenu()">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center">
-                        <i class="fas fa-newspaper text-yellow-300"></i>
-                    </div>
-                    <div>
-                        <span class="font-semibold text-green-800 block">Blog</span>
-                    </div>
-                </div>
-                <i class="fas fa-chevron-right text-green-500 text-sm"></i>
-            </a> -->
+
             <a href="{{ app.user ? path('app_dashboard') : path('app_login') }}" 
-               class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-gray-100 transition-all duration-300"
+               class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-white/10 transition-all duration-300"
                onclick="closeMobileMenu()">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                        <i class="fas fa-user text-green-800"></i>
+                    <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                        <i class="fas fa-user text-white"></i>
                     </div>
                     <div>
-                        <span class="font-semibold text-green-800 block">
+                        <span class="font-semibold text-white block">
                             {% if app.user %}Mon compte{% else %}Connexion{% endif %}
                         </span>
                     </div>
                 </div>
-                <i class="fas fa-arrow-right text-green-500 text-sm"></i>
+                <i class="fas fa-arrow-right text-white/50 text-sm"></i>
             </a>
           
              <!-- admin -->
             {% if app.user %}
              {% if is_granted('ROLE_SUPPORT') %}
              <a href="{{ path('admin_dashboard') }}" 
-               class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-gray-100 transition-all duration-300"
+               class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-white/10 transition-all duration-300"
                onclick="closeMobileMenu()">
                 <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                        <i class="fas fa-user-shield text-green-600"></i>
+                    <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                        <i class="fas fa-user-shield text-white"></i>
                     </div>
                     <div>
-                        <span class="font-semibold text-green-800 block">Admin</span>
+                        <span class="font-semibold text-white block">Admin</span>
                     </div>
                 </div>
-                <i class="fas fa-chevron-right text-green-500 text-sm"></i>
+                <i class="fas fa-chevron-right text-white/50 text-sm"></i>
             </a>
              {% endif %}
              {% endif %}  
@@ -286,9 +261,9 @@
 
             <!-- Contact -->
             <div class="text-center">
-                <p class="text-sm text-gray-300 mb-2">Besoin d'aide ?</p>
+                <p class="text-sm text-white/60 mb-2">Besoin d'aide ?</p>
                 <a href="mailto:support@efasmartfinance.com" 
-                   class="inline-flex items-center justify-center space-x-2 text-green-700 hover:text-green-600 transition-colors"
+                   class="inline-flex items-center justify-center space-x-2 text-white hover:text-white/80 transition-colors"
                    onclick="closeMobileMenu()">
                     <i class="fas fa-envelope"></i>
                     <span class="font-medium text-sm">support@efasmartfinance.com</span>
@@ -297,10 +272,10 @@
         </div>
 
         <!-- Footer du menu -->
-        <div class="p-4 sm:p-6 border-t border-gray-200 bg-white">
-            <div class="text-center text-gray-600 text-xs sm:text-sm">
+        <div class="p-4 sm:p-6 border-t border-white/10 bg-green-800">
+            <div class="text-center text-white/50 text-xs sm:text-sm">
                 <p class="mb-2">© <span id="year">{{ "now"|date("Y") }}</span> EFA Smart Finance</p>
-                <p class="text-gray-500">Tous droits réservés</p>
+                <p>Tous droits réservés</p>
             </div>
         </div>
     </div>

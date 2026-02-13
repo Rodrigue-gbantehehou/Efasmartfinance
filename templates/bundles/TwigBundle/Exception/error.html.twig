@@ -1,180 +1,104 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Erreur {{ status_code }}{% endblock %}
-
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .error-container {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-        
-        .error-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            padding: 3rem;
-            text-align: center;
-            max-width: 500px;
-            margin: 0 20px;
-        }
-        
-        .error-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 2rem;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 2.5rem;
-        }
-        
-        .error-code {
-            font-size: 6rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin: 0;
-            line-height: 1;
-        }
-        
-        .error-title {
-            font-size: 1.5rem;
-            color: #333;
-            margin: 1rem 0;
-            font-weight: 600;
-        }
-        
-        .error-message {
-            color: #666;
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-        
-        .btn-home {
-            display: inline-block;
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: 500;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin: 0 5px;
-        }
-        
-        .btn-home:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-            color: white;
-        }
-        
-        .btn-secondary {
-            display: inline-block;
-            padding: 12px 30px;
-            background: white;
-            color: #667eea;
-            text-decoration: none;
-            border: 2px solid #667eea;
-            border-radius: 25px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin: 0 5px;
-        }
-        
-        .btn-secondary:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-        }
-        
-        @media (max-width: 768px) {
-            .error-card {
-                padding: 2rem;
-            }
-            
-            .error-code {
-                font-size: 4rem;
-            }
-            
-            .btn-home, .btn-secondary {
-                display: block;
-                margin: 10px auto;
-                width: 200px;
-            }
-        }
-    </style>
-{% endblock %}
+{% block title %}Erreur {{ status_code is defined ? status_code : '500' }}{% endblock %}
 
 {% block body %}
-<div class="error-container">
-    <div class="error-card">
-        <div class="error-icon">
-            {% if status_code == 404 %}
-                <i class="fas fa-search"></i>
-            {% elseif status_code == 500 %}
-                <i class="fas fa-exclamation-triangle"></i>
-            {% else %}
-                <i class="fas fa-exclamation-circle"></i>
-            {% endif %}
+<div class="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center p-4">
+    <!-- Main Card -->
+    <div class="relative w-full max-w-lg">
+
+        <!-- Decorative Elements -->
+        <div
+            class="absolute -top-10 -right-10 w-32 h-32 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob">
         </div>
-        
-        <h1 class="error-code">{{ status_code }}</h1>
-        <h2 class="error-title">
-            {% if status_code == 404 %}
-                Page non trouvée
-            {% elseif status_code == 500 %}
-                Erreur serveur
-            {% else %}
-                Erreur
-            {% endif %}
-        </h2>
-        
-        <p class="error-message">
-            {% if status_code == 404 %}
-                La page que vous recherchez n'existe pas ou a été déplacée.
-            {% elseif status_code == 500 %}
-                Une erreur interne est survenue. Nos équipes en ont été informées et travaillent à résoudre le problème.
-            {% else %}
-                Une erreur est survenue. Veuillez réessayer plus tard.
-            {% endif %}
-        </p>
-        
-        <div style="margin-top: 2rem;">
-            {% if app.user %}
-                {% if is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('admin_dashboard') }}" class="btn-home">
-                        <i class="fas fa-tachometer-alt"></i> Tableau de bord admin
-                    </a>
-                {% elseif is_granted('ROLE_USER') %}
-                    <a href="{{ path('dashboard') }}" class="btn-home">
-                        <i class="fas fa-home"></i> Tableau de bord
-                    </a>
-                {% endif %}
-            {% endif %}
-            
-            <a href="{{ path('app_home') }}" class="btn-secondary">
-                <i class="fas fa-home"></i> Accueil
-            </a>
+        <div
+            class="absolute -bottom-10 -left-10 w-32 h-32 bg-green-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000">
         </div>
-        
-        {% if status_code == 500 %}
-            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #eee;">
-                <p style="color: #999; font-size: 0.9rem;">
-                    Référence de l'erreur: {{ status_text }}
-                </p>
+
+        <div
+            class="relative bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl p-8 md:p-12 text-center border border-white/20">
+            <!-- Icon -->
+            <div class="w-24 h-24 mx-auto mb-8 relative">
+                <div class="absolute inset-0 bg-red-100 rounded-full animate-pulse"></div>
+                <div
+                    class="relative w-full h-full flex items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-red-600 shadow-lg">
+                    <i class="fas fa-exclamation-triangle text-4xl text-white"></i>
+                </div>
             </div>
-        {% endif %}
+
+            <!-- Error Code -->
+            <h1
+                class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-700 to-green-900 mb-2 font-poppins">
+                {{ status_code is defined ? status_code : '500' }}
+            </h1>
+
+            <!-- Message -->
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                Une erreur est survenue
+            </h2>
+
+            <p class="text-gray-600 mb-8 leading-relaxed">
+                {{ (status_text is defined) ? status_text : 'Nous rencontrons un problème technique. Veuillez réessayer ultérieurement.' }}
+            </p>
+
+            <!-- Actions -->
+            <div class="space-y-3">
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="{{ path('app_home') }}"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-green-700 text-white font-semibold shadow-lg shadow-green-200 hover:bg-green-800 hover:shadow-green-300 transition-all duration-300 transform hover:-translate-y-0.5">
+                        <i class="fas fa-home mr-2"></i>
+                        Retour à l'accueil
+                    </a>
+
+                    {% if app.user %}
+                    <a href="{{ path('dashboard') }}"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-white text-green-700 border-2 border-green-100 font-semibold hover:bg-green-50 hover:border-green-200 transition-all duration-300">
+                        <i class="fas fa-columns mr-2"></i>
+                        Tableau de bord
+                    </a>
+                    {% endif %}
+                </div>
+
+                <button onclick="window.history.back()"
+                    class="text-sm text-gray-6000 hover:text-green-600 transition-colors mt-4 inline-flex items-center">
+                    <i class="fas fa-arrow-left mr-1"></i> Réessayer la page précédente
+                </button>
+            </div>
+        </div>
+
+        <!-- Support Footer -->
+        <div class="text-center mt-8 text-sm text-gray-6000">
+            Besoin d'aide ? <a href="mailto:support@efasmartfinance.com"
+                class="text-green-700 font-semibold hover:underline">Contactez le support</a>
+        </div>
     </div>
 </div>
+
+<style>
+    @keyframes blob {
+        0% {
+            transform: translate(0px, 0px) scale(1);
+        }
+
+        33% {
+            transform: translate(30px, -50px) scale(1.1);
+        }
+
+        66% {
+            transform: translate(-20px, 20px) scale(0.9);
+        }
+
+        100% {
+            transform: translate(0px, 0px) scale(1);
+        }
+    }
+
+    .animate-blob {
+        animation: blob 7s infinite;
+    }
+
+    .animation-delay-2000 {
+        animation-delay: 2s;
+    }
+</style>
 {% endblock %}

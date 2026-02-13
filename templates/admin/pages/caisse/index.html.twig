@@ -8,7 +8,7 @@
         <!-- Header -->
         <div class="text-center space-y-2">
             <h1 class="text-3xl font-bold font-poppins text-gray-900">Guichet de Paiement</h1>
-            <p class="text-gray-500">Recherchez un client par téléphone, email ou nom pour enregistrer un versement.</p>
+            <p class="text-gray-600">Recherchez un client par téléphone, email ou nom pour enregistrer un versement.</p>
         </div>
 
         <!-- Barre de Recherche -->
@@ -22,7 +22,7 @@
             
             <!-- Résultats de recherche -->
             <div id="searchResults" class="absolute z-20 w-full mt-4 bg-white rounded-3xl shadow-2xl border border-gray-100 overflow-hidden hidden">
-                <div class="p-4 text-xs font-black text-gray-400 uppercase tracking-widest border-b border-gray-50">Résultats correspondants</div>
+                <div class="p-4 text-xs font-black text-gray-600 uppercase tracking-widest border-b border-gray-50">Résultats correspondants</div>
                 <div id="resultsList" class="divide-y divide-gray-50 max-h-[400px] overflow-y-auto">
                     <!-- Les résultats seront injectés ici -->
                 </div>
@@ -36,21 +36,21 @@
                     <i class="fas fa-search"></i>
                 </div>
                 <h3 class="font-bold text-gray-900">1. Rechercher</h3>
-                <p class="text-xs text-gray-400">Trouvez le client instantanément</p>
+                <p class="text-xs text-gray-600">Trouvez le client instantanément</p>
             </div>
             <div class="bg-white p-6 rounded-3xl border border-gray-50 text-center space-y-3">
                 <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-list-check"></i>
                 </div>
                 <h3 class="font-bold text-gray-900">2. Choisir</h3>
-                <p class="text-xs text-gray-400">Sélectionnez la tontine à créditer</p>
+                <p class="text-xs text-gray-600">Sélectionnez la tontine à créditer</p>
             </div>
             <div class="bg-white p-6 rounded-3xl border border-gray-50 text-center space-y-3">
                 <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
                     <i class="fas fa-receipt"></i>
                 </div>
                 <h3 class="font-bold text-gray-900">3. Encaisser</h3>
-                <p class="text-xs text-gray-400">Saisissez le montant et validez</p>
+                <p class="text-xs text-gray-600">Saisissez le montant et validez</p>
             </div>
         </div>
     </div>
@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 <div class="flex items-center justify-between">
                                     <div>
                                         <p class="font-bold text-gray-900 group-hover:text-emerald-700">${user.fullName}</p>
-                                        <p class="text-xs text-gray-500">${user.phone || 'Pas de numéro'}</p>
+                                        <p class="text-xs text-gray-600">${user.phone || 'Pas de numéro'}</p>
                                     </div>
                                     <i class="fas fa-chevron-right text-gray-300 group-hover:text-emerald-500 transition-colors"></i>
                                 </div>
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                         results.classList.remove('hidden');
                     } else {
-                        resultsList.innerHTML = '<div class="p-8 text-center text-gray-400 text-sm">Aucun client trouvé</div>';
+                        resultsList.innerHTML = '<div class="p-8 text-center text-gray-600 text-sm">Aucun client trouvé</div>';
                         results.classList.remove('hidden');
                     }
                 });

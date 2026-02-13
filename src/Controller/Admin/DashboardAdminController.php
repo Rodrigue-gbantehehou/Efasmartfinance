@@ -91,6 +91,7 @@ class DashboardAdminController extends AbstractController
             'tontines_today' => $this->tontineRepository->countTontinesToday(),
             'pending_withdrawals' => $this->withdrawalsRepository->countPending(),
             'pending_withdrawals_amount' => $this->withdrawalsRepository->getPendingAmount(),
+            'total_withdrawals_amount' => $this->withdrawalsRepository->getTotalApprovedAmount(),
             'pending_verifications' => $this->userRepository->countPendingVerification(),
             'security_alerts' => $this->entityManager->getRepository(ActivityLog::class)->countSecurityAlertsToday(),
         ];

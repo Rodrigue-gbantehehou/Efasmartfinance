@@ -41,7 +41,7 @@ class SettingType extends AbstractType
                 'required' => false,
                 'label_attr' => ['class' => 'font-medium text-gray-700'],
                 'help' => 'Activez cette option pour mettre le site en mode maintenance. Seuls les administrateurs pourront y accéder.',
-                'help_attr' => ['class' => 'text-gray-500 text-sm']
+                'help_attr' => ['class' => 'text-gray-6000 text-sm']
             ]);
     }
 

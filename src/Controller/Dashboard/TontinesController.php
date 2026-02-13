@@ -5,6 +5,7 @@ namespace App\Controller\Dashboard;
 use App\Entity\Tontine;
 use App\Form\TontineType;
 use App\Repository\TontineRepository;
+use App\Service\PinAuthService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -37,8 +38,8 @@ final class TontinesController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        // Récupérer uniquement les tontines de l'utilisateur connecté
-        $userTontines = $tontineRepository->findBy(['utilisateur' => $user]);
+        // Récupérer uniquement les tontines de l'utilisateur connecté, triées par statut (actives en premier)
+        $userTontines = $tontineRepository->findBy(['utilisateur' => $user], ['statut' => 'ASC', 'id' => 'DESC']);
 
         return $this->render('dashboard/pages/tontines/tontines.html.twig', [
             'tontines' => $userTontines,
@@ -100,9 +101,12 @@ final class TontinesController extends AbstractController
         }
         $uiState = match (true) {
             $tontine->getStatut() === 'active' => 'ACTIVE',
-            $tontine->getStatut() === 'completed' && $tontine->isFullyWithdrawn() => 'COMPLETED_FULL_WITHDRAWAL',
-            $tontine->getStatut() === 'completed' && $tontine->isPartiallyWithdrawn() => 'PARTIAL_WITHDRAWAL',
-            $tontine->getStatut() === 'completed' && $tontine->getWithdrawnAmount() === 0 => 'COMPLETED_NO_WITHDRAWAL',
+            $tontine->getStatut() === 'completed' || $tontine->getStatut() === 'terminated' => match (true) {
+                $tontine->isFullyWithdrawn() => 'COMPLETED_FULL_WITHDRAWAL',
+                $tontine->isPartiallyWithdrawn() => 'PARTIAL_WITHDRAWAL',
+                default => 'COMPLETED_NO_WITHDRAWAL',
+            },
+            default => 'INACTIVE',
         };
 
 
@@ -178,5 +182,69 @@ final class TontinesController extends AbstractController
             'message' => 'Paiement enregistré avec succès',
             'redirect_url' => $this->generateUrl('app_tontines_show', ['id' => $data['tontine_id']])
         ]);
+    }
+
+    #[Route('/{id}/terminate/request', name: 'app_tontine_terminate_request', methods: ['GET'])]
+    public function terminateRequest(Tontine $tontine, Request $request): Response
+    {
+        $user = $this->getUser();
+        if ($tontine->getUtilisateur() !== $user) {
+            throw $this->createAccessDeniedException();
+        }
+
+        // Stocker l'intention en session
+        $request->getSession()->set('pending_tontine_termination', $tontine->getId());
+        $request->getSession()->set('_security.main.target_path', $this->generateUrl('app_tontine_terminate', ['id' => $tontine->getId()]));
+
+        return $this->redirectToRoute('pin_verify');
+    }
+
+    #[Route('/{id}/terminate', name: 'app_tontine_terminate', methods: ['GET'])]
+    public function terminate(Tontine $tontine, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+        $session = $request->getSession();
+
+        // Vérifier la propriété
+        if ($tontine->getUtilisateur() !== $user) {
+            throw $this->createAccessDeniedException();
+        }
+
+        // Vérifier si le PIN a été validé (via le flag mis par PinVerificationController)
+        if (!$session->get('pin_verified')) {
+            return $this->redirectToRoute('app_tontine_terminate_request', ['id' => $tontine->getId()]);
+        }
+
+        // Vérifier si c'est bien la tontine attendue
+        if ($session->get('pending_tontine_termination') !== $tontine->getId()) {
+            $session->remove('pin_verified');
+            return $this->redirectToRoute('app_tontines_show', ['id' => $tontine->getId()]);
+        }
+
+        // Nettoyer la session
+        $session->remove('pending_tontine_termination');
+        $session->remove('pin_verified');
+
+        // Si elle est déjà terminée, on ne fait rien
+        if ($tontine->getStatut() === 'completed' || $tontine->getStatut() === 'terminated') {
+            $this->addFlash('warning', 'Cette tontine est déjà clôturée.');
+            return $this->redirectToRoute('app_tontines_show', ['id' => $tontine->getId()]);
+        }
+
+        // Marquer la tontine comme terminée ou la supprimer si aucun versement
+        if ($tontine->getTotalPay() === 0) {
+            $entityManager->remove($tontine);
+            $entityManager->flush();
+            $this->addFlash('success', 'La tontine a été supprimée car aucun versement n\'avait été effectué.');
+            return $this->redirectToRoute('app_tontines_index');
+        }
+
+        $tontine->setStatut('terminated');
+        $tontine->setEndedAt(new \DateTimeImmutable());
+        $entityManager->flush();
+
+        $this->addFlash('success', 'La tontine a été clôturée avec succès. Vous pouvez maintenant retirer votre solde disponible.');
+
+        return $this->redirectToRoute('app_tontines_show', ['id' => $tontine->getId()]);
     }
 }

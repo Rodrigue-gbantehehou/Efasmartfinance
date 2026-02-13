@@ -27,11 +27,15 @@ class WithdrawalAdminController extends AbstractController
         $this->denyAccessUnlessGranted('VIEW_MODULE', 'withdrawals');
         $withdrawals = $withdrawalRepository->findBy([], ['requestedAt' => 'DESC']);
         
+        $approvedCount = $withdrawalRepository->count(['statut' => 'approved']);
+        $totalCount = count($withdrawals);
+        
         $stats = [
-            'pending_count' => $withdrawalRepository->countPending(),
+            'pending_count' => $withdrawalRepository->count(['statut' => 'pending']),
             'pending_amount' => $withdrawalRepository->getPendingAmount(),
             'total_approved' => $withdrawalRepository->getTotalApprovedAmount(),
-            'total_count' => count($withdrawals),
+            'total_count' => $totalCount,
+            'success_rate' => $totalCount > 0 ? ($approvedCount / $totalCount) * 100 : 0,
         ];
         
         return $this->render('admin/withdrawals/index.html.twig', [

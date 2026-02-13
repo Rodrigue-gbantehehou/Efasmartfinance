@@ -8,7 +8,7 @@
     <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
         <div>
             <h1 class="text-3xl font-bold text-pro-green-900">Demandes d'activation</h1>
-            <p class="text-gray-500 mt-1">Gérez les vérifications d'identité en attente</p>
+            <p class="text-gray-600 mt-1">Gérez les vérifications d'identité en attente</p>
         </div>
         
         <div class="flex items-center gap-4">
@@ -18,7 +18,7 @@
                 </div>
                 <div>
                     <div class="text-2xl font-bold text-pro-green-900">{{ activations|length }}</div>
-                    <div class="text-xs text-gray-400 uppercase tracking-wider font-semibold">En attente</div>
+                    <div class="text-xs text-gray-600 uppercase tracking-wider font-semibold">En attente</div>
                 </div>
             </div>
         </div>
@@ -55,13 +55,13 @@
                                         </div>
                                         <div class="ml-4">
                                             <div class="text-sm font-bold text-pro-green-900 group-hover:text-pro-green-600 transition-colors">{{ user.firstname }} {{ user.lastname }}</div>
-                                            <div class="text-xs text-gray-400">ID: #{{ user.id }}</div>
+                                            <div class="text-xs text-gray-600">ID: #{{ user.id }}</div>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="text-sm text-gray-700 font-medium">{{ user.email }}</div>
-                                    <div class="text-xs text-gray-400 flex items-center gap-1">
+                                    <div class="text-xs text-gray-600 flex items-center gap-1">
                                         <i class="fas fa-phone-alt text-[10px]"></i>
                                         {{ user.phoneNumber|default('Non renseigné') }}
                                     </div>
@@ -122,7 +122,7 @@
                     <i class="fas fa-check-double text-4xl text-pro-green-300"></i>
                 </div>
                 <h3 class="text-xl font-bold text-pro-green-900">Tout est à jour !</h3>
-                <p class="text-gray-500 mt-2">Aucune nouvelle demande d'activation en attente.</p>
+                <p class="text-gray-600 mt-2">Aucune nouvelle demande d'activation en attente.</p>
             </div>
         {% endif %}
     </div>
@@ -134,7 +134,7 @@
         <div class="bg-white rounded-[2rem] shadow-2xl max-w-lg w-full transform transition-all scale-90 opacity-0 duration-300 pointer-events-auto overflow-hidden border border-pro-green-100" id="modalContent">
             <div class="p-6 flex items-center justify-between border-b border-pro-green-50">
                 <h3 class="font-bold text-pro-green-900" id="modalTitle">Aperçu du Selfie</h3>
-                <button onclick="closePreview()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-pro-green-50 text-gray-400 hover:text-pro-green-600 transition-colors">
+                <button onclick="closePreview()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-pro-green-50 text-gray-600 hover:text-pro-green-600 transition-colors">
                     <i class="fas fa-times"></i>
                 </button>
             </div>

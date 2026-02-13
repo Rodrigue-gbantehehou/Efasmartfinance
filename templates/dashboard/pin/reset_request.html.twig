@@ -3,8 +3,8 @@
 {% block title %}Récupération du Code PIN — EFA SMART FINANCE{% endblock %}
 
 {% block contentdashboard %}
-<div class="min-h-screen bg-green-50-slate-50 flex items-center justify-center p-4 font-poppins">
-    <div class="max-w-md w-full bg-white p-10 rounded-[2.5rem] shadow-xl border border-gray-100 animate-fade-in-up">
+<div class="min-h-screen bg-green-800 flex items-center justify-center p-4 font-poppins">
+    <div class="max-w-md w-full bg-white p-6 md:p-10 rounded-[2.5rem] shadow-xl border border-gray-100 animate-fade-in-up">
         <div class="text-center mb-10">
             <div
                 class="mx-auto h-20 w-20 bg-red-50 rounded-3xl flex items-center justify-center text-red-500 mb-6 border border-red-100">
@@ -35,7 +35,7 @@
         <form method="post" action="{{ path('pin_reset_request') }}" class="space-y-6">
             <div>
                 <label for="password"
-                    class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Votre mot de passe
+                    class="block text-xs font-bold text-gray-600 uppercase tracking-widest mb-3">Votre mot de passe
                     actuel</label>
                 <div class="relative group">
                     <div

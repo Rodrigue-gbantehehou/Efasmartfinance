@@ -3,7 +3,7 @@
 {% block title %}Tarifs & Prix - EFA SMART FINANCE{% endblock %}
 
 {% block contentdashboard %}
-<div class="min-h-screen bg-green-50-gray-50">
+<div class="min-h-screen bg-gray-50">
     <!-- Header -->
     <div class="bg-white border-b border-gray-200 px-4 py-4">
         <div class="max-w-7xl mx-auto">
@@ -12,13 +12,7 @@
                     <h1 class="text-2xl font-bold text-gray-900">Tarifs & Prix</h1>
                     <p class="text-gray-600 mt-1">Transparence totale sur nos frais</p>
                 </div>
-                <div class="flex gap-2 mt-3 md:mt-0">
-                    <button onclick="calculateFees()"
-                            class="inline-flex items-center px-4 py-2 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors touch-target">
-                        <i class="fa-solid fa-calculator mr-2"></i>
-                        Calculateur de frais
-                    </button>
-                </div>
+           
             </div>
         </div>
     </div>
@@ -28,8 +22,10 @@
         <div class="bg-gradient-to-r from-green-700 to-green-600 rounded-2xl p-6 md:p-8 text-white text-center">
             <div class="max-w-3xl mx-auto">
                 <h2 class="text-2xl md:text-3xl font-bold mb-4">Tarification simple et transparente</h2>
-                <p class="text-white/90 text-lg mb-2">Des frais mensuels <span class="font-bold text-2xl">adaptés</span> à votre tontine</p>
-                <p class="text-white/80 text-sm">Calculés sur la base du type et de la durée de votre tontine • Transparence totale</p>
+                <p class="text-white/90 text-lg mb-2">Des frais mensuels <span class="font-bold text-2xl">adaptés</span>
+                    à votre tontine</p>
+                <p class="text-white/80 text-sm">Calculés sur la base du type et de la durée de votre tontine •
+                    Transparence totale</p>
             </div>
         </div>
     </div>
@@ -39,420 +35,152 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <!-- Tarifs détaillés -->
             <div class="lg:col-span-2">
-                <!-- Tarif unique -->
-                <div class="bg-white rounded-xl border border-gray-200 p-6 mb-6">
-                    <div class="flex items-center justify-between mb-6">
+                <div class="mb-8">
+                    <div class="bg-green-50 rounded-xl p-6 border border-green-200">
+                        <h2 class="text-xl md:text-2xl font-bold text-green-800 mb-4">
+                            Comme dans les tontines traditionnelles, vous cotisez chaque jour.
+                        </h2>
+
+                        <div class="grid md:grid-cols-3 gap-6 mb-8">
+                            <div class="bg-white p-4 rounded-lg shadow-sm border border-green-100">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 mb-3">
+                                    <i class="fa-solid fa-calendar-days"></i>
+                                </div>
+                                <h3 class="font-bold text-gray-900 mb-1">Durée</h3>
+                                <p class="text-gray-600 text-sm">1 mois = <span class="font-bold text-green-700">31
+                                        jours</span> de cotisation.</p>
+                            </div>
+
+                            <div class="bg-white p-4 rounded-lg shadow-sm border border-green-100">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 mb-3">
+                                    <i class="fa-solid fa-hand-holding-dollar"></i>
+                                </div>
+                                <h3 class="font-bold text-gray-900 mb-1">Récupération</h3>
+                                <p class="text-gray-600 text-sm">Vous touchez vos cotisations sur <span
+                                        class="font-bold text-green-700">30 jours</span>.</p>
+                            </div>
+
+                            <div class="bg-white p-4 rounded-lg shadow-sm border border-green-100">
+                                <div
+                                    class="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center text-green-600 mb-3">
+                                    <i class="fa-solid fa-receipt"></i>
+                                </div>
+                                <h3 class="font-bold text-gray-900 mb-1">Frais de service</h3>
+                                <p class="text-gray-600 text-sm"><span class="font-bold text-green-700">1 jour</span> de
+                                    cotisation sert de frais de gestion.</p>
+                            </div>
+                        </div>
+
+                        <!-- Exemple Concret -->
+                        <div class="bg-white rounded-xl border border-green-200 overflow-hidden mb-8">
+                            <div class="bg-green-700 px-6 py-3 text-white flex items-center gap-3">
+                                <i class="fa-solid fa-lightbulb"></i>
+                                <h3 class="font-bold">Exemple concret</h3>
+                            </div>
+                            <div class="p-6">
+                                <div class="flex flex-col md:flex-row gap-6 items-start">
+                                    <div class="flex-1 space-y-3">
+                                        <div class="flex items-start gap-3">
+                                            <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                                            <p class="text-gray-700">Codjo choisit une carte tontine de <strong>1
+                                                    mois</strong>.</p>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                                            <p class="text-gray-700">Il cotise <strong>500 Fcfa</strong> par jour.</p>
+                                        </div>
+                                        <div class="flex items-start gap-3">
+                                            <i class="fa-solid fa-check text-green-500 mt-1"></i>
+                                            <p class="text-gray-700">Total cotisé : 31 jours × 500 Fcfa = <strong>15.500
+                                                    Fcfa</strong>.</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex-1 bg-green-50 rounded-lg p-4 border border-green-100">
+                                        <div
+                                            class="flex justify-between items-center mb-2 pb-2 border-b border-green-200">
+                                            <span class="text-gray-600">Codjo récupère :</span>
+                                            <span class="text-xl font-bold text-green-700">15.000 Fcfa</span>
+                                        </div>
+                                        <div class="flex justify-between items-center">
+                                            <span class="text-sm text-gray-600">Frais de service :</span>
+                                            <span class="text-sm font-medium text-gray-700">500 Fcfa</span>
+                                        </div>
+                                        <p class="text-xs text-green-600 mt-1 text-right">(équivalent à 1 jour de
+                                            cotisation)</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Avantages Client -->
                         <div>
-                            <h2 class="text-xl font-bold text-gray-900 mb-2">Notre tarification</h2>
-                            <p class="text-gray-600">Des frais calculés en fonction de la durée et du type de tontine</p>
-                        </div>
-                        <div class="text-right">
-                            <div class="text-3xl font-bold text-green-700">X%</div>
-                            <div class="text-sm text-gray-500">par mois selon la durée</div>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-                        <h3 class="font-semibold text-green-900 mb-3 flex items-center gap-2">
-                            <i class="fa-solid fa-calendar-check text-green-500"></i>
-                            Quand payer les frais ?
-                        </h3>
-                        <div class="space-y-3">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
-                                    <i class="fa-solid fa-times text-red-500 text-sm"></i>
-                                </div>
-                                <div>
-                                    <div class="font-medium text-gray-900">Pendant l'épargne</div>
-                                    <div class="text-sm text-gray-600">Aucun frais n'est prélevé</div>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                                    <i class="fa-solid fa-check text-green-500 text-sm"></i>
-                                </div>
-                                <div>
-                                    <div class="font-medium text-gray-900">À la fin de la tontine</div>
-                                    <div class="text-sm text-gray-600">Frais calculés selon la durée et le type de tontine</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                        <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
-                            <h3 class="font-semibold text-green-900 mb-2 flex items-center gap-2">
-                                <i class="fa-solid fa-check-circle text-green-500"></i>
-                                Inclus dans les frais
+                            <h3 class="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-star text-yellow-400"></i>
+                                Avantages pour le client
                             </h3>
-                            <ul class="space-y-2 text-sm text-green-800">
-                                <li class="flex items-start gap-2">
-                                    <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
-                                    <span>Hébergement sécurisé pendant toute la durée</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
-                                    <span>Support technique 7j/7</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
-                                    <span>Gestion automatisée des paiements</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fa-solid fa-check text-green-500 text-xs mt-1"></i>
-                                    <span>Sécurité bancaire des fonds</span>
-                                </li>
-                            </ul>
-                        </div>
-                        
-                        <div class="p-4 bg-green-50 border border-green-200 rounded-lg">
-                            <h3 class="font-semibold text-green-900 mb-2 flex items-center gap-2">
-                                <i class="fa-solid fa-ban text-green-500"></i>
-                                Jamais de frais pour
-                            </h3>
-                            <ul class="space-y-2 text-sm text-green-800">
-                                <li class="flex items-start gap-2">
-                                    <i class="fa-solid fa-times text-green-500 text-xs mt-1"></i>
-                                    <span>Création de compte</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fa-solid fa-times text-green-500 text-xs mt-1"></i>
-                                    <span>Consultation des tontines</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fa-solid fa-times text-green-500 text-xs mt-1"></i>
-                                    <span>Paiements des points</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <i class="fa-solid fa-times text-green-500 text-xs mt-1"></i>
-                                    <span>Mises à jour logicielles</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="border-t border-gray-200 pt-6">
-                        <h3 class="font-semibold text-gray-900 mb-4">Comment fonctionne le prélèvement ?</h3>
-                        <div class="space-y-4">
-                            <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-                                <div class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
-                                    <span class="font-bold text-gray-700">1</span>
+                            <div class="grid md:grid-cols-2 gap-4">
+                                <div class="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-100">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0 text-green-600">
+                                        <i class="fa-solid fa-eye"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-800 text-sm">Transparence</h4>
+                                        <p class="text-xs text-gray-600">Les règles sont simples et identiques pour
+                                            tous.</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <div class="font-medium text-gray-900">Épargnez sans frais</div>
-                                    <div class="text-sm text-gray-600">Pendant toute la durée de la tontine</div>
+
+                                <div class="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-100">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0 text-green-600">
+                                        <i class="fa-solid fa-shield-alt"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-800 text-sm">Sécurité</h4>
+                                        <p class="text-xs text-gray-600">Vos cotisations sont bien gérées.</p>
+                                    </div>
                                 </div>
-                            </div>
-                            
-                            <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-                                <div class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0">
-                                    <span class="font-bold text-gray-700">2</span>
+
+                                <div class="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-100">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0 text-green-600">
+                                        <i class="fa-solid fa-coins"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-800 text-sm">Accessibilité</h4>
+                                        <p class="text-xs text-gray-600">Vous pouvez commencer avec de petites sommes
+                                            quotidiennes.</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <div class="font-medium text-gray-900">Terminez votre tontine</div>
-                                    <div class="text-sm text-gray-600">Tous les points sont payés</div>
-                                </div>
-                            </div>
-                            
-                            <div class="flex items-center gap-4 p-3 bg-gray-50 rounded-lg">
-                                <div class="w-12 h-12 rounded-lg bg-green-700/10 flex items-center justify-center flex-shrink-0">
-                                    <span class="font-bold text-green-700">3</span>
-                                </div>
-                                <div>
-                                    <div class="font-medium text-gray-900">Prélèvement mensuel</div>
-                                    <div class="text-sm text-gray-600">Calculé selon la durée et le type de tontine</div>
+
+                                <div class="flex items-start gap-3 p-3 bg-white rounded-lg border border-gray-100">
+                                    <div
+                                        class="w-8 h-8 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0 text-green-600">
+                                        <i class="fa-solid fa-mobile-screen"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-gray-800 text-sm">Tradition modernisée</h4>
+                                        <p class="text-xs text-gray-600">L'esprit des tontines avec une gestion claire
+                                            et professionnelle.</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                
-                <!-- Calculateur -->
-                <div class="bg-white rounded-xl border border-gray-200 p-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-6">Calculateur de frais</h2>
-                    
-                    <div class="space-y-6">
-                        <!-- Entrée -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Montant total de la tontine (FCFA)
-                            </label>
-                            <div class="relative">
-                                <input type="number" 
-                                       id="tontineAmount"
-                                       min="1000"
-                                       max="10000000"
-                                       value="100000"
-                                       class="w-full px-4 py-3 text-lg border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-green-700 touch-target"
-                                       oninput="updateCalculation()">
-                                <div class="absolute right-3 top-3 text-gray-500">FCFA</div>
-                            </div>
-                            <div class="text-xs text-gray-500 mt-2">
-                                Saisissez le montant total que rapportera la tontine (points × montant/point)
-                            </div>
-                        </div>
-                        
-                        <!-- Type de tontine -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Type de tontine
-                            </label>
-                            <select id="tontineType" onchange="updateCalculation()" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-700 focus:border-green-700">
-                                <option value="monthly">Mensuelle</option>
-                                <option value="weekly">Hebdomadaire</option>
-                                <option value="daily">Quotidienne</option>
-                            </select>
-                        </div>
-                        
-                        <!-- Durée de la tontine -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">
-                                Durée (mois)
-                            </label>
-                            <input type="number" id="tontineDuration" min="1" max="36" value="6" 
-                                   onchange="updateCalculation()"
-                                   class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-700 focus:border-green-700">
-                        </div>
-                        
-                        <!-- Résultats -->
-                        <div id="calculationResults" class="space-y-4">
-                            <!-- Les résultats seront générés ici -->
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Avantages du paiement à la fin -->
-                <div class="bg-white rounded-xl border border-gray-200 p-6 mt-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-6">Les avantages de payer à la fin</h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="p-4 border border-gray-200 rounded-lg hover:border-green-700 transition-colors">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-12 h-12 rounded-lg bg-emerald-100 flex items-center justify-center">
-                                    <i class="fa-solid fa-money-bill-wave text-emerald-600"></i>
-                                </div>
-                                <h3 class="font-semibold text-gray-900">Épargnez librement</h3>
-                            </div>
-                            <p class="text-gray-600 text-sm">
-                                Pendant toute la durée de votre tontine, vous épargnez sans aucune réduction. 100% de vos paiements vont à votre épargne.
-                            </p>
-                        </div>
-                        
-                        <div class="p-4 border border-gray-200 rounded-lg hover:border-green-700 transition-colors">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center">
-                                    <i class="fa-solid fa-chart-line text-green-600"></i>
-                                </div>
-                                <h3 class="font-semibold text-gray-900">Visibilité totale</h3>
-                            </div>
-                            <p class="text-gray-600 text-sm">
-                                Vous savez exactement combien vous allez recevoir à la fin. Aucune surprise, les frais sont calculés uniquement sur le résultat final.
-                            </p>
-                        </div>
-                        
-                        <div class="p-4 border border-gray-200 rounded-lg hover:border-green-700 transition-colors">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-12 h-12 rounded-lg bg-yellow-100 flex items-center justify-center">
-                                    <i class="fa-solid fa-handshake text-yellow-600"></i>
-                                </div>
-                                <h3 class="font-semibold text-gray-900">Réussite garantie</h3>
-                            </div>
-                            <p class="text-gray-600 text-sm">
-                                Vous ne payez que si votre tontine est menée à bien. Notre intérêt est aligné avec le vôtre : voir vos projets aboutir.
-                            </p>
-                        </div>
-                        
-                        <div class="p-4 border border-gray-200 rounded-lg hover:border-green-700 transition-colors">
-                            <div class="flex items-center gap-3 mb-3">
-                                <div class="w-12 h-12 rounded-lg bg-amber-100 flex items-center justify-center">
-                                    <i class="fa-solid fa-piggy-bank text-amber-600"></i>
-                                </div>
-                                <h3 class="font-semibold text-gray-900">Capitalisation optimale</h3>
-                            </div>
-                            <p class="text-gray-600 text-sm">
-                                Votre argent travaille pour vous pendant toute la durée sans être réduit par des frais intermédiaires.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- FAQ Tarifs -->
-                <div class="bg-white rounded-xl border border-gray-200 p-6 mt-6">
-                    <h2 class="text-xl font-bold text-gray-900 mb-6">Questions fréquentes sur les tarifs</h2>
-                    
-                    <div class="space-y-4">
-                        <div class="faq-item">
-                            <button onclick="toggleFAQ('faq1')" class="w-full text-left p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors touch-target flex items-center justify-between">
-                                <span class="font-medium text-gray-900">Que se passe-t-il si une tontine est interrompue ?</span>
-                                <i class="fa-solid fa-chevron-down text-gray-400" id="faq-icon-1"></i>
-                            </button>
-                            <div id="faq1" class="hidden p-4 text-gray-600 text-sm">
-                                <p>Si une tontine est interrompue avant la fin, aucun frais n'est prélevé. Les participants récupèrent leur épargne proportionnellement à ce qu'ils ont déjà versé, sans aucune retenue.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="faq-item">
-                            <button onclick="toggleFAQ('faq2')" class="w-full text-left p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors touch-target flex items-center justify-between">
-                                <span class="font-medium text-gray-900">Comment sont calculés les frais exactement ?</span>
-                                <i class="fa-solid fa-chevron-down text-gray-400" id="faq-icon-2"></i>
-                            </button>
-                            <div id="faq2" class="hidden p-4 text-gray-600 text-sm">
-                                <p>Les frais sont calculés mensuellement en fonction du type de tontine (quotidienne, hebdomadaire, mensuelle) et de la durée totale. Par exemple, une tontine mensuelle de 6 mois aura des frais différents d'une tontine hebdomadaire sur la même période.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="faq-item">
-                            <button onclick="toggleFAQ('faq3')" class="w-full text-left p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors touch-target flex items-center justify-between">
-                                <span class="font-medium text-gray-900">Quand recevrai-je l'argent de ma tontine ?</span>
-                                <i class="fa-solid fa-chevron-down text-gray-400" id="faq-icon-3"></i>
-                            </button>
-                            <div id="faq3" class="hidden p-4 text-gray-600 text-sm">
-                                <p>Dès que la dernière personne a payé son dernier point, nous prélevons automatiquement les frais, et le montant restant est immédiatement disponible sur votre portefeuille EFA SMART FINANCE.</p>
-                            </div>
-                        </div>
-                        
-                        <div class="faq-item">
-                            <button onclick="toggleFAQ('faq4')" class="w-full text-left p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors touch-target flex items-center justify-between">
-                                <span class="font-medium text-gray-900">Y a-t-il des frais pour retirer l'argent de mon portefeuille ?</span>
-                                <i class="fa-solid fa-chevron-down text-gray-400" id="faq-icon-4"></i>
-                            </button>
-                            <div id="faq4" class="hidden p-4 text-gray-600 text-sm">
-                                <p>Les retraits depuis votre portefeuille peuvent être soumis à des frais de transaction selon la méthode choisie (Mobile Money, virement bancaire). Ces frais sont distincts des frais sur la tontine et vous sont toujours indiqués avant validation.</p>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
             </div>
-            
+
             <!-- Sidebar -->
-            <div class="space-y-6">
-                <!-- Carte tarifaire -->
-                <div class="bg-white rounded-xl border border-gray-200 p-6">
-                    <div class="text-center mb-6">
-                        <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-green-700/10 mb-4">
-                            <i class="fa-solid fa-flag-checkered text-green-700 text-2xl"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-900">Payez à la fin</h3>
-                        <div class="mt-2">
-                            <span class="text-4xl font-bold text-green-700">X%</span>
-                            <span class="text-gray-600"> par mois selon la durée</span>
-                        </div>
-                    </div>
-                    
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-check text-green-600 text-sm"></i>
-                            </div>
-                            <span class="text-sm text-gray-700">0 frais pendant l'épargne</span>
-                        </div>
-                        
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-check text-green-600 text-sm"></i>
-                            </div>
-                            <span class="text-sm text-gray-700">Prélèvement mensuel</span>
-                        </div>
-                        
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-check text-green-600 text-sm"></i>
-                            </div>
-                            <span class="text-sm text-gray-700">Support inclus</span>
-                        </div>
-                        
-                        <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                                <i class="fa-solid fa-check text-green-600 text-sm"></i>
-                            </div>
-                            <span class="text-sm text-gray-700">Sécurité garantie</span>
-                        </div>
-                    </div>
-                    
-                    <div class="mt-6 pt-6 border-t border-gray-200">
-                        <a href="{{ path('app_tontines_new') }}"
-                           class="block w-full text-center px-4 py-3 bg-green-700 text-white rounded-lg hover:bg-green-700 transition-colors font-medium touch-target">
-                            <i class="fa-solid fa-plus mr-2"></i>
-                            Créer une tontine
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Exemples concrets -->
-                <div class="bg-white rounded-xl border border-gray-200 p-6">
-                    <h3 class="font-semibold text-gray-900 mb-4">Exemples concrets</h3>
-                    
-                    <div class="space-y-4">
-                        <div class="p-3 bg-gray-50 rounded-lg">
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="text-sm font-medium text-gray-900">Tontine de 100 000 FCFA</div>
-                                <div class="text-xs text-gray-500">10 points × 10 000 FCFA</div>
-                            </div>
-                            <div class="space-y-1">
-                                <div class="flex justify-between text-sm">
-                                    <span class="text-gray-600">Vous épargnez</span>
-                                    <span class="font-medium text-emerald-700">100 000 FCFA</span>
-                                </div>
-                                <div class="flex justify-between text-sm">
-                                    <span class="text-gray-600">Frais à la fin (X%)</span>
-                                    <span class="font-medium text-green-700">X FCFA</span>
-                                </div>
-                                <div class="flex justify-between text-sm font-medium pt-1 border-t border-gray-200">
-                                    <span class="text-gray-900">Vous recevez</span>
-                                    <span class="text-emerald-700">X FCFA</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="p-3 bg-gray-50 rounded-lg">
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="text-sm font-medium text-gray-900">Tontine de 500 000 FCFA</div>
-                                <div class="text-xs text-gray-500">20 points × 25 000 FCFA</div>
-                            </div>
-                            <div class="space-y-1">
-                                <div class="flex justify-between text-sm">
-                                    <span class="text-gray-600">Vous épargnez</span>
-                                    <span class="font-medium text-emerald-700">500 000 FCFA</span>
-                                </div>
-                                <div class="flex justify-between text-sm">
-                                    <span class="text-gray-600">Frais à la fin (X%)</span>
-                                    <span class="font-medium text-green-700">X FCFA</span>
-                                </div>
-                                <div class="flex justify-between text-sm font-medium pt-1 border-t border-gray-200">
-                                    <span class="text-gray-900">Vous recevez</span>
-                                    <span class="text-emerald-700">X FCFA</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="p-3 bg-gray-50 rounded-lg">
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="text-sm font-medium text-gray-900">Tontine de 1 000 000 FCFA</div>
-                                <div class="text-xs text-gray-500">40 points × 25 000 FCFA</div>
-                            </div>
-                            <div class="space-y-1">
-                                <div class="flex justify-between text-sm">
-                                    <span class="text-gray-600">Vous épargnez</span>
-                                    <span class="font-medium text-emerald-700">1 000 000 FCFA</span>
-                                </div>
-                                <div class="flex justify-between text-sm">
-                                    <span class="text-gray-600">Frais à la fin (X%)</span>
-                                    <span class="font-medium text-green-700">X FCFA</span>
-                                </div>
-                                <div class="flex justify-between text-sm font-medium pt-1 border-t border-gray-200">
-                                    <span class="text-gray-900">Vous recevez</span>
-                                    <span class="text-emerald-700">X FCFA</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
+            <div class="space-y-6">           
                 <!-- Comparaison avantages -->
                 <div class="bg-gradient-to-r from-green-700/10 to-green-50 rounded-xl border border-green-700/20 p-6">
                     <h3 class="font-semibold text-gray-900 mb-4">Pourquoi payer à la fin ?</h3>
-                    
+
                     <div class="space-y-3">
                         <div class="flex items-start gap-2">
                             <i class="fa-solid fa-chart-line text-green-700 mt-0.5"></i>
@@ -460,21 +188,21 @@
                                 <strong>Motivation :</strong> Vous voyez votre épargne croître sans être réduite
                             </div>
                         </div>
-                        
+
                         <div class="flex items-start gap-2">
                             <i class="fa-solid fa-shield-alt text-green-700 mt-0.5"></i>
                             <div class="text-sm text-gray-700">
                                 <strong>Sécurité :</strong> Vous ne payez que lorsque le résultat est garanti
                             </div>
                         </div>
-                        
+
                         <div class="flex items-start gap-2">
                             <i class="fa-solid fa-hand-holding-usd text-green-700 mt-0.5"></i>
                             <div class="text-sm text-gray-700">
                                 <strong>Liquidité :</strong> Votre argent reste disponible plus longtemps
                             </div>
                         </div>
-                        
+
                         <div class="flex items-start gap-2">
                             <i class="fa-solid fa-award text-green-700 mt-0.5"></i>
                             <div class="text-sm text-gray-700">
@@ -482,11 +210,12 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="mt-4 pt-4 border-t border-green-700/20">
                         <p class="text-sm text-gray-600">
                             <i class="fa-solid fa-lightbulb text-amber-500 mr-1"></i>
-                            <strong>Saviez-vous ?</strong> Avec ce système, 100% de vos versements vont directement à votre épargne.
+                            <strong>Saviez-vous ?</strong> Avec ce système, 100% de vos versements vont directement à
+                            votre épargne.
                         </p>
                     </div>
                 </div>
@@ -494,64 +223,7 @@
         </div>
     </div>
 
-    <!-- Section chronologie -->
-    <div class="max-w-7xl mx-auto px-4 py-6">
-        <div class="bg-white rounded-xl border border-gray-200 p-6">
-            <h2 class="text-xl font-bold text-gray-900 mb-6 text-center">Chronologie d'une tontine</h2>
-            
-            <div class="relative">
-                <!-- Ligne de temps -->
-                <div class="absolute left-0 right-0 top-6 h-0.5 bg-gray-200"></div>
-                
-                <div class="relative grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- Étape 1 -->
-                    <div class="relative">
-                        <div class="absolute left-1/2 -translate-x-1/2 -translate-y-1/2">
-                            <div class="w-12 h-12 rounded-full bg-emerald-100 border-4 border-white flex items-center justify-center">
-                                <i class="fa-solid fa-play text-emerald-600"></i>
-                            </div>
-                        </div>
-                        <div class="pt-8 text-center">
-                            <h3 class="font-semibold text-gray-900 mb-2">Début de la tontine</h3>
-                            <p class="text-gray-600 text-sm">
-                                Créez votre tontine et commencez à épargner. <strong>Aucun frais</strong> n'est prélevé.
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <!-- Étape 2 -->
-                    <div class="relative">
-                        <div class="absolute left-1/2 -translate-x-1/2 -translate-y-1/2">
-                            <div class="w-12 h-12 rounded-full bg-green-100 border-4 border-white flex items-center justify-center">
-                                <i class="fa-solid fa-calendar-alt text-green-600"></i>
-                            </div>
-                        </div>
-                        <div class="pt-8 text-center">
-                            <h3 class="font-semibold text-gray-900 mb-2">Période d'épargne</h3>
-                            <p class="text-gray-600 text-sm">
-                                Pendant toute la durée, vos paiements vont à 100% dans votre épargne.
-                            </p>
-                        </div>
-                    </div>
-                    
-                    <!-- Étape 3 -->
-                    <div class="relative">
-                        <div class="absolute left-1/2 -translate-x-1/2 -translate-y-1/2">
-                            <div class="w-12 h-12 rounded-full bg-green-700 border-4 border-white flex items-center justify-center">
-                                <i class="fa-solid fa-flag-checkered text-white"></i>
-                            </div>
-                        </div>
-                        <div class="pt-8 text-center">
-                            <h3 class="font-semibold text-gray-900 mb-2">Fin de la tontine</h3>
-                            <p class="text-gray-600 text-sm">
-                                Seulement à ce moment, <strong>des frais</strong> sont prélevés sur le total collecté.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+   
 
     <!-- CTA Final -->
     <div class="max-w-7xl mx-auto px-4 py-6">
@@ -560,185 +232,154 @@
             <p class="text-white/90 mb-6">Créez votre première tontine et épargnez 100% de vos versements</p>
             <div class="flex flex-col sm:flex-row gap-3 justify-center">
                 <a href="{{ path('app_tontines_new') }}"
-                   class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-green-700 rounded-lg hover:bg-gray-100 transition-colors font-medium touch-target">
+                    class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-green-700 rounded-lg hover:bg-gray-100 transition-colors font-medium touch-target">
                     <i class="fa-solid fa-plus"></i>
                     Créer une tontine
                 </a>
-                <a href="{{ path('app_contact_support') }}"
-                   class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-transparent border-2 border-white text-white rounded-lg hover:bg-white/10 transition-colors font-medium touch-target">
+                <button type="button" onclick="openContactModal()"
+                    class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-transparent border-2 border-white text-white rounded-lg hover:bg-white/10 transition-colors font-medium touch-target">
                     <i class="fa-solid fa-question-circle"></i>
                     Questions sur les tarifs ?
-                </a>
+                </button>
             </div>
         </div>
     </div>
+    
+    {{ include('dashboard/pages/contact/contact_form.html.twig') }}
 </div>
 
-<!-- Modal calculateur -->
-<div id="calculatorModal" class="hidden fixed inset-0 bg-black/50 z-50">
-    <div class="min-h-screen flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl w-full max-w-md">
-            <div class="p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-lg font-bold text-gray-900">Calculateur de frais détaillé</h3>
-                    <button onclick="closeCalculator()" 
-                            class="p-2 hover:bg-gray-100 rounded-lg transition-colors touch-target">
-                        <i class="fa-solid fa-times text-gray-500"></i>
-                    </button>
-                </div>
-                
-                <div class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Montant par point (FCFA)
-                        </label>
-                        <input type="number" 
-                               id="modalPointAmount"
-                               min="100"
-                               max="100000"
-                               value="10000"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-green-700 touch-target"
-                               oninput="updateModalCalculation()">
+
+<!-- Modal Calculateur -->
+<div id="calculatorModal" class="hidden fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="closeCalculator()"></div>
+
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg w-full">
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                <div class="sm:flex sm:items-start">
+                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <i class="fa-solid fa-calculator text-green-600"></i>
                     </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Nombre de points
-                        </label>
-                        <input type="number" 
-                               id="modalPointsCount"
-                               min="2"
-                               max="100"
-                               value="10"
-                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-700 focus:border-green-700 touch-target"
-                               oninput="updateModalCalculation()">
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Type de tontine
-                        </label>
-                        <select id="modalTontineType" onchange="updateModalCalculation()" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-700 focus:border-green-700">
-                            <option value="monthly">Mensuelle</option>
-                            <option value="weekly">Hebdomadaire</option>
-                            <option value="daily">Quotidienne</option>
-                        </select>
-                    </div>
-                    
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Durée (mois)
-                        </label>
-                        <input type="number" id="modalTontineDuration" min="1" max="36" value="6" 
-                               onchange="updateModalCalculation()"
-                               class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-700 focus:border-green-700">
-                    </div>
-                    
-                    <div class="p-4 bg-gray-50 rounded-lg">
-                        <h4 class="font-semibold text-gray-900 mb-3">Résultats</h4>
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <div class="font-medium text-gray-900">Montant total épargné</div>
-                                    <div class="text-xs text-gray-500">Pendant toute la durée</div>
-                                </div>
-                                <span id="modalTotal" class="font-bold text-emerald-700">100 000 FCFA</span>
-                            </div>
-                            
-                            <div class="flex items-center justify-between">
-                                <div>
-                                    <div class="font-medium text-gray-900">Frais EFA à la fin</div>
-                                    <div class="text-xs text-gray-500">Calculés selon la durée et le type de tontine</div>
-                                </div>
-                                <span id="modalFees" class="font-bold text-green-700">X FCFA</span>
-                            </div>
-                            
-                            <div class="pt-3 border-t border-gray-200">
-                                <div class="flex items-center justify-between">
-                                    <div>
-                                        <div class="font-bold text-gray-900">Vous recevez</div>
-                                        <div class="text-xs text-gray-500">À la fin de la tontine</div>
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                            Simulateur de Tontine
+                        </h3>
+                        <div class="mt-2 text-sm text-gray-500">
+                            Calculez exactement ce que vous recevrez à la fin.
+                        </div>
+
+                        <div class="mt-4 space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Montant de la mise</label>
+                                <div class="relative rounded-md shadow-sm">
+                                    <input type="number" id="modalPointAmount" value="5000" oninput="updateModalCalculation()" 
+                                           class="focus:ring-green-500 focus:border-green-500 block w-full pl-3 pr-12 sm:text-sm border-gray-300 rounded-md py-2 touch-target" 
+                                           placeholder="0">
+                                    <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                        <span class="text-gray-500 sm:text-sm">FCFA</span>
                                     </div>
-                                    <span id="modalForTontine" class="text-xl font-bold text-emerald-700">X FCFA</span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de parts / jours</label>
+                                <input type="number" id="modalPointsCount" value="31" oninput="updateModalCalculation()" 
+                                       class="focus:ring-green-500 focus:border-green-500 block w-full sm:text-sm border-gray-300 rounded-md py-2 touch-target" 
+                                       placeholder="31">
+                            </div>
+
+                            <div class="bg-gray-50 p-4 rounded-lg space-y-2 mt-4">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Total cotisé :</span>
+                                    <span class="font-bold text-gray-900" id="modalTotal">0 FCFA</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Frais EFA (1 cotisation) :</span>
+                                    <span class="font-bold text-red-600" id="modalFees">0 FCFA</span>
+                                </div>
+                                <div class="pt-2 border-t border-gray-200 flex justify-between items-center">
+                                    <span class="font-medium text-gray-900">Vous recevez :</span>
+                                    <span class="font-bold text-xl text-green-700" id="modalForTontine">0 FCFA</span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <div class="pt-4">
-                        <button onclick="closeCalculator()"
-                                class="w-full px-4 py-3 bg-green-700 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
-                            Fermer
-                        </button>
-                    </div>
                 </div>
+            </div>
+            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                <button type="button" onclick="closeCalculator()" 
+                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm touch-target">
+                    Fermer
+                </button>
             </div>
         </div>
     </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Initialiser le calculateur
-    updateCalculation();
-    
-    // Focus sur l'input du calculateur
-    const amountInput = document.getElementById('tontineAmount');
-    if (amountInput) {
-        amountInput.focus();
-        amountInput.select();
-    }
-});
+    document.addEventListener('DOMContentLoaded', function () {
+        // Initialiser le calculateur
+        updateCalculation();
 
-// Fonction pour calculer le taux mensuel
-function calculateMonthlyRate(type, duration) {
-    // Base rate per month
-    let baseRate = 0.008; // 0.8% per month as base rate
-    
-    // Adjust rate based on tontine type
-    switch(type) {
-        case 'daily':
-            baseRate += 0.002; // 0.2% additional for daily tontines
-            break;
-        case 'weekly':
-            baseRate += 0.001; // 0.1% additional for weekly tontines
-            break;
-        // monthly remains at base rate
-    }
-    
-    // Adjust rate based on duration (longer tontines get a small discount)
-    if (duration > 12) {
-        baseRate *= 0.9; // 10% discount for tontines longer than 12 months
-    } else if (duration > 6) {
-        baseRate *= 0.95; // 5% discount for tontines longer than 6 months
-    }
-    
-    return baseRate;
-}
+        // Focus sur l'input du calculateur
+        const amountInput = document.getElementById('tontineAmount');
+        if (amountInput) {
+            amountInput.focus();
+            amountInput.select();
+        }
+    });
 
-// Fonctions du calculateur principal
-function setAmount(amount) {
-    document.getElementById('tontineAmount').value = amount;
-    updateCalculation();
-}
+    // Fonction pour calculer le taux mensuel
+    function calculateMonthlyRate(type, duration) {
+        // Base rate per month
+        let baseRate = 0.008; // 0.8% per month as base rate
 
-function updateCalculation() {
-    const amount = parseFloat(document.getElementById('tontineAmount').value) || 0;
-    const type = document.getElementById('tontineType')?.value || 'monthly';
-    const duration = parseInt(document.getElementById('tontineDuration')?.value) || 6; // Default to 6 months
-    
-    const monthlyRate = calculateMonthlyRate(type, duration);
-    const totalRate = monthlyRate * duration;
-    const fees = amount * totalRate;
-    const netAmount = amount - fees;
-    
-    const typeNames = {
-        'daily': 'Quotidienne',
-        'weekly': 'Hebdomadaire',
-        'monthly': 'Mensuelle'
-    };
-    
-    document.getElementById('calculationResults').innerHTML = `
+        // Adjust rate based on tontine type
+        switch (type) {
+            case 'daily':
+                baseRate += 0.002; // 0.2% additional for daily tontines
+                break;
+            case 'weekly':
+                baseRate += 0.001; // 0.1% additional for weekly tontines
+                break;
+            // monthly remains at base rate
+        }
+
+        // Adjust rate based on duration (longer tontines get a small discount)
+        if (duration > 12) {
+            baseRate *= 0.9; // 10% discount for tontines longer than 12 months
+        } else if (duration > 6) {
+            baseRate *= 0.95; // 5% discount for tontines longer than 6 months
+        }
+
+        return baseRate;
+    }
+
+    // Fonctions du calculateur principal
+    function setAmount(amount) {
+        document.getElementById('tontineAmount').value = amount;
+        updateCalculation();
+    }
+
+    function updateCalculation() {
+        const amount = parseFloat(document.getElementById('tontineAmount').value) || 0;
+        const type = document.getElementById('tontineType')?.value || 'monthly';
+        const duration = parseInt(document.getElementById('tontineDuration')?.value) || 6; // Default to 6 months
+
+        const monthlyRate = calculateMonthlyRate(type, duration);
+        const totalRate = monthlyRate * duration;
+        const fees = amount * totalRate;
+        const netAmount = amount - fees;
+
+        const typeNames = {
+            'daily': 'Quotidienne',
+            'weekly': 'Hebdomadaire',
+            'monthly': 'Mensuelle'
+        };
+
+        document.getElementById('calculationResults').innerHTML = `
         <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
             <div class="grid grid-cols-2 gap-4 mb-4">
                 <div>
@@ -780,15 +421,15 @@ function updateCalculation() {
                 </div>
                 <div class="flex justify-between items-center border-t border-gray-200 pt-2 mt-2">
                     <span class="text-gray-700">Frais totaux :</span>
-                    <span class="text-red-600 font-semibold">- ${fees.toLocaleString('fr-FR', {maximumFractionDigits: 0})} FCFA</span>
+                    <span class="text-red-600 font-semibold">- ${fees.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} FCFA</span>
                 </div>
                 <div class="flex justify-between items-center pt-2">
                     <span class="font-semibold">Montant net reçu :</span>
-                    <span class="text-green-700 font-bold text-lg">${netAmount.toLocaleString('fr-FR', {maximumFractionDigits: 0})} FCFA</span>
+                    <span class="text-green-700 font-bold text-lg">${netAmount.toLocaleString('fr-FR', { maximumFractionDigits: 0 })} FCFA</span>
                 </div>
             </div>
         </div>
-        <div class="text-xs text-gray-500 mt-2">
+        <div class="text-xs text-gray-600 mt-2">
             Les frais sont calculés mensuellement en fonction du type et de la durée de la tontine.
             <h4 class="font-semibold text-green-900 mb-2 flex items-center gap-2">
                 <i class="fa-solid fa-chart-line text-green-500"></i>
@@ -800,338 +441,342 @@ function updateCalculation() {
             </p>
         </div>
     `;
-}
-
-// Fonctions du calculateur modal
-function calculateFees() {
-    document.getElementById('calculatorModal').classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-    updateModalCalculation();
-}
-
-function closeCalculator() {
-    document.getElementById('calculatorModal').classList.add('hidden');
-    document.body.style.overflow = 'auto';
-}
-
-function updateModalCalculation() {
-    const pointAmount = parseInt(document.getElementById('modalPointAmount').value) || 0;
-    const pointsCount = parseInt(document.getElementById('modalPointsCount').value) || 0;
-    const total = pointAmount * pointsCount;
-    const fees = total * 0.10;
-    const forTontine = total - fees;
-    
-    const formatNumber = (num) => {
-        return new Intl.NumberFormat('fr-FR').format(num);
-    };
-    
-    document.getElementById('modalTotal').textContent = formatNumber(total) + ' FCFA';
-    document.getElementById('modalFees').textContent = formatNumber(fees) + ' FCFA';
-    document.getElementById('modalForTontine').textContent = formatNumber(forTontine) + ' FCFA';
-}
-
-// Gestion des FAQ
-function toggleFAQ(id) {
-    const content = document.getElementById(id);
-    const icon = document.getElementById('faq-icon-' + id.slice(-1));
-    
-    if (content.classList.contains('hidden')) {
-        content.classList.remove('hidden');
-        if (icon) icon.classList.add('rotate-180');
-    } else {
-        content.classList.add('hidden');
-        if (icon) icon.classList.remove('rotate-180');
     }
-}
 
-// Exporter les résultats
-function exportResults() {
-    const amount = parseInt(document.getElementById('tontineAmount').value) || 0;
-    const fees = amount * 0.1;
-    const forTontine = amount - fees;
-    
-    const csvContent = `Montant total épargné,Frais EFA (1%),Vous recevez\n${amount},${fees},${forTontine}`;
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `calcul_frais_tontine_${new Date().toISOString().slice(0,10)}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    
-    showNotification('Export réussi !', 'success');
-}
+    // Fonctions du calculateur modal
+    function calculateFees() {
+        document.getElementById('calculatorModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        updateModalCalculation();
+    }
 
-function showNotification(message, type = 'info') {
-    // Supprimer les notifications existantes
-    document.querySelectorAll('.notification-toast').forEach(el => el.remove());
-    
-    const notification = document.createElement('div');
-    notification.className = `notification-toast fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg flex items-center transform translate-x-full transition-transform duration-300 ${
-        type === 'success' ? 'bg-emerald-500 text-white' :
-        type === 'error' ? 'bg-red-500 text-white' :
-        type === 'info' ? 'bg-green-500 text-white' :
-        'bg-gray-800 text-white'
-    }`;
-    
-    const icon = type === 'success' ? 'fa-check-circle' :
-                 type === 'error' ? 'fa-times-circle' :
-                 type === 'info' ? 'fa-info-circle' :
-                 'fa-bell';
-    
-    notification.innerHTML = `
+    function closeCalculator() {
+        document.getElementById('calculatorModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    function updateModalCalculation() {
+        const pointAmount = parseInt(document.getElementById('modalPointAmount').value) || 0;
+        const pointsCount = parseInt(document.getElementById('modalPointsCount').value) || 0;
+        const total = pointAmount * pointsCount;
+        const fees = total * 0.10;
+        const forTontine = total - fees;
+
+        const formatNumber = (num) => {
+            return new Intl.NumberFormat('fr-FR').format(num);
+        };
+
+        document.getElementById('modalTotal').textContent = formatNumber(total) + ' FCFA';
+        document.getElementById('modalFees').textContent = formatNumber(fees) + ' FCFA';
+        document.getElementById('modalForTontine').textContent = formatNumber(forTontine) + ' FCFA';
+    }
+
+    // Gestion des FAQ
+    function toggleFAQ(id) {
+        const content = document.getElementById(id);
+        const icon = document.getElementById('faq-icon-' + id.slice(-1));
+
+        if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            if (icon) icon.classList.add('rotate-180');
+        } else {
+            content.classList.add('hidden');
+            if (icon) icon.classList.remove('rotate-180');
+        }
+    }
+
+    // Exporter les résultats
+    function exportResults() {
+        const amount = parseInt(document.getElementById('tontineAmount').value) || 0;
+        const fees = amount * 0.1;
+        const forTontine = amount - fees;
+
+        const csvContent = `Montant total épargné,Frais EFA (1%),Vous recevez\n${amount},${fees},${forTontine}`;
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `calcul_frais_tontine_${new Date().toISOString().slice(0, 10)}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        showNotification('Export réussi !', 'success');
+    }
+
+    function showNotification(message, type = 'info') {
+        // Supprimer les notifications existantes
+        document.querySelectorAll('.notification-toast').forEach(el => el.remove());
+
+        const notification = document.createElement('div');
+        notification.className = `notification-toast fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg flex items-center transform translate-x-full transition-transform duration-300 ${type === 'success' ? 'bg-emerald-500 text-white' :
+                type === 'error' ? 'bg-red-500 text-white' :
+                    type === 'info' ? 'bg-green-500 text-white' :
+                        'bg-gray-800 text-white'
+            }`;
+
+        const icon = type === 'success' ? 'fa-check-circle' :
+            type === 'error' ? 'fa-times-circle' :
+                type === 'info' ? 'fa-info-circle' :
+                    'fa-bell';
+
+        notification.innerHTML = `
         <i class="fa-solid ${icon} mr-2"></i>
         <span>${message}</span>
         <button onclick="this.parentElement.remove()" class="ml-4 text-white/80 hover:text-white">
             <i class="fa-solid fa-times"></i>
         </button>
     `;
-    
-    document.body.appendChild(notification);
-    
-    // Animation d'entrée
-    setTimeout(() => {
-        notification.style.transform = 'translateX(0)';
-    }, 10);
-    
-    // Auto-suppression
-    setTimeout(() => {
-        notification.style.transform = 'translateX(100%)';
-        setTimeout(() => notification.remove(), 300);
-    }, 5000);
-}
 
-// Fermer la modal en cliquant à l'extérieur
-document.getElementById('calculatorModal')?.addEventListener('click', function(e) {
-    if (e.target === this) {
-        closeCalculator();
-    }
-});
+        document.body.appendChild(notification);
 
-// Raccourci clavier pour le calculateur
-document.addEventListener('keydown', function(e) {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
-        e.preventDefault();
-        calculateFees();
+        // Animation d'entrée
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 10);
+
+        // Auto-suppression
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => notification.remove(), 300);
+        }, 5000);
     }
-});
+
+    // Fermer la modal en cliquant à l'extérieur
+    document.getElementById('calculatorModal')?.addEventListener('click', function (e) {
+        if (e.target === this) {
+            closeCalculator();
+        }
+    });
+
+    // Raccourci clavier pour le calculateur
+    document.addEventListener('keydown', function (e) {
+        if ((e.ctrlKey || e.metaKey) && e.key === 'c') {
+            e.preventDefault();
+            calculateFees();
+        }
+    });
 </script>
 
 <style>
-.touch-target {
-    min-height: 44px;
-    min-width: 44px;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-}
-
-/* Animations */
-.rotate-180 {
-    transform: rotate(180deg);
-    transition: transform 0.3s ease;
-}
-
-/* Style pour les pourcentages */
-.text-gradient {
-    background: linear-gradient(135deg, #008040, #3b82f6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-/* Barres de progression */
-.progress-bar {
-    height: 8px;
-    background-color: #e5e7eb;
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.progress-fill {
-    height: 100%;
-    background: linear-gradient(90deg, #008040, #3b82f6);
-    border-radius: 4px;
-    transition: width 0.3s ease;
-}
-
-/* Style pour les cartes de tarification */
-.pricing-card {
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
-}
-
-.pricing-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-    border-color: #008040;
-}
-
-/* Style pour les badges */
-.badge {
-    display: inline-block;
-    padding: 4px 8px;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-}
-
-.badge-green-700 {
-    background-color: #d1fae5;
-    color: #065f46;
-}
-
-.badge-secondary {
-    background-color: #dbeafe;
-    color: #1e40af;
-}
-
-/* Animation pour les entrées */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
+    .touch-target {
+        min-height: 44px;
+        min-width: 44px;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+
+    /* Animations */
+    .rotate-180 {
+        transform: rotate(180deg);
+        transition: transform 0.3s ease;
     }
-}
 
-#calculationResults > div {
-    animation: fadeIn 0.5s ease-out;
-}
-
-/* Style pour les notifications */
-.notification-toast {
-    animation: slideInRight 0.3s ease-out;
-}
-
-@keyframes slideInRight {
-    from {
-        transform: translateX(100%);
+    /* Style pour les pourcentages */
+    .text-gradient {
+        background: linear-gradient(135deg, #008040, #3b82f6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
     }
-    to {
-        transform: translateX(0);
+
+    /* Barres de progression */
+    .progress-bar {
+        height: 8px;
+        background-color: #e5e7eb;
+        border-radius: 4px;
+        overflow: hidden;
     }
-}
 
-/* Amélioration responsive */
-@media (max-width: 768px) {
-    .text-4xl {
-        font-size: 2rem;
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #008040, #3b82f6);
+        border-radius: 4px;
+        transition: width 0.3s ease;
     }
-    
-    .p-8 {
-        padding: 1.5rem;
+
+    /* Style pour les cartes de tarification */
+    .pricing-card {
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
     }
-    
-    .grid-cols-3 {
-        grid-template-columns: 1fr;
+
+    .pricing-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        border-color: #008040;
     }
-}
 
-/* Style pour les inputs */
-input[type="number"]::-webkit-inner-spin-button,
-input[type="number"]::-webkit-outer-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-
-input[type="number"] {
-    -moz-appearance: textfield;
-}
-
-/* Amélioration de la lisibilité */
-.text-shadow {
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-/* Gradient pour les sections importantes */
-.gradient-bg {
-    background: linear-gradient(135deg, #008040 0%, #3b82f6 100%);
-}
-
-/* Style pour la chronologie */
-.timeline-item:nth-child(1) .timeline-icon {
-    animation-delay: 0s;
-}
-
-.timeline-item:nth-child(2) .timeline-icon {
-    animation-delay: 0.5s;
-}
-
-.timeline-item:nth-child(3) .timeline-icon {
-    animation-delay: 1s;
-}
-
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
+    /* Style pour les badges */
+    .badge {
+        display: inline-block;
+        padding: 4px 8px;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
     }
-    50% {
-        transform: scale(1.05);
+
+    .badge-green-700 {
+        background-color: #d1fae5;
+        color: #065f46;
     }
-}
 
-.timeline-icon {
-    animation: pulse 2s infinite;
-}
+    .badge-secondary {
+        background-color: #dbeafe;
+        color: #1e40af;
+    }
 
-/* Style pour les cartes de résultats */
-.result-card {
-    position: relative;
-    overflow: hidden;
-}
+    /* Animation pour les entrées */
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
 
-.result-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: linear-gradient(90deg, #008040, #3b82f6);
-}
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 
-/* Style pour les highlights */
-.highlight {
-    background: linear-gradient(120deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0) 100%);
-    border-left: 4px solid #008040;
-    padding-left: 1rem;
-}
+    #calculationResults>div {
+        animation: fadeIn 0.5s ease-out;
+    }
 
-/* Animation pour les cartes au survol */
-.hover-lift {
-    transition: all 0.3s ease;
-}
+    /* Style pour les notifications */
+    .notification-toast {
+        animation: slideInRight 0.3s ease-out;
+    }
 
-.hover-lift:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-}
+    @keyframes slideInRight {
+        from {
+            transform: translateX(100%);
+        }
 
-/* Style pour les séparateurs */
-.separator {
-    display: flex;
-    align-items: center;
-    text-align: center;
-    margin: 20px 0;
-}
+        to {
+            transform: translateX(0);
+        }
+    }
 
-.separator::before,
-.separator::after {
-    content: '';
-    flex: 1;
-    border-bottom: 1px solid #e5e7eb;
-}
+    /* Amélioration responsive */
+    @media (max-width: 768px) {
+        .text-4xl {
+            font-size: 2rem;
+        }
 
-.separator span {
-    padding: 0 10px;
-    color: #6b7280;
-    font-size: 0.875rem;
-}
+        .p-8 {
+            padding: 1.5rem;
+        }
+
+        .grid-cols-3 {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Style pour les inputs */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    input[type="number"] {
+        -moz-appearance: textfield;
+    }
+
+    /* Amélioration de la lisibilité */
+    .text-shadow {
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Gradient pour les sections importantes */
+    .gradient-bg {
+        background: linear-gradient(135deg, #008040 0%, #3b82f6 100%);
+    }
+
+    /* Style pour la chronologie */
+    .timeline-item:nth-child(1) .timeline-icon {
+        animation-delay: 0s;
+    }
+
+    .timeline-item:nth-child(2) .timeline-icon {
+        animation-delay: 0.5s;
+    }
+
+    .timeline-item:nth-child(3) .timeline-icon {
+        animation-delay: 1s;
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.05);
+        }
+    }
+
+    .timeline-icon {
+        animation: pulse 2s infinite;
+    }
+
+    /* Style pour les cartes de résultats */
+    .result-card {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .result-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, #008040, #3b82f6);
+    }
+
+    /* Style pour les highlights */
+    .highlight {
+        background: linear-gradient(120deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0) 100%);
+        border-left: 4px solid #008040;
+        padding-left: 1rem;
+    }
+
+    /* Animation pour les cartes au survol */
+    .hover-lift {
+        transition: all 0.3s ease;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Style pour les séparateurs */
+    .separator {
+        display: flex;
+        align-items: center;
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .separator::before,
+    .separator::after {
+        content: '';
+        flex: 1;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .separator span {
+        padding: 0 10px;
+        color: #6b7280;
+        font-size: 0.875rem;
+    }
 </style>
 {% endblock %}

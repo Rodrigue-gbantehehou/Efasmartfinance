@@ -21,8 +21,8 @@ class PlatformFee
     private ?Tontine $tontine = null;
 
 
-    #[ORM\Column]
-    private int $amount = 0;
+    #[ORM\Column(type: 'decimal', precision: 15, scale: 2)]
+    private string $amount = '0.00';
 
     #[ORM\Column(length: 50)]
     private string $type = 'withdrawal_fee';
@@ -70,12 +70,12 @@ class PlatformFee
     }
 
   
-    public function getAmount(): int
+    public function getAmount(): string
     {
         return $this->amount;
     }
 
-    public function setAmount(int $amount): self
+    public function setAmount(string $amount): self
     {
         $this->amount = $amount;
         return $this;

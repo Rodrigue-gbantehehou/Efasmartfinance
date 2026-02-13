@@ -59,4 +59,34 @@ class ContactController extends AbstractController
     {
         return $this->render('pages/faq.html.twig');
     }
+
+    #[Route('/a-propos', name: 'app_about')]
+    public function about(): Response
+    {
+        return $this->render('pages/about.html.twig');
+    }
+
+    #[Route('/confidentialite', name: 'app_privacy')]
+    public function privacy(): Response
+    {
+        return $this->render('pages/privacy.html.twig');
+    }
+
+    #[Route('/cgu', name: 'app_cgu')]
+    public function cgu(): Response
+    {
+        return $this->render('pages/cgu.html.twig');
+    }
+
+    #[Route('/engagement-ethique', name: 'app_ethics')]
+    public function ethics(): Response
+    {
+        return $this->render('pages/ethics.html.twig');
+    }
+
+    #[Route('/mentions-legales', name: 'app_mentions')]
+    public function mentions(): Response
+    {
+        return $this->render('pages/mentions_legales.html.twig');
+    }
 }

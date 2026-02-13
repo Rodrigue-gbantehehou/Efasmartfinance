@@ -291,6 +291,44 @@
             height: auto;
             margin-bottom: 10px;
         }
+
+        /* Signatures Section */
+        .signatures-section {
+            margin-top: 40px;
+            page-break-inside: avoid;
+        }
+        
+        .signature-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .signature-cell {
+            width: 33.33%;
+            padding: 10px;
+            vertical-align: top;
+            text-align: center;
+        }
+        
+        .signature-label {
+            font-weight: 700;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #2d3748;
+            margin-bottom: 40px;
+            border-bottom: 1px solid #e2e8f0;
+            padding-bottom: 5px;
+        }
+        
+        .signature-space {
+            height: 60px;
+        }
+        
+        .signature-name {
+            font-size: 10px;
+            color: #718096;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -316,8 +354,8 @@
                 <div class="company-info">
                     <table width="100%">
                         <tr class="text-right ">
-                            <td ><strong>N° TRANSACTION : </strong></td>
-                            <td class="info-value">#{{ transaction.id }}</td>
+                            <td ><strong>N° FACTURE : </strong></td>
+                            <td class="info-value">{{ facture.numero }}</td>
                         </tr>
                         
                         <tr class="text-right ">
@@ -418,15 +456,26 @@
     </div>
     
     <!-- Payment Notes -->
-    <div class="notes">
-        <div class="notes-title">NOTES</div>
-        <table width="100%">
+    </div>
+    
+    <!-- Signatures Section -->
+    <div class="signatures-section">
+        <table class="signature-table">
             <tr>
-                <td>
-                    • Ce document atteste de la réception de fonds au guichet.<br>
-                    • Pour les versements de tontine, votre solde est mis à jour instantanément.<br>
-                    • Pour les frais, votre tontine est désormais active pour les dépôts.<br>
-                    • Conservez ce reçu comme preuve de paiement.
+                <td class="signature-cell">
+                    <div class="signature-label">Le Client</div>
+                    <div class="signature-space"></div>
+                    <div class="signature-name">{{ user.fullName }}</div>
+                </td>
+                <td class="signature-cell">
+                    <div class="signature-label">La Caisse</div>
+                    <div class="signature-space"></div>
+                    <div class="signature-name">Signature & Cachet</div>
+                </td>
+                <td class="signature-cell">
+                    <div class="signature-label">Le Manager</div>
+                    <div class="signature-space"></div>
+                    <div class="signature-name">Direction Générale</div>
                 </td>
             </tr>
         </table>

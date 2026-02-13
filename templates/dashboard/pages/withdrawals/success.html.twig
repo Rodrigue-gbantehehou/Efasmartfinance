@@ -26,7 +26,7 @@
             <div class="space-y-6">
                 <!-- Informations de la tontine -->
                 <div>
-                    <h3 class="text-sm font-medium text-gray-500 mb-3">Tontine</h3>
+                    <h3 class="text-sm font-medium text-gray-6000 mb-3">Tontine</h3>
                     <div class="flex items-center">
                         <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center mr-4">
                             <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -43,18 +43,18 @@
                 <!-- Informations du retrait -->
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <p class="text-sm text-gray-500 mb-2">Montant du retrait</p>
+                        <p class="text-sm text-gray-6000 mb-2">Montant du retrait</p>
                         <p class="text-2xl font-bold text-green-600">
                             {{ withdrawal.amount|number_format(0, ',', ' ') }} FCFA
                         </p>
                     </div>
                     
                     <div>
-                        <p class="text-sm text-gray-500 mb-2">Statut</p>
+                        <p class="text-sm text-gray-6000 mb-2">Statut</p>
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium 
                             {% if withdrawal.statut == 'pending' %}bg-yellow-100 text-yellow-800
                             {% elseif withdrawal.statut == 'approved' %}bg-green-100 text-green-800
-                            {% elseif withdrawal.statut == 'completed' %}bg-blue-100 text-blue-800
+                            {% elseif withdrawal.statut == 'completed' %}bg-green-100 text-green-800
                             {% elseif withdrawal.statut == 'rejected' %}bg-red-100 text-red-800
                             {% else %}bg-gray-100 text-gray-800{% endif %}">
                             {% if withdrawal.statut == 'pending' %}
@@ -88,14 +88,14 @@
                 <div class="pt-6 border-t">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <p class="text-sm text-gray-500 mb-1">Date de la demande</p>
+                            <p class="text-sm text-gray-6000 mb-1">Date de la demande</p>
                             <p class="font-medium text-gray-800">
                                 {{ withdrawal.requestedAt|date('d/m/Y à H:i') }}
                             </p>
                         </div>
                         
                         <div>
-                            <p class="text-sm text-gray-500 mb-1">Méthode de retrait</p>
+                            <p class="text-sm text-gray-6000 mb-1">Méthode de retrait</p>
                             <p class="font-medium text-gray-800">
                                 {% if withdrawal.method == 'mobile_money' %}
                                     Mobile Money
@@ -114,7 +114,7 @@
                         
                         {% if withdrawal.feePaid %}
                             <div>
-                                <p class="text-sm text-gray-500 mb-1">Frais payés</p>
+                                <p class="text-sm text-gray-6000 mb-1">Frais payés</p>
                                 <p class="font-medium text-green-600">
                                     Oui
                                     {% if withdrawal.feePaymentDate %}
@@ -126,7 +126,7 @@
                         
                         {% if withdrawal.transactionId %}
                             <div>
-                                <p class="text-sm text-gray-500 mb-1">ID Transaction</p>
+                                <p class="text-sm text-gray-6000 mb-1">ID Transaction</p>
                                 <p class="font-medium text-gray-800 text-sm break-all">
                                     {{ withdrawal.transactionId }}
                                 </p>
@@ -138,7 +138,7 @@
                 <!-- Raison si disponible -->
                 {% if withdrawal.reason %}
                     <div class="pt-6 border-t">
-                        <p class="text-sm text-gray-500 mb-2">Motif du retrait</p>
+                        <p class="text-sm text-gray-6000 mb-2">Motif du retrait</p>
                         <p class="text-gray-700 bg-gray-50 rounded-lg p-4">
                             {{ withdrawal.reason }}
                         </p>
@@ -148,38 +148,38 @@
         </div>
 
         <!-- Prochaines étapes -->
-        <div class="bg-blue-50 border border-blue-100 rounded-xl p-6 mb-8">
-            <h3 class="text-lg font-semibold text-blue-800 mb-4">Prochaines étapes</h3>
+        <div class="bg-green-50 border border-green-100 rounded-xl p-6 mb-8">
+            <h3 class="text-lg font-semibold text-green-800 mb-4">Prochaines étapes</h3>
             
             <div class="space-y-4">
                 {% if withdrawal.statut == 'pending' %}
                     <div class="flex items-start">
-                        <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
-                            <span class="text-sm font-semibold text-blue-600">1</span>
+                        <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                            <span class="text-sm font-semibold text-green-600">1</span>
                         </div>
                         <div>
-                            <p class="font-medium text-blue-800">Vérification en cours</p>
-                            <p class="text-sm text-blue-700">Notre équipe vérifie votre demande de retrait.</p>
+                            <p class="font-medium text-green-800">Vérification en cours</p>
+                            <p class="text-sm text-green-700">Notre équipe vérifie votre demande de retrait.</p>
                         </div>
                     </div>
                     
                     <div class="flex items-start">
-                        <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
-                            <span class="text-sm font-semibold text-blue-600">2</span>
+                        <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                            <span class="text-sm font-semibold text-green-600">2</span>
                         </div>
                         <div>
-                            <p class="font-medium text-blue-800">Traitement</p>
-                            <p class="text-sm text-blue-700">Une fois approuvée, le traitement prendra 24 à 48 heures.</p>
+                            <p class="font-medium text-green-800">Traitement</p>
+                            <p class="text-sm text-green-700">Une fois approuvée, le traitement prendra 24 à 48 heures.</p>
                         </div>
                     </div>
                     
                     <div class="flex items-start">
-                        <div class="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
-                            <span class="text-sm font-semibold text-blue-600">3</span>
+                        <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-3 mt-1 flex-shrink-0">
+                            <span class="text-sm font-semibold text-green-600">3</span>
                         </div>
                         <div>
-                            <p class="font-medium text-blue-800">Réception des fonds</p>
-                            <p class="text-sm text-blue-700">
+                            <p class="font-medium text-green-800">Réception des fonds</p>
+                            <p class="text-sm text-green-700">
                                 {% if withdrawal.method == 'mobile_money' %}
                                     Vous recevrez les fonds sur votre compte mobile money.
                                 {% elseif withdrawal.method == 'agence' %}
@@ -238,7 +238,7 @@
 
         <!-- Information de contact -->
         <div class="mt-8 text-center">
-            <p class="text-sm text-gray-500">
+            <p class="text-sm text-gray-6000">
                 Des questions ? Contactez notre support au 
                 <a href="tel:+22500000000" class="text-green-600 hover:text-green-700">+225 00 00 00 00</a>
                 ou par email à 

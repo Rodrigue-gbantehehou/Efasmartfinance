@@ -26,15 +26,22 @@ final class WithdrawalsController extends AbstractController
     ) {}
 
     #[Route('/withdrawals', name: 'app_withdrawals_index', methods: ['GET'])]
-    public function index(): Response
+    public function index(Request $request, \Knp\Component\Pager\PaginatorInterface $paginator): Response
     {
         /** @var User $user */
         $user = $this->getUser();
 
-        // Récupérer les demandes de retrait de l'utilisateur triées par date décroissante
-        $withdrawals = $this->em->getRepository(Withdrawals::class)->findBy(
-            ['utilisateur' => $user],
-            ['requestedAt' => 'DESC']
+        $query = $this->em->getRepository(Withdrawals::class)
+            ->createQueryBuilder('w')
+            ->where('w.utilisateur = :user')
+            ->setParameter('user', $user)
+            ->orderBy('w.requestedAt', 'DESC')
+            ->getQuery();
+
+        $withdrawals = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            10
         );
 
         return $this->render('dashboard/pages/withdrawals/index.html.twig', [
@@ -69,11 +76,6 @@ final class WithdrawalsController extends AbstractController
             return $this->redirectToRoute('app_tontines_show', ['id' => $tontine->getId()]);
         }**/ 
 
-        // Vérifier si les frais de retrait ont été payés
-        if (!$tontine->isFraisPreleves()) {
-            $this->addFlash('error', 'Veuillez d\'abord payer les frais de service avant de pouvoir effectuer un retrait.');
-            return $this->redirectToRoute('app_tontines_show', ['id' => $tontine->getId()]);
-        }
 
         // Si on arrive ici, c'est que les frais sont payés, on peut continuer avec la demande de retrait
         $form = $this->createForm(WithdrawalRequestType::class, null, [
@@ -87,19 +89,22 @@ final class WithdrawalsController extends AbstractController
             $data = $form->getData();
             
             // Calculer le montant à retirer
-            $amount = ($data['withdrawal_type'] === 'tontine')
+            $grossAmount = ($data['withdrawal_type'] === 'tontine')
+                ? ($tontine->getTotalPay() - $tontine->getWithdrawnAmount())
+                : $data['custom_amount'];
+
+            $netAmount = ($data['withdrawal_type'] === 'tontine')
                 ? $tontine->getAvailableWithdrawalAmount()
                 : $data['custom_amount'];
 
-            if ($amount <= 0) {
+            if ($netAmount <= 0) {
                 $this->addFlash('error', 'Le montant du retrait doit être supérieur à 0.');
                 return $this->redirectToRoute('app_tontines_show', ['id' => $tontine->getId()]);
             }
 
             // Vérifier que le montant demandé ne dépasse pas le montant total cotisé
-            $montantTotalCotise = $tontine->getTotalPay();
-            if ($amount > $montantTotalCotise) {
-                $this->addFlash('error', 'Le montant du retrait ne peut pas dépasser le montant total cotisé de ' . $montantTotalCotise . ' FCFA.');
+            if ($grossAmount > $tontine->getTotalPay()) {
+                $this->addFlash('error', 'Le montant du retrait ne peut pas dépasser le montant total cotisé.');
                 return $this->redirectToRoute('app_withdrawal_request', ['id' => $tontine->getId()]);
             }
 
@@ -118,7 +123,8 @@ final class WithdrawalsController extends AbstractController
             // Stocker les données en session pour la confirmation après PIN
             $request->getSession()->set('pending_withdrawal', [
                 'tontine_id' => $tontine->getId(),
-                'amount' => $amount,
+                'amount' => $netAmount,
+                'gross_amount' => $grossAmount,
                 'method' => $data['withdrawal_method'] ?? 'mobile_money',
                 'phone_number' => $data['phone_number'] ?? null,
                 'withdrawal_type' => $data['withdrawal_type'],
@@ -169,14 +175,15 @@ final class WithdrawalsController extends AbstractController
         }
 
         $amount = $pendingData['amount'];
+        $grossAmount = $pendingData['gross_amount'] ?? $amount;
 
         try {
             // Créer la demande de retrait
             $withdrawal = new Withdrawals();
             $withdrawal->setUtilisateur($user);
             $withdrawal->setTontine($tontine);
-            $withdrawal->setAmount($amount);
-            $withdrawal->setTotalAmount($amount);
+            $withdrawal->setAmount((string)$amount);
+            $withdrawal->setTotalAmount((string)$grossAmount);
             $withdrawal->setMethod($pendingData['method']);
             // Si numéro de téléphone présent, on peut le stocker (si l'entité le supporte, sinon dans raison)
             $reason = 'Demande de retrait de ' . number_format($amount, 0, ',', ' ') . ' FCFA';
@@ -190,6 +197,43 @@ final class WithdrawalsController extends AbstractController
             // Effectuer le retrait du montant demandé
             $tontine->withdraw($amount);
             
+            // Pour toutes les tontines, enregistrer les frais de service lors du premier retrait
+            $platformFeeRepo = $em->getRepository(\App\Entity\PlatformFee::class);
+            $existingFee = $platformFeeRepo->findOneBy([
+                'tontine' => $tontine,
+                'type' => 'service_fee'
+            ]);
+
+            if (!$existingFee) {
+                $serviceFeeAmount = $tontine->getDeductedServiceFee();
+                // On ne prélève que ce qui est disponible si le solde est insuffisant
+                $actualFee = min($serviceFeeAmount, $tontine->getTotalPay());
+                
+                if ($actualFee > 0) {
+                    // 1. Enregistrement dans PlatformFee (Admin)
+                    $platformFee = new \App\Entity\PlatformFee();
+                    $platformFee->setUser($user);
+                    $platformFee->setTontine($tontine);
+                    $platformFee->setAmount((int)$actualFee);
+                    $platformFee->setType('service_fee');
+                    $platformFee->setStatus('collected');
+                    $platformFee->setCreatedAt(new \DateTimeImmutable());
+                    $em->persist($platformFee);
+
+                    // 2. Enregistrement dans Transaction (Visibilité Utilisateur)
+                    $feeTransaction = new \App\Entity\Transaction();
+                    $feeTransaction->setTontine($tontine);
+                    $feeTransaction->setUtilisateur($user);
+                    $feeTransaction->setAmount((string)$actualFee);
+                    $feeTransaction->setType('frais_service');
+                    $feeTransaction->setPaymentMethod('deduction');
+                    $feeTransaction->setProvider('system');
+                    $feeTransaction->setStatut('completed');
+                    $feeTransaction->setCreatedAt(new \DateTimeImmutable());
+                    $em->persist($feeTransaction);
+                }
+            }
+
             $em->persist($withdrawal);
             $em->flush();
 
@@ -249,6 +293,22 @@ final class WithdrawalsController extends AbstractController
         }
         
         return $this->render('dashboard/pages/withdrawals/success.html.twig', [
+            'withdrawal' => $withdrawal
+        ]);
+    }
+
+    #[Route('/withdrawals/{id}', name: 'app_withdrawal_show', methods: ['GET'])]
+    public function show(int $id, WithdrawalsRepository $withdrawalsRepo): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        
+        $withdrawal = $withdrawalsRepo->find($id);
+        
+        if (!$withdrawal || $withdrawal->getUtilisateur() !== $this->getUser()) {
+            throw $this->createNotFoundException('Demande de retrait non trouvée');
+        }
+        
+        return $this->render('dashboard/pages/withdrawals/_details.html.twig', [
             'withdrawal' => $withdrawal
         ]);
     }

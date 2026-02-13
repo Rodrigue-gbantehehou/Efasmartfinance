@@ -2,218 +2,142 @@
 
 {% block title %}Accès refusé{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .access-denied-container {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-        
-        .access-denied-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            padding: 3rem;
-            text-align: center;
-            max-width: 500px;
-            margin: 0 20px;
-        }
-        
-        .lock-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 2rem;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 2.5rem;
-        }
-        
-        .error-code {
-            font-size: 6rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin: 0;
-            line-height: 1;
-        }
-        
-        .error-title {
-            font-size: 1.5rem;
-            color: #333;
-            margin: 1rem 0;
-            font-weight: 600;
-        }
-        
-        .error-message {
-            color: #666;
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-        
-        .btn-home {
-            display: inline-block;
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: 500;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin: 0 5px;
-        }
-        
-        .btn-home:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-            color: white;
-        }
-        
-        .btn-dashboard {
-            display: inline-block;
-            padding: 12px 30px;
-            background: white;
-            color: #667eea;
-            text-decoration: none;
-            border: 2px solid #667eea;
-            border-radius: 25px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin: 0 5px;
-        }
-        
-        .btn-dashboard:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-        }
-        
-        .permission-info {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-top: 2rem;
-            text-align: left;
-        }
-        
-        .permission-info h4 {
-            color: #333;
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-        
-        .permission-info p {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .current-role {
-            background: #e3f2fd;
-            color: #1976d2;
-            padding: 0.25rem 0.75rem;
-            border-radius: 15px;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-        
-        @media (max-width: 768px) {
-            .access-denied-card {
-                padding: 2rem;
-            }
-            
-            .error-code {
-                font-size: 4rem;
-            }
-            
-            .btn-home, .btn-dashboard {
-                display: block;
-                margin: 10px auto;
-                width: 200px;
-            }
-        }
-    </style>
-{% endblock %}
-
 {% block body %}
-<div class="access-denied-container">
-    <div class="access-denied-card">
-        <div class="lock-icon">
-            <i class="fas fa-lock"></i>
+<div class="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center p-4">
+    <div class="relative w-full max-w-lg">
+
+        <!-- Interactive Background Elements -->
+        <div
+            class="absolute -top-10 -right-10 w-40 h-40 bg-red-200 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob">
         </div>
-        
-        <h1 class="error-code">403</h1>
-        <h2 class="error-title">Accès refusé</h2>
-        
-        <p class="error-message">
-            Désolé, vous n'avez pas les permissions nécessaires pour accéder à cette page.
-        </p>
-        
-        {% if app.user %}
-            <div class="permission-info">
-                <h4>Informations sur votre compte</h4>
-                <p><strong>Email:</strong> {{ app.user.email }}</p>
-                <p><strong>Nom:</strong> {{ app.user.firstname }} {{ app.user.lastname }}</p>
-                <p><strong>Rôle actuel:</strong> 
-                    {% if app.user.roles %}
-                        {% for role in app.user.roles %}
-                            {% if role != 'ROLE_USER' %}
-                                <span class="current-role">{{ role|replace({'ROLE_': ''}) }}</span>
-                            {% endif %}
-                        {% endfor %}
-                    {% else %}
-                        <span class="current-role">USER</span>
-                    {% endif %}
-                </p>
-                {% if is_granted('ROLE_ADMIN') %}
-                    <p><strong>Permissions:</strong> Vous avez accès au panneau d'administration.</p>
-                {% elseif is_granted('ROLE_USER') %}
-                    <p><strong>Permissions:</strong> Vous avez accès au tableau de bord utilisateur.</p>
-                {% endif %}
+        <div
+            class="absolute -bottom-10 -left-10 w-40 h-40 bg-yellow-200 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob animation-delay-2000">
+        </div>
+
+        <div
+            class="relative bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl p-8 md:p-12 text-center border border-white/40">
+            <!-- Icon -->
+            <div class="w-24 h-24 mx-auto mb-8 relative">
+                <div class="absolute inset-0 bg-red-100 rounded-full animate-pulse"></div>
+                <div
+                    class="relative w-full h-full flex items-center justify-center rounded-full bg-gradient-to-br from-red-500 to-red-600 shadow-lg">
+                    <i class="fas fa-lock text-4xl text-white"></i>
+                </div>
             </div>
-        {% endif %}
-        
-        <div style="margin-top: 2rem;">
+
+            <!-- Error Code -->
+            <h1
+                class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-600 to-red-800 mb-2 font-poppins">
+                403
+            </h1>
+
+            <!-- Message -->
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                Accès refusé
+            </h2>
+
+            <p class="text-gray-600 mb-8 leading-relaxed">
+                Désolé, vous n'avez pas les permissions nécessaires pour accéder à cette page.
+            </p>
+
             {% if app.user %}
-                {% if is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('admin_dashboard') }}" class="btn-home">
-                        <i class="fas fa-tachometer-alt"></i> Tableau de bord admin
-                    </a>
-                {% elseif is_granted('ROLE_USER') %}
-                    <a href="{{ path('dashboard') }}" class="btn-home">
-                        <i class="fas fa-home"></i> Tableau de bord
-                    </a>
-                {% endif %}
-                <a href="{{ path('app_logout') }}" class="btn-dashboard">
-                    <i class="fas fa-sign-out-alt"></i> Déconnexion
-                </a>
-            {% else %}
-                <a href="{{ path('app_login') }}" class="btn-home">
-                    <i class="fas fa-sign-in-alt"></i> Se connecter
-                </a>
-                <a href="{{ path('app_home') }}" class="btn-dashboard">
-                    <i class="fas fa-home"></i> Accueil
-                </a>
-            {% endif %}
-        </div>
-        
-        {% if not app.user %}
-            <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #eee;">
-                <p style="color: #999; font-size: 0.9rem;">
-                    Vous devez être connecté pour accéder à cette ressource.
-                </p>
+            <div class="bg-gray-50 rounded-2xl p-6 text-left mb-8 border border-gray-100">
+                <h4 class="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4 border-b pb-2">Informations
+                    compte</h4>
+                <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Utilisateur:</span>
+                        <span class="font-medium text-gray-900">{{ app.user.firstname }} {{ app.user.lastname }}</span>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Rôle actuel:</span>
+                        <div class="flex gap-2">
+                            {% if app.user.roles %}
+                            {% for role in app.user.roles %}
+                            {% if role != 'ROLE_USER' %}
+                            <span class="px-2 py-1 bg-green-100 text-green-700 rounded-lg text-xs font-semibold">{{
+                                role|replace({'ROLE_': ''}) }}</span>
+                            {% endif %}
+                            {% endfor %}
+                            {% else %}
+                            <span
+                                class="px-2 py-1 bg-gray-100 text-gray-600 rounded-lg text-xs font-semibold">USER</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
             </div>
+            {% endif %}
+
+            <!-- Actions -->
+            <div class="space-y-3">
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    {% if app.user %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('admin_dashboard') }}"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-green-700 text-white font-semibold shadow-lg shadow-green-200 hover:bg-green-800 hover:shadow-green-300 transition-all duration-300 transform hover:-translate-y-0.5">
+                        <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                    </a>
+                    {% elseif is_granted('ROLE_USER') %}
+                    <a href="{{ path('app_dashboard') }}"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-green-700 text-white font-semibold shadow-lg shadow-green-200 hover:bg-green-800 hover:shadow-green-300 transition-all duration-300 transform hover:-translate-y-0.5">
+                        <i class="fas fa-columns mr-2"></i> Dashboard
+                    </a>
+                    {% endif %}
+                    <a href="{{ path('app_logout') }}"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-white text-red-600 border-2 border-red-100 font-semibold hover:bg-red-50 hover:border-red-200 transition-all duration-300">
+                        <i class="fas fa-sign-out-alt mr-2"></i> Déconnexion
+                    </a>
+                    {% else %}
+                    <a href="{{ path('app_login') }}"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-green-700 text-white font-semibold shadow-lg shadow-green-200 hover:bg-green-800 hover:shadow-green-300 transition-all duration-300 transform hover:-translate-y-0.5">
+                        <i class="fas fa-sign-in-alt mr-2"></i> Connexion
+                    </a>
+                    <a href="{{ path('app_home') }}"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-white text-green-700 border-2 border-green-100 font-semibold hover:bg-green-50 hover:border-green-200 transition-all duration-300">
+                        <i class="fas fa-home mr-2"></i> Accueil
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer info for non-logged users -->
+        {% if not app.user %}
+        <div
+            class="text-center mt-8 text-sm text-gray-600 bg-white/50 backdrop-blur-sm p-4 rounded-xl inline-block mx-auto border border-white/20">
+            <i class="fas fa-info-circle mr-2 text-green-600"></i>
+            Vous devez être connecté pour accéder à cette ressource.
+        </div>
         {% endif %}
     </div>
 </div>
+
+<style>
+    @keyframes blob {
+        0% {
+            transform: translate(0px, 0px) scale(1);
+        }
+
+        33% {
+            transform: translate(30px, -50px) scale(1.1);
+        }
+
+        66% {
+            transform: translate(-20px, 20px) scale(0.9);
+        }
+
+        100% {
+            transform: translate(0px, 0px) scale(1);
+        }
+    }
+
+    .animate-blob {
+        animation: blob 7s infinite;
+    }
+
+    .animation-delay-2000 {
+        animation-delay: 2s;
+    }
+</style>
 {% endblock %}

@@ -10,12 +10,12 @@
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div class="flex items-center gap-4">
                     <a href="{{ path('admin_users') }}" 
-                       class="w-10 h-10 rounded-xl border border-gray-100 flex items-center justify-center text-gray-400 hover:text-emerald-600 hover:border-emerald-100 hover:bg-emerald-50 transition-all shadow-sm">
+                       class="w-10 h-10 rounded-xl border border-gray-100 flex items-center justify-center text-gray-600 hover:text-emerald-600 hover:border-emerald-100 hover:bg-emerald-50 transition-all shadow-sm">
                         <i class="fas fa-arrow-left text-sm"></i>
                     </a>
                     <div>
                         <h1 class="text-2xl font-bold font-poppins text-gray-900 tracking-tight">{{ user.firstname }} {{ user.lastname }}</h1>
-                        <p class="text-sm font-medium text-gray-500 mt-0.5">Dossier utilisateur exhaustif • #{{ user.id }}</p>
+                        <p class="text-sm font-medium text-gray-600 mt-0.5">Dossier utilisateur exhaustif • #{{ user.id }}</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-3">
@@ -47,7 +47,7 @@
                         {% endif %}
                     </div>
                     <h3 class="text-xl font-bold font-poppins text-gray-900">{{ user.firstname }} {{ user.lastname }}</h3>
-                    <p class="text-sm font-medium text-gray-400 mt-1 lowercase tracking-tight">{{ user.email }}</p>
+                    <p class="text-sm font-medium text-gray-600 mt-1 lowercase tracking-tight">{{ user.email }}</p>
                     
                     <div class="mt-6 flex flex-wrap justify-center gap-2">
                          <span class="inline-flex items-center px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider 
@@ -56,7 +56,7 @@
                             {{ user.isActive ? 'Actif' : 'Banni' }}
                         </span>
                         {% if user.verificationStatut %}
-                        <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider text-gray-500 border border-gray-100 bg-gray-50 shadow-sm">
+                        <span class="inline-flex items-center px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider text-gray-600 border border-gray-100 bg-gray-50 shadow-sm">
                             <i class="fas {% if user.verificationStatut == 'Vérifié' %}fa-circle-check text-emerald-500{% elseif user.verificationStatut == 'En attente' %}fa-clock text-amber-500{% else %}fa-circle-xmark text-red-500{% endif %} mr-2"></i>
                             {{ user.verificationStatut }}
                         </span>
@@ -66,15 +66,15 @@
                 
                 <div class="space-y-4 border-t border-gray-50 pt-8">
                     <div class="flex items-center justify-between group">
-                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Téléphone</span>
+                        <span class="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Téléphone</span>
                         <span class="text-sm font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">{{ user.phoneNumber ?? '—' }}</span>
                     </div>
                     <div class="flex items-center justify-between group">
-                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Nationalité</span>
+                        <span class="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Nationalité</span>
                         <span class="text-sm font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">{{ user.nationality ?? '—' }}</span>
                     </div>
                     <div class="flex items-center justify-between group">
-                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Naissance</span>
+                        <span class="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Naissance</span>
                         <span class="text-sm font-bold text-gray-900 group-hover:text-emerald-600 transition-colors">
                             {{ user.birthDate ? user.birthDate|date('d M Y') : '—' }}
                         </span>
@@ -94,7 +94,7 @@
                             </div>
                             <div>
                                 <p class="text-xs font-bold text-gray-900">Statut Accès</p>
-                                <p class="text-[10px] font-bold text-gray-400 uppercase">Autorisations système</p>
+                                <p class="text-[10px] font-bold text-gray-600 uppercase">Autorisations système</p>
                             </div>
                         </div>
                         <span class="text-[10px] font-bold px-3 py-1 rounded-full {% if user.isActive %}bg-emerald-500{% else %}bg-red-500{% endif %} text-white uppercase tracking-widest">
@@ -109,7 +109,7 @@
                             </div>
                             <div>
                                 <p class="text-xs font-bold text-gray-900">Email Vérifié</p>
-                                <p class="text-[10px] font-bold text-gray-400 uppercase">Protocole SMTP</p>
+                                <p class="text-[10px] font-bold text-gray-600 uppercase">Protocole SMTP</p>
                             </div>
                         </div>
                         <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-widest">
@@ -124,7 +124,7 @@
                             </div>
                             <div>
                                 <p class="text-xs font-bold text-gray-900">Niveau KYC</p>
-                                <p class="text-[10px] font-bold text-gray-400 uppercase">Score de confiance</p>
+                                <p class="text-[10px] font-bold text-gray-600 uppercase">Score de confiance</p>
                             </div>
                         </div>
                         <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-violet-50 text-violet-600 border border-violet-100 uppercase tracking-widest">
@@ -142,12 +142,12 @@
                     <div class="absolute left-[19px] top-2 bottom-2 w-0.5 bg-gray-50 border-l border-dashed border-gray-200"></div>
                     
                     <div class="relative flex gap-4">
-                        <div class="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-400 shrink-0 z-10 shadow-sm">
+                        <div class="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-600 shrink-0 z-10 shadow-sm">
                             <i class="fas fa-calendar-plus text-xs"></i>
                         </div>
                         <div>
                             <p class="text-xs font-bold text-gray-900">Ouverture du compte</p>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                            <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mt-1">
                                 {{ user.createdAt|date('d F Y') }} <span class="mx-1">•</span> {{ user.createdAt|date('H:i') }}
                             </p>
                         </div>
@@ -159,7 +159,7 @@
                         </div>
                         <div>
                             <p class="text-xs font-bold text-gray-900">Dernière connexion</p>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                            <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mt-1">
                                 {% if user.lastLoginAt %}
                                     {{ user.lastLoginAt|date('d F Y') }} <span class="mx-1">•</span> {{ user.lastLoginAt|date('H:i') }}
                                 {% else %}
@@ -175,7 +175,7 @@
                         </div>
                         <div>
                             <p class="text-xs font-bold text-gray-900">Soumission KYC</p>
-                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">
+                            <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mt-1">
                                 {{ user.verificationSubmittedAt ? user.verificationSubmittedAt|date('d F Y H:i') : 'En attente' }}
                             </p>
                         </div>
@@ -191,7 +191,7 @@
                 <div class="flex items-center justify-between mb-8 pb-4 border-b border-gray-50">
                     <div>
                         <h3 class="text-lg font-bold font-poppins text-gray-900">Pièces Justificatives</h3>
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Vérification de l'identité</p>
+                        <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mt-0.5">Vérification de l'identité</p>
                     </div>
                     {% if user.identityDocument or user.selfie %}
                     <span class="text-[10px] font-bold px-3 py-1 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100 uppercase tracking-widest">
@@ -208,7 +208,7 @@
                         <p class="text-xs font-bold text-gray-900 mb-1">Pièce d'Identité (Recto/Verso)</p>
                         {% if user.identityDocument %}
                         <p class="text-[10px] font-bold text-emerald-600 uppercase mb-4 tracking-tighter">Disponible</p>
-                        <a href="{{ asset(user.identityDocument) }}" target="_blank" class="inline-flex items-center gap-2 text-[10px] font-bold text-gray-400 hover:text-emerald-600 uppercase tracking-widest transition-colors">
+                        <a href="{{ asset(user.identityDocument) }}" target="_blank" class="inline-flex items-center gap-2 text-[10px] font-bold text-gray-600 hover:text-emerald-600 uppercase tracking-widest transition-colors">
                             <i class="fas fa-eye"></i> Consulter l'archive
                         </a>
                         {% else %}
@@ -224,7 +224,7 @@
                         <p class="text-xs font-bold text-gray-900 mb-1">Selfie de Contrôle</p>
                         {% if user.selfie %}
                         <p class="text-[10px] font-bold text-emerald-600 uppercase mb-4 tracking-tighter">Capturé</p>
-                        <a href="{{ asset(user.selfie) }}" target="_blank" class="inline-flex items-center gap-2 text-[10px] font-bold text-gray-400 hover:text-amber-600 uppercase tracking-widest transition-colors">
+                        <a href="{{ asset(user.selfie) }}" target="_blank" class="inline-flex items-center gap-2 text-[10px] font-bold text-gray-600 hover:text-amber-600 uppercase tracking-widest transition-colors">
                             <i class="fas fa-eye"></i> Visualiser le média
                         </a>
                         {% else %}
@@ -275,7 +275,7 @@
         <div class="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm">
             <div class="bg-gray-50/50 px-8 py-6 border-b border-gray-50">
                 <h3 class="text-lg font-bold font-poppins text-gray-900">Analytique Profil</h3>
-                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-0.5">Performances et volumes</p>
+                <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mt-0.5">Performances et volumes</p>
             </div>
             
             <div class="p-8">
@@ -285,7 +285,7 @@
                         { icon: 'shuffle', color: 'bg-green-50 text-green-600 shadow-green-100', label: 'Flux', value: stats.transactions_count ?? 0 },
                         { icon: 'money-bill-transfer', color: 'bg-amber-50 text-amber-600 shadow-amber-100', label: 'Retraits', value: stats.withdrawals_count ?? 0 },
                         { icon: 'circle-nodes', color: 'bg-violet-50 text-violet-600 shadow-violet-100', label: 'Tontines', value: stats.tontines_count ?? 0 },
-                        { icon: 'file-lines', color: 'bg-blue-50 text-blue-600 shadow-blue-100', label: 'Logs', value: stats.activity_logs_count ?? 0 },
+                        { icon: 'file-lines', color: 'bg-green-50 text-green-600 shadow-green-100', label: 'Logs', value: stats.activity_logs_count ?? 0 },
                         { icon: 'lock', color: 'bg-red-50 text-red-600 shadow-red-100', label: 'Alertes', value: stats.security_logs_count ?? 0 }
                     ] %}
                     
@@ -295,7 +295,7 @@
                             <i class="fas fa-{{ stat.icon }} text-xl"></i>
                         </div>
                         <div class="text-2xl font-bold font-poppins text-gray-900 leading-none mb-1">{{ stat.value }}</div>
-                        <div class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{{ stat.label }}</div>
+                        <div class="text-[10px] font-bold text-gray-600 uppercase tracking-widest">{{ stat.label }}</div>
                     </div>
                     {% endfor %}
                 </div>

@@ -8,13 +8,13 @@
     <div class="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div>
             <div class="flex items-center gap-3 mb-2">
-                <a href="{{ path('app_admin_fees') }}" class="group flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-gray-100 text-gray-400 hover:text-emerald-600 hover:border-emerald-100 transition-all shadow-sm">
+                <a href="{{ path('app_admin_fees') }}" class="group flex items-center justify-center w-10 h-10 rounded-xl bg-white border border-gray-100 text-gray-600 hover:text-emerald-600 hover:border-emerald-100 transition-all shadow-sm">
                     <i class="fas fa-arrow-left text-xs group-hover:-translate-x-0.5 transition-transform"></i>
                 </a>
-                <span class="text-xs font-bold text-gray-400 uppercase tracking-widest">Retour au Dashboard Revenue</span>
+                <span class="text-xs font-bold text-gray-600 uppercase tracking-widest">Retour au Dashboard Revenue</span>
             </div>
             <h1 class="text-3xl font-bold font-poppins text-gray-900 tracking-tight">Audit Portefeuille Utilisateur</h1>
-            <p class="text-gray-500 font-medium mt-1">Analyse des prélèvements liés au compte de <span class="text-emerald-600 font-bold underline decoration-emerald-200 underline-offset-4">{{ user.fullName }}</span></p>
+            <p class="text-gray-600 font-medium mt-1">Analyse des prélèvements liés au compte de <span class="text-emerald-600 font-bold underline decoration-emerald-200 underline-offset-4">{{ user.fullName }}</span></p>
         </div>
     </div>
 
@@ -25,7 +25,7 @@
                 <div class="p-8 border-b border-gray-50 bg-gray-50/30 flex items-center justify-between">
                     <div>
                         <h3 class="text-lg font-bold text-gray-900">Activités Commerciales</h3>
-                        <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mt-1">Détails des commissions consommées</p>
+                        <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mt-1">Détails des commissions consommées</p>
                     </div>
                 </div>
 
@@ -34,9 +34,9 @@
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-white border-b border-gray-50">
-                                <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest">Type d'Opération</th>
-                                <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right">Montant Cumulé</th>
-                                <th class="px-8 py-5 text-[10px] font-bold text-gray-400 uppercase tracking-widest text-right font-center">Action</th>
+                                <th class="px-8 py-5 text-[10px] font-bold text-gray-600 uppercase tracking-widest">Type d'Opération</th>
+                                <th class="px-8 py-5 text-[10px] font-bold text-gray-600 uppercase tracking-widest text-right">Montant Cumulé</th>
+                                <th class="px-8 py-5 text-[10px] font-bold text-gray-600 uppercase tracking-widest text-right font-center">Action</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-50">
@@ -51,17 +51,17 @@
                                     </div>
                                 </td>
                                 <td class="px-8 py-6 text-right font-bold text-gray-900 text-sm">
-                                    {{ fee.total|number_format(0, ',', ' ') }} <span class="text-[10px] text-gray-400 font-bold">FCFA</span>
+                                    {{ fee.total|number_format(0, ',', ' ') }} <span class="text-[10px] text-gray-600 font-bold">FCFA</span>
                                 </td>
                                 <td class="px-8 py-6 text-right">
-                                    <button class="h-10 px-4 bg-gray-50 text-[10px] font-bold text-gray-400 uppercase tracking-widest rounded-xl hover:bg-emerald-600 hover:text-white transition-all">Détails</button>
+                                    <button class="h-10 px-4 bg-gray-50 text-[10px] font-bold text-gray-600 uppercase tracking-widest rounded-xl hover:bg-emerald-600 hover:text-white transition-all">Détails</button>
                                 </td>
                             </tr>
                             {% endfor %}
                         </tbody>
                         <tfoot class="bg-gray-50/50">
                             <tr>
-                                <td class="px-8 py-6 text-sm font-bold text-gray-500 uppercase tracking-widest">Valeur Totale Apportée</td>
+                                <td class="px-8 py-6 text-sm font-bold text-gray-600 uppercase tracking-widest">Valeur Totale Apportée</td>
                                 <td class="px-8 py-6 text-right text-xl font-black font-poppins text-emerald-600">
                                     {{ total|number_format(0, ',', ' ') }} <span class="text-xs">FCFA</span>
                                 </td>
@@ -75,7 +75,7 @@
                     <div class="w-20 h-20 rounded-[2rem] bg-gray-50 text-gray-200 flex items-center justify-center text-3xl mx-auto mb-4">
                         <i class="fas fa-user-slash"></i>
                     </div>
-                    <p class="text-gray-400 font-medium">Aucun revenu généré par cet utilisateur.</p>
+                    <p class="text-gray-600 font-medium">Aucun revenu généré par cet utilisateur.</p>
                 </div>
                 {% endif %}
             </div>
@@ -87,9 +87,9 @@
                 <div class="absolute top-0 right-0 p-8 opacity-5">
                     <i class="fas fa-user-tie text-8xl"></i>
                 </div>
-                <h3 class="text-sm font-bold text-gray-400 uppercase tracking-widest mb-8">Informations Client</h3>
+                <h3 class="text-sm font-bold text-gray-600 uppercase tracking-widest mb-8">Informations Client</h3>
                 <div class="flex items-center gap-5 mb-8">
-                    <div class="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center text-2xl font-bold text-gray-400 border border-gray-100">
+                    <div class="w-16 h-16 rounded-2xl bg-gray-50 flex items-center justify-center text-2xl font-bold text-gray-600 border border-gray-100">
                         {{ user.firstname|first }}{{ user.lastname|first }}
                     </div>
                     <div>
@@ -97,7 +97,7 @@
                         <p class="text-[10px] font-bold text-emerald-500 uppercase tracking-widest mt-1">Contributeur Actif</p>
                     </div>
                 </div>
-                <div class="space-y-4 pt-8 border-t border-gray-50 text-xs font-medium text-gray-500">
+                <div class="space-y-4 pt-8 border-t border-gray-50 text-xs font-medium text-gray-600">
                     <div class="flex items-center gap-3">
                         <i class="fas fa-envelope w-4"></i>
                         <span>{{ user.email }}</span>

@@ -2,199 +2,132 @@
 
 {% block title %}Erreur serveur{% endblock %}
 
-{% block stylesheets %}
-    {{ parent() }}
-    <style>
-        .error-container {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-        }
-        
-        .error-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            padding: 3rem;
-            text-align: center;
-            max-width: 500px;
-            margin: 0 20px;
-        }
-        
-        .warning-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 2rem;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 2.5rem;
-        }
-        
-        .error-code {
-            font-size: 6rem;
-            font-weight: bold;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            margin: 0;
-            line-height: 1;
-        }
-        
-        .error-title {
-            font-size: 1.5rem;
-            color: #333;
-            margin: 1rem 0;
-            font-weight: 600;
-        }
-        
-        .error-message {
-            color: #666;
-            margin-bottom: 2rem;
-            line-height: 1.6;
-        }
-        
-        .btn-home {
-            display: inline-block;
-            padding: 12px 30px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: 500;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin: 0 5px;
-        }
-        
-        .btn-home:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-            color: white;
-        }
-        
-        .btn-secondary {
-            display: inline-block;
-            padding: 12px 30px;
-            background: white;
-            color: #667eea;
-            text-decoration: none;
-            border: 2px solid #667eea;
-            border-radius: 25px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            margin: 0 5px;
-        }
-        
-        .btn-secondary:hover {
-            background: #667eea;
-            color: white;
-            transform: translateY(-2px);
-        }
-        
-        .error-details {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 1.5rem;
-            margin-top: 2rem;
-            text-align: left;
-        }
-        
-        .error-details h4 {
-            color: #333;
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-        }
-        
-        .error-details p {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .error-ref {
-            background: #e3f2fd;
-            color: #1976d2;
-            padding: 0.25rem 0.75rem;
-            border-radius: 15px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            font-family: monospace;
-        }
-        
-        @media (max-width: 768px) {
-            .error-card {
-                padding: 2rem;
-            }
-            
-            .error-code {
-                font-size: 4rem;
-            }
-            
-            .btn-home, .btn-secondary {
-                display: block;
-                margin: 10px auto;
-                width: 200px;
-            }
-        }
-    </style>
-{% endblock %}
-
 {% block body %}
-<div class="error-container">
-    <div class="error-card">
-        <div class="warning-icon">
-            <i class="fas fa-exclamation-triangle"></i>
+<div class="min-h-screen bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center p-4">
+    <div class="relative w-full max-w-lg">
+
+        <!-- Interactive Background Elements -->
+        <div
+            class="absolute -top-10 -right-10 w-40 h-40 bg-orange-200 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob">
         </div>
-        
-        <h1 class="error-code">500</h1>
-        <h2 class="error-title">Erreur serveur</h2>
-        
-        <p class="error-message">
-            Une erreur interne est survenue. Nos équipes en ont été informées et travaillent à résoudre le problème.
-        </p>
-        
-        <div class="error-details">
-            <h4>Que s'est-il passé ?</h4>
-            <p>• Une erreur technique inattendue est survenue sur nos serveurs</p>
-            <p>• Nos équipes techniques ont automatiquement été notifiées</p>
-            <p>• Nous travaillons activement à résoudre ce problème</p>
-            
-            {% if status_text %}
-                <p style="margin-top: 1rem;"><strong>Référence de l'erreur:</strong> <span class="error-ref">{{ status_text }}</span></p>
-            {% endif %}
+        <div
+            class="absolute -bottom-10 -left-10 w-40 h-40 bg-red-200 rounded-full mix-blend-multiply filter blur-xl opacity-60 animate-blob animation-delay-2000">
         </div>
-        
-        <div style="margin-top: 2rem;">
-            {% if app.user %}
-                {% if is_granted('ROLE_ADMIN') %}
-                    <a href="{{ path('admin_dashboard') }}" class="btn-home">
-                        <i class="fas fa-tachometer-alt"></i> Tableau de bord admin
-                    </a>
-                {% elseif is_granted('ROLE_USER') %}
-                    <a href="{{ path('dashboard') }}" class="btn-home">
-                        <i class="fas fa-home"></i> Tableau de bord
-                    </a>
-                {% endif %}
-            {% endif %}
-            
-            <a href="{{ path('app_home') }}" class="btn-secondary">
-                <i class="fas fa-home"></i> Accueil
-            </a>
-        </div>
-        
-        <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #eee;">
-            <p style="color: #999; font-size: 0.9rem;">
-                <i class="fas fa-clock"></i> Cette erreur est généralement résolue rapidement.<br>
-                <i class="fas fa-envelope"></i> Contactez-nous si le problème persiste.
+
+        <div
+            class="relative bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl p-8 md:p-12 text-center border border-white/40">
+            <!-- Icon -->
+            <div class="w-24 h-24 mx-auto mb-8 relative">
+                <div class="absolute inset-0 bg-orange-100 rounded-full animate-pulse"></div>
+                <div
+                    class="relative w-full h-full flex items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-red-600 shadow-lg">
+                    <i class="fas fa-exclamation-triangle text-4xl text-white"></i>
+                </div>
+            </div>
+
+            <!-- Error Code -->
+            <h1
+                class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-red-800 mb-2 font-poppins">
+                500
+            </h1>
+
+            <!-- Message -->
+            <h2 class="text-2xl font-bold text-gray-900 mb-4">
+                Erreur Interne
+            </h2>
+
+            <p class="text-gray-600 mb-6 leading-relaxed">
+                Une erreur interne est survenue. Nos équipes en ont été informées et travaillent à résoudre le problème.
             </p>
+
+            <div class="bg-orange-50 rounded-2xl p-6 text-left mb-8 border border-orange-100">
+                <h4 class="text-sm font-bold text-orange-900 uppercase tracking-wider mb-3 flex items-center">
+                    <i class="fas fa-info-circle mr-2"></i> Détails
+                </h4>
+                <ul class="space-y-2 text-sm text-gray-700">
+                    <li class="flex items-start">
+                        <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                        <span>Erreur technique inattendue</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                        <span>Notification automatique envoyée à l'équipe</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check text-green-500 mt-1 mr-2"></i>
+                        <span>Résolution en cours</span>
+                    </li>
+                </ul>
+                {% if status_text is defined and status_text %}
+                <div class="mt-4 pt-3 border-t border-orange-200">
+                    <p class="text-xs text-orange-800 font-mono bg-white/50 p-2 rounded">
+                        <strong>Ref:</strong> {{ status_text }}
+                    </p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Actions -->
+            <div class="space-y-3">
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    {% if app.user %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <a href="{{ path('admin_dashboard') }}"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-green-700 text-white font-semibold shadow-lg shadow-green-200 hover:bg-green-800 hover:shadow-green-300 transition-all duration-300 transform hover:-translate-y-0.5">
+                        <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                    </a>
+                    {% elseif is_granted('ROLE_USER') %}
+                    <a href="{{ path('app_dashboard') }}"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-green-700 text-white font-semibold shadow-lg shadow-green-200 hover:bg-green-800 hover:shadow-green-300 transition-all duration-300 transform hover:-translate-y-0.5">
+                        <i class="fas fa-columns mr-2"></i> Dashboard
+                    </a>
+                    {% endif %}
+                    {% endif %}
+
+                    <a href="{{ path('app_home') }}"
+                        class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-white text-green-700 border-2 border-green-100 font-semibold hover:bg-green-50 hover:border-green-200 transition-all duration-300">
+                        <i class="fas fa-home mr-2"></i> Accueil
+                    </a>
+                </div>
+
+                <button onclick="window.history.back()"
+                    class="text-sm text-gray-600 hover:text-green-600 transition-colors mt-4 inline-flex items-center">
+                    <i class="fas fa-arrow-left mr-1"></i> Réessayer
+                </button>
+            </div>
+        </div>
+
+        <div class="text-center mt-8 text-sm text-gray-600">
+            <i class="fas fa-clock mr-1"></i> Cette erreur est généralement temporaire.
         </div>
     </div>
 </div>
+
+<style>
+    @keyframes blob {
+        0% {
+            transform: translate(0px, 0px) scale(1);
+        }
+
+        33% {
+            transform: translate(30px, -50px) scale(1.1);
+        }
+
+        66% {
+            transform: translate(-20px, 20px) scale(0.9);
+        }
+
+        100% {
+            transform: translate(0px, 0px) scale(1);
+        }
+    }
+
+    .animate-blob {
+        animation: blob 7s infinite;
+    }
+
+    .animation-delay-2000 {
+        animation-delay: 2s;
+    }
+</style>
 {% endblock %}

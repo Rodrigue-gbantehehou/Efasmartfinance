@@ -5,18 +5,19 @@
 {% block contentdashboard %}
 <div class="min-h-screen bg-green-50-gray-50">
     <!-- Header -->
-    <div class="bg-white border-b border-gray-200 px-4 py-4">
+    <div class="bg-white border-b border-gray-200 px-4 py-3 md:py-4">
         <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                 <div>
-                    <h1 class="text-2xl font-bold text-gray-900">Aide & Support</h1>
-                    <p class="text-gray-600 mt-1">Trouvez rapidement des réponses à vos questions</p>
+                    <h1 class="text-xl md:text-2xl font-bold text-gray-900">Aide & Support</h1>
+                    <p class="text-gray-600 mt-1 text-sm md:text-base">Trouvez rapidement des réponses à vos questions</p>
                 </div>
-                <div class="flex gap-2 mt-3 md:mt-0">
+                <div class="flex gap-2">
                     <button onclick="openContactModal()"
-                            class="inline-flex items-center px-4 py-2 bg-green-700 text-white rounded-lg font-medium hover:bg-green-700 transition-colors touch-target">
-                        <i class="fa-solid fa-headset mr-2"></i>
-                        Contacter le support
+                            class="inline-flex items-center px-3 md:px-4 py-2 bg-green-700 text-white rounded-lg font-medium hover:bg-green-700 transition-colors touch-target text-sm md:text-base">
+                        <i class="fa-solid fa-headset mr-2 text-sm md:text-base"></i>
+                        <span class="hidden sm:inline">Contacter le support</span>
+                        <span class="sm:hidden">Support</span>
                     </button>
                 </div>
             </div>
@@ -24,31 +25,30 @@
     </div>
 
     <!-- Recherche rapide -->
-    <div class="max-w-7xl mx-auto px-4 py-6">
-        <div class="bg-gradient-to-r from-green-700 to-green-600 rounded-2xl p-6 md:p-8 text-white">
+    <div class="max-w-7xl mx-auto px-4 py-4 md:py-6">
+        <div class="bg-gradient-to-r from-green-700 to-green-600 rounded-xl md:rounded-2xl p-4 md:p-6 lg:p-8 text-white">
             <div class="text-center max-w-2xl mx-auto">
-                <h2 class="text-2xl md:text-3xl font-bold mb-4">Comment pouvons-nous vous aider ?</h2>
-                <p class="text-white/90 mb-6">Recherchez dans notre base de connaissances ou contactez notre équipe</p>
+                <h2 class="text-xl md:text-2xl lg:text-3xl font-bold mb-3 md:mb-4">Comment pouvons-nous vous aider ?</h2>
+                <p class="text-white/90 mb-4 md:mb-6 text-sm md:text-base">Recherchez dans notre base de connaissances</p>
                 
                 <div class="relative">
-                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <i class="fa-solid fa-search text-gray-400"></i>
+                    <div class="absolute inset-y-0 left-0 pl-3 md:pl-4 flex items-center pointer-events-none">
+                        <i class="fa-solid fa-search text-gray-400 text-sm md:text-base"></i>
                     </div>
                     <input type="text" 
                            id="help-search"
-                           placeholder="Rechercher une question, un problème..."
-                           class="w-full pl-12 pr-4 py-4 bg-white text-gray-900 rounded-xl border-0 focus:ring-2 focus:ring-white/20 focus:outline-none shadow-lg touch-target">
+                           placeholder="Rechercher..."
+                           class="w-full pl-10 md:pl-12 pr-4 py-3 md:py-4 bg-white text-gray-900 rounded-lg md:rounded-xl border-0 focus:ring-2 focus:ring-white/20 focus:outline-none shadow-lg touch-target text-sm md:text-base">
                 </div>
                 
-                <div class="flex flex-wrap justify-center gap-2 mt-4">
-                    
-                    <span class="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-sm">
+                <div class="flex flex-wrap justify-center gap-2 mt-3 md:mt-4">
+                    <span class="px-2 md:px-3 py-1 md:py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-xs md:text-sm">
                         <i class="fa-solid fa-credit-card mr-1"></i> Paiements
                     </span>
-                    <span class="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-sm">
+                    <span class="px-2 md:px-3 py-1 md:py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-xs md:text-sm">
                         <i class="fa-solid fa-users mr-1"></i> Tontines
                     </span>
-                    <span class="px-3 py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-sm">
+                    <span class="px-2 md:px-3 py-1 md:py-1.5 bg-white/20 backdrop-blur-sm rounded-full text-xs md:text-sm">
                         <i class="fa-solid fa-shield-alt mr-1"></i> Sécurité
                     </span>
                 </div>
@@ -79,7 +79,7 @@
                                     </div>
                                     <div class="text-left">
                                         <h3 class="font-semibold text-gray-900">Tontines & Épargne</h3>
-                                        <p class="text-sm text-gray-500">Gestion de vos tontines</p>
+                                        <p class="text-sm text-gray-6000">Gestion de vos tontines</p>
                                     </div>
                                 </div>
                                 <i class="fa-solid fa-chevron-down text-gray-400 transition-transform" id="faq-icon-2"></i>
@@ -112,7 +112,7 @@
                                     </div>
                                     <div class="text-left">
                                         <h3 class="font-semibold text-gray-900">Sécurité & Confidentialité</h3>
-                                        <p class="text-sm text-gray-500">Protection de vos données</p>
+                                        <p class="text-sm text-gray-6000">Protection de vos données</p>
                                     </div>
                                 </div>
                                 <i class="fa-solid fa-chevron-down text-gray-400 transition-transform" id="faq-icon-3"></i>
@@ -152,7 +152,7 @@
                                 </div>
                                 <div>
                                     <h3 class="font-medium text-gray-900 group-hover:text-green-700">Tutoriels vidéo</h3>
-                                    <p class="text-sm text-gray-500">Apprenez à utiliser la plateforme</p>
+                                    <p class="text-sm text-gray-6000">Apprenez à utiliser la plateforme</p>
                                 </div>
                             </div>
                         </a>
@@ -164,7 +164,7 @@
                                 </div>
                                 <div>
                                     <h3 class="font-medium text-gray-900 group-hover:text-green-700">Documentation PDF</h3>
-                                    <p class="text-sm text-gray-500">Guide d'utilisation complet</p>
+                                    <p class="text-sm text-gray-6000">Guide d'utilisation complet</p>
                                 </div>
                             </div>
                         </a>
@@ -176,7 +176,7 @@
                                 </div>
                                 <div>
                                     <h3 class="font-medium text-gray-900 group-hover:text-green-700">Formation en ligne</h3>
-                                    <p class="text-sm text-gray-500">Cours sur l'épargne digitale</p>
+                                    <p class="text-sm text-gray-6000">Cours sur l'épargne digitale</p>
                                 </div>
                             </div>
                         </a>
@@ -188,7 +188,7 @@
                                 </div>
                                 <div>
                                     <h3 class="font-medium text-gray-900 group-hover:text-green-700">Blog & Actualités</h3>
-                                    <p class="text-sm text-gray-500">Conseils et nouveautés</p>
+                                    <p class="text-sm text-gray-6000">Conseils et nouveautés</p>
                                 </div>
                             </div>
                         </a>
@@ -214,7 +214,7 @@
                             </div>
                             <div class="flex-1">
                                 <div class="font-medium text-gray-900">support@efasmartfinance.com</div>
-                                <div class="text-xs text-gray-500">Réponse sous 24h</div>
+                                <div class="text-xs text-gray-6000">Réponse sous 24h</div>
                             </div>
                         </div>
                         
@@ -224,7 +224,7 @@
                             </div>
                             <div class="flex-1">
                                 <div class="font-medium text-gray-900">+225 27 22 44 55 66</div>
-                                <div class="text-xs text-gray-500">Lun-Ven, 8h-18h</div>
+                                <div class="text-xs text-gray-6000">Lun-Ven, 8h-18h</div>
                             </div>
                         </div>
                     </div>
@@ -323,7 +323,7 @@
                     </div>
                     <div class="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-2 max-w-[80%]">
                         <div class="text-sm text-gray-800">Bonjour ! Comment pouvons-nous vous aider aujourd'hui ?</div>
-                        <div class="text-xs text-gray-500 mt-1">Support • Maintenant</div>
+                        <div class="text-xs text-gray-6000 mt-1">Support • Maintenant</div>
                     </div>
                 </div>
                 
@@ -347,7 +347,7 @@
                         <i class="fa-solid fa-paper-plane"></i>
                     </button>
                 </div>
-                <div class="text-xs text-gray-500 mt-2 text-center">
+                <div class="text-xs text-gray-6000 mt-2 text-center">
                     <i class="fa-solid fa-circle text-emerald-500 text-[8px] mr-1"></i>
                     En ligne • Réponse immédiate
                 </div>
@@ -364,26 +364,47 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (searchInput) {
         searchInput.addEventListener('input', function() {
-            const searchTerm = this.value.toLowerCase();
+            const searchTerm = this.value.toLowerCase().trim();
             
+            // 1. Filtrer les items individuels
             faqItems.forEach(item => {
                 const searchData = item.getAttribute('data-search').toLowerCase();
-                const parentSection = item.closest('.faq-item').parentElement.parentElement;
-                
                 if (searchTerm === '' || searchData.includes(searchTerm)) {
                     item.style.display = 'block';
-                    parentSection.style.display = 'block';
-                    
-                    // Ouvrir la section parent si elle contient des résultats
-                    const sectionId = parentSection.id.replace('faq-content-', '');
-                    openFAQ(sectionId);
                 } else {
                     item.style.display = 'none';
+                }
+            });
+
+            // 2. Gérer l'affichage des sections parentes
+            const faqSections = document.querySelectorAll('[id^="faq-content-"]');
+            
+            faqSections.forEach(section => {
+                const visibleItems = section.querySelectorAll('.faq-item[style="display: block"]');
+                const parentCard = section.closest('.bg-white'); // La carte complète
+                
+                if (visibleItems.length > 0) {
+                    // S'il y a des résultats dans cette section
+                    if (parentCard) parentCard.style.display = 'block';
                     
-                    // Vérifier si toute la section est vide
-                    const visibleItems = parentSection.querySelectorAll('.faq-item[style="display: block"]');
-                    if (visibleItems.length === 0) {
-                        parentSection.style.display = 'none';
+                    // Si on recherche quelque chose, on ouvre l'accordéon
+                    if (searchTerm !== '') {
+                        section.classList.remove('hidden');
+                        const iconId = section.id.replace('content', 'icon');
+                        const icon = document.getElementById(iconId);
+                        if (icon) icon.classList.add('rotate-180');
+                    } else {
+                        // Si recherche vide, on remet l'état par défaut (fermé)
+                        section.classList.add('hidden');
+                        const iconId = section.id.replace('content', 'icon');
+                        const icon = document.getElementById(iconId);
+                        if (icon) icon.classList.remove('rotate-180');
+                    }
+                } else {
+                    // Aucun résultat dans cette section
+                    if (parentCard) {
+                        // Si recherche vide, on affiche tout. Sinon on cache la carte vide.
+                        parentCard.style.display = searchTerm === '' ? 'block' : 'none';
                     }
                 }
             });
@@ -486,7 +507,7 @@ function sendChatMessage() {
             </div>
             <div class="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-2 max-w-[80%]">
                 <div class="text-sm text-gray-800">${reply}</div>
-                <div class="text-xs text-gray-500 mt-1">Support • Maintenant</div>
+                <div class="text-xs text-gray-6000 mt-1">Support • Maintenant</div>
             </div>
         `;
         chatMessages.appendChild(botMessage);

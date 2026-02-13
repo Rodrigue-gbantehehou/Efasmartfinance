@@ -13,7 +13,6 @@
 theme: {
 extend: {
 colors: {
-green-700: '#1a4d2e',
 secondary: '#f6c90e',
 accent: '#2e7d32',
 light: '#f8f9fa'
@@ -40,12 +39,12 @@ light: '#f8f9fa'
 					<img src="/images/logovert.png" alt="Logo EFA Smart Finance" class="h-20 "/>
 				<!-- Carte de connexion<div>
 						<h1 class="text-xl font-extrabold text-green-700 leading-tight">EFA SMART FINANCE</h1>
-						<p class="text-sm text-gray-500">Interface d’administration</p>
+						<p class="text-sm text-gray-6000">Interface d’administration</p>
 					</div> -->	
 				</div>
 
 				<h2 class="text-lg font-semibold text-gray-800 mb-2">Connexion</h2>
-				<p class="text-sm text-gray-500 mb-6">Entre ton email ou identifiant  et ton mot de passe pour accéder au tableau de bord.</p>
+				<p class="text-sm text-gray-6000 mb-6">Entre ton email ou identifiant  et ton mot de passe pour accéder au tableau de bord.</p>
 
 				<form method="post" action="" class="space-y-4" novalidate>
 					<!-- Email ou uuid -->
@@ -97,8 +96,8 @@ light: '#f8f9fa'
 					type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
 
 					<!-- Bouton -->
-					<button type="submit" class="w-full bg-green-600 text-white font-bold py-2.5 rounded-lg hover:bg-yellow-500 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary">
-						Valider
+					<button type="submit" class="w-full bg-green-700 text-white font-bold py-2.5 rounded-lg hover:bg-yellow-500 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary">
+						Se connecter
 					</button>
 				</form>
 

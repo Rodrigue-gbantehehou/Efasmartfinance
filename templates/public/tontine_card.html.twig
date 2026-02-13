@@ -330,7 +330,7 @@
 																	</a>
 																	
                     </div>
-                    <p class="text-xs text-gray-500 text-center mt-3">
+                    <p class="text-xs text-gray-6000 text-center mt-3">
                         Traitement sous 24-48h après demande
                     </p>
                 {% else %}
@@ -352,11 +352,11 @@
                     
                     <!-- Completed Message -->
                     <div class="text-center p-4 bg-gray-50 rounded-xl">
-                        <div class="h-12 w-12 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center mx-auto mb-3">
+                        <div class="h-12 w-12 rounded-full bg-gray-200 text-gray-6000 flex items-center justify-center mx-auto mb-3">
                             <i class="fas fa-flag-checkered text-lg"></i>
                         </div>
                         <p class="text-gray-700 font-medium mb-1">Cycle complété</p>
-                        <p class="text-sm text-gray-500">Votre tontine est terminée avec succès</p>
+                        <p class="text-sm text-gray-6000">Votre tontine est terminée avec succès</p>
                     </div>
                 {% endif %}
             </div>
@@ -415,15 +415,15 @@
                 <div class="mt-6 pt-6 border-t border-gray-200">
                     <div class="grid grid-cols-3 gap-3">
                         <div class="text-center">
-                            <p class="text-gray-500 text-xs mb-1">Payés</p>
+                            <p class="text-gray-6000 text-xs mb-1">Payés</p>
                             <p class="font-bold text-green-700 text-lg">{{ tontine.paidPoints|default(0) }}</p>
                         </div>
                         <div class="text-center">
-                            <p class="text-gray-500 text-xs mb-1">Restants</p>
+                            <p class="text-gray-6000 text-xs mb-1">Restants</p>
                             <p class="font-bold text-gray-900 text-lg">{{ tontine.totalPoints - tontine.paidPoints|default(0) }}</p>
                         </div>
                         <div class="text-center">
-                            <p class="text-gray-500 text-xs mb-1">Total</p>
+                            <p class="text-gray-6000 text-xs mb-1">Total</p>
                             <p class="font-bold text-green-700 text-lg">{{ tontine.totalPoints }}</p>
                         </div>
                     </div>
@@ -448,12 +448,12 @@
                         <i class="fas fa-check-circle text-3xl"></i>
                     </div>
                     <p class="text-gray-600 font-medium text-lg mb-2">Aucun paiement en attente</p>
-                    <p class="text-gray-500">Tous les points sont à jour</p>
+                    <p class="text-gray-6000">Tous les points sont à jour</p>
                     
                     <!-- Next Payment Info -->
                     {% if tontine.nextDueDate %}
                         <div class="mt-6 p-4 bg-gray-50 rounded-xl">
-                            <p class="text-gray-500 text-sm mb-1">Prochaine échéance</p>
+                            <p class="text-gray-6000 text-sm mb-1">Prochaine échéance</p>
                             <p class="font-semibold text-gray-900">{{ tontine.nextDueDate|date('d/m/Y') }}</p>
                         </div>
                     {% endif %}
@@ -467,7 +467,7 @@
 			
 </div>
 	<!-- Print Notice -->
-				<div class="text-center text-gray-500 text-sm mt-12">
+				<div class="text-center text-gray-6000 text-sm mt-12">
 					<p>Document généré le
 						{{ "now"|date('d/m/Y à H:i') }}</p>
 					<p>EFA Smart Finance • www.efasmartfinance.com</p>
