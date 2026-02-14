@@ -134,6 +134,29 @@
                                     tontine.amountPerPoint|default(100)|number_format(0, ',', ' ') }} FCFA
                                 </p> -->
                             </div>
+                            <!-- Option frais (checkbox) -->
+                            {% set feesDue = tontine.getFeesDue() %}
+                            {% if tontine.frequency != 'daily' %}
+                                <div class="bg-yellow-50 rounded-xl p-4 border border-yellow-200">
+                                    <label class="flex items-start gap-3 cursor-pointer select-none">
+                                        <div class="relative flex items-center pt-1">
+                                            <input type="checkbox" id="include-fees" 
+                                                class="w-5 h-5 text-green-600 rounded border-gray-300 focus:ring-green-500 transition-all"
+                                                checked
+                                                onchange="toggleFees()">
+                                        </div>
+                                        <div class="flex-1">
+                                            <span class="block font-bold text-gray-900">Inclure les frais</span>
+                                            <span class="block text-sm text-gray-600 mt-0.5">
+                                                Ajouter <span id="fee-display-amount" class="font-bold text-green-700">+{{ feesDue|number_format(0, ',', ' ') }} FCFA</span> au paiement
+                                                <span class="text-xs text-gray-400 block">(Arriérés: {{ feesDue|number_format(0, ',', ' ') }} F + Frais courants)</span>
+                                            </span>
+                                        </div>
+                                    </label>
+                                    <input type="hidden" id="fees-arrears-amount" value="{{ feesDue }}">
+                                </div>
+                            {% endif %}
+
                             <!-- Suggested Amounts 
                             <div>
                                 <label
@@ -267,6 +290,14 @@
     const KKIA_PUBLIC_KEY = '{{ kkiapay_public_key|default("") }}';
     let selectedPaymentMethod = 'kkiapay'; // Default to kkiapay as it's the main one
     let currentAmount = {{ tontine.amountPerPoint|default (0) }};
+    let feesArrears = 0;
+    let totalFeesToPay = 0;
+    let includeFees = false;
+    
+    // Calculate Fee Ratio (Total Service Fee / Total Tontine Amount)
+    {% set totalTontine = tontine.amountPerPoint * tontine.totalPoints %}
+    {% set totalFees = tontine.getDeductedServiceFee() %}
+    const FEE_RATIO = {{ totalTontine > 0 ? (totalFees / totalTontine) : 0 }};
 
     // ==================== UTILITY FUNCTIONS ====================
     function isMultiple(number, multiple) {
@@ -294,6 +325,30 @@
         const displayEl = document.getElementById('display-amount');
         if (displayEl) {
             displayEl.textContent = parseInt(amount).toLocaleString('fr-FR'); // Format nicely
+        }
+    }
+
+    function toggleFees() {
+        const cb = document.getElementById('include-fees');
+        includeFees = cb ? cb.checked : false;
+        feesArrears = parseInt(document.getElementById('fees-arrears-amount')?.value || 0);
+        
+        // Recalculate with current amount
+        const input = document.getElementById('custom-amount');
+        calculateFees(parseInt(input.value) || 0);
+        
+        updatePaymentButtonState();
+    }
+
+    function calculateFees(amount) {
+        // Current Fee = Amount * Ratio
+        const currentFee = Math.ceil(amount * FEE_RATIO);
+        totalFeesToPay = feesArrears + currentFee;
+
+        // Update UI logic
+        const feeDisplay = document.getElementById('fee-display-amount');
+        if (feeDisplay) {
+            feeDisplay.textContent = '+' + totalFeesToPay.toLocaleString('fr-FR') + ' FCFA';
         }
     }
 
@@ -341,12 +396,29 @@
         if (!input || !button) return;
 
         const validation = validateAmount(parseInt(input.value) || 0);
+        
+        // Calculate Total
+        const tontineAmount = parseInt(input.value) || 0;
+        let total = tontineAmount;
+        
+        // Update fees based on current amount
+        calculateFees(tontineAmount);
+
+        if (includeFees) {
+            total += totalFeesToPay;
+        }
+
+        const btnText = document.getElementById('payment-btn-text');
+
         if (validation.isValid) {
             button.disabled = false;
             button.classList.remove('opacity-50', 'cursor-not-allowed');
+            // Update button text
+            btnText.innerHTML = `<span>Payer ${total.toLocaleString('fr-FR')} FCFA</span> <i class="fa-solid fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>`;
         } else {
             button.disabled = true;
             button.classList.add('opacity-50', 'cursor-not-allowed');
+            btnText.innerHTML = `<span>Montant invalide</span>`;
         }
     }
 
@@ -395,6 +467,7 @@
         if (input) {
             currentAmount = parseInt(input.value) || 0;
             updateDisplayAmount(currentAmount);
+            toggleFees(); // Initialize fee state
             updatePaymentButtonState();
         }
     });
@@ -427,8 +500,10 @@
                 },
                 body: JSON.stringify({
                     tontine_id: tontineId,
-                    amount: currentAmount,
-                    method: selectedPaymentMethod
+                    amount: includeFees ? (currentAmount + totalFeesToPay) : currentAmount,
+                    method: selectedPaymentMethod,
+                    include_fees: includeFees,
+                    fee_amount: totalFeesToPay
                 })
             });
 

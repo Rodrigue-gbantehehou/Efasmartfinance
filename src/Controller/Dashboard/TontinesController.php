@@ -118,6 +118,14 @@ final class TontinesController extends AbstractController
         ]);
     }
 
+    #[Route('/{id}/pay-fees', name: 'app_tontine_pay_fees_page', methods: ['GET'])]
+    public function payFees(Tontine $tontine): Response
+    {
+        return $this->render('dashboard/pages/tontines/pay_fees.html.twig', [
+            'tontine' => $tontine,
+        ]);
+    }
+
     #[Route('/{id}/edit', name: 'app_tontines_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Tontine $tontine, EntityManagerInterface $entityManager): Response
     {

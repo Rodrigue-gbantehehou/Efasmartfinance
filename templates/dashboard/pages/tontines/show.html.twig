@@ -9,9 +9,16 @@
 {% set is_completed = tontine.totalpay == totalAPayer %}
 {% set montantARetirer = tontine.amountPerPoint %}
 {% set isMonthly = tontine.frequency == 'monthly' %}
-{% set interval = tontine.frequency == 'monthly' ? 'months' : (tontine.frequency == 'weekly' ? 'weeks' : (tontine.frequency == 'daily' ? 'days' : 'months')) %}
+{% set interval = tontine.frequency == 'monthly' ? 'months' : (tontine.frequency == 'weekly' ? 'weeks' :
+(tontine.frequency == 'daily' ? 'days' : 'months')) %}
+
+{# Variables pour le flux de retrait partagé #}
+{% set withdrawalFeesDue = max(0, tontine.getDeductedServiceFee() - tontine.getPaidFees()) %}
+{% set withdrawalGrossSavings = tontine.totalPay - tontine.getWithdrawnAmount() %}
+{% set withdrawalNetAmount = tontine.getAvailableWithdrawalAmount() %}
 
 {# Configuration KkiaPay #}
+<script src="https://cdn.kkiapay.me/k.js"></script>
 
 {% set kkiapay_callback_url = url('app_tontine_payment_verify') %}
 
@@ -24,7 +31,7 @@
 			<div class="flex items-center justify-between">
 
 				<div class="flex items-center gap-3">
-					
+
 				</div>
 
 				<!-- Quick Actions -->
@@ -38,31 +45,31 @@
 					</a>
 					<div class="flex flex-col md:flex-row gap-3">
 						<!-- Bouton de demande de retrait -->
-						<a href="{{ path('app_withdrawal_request', {'id': tontine.id}) }}"
+						<button onclick="initiateWithdrawalFlow({{ tontine.id }}, {{ withdrawalFeesDue|number_format(2, '.', '') }}, '{{ tontine.frequency }}', {{ withdrawalGrossSavings|number_format(2, '.', '') }}, {{ withdrawalNetAmount|number_format(2, '.', '') }})"
 							class="inline-flex items-center justify-center gap-3 px-6 py-3.5 bg-gradient-to-r from-yellow-500 to-yellow-500 text-white rounded-xl hover:from-yellow-500 hover:to-yellow-600 transition-all duration-300 transform hover:scale-[1.02] font-medium touch-target shadow-lg hover:shadow-xl">
 							<i class="fas fa-download mr-2"></i>
 							Demander un retrait
-						</a>
+						</button>
 					</div>
 
 					{% elseif uiState == 'COMPLETED_NO_WITHDRAWAL' %}
 					<div class="flex flex-col md:flex-row gap-3">
 						<!-- Bouton de demande de retrait -->
-						<a href="{{ path('app_withdrawal_request', {'id': tontine.id}) }}"
+						<button onclick="initiateWithdrawalFlow({{ tontine.id }}, {{ withdrawalFeesDue|number_format(2, '.', '') }}, '{{ tontine.frequency }}', {{ withdrawalGrossSavings|number_format(2, '.', '') }}, {{ withdrawalNetAmount|number_format(2, '.', '') }})"
 							class="inline-flex items-center justify-center gap-3 px-6 py-3.5 bg-gradient-to-r from-yellow-500 to-yellow-500 text-white rounded-xl hover:from-yellow-500 hover:to-yellow-600 transition-all duration-300 transform hover:scale-[1.02] font-medium touch-target shadow-lg hover:shadow-xl">
 							<i class="fas fa-download mr-2"></i>
 							Demander un retrait
-						</a>
+						</button>
 					</div>
 
 					{% elseif uiState == 'PARTIAL_WITHDRAWAL' %}
 					<div class="flex flex-col md:flex-row gap-3">
 						<!-- Bouton de demande de retrait -->
-						<a href="{{ path('app_withdrawal_request', {'id': tontine.id}) }}"
+						<button onclick="initiateWithdrawalFlow({{ tontine.id }}, {{ withdrawalFeesDue|number_format(2, '.', '') }}, '{{ tontine.frequency }}', {{ withdrawalGrossSavings|number_format(2, '.', '') }}, {{ withdrawalNetAmount|number_format(2, '.', '') }})"
 							class="inline-flex items-center justify-center gap-3 px-6 py-3.5 bg-gradient-to-r from-yellow-600 to-yellow-500 text-white rounded-xl hover:from-yellow-600 hover:to-yellow-600 transition-all duration-300 transform hover:scale-[1.02] font-medium touch-target shadow-lg hover:shadow-xl">
 							<i class="fas fa-download mr-2"></i>
 							Demander un retrait
-						</a>
+						</button>
 					</div>
 					{% elseif uiState == 'COMPLETED_FULL_WITHDRAWAL' %}
 					<!-- Tontine terminée mais pas encore clôturée -->
@@ -82,7 +89,8 @@
 	<header class="md:hidden bg-green-700 text-white sticky top-0 z-30 shadow-lg px-4 py-3">
 		<div class="flex items-center justify-between gap-3 mb-3">
 			<div class="flex items-center gap-3 min-w-0">
-				<a href="{{ path('app_dashboard') }}" class="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 transition-colors">
+				<a href="{{ path('app_dashboard') }}"
+					class="flex items-center justify-center w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 transition-colors">
 					<i class="fas fa-arrow-left text-sm"></i>
 				</a>
 				<div class="min-w-0">
@@ -92,33 +100,35 @@
 			</div>
 			<div class="flex items-center gap-2 flex-shrink-0">
 				{% if uiState == 'COMPLETED_NO_WITHDRAWAL' %}
-				<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-yellow-500 text-white whitespace-nowrap">
+				<span
+					class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-yellow-500 text-white whitespace-nowrap">
 					<i class="fas fa-check-circle mr-1"></i>
 					Terminée
 				</span>
 				{% elseif uiState == 'COMPLETED_FULL_WITHDRAWAL' %}
-				<span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-red-500 text-white whitespace-nowrap">
+				<span
+					class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium bg-red-500 text-white whitespace-nowrap">
 					<i class="fas fa-lock mr-1"></i>
 					Clôturée
 				</span>
 				{% endif %}
 			</div>
 		</div>
-		
+
 		{% if uiState == 'ACTIVE' %}
 		<div class="flex gap-2">
-			<a href="{{ path('app_tontine_payment', {'id': tontine.id}) }}" 
-					class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg font-bold text-sm shadow-sm active:scale-95 transition-all border border-white/30">
+			<a href="{{ path('app_tontine_payment', {'id': tontine.id}) }}"
+				class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg font-bold text-sm shadow-sm active:scale-95 transition-all border border-white/30">
 				<i class="fas fa-credit-card"></i>
 				<span>Payer un point</span>
 			</a>
 		</div>
 		{% elseif uiState == 'COMPLETED_NO_WITHDRAWAL' or uiState == 'PARTIAL_WITHDRAWAL' %}
-		<a href="{{ path('app_withdrawal_request', {'id': tontine.id}) }}"
-			 class="block text-center px-3 py-2 bg-yellow-500 text-white rounded-lg font-bold text-sm shadow-sm active:scale-95 transition-all">
+		<button onclick="initiateWithdrawalFlow({{ tontine.id }}, {{ withdrawalFeesDue|number_format(2, '.', '') }}, '{{ tontine.frequency }}', {{ withdrawalGrossSavings|number_format(2, '.', '') }}, {{ withdrawalNetAmount|number_format(2, '.', '') }})"
+			class="block text-center px-3 py-2 bg-yellow-500 text-white rounded-lg font-bold text-sm shadow-sm active:scale-95 transition-all w-full">
 			<i class="fas fa-download mr-1"></i>
 			Demander le retrait
-		</a>
+		</button>
 		{% endif %}
 	</header>
 
@@ -150,7 +160,8 @@
 					{% endif %}
 
 					<!-- En-tête de la carte (masqué sur mobile car redondant avec le top header) -->
-					<div class="hidden md:block bg-gradient-to-r from-green-800 via-green-700 to-green-800 text-white p-3 md:p-6 lg:p-8">
+					<div
+						class="hidden md:block bg-gradient-to-r from-green-800 via-green-700 to-green-800 text-white p-3 md:p-6 lg:p-8">
 						<div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
 							<!-- Info gauche -->
 							<div class="flex-1">
@@ -161,7 +172,7 @@
 											class="fa-solid {% if tontine.statut == 'completed' %}fa-lock{% else %}fa-piggy-bank{% endif %} text-xl"></i>
 									</div>
 									<div>
-									<h2 class="text-lg md:text-xl lg:text-2xl font-bold">{{ tontine.name }}</h2>
+										<h2 class="text-lg md:text-xl lg:text-2xl font-bold">{{ tontine.name }}</h2>
 										<p
 											class="{% if tontine.statut == 'completed' %}text-red-100{% else %}text-green-100{% endif %} text-sm">
 											EFA Smart Finance •
@@ -201,9 +212,10 @@
 					</div>
 
 					<!-- Carte de pointage interactive-->
-				<div class="p-3 md:p-6 lg:p-8">
+					<div class="p-3 md:p-6 lg:p-8">
 						<div class="text-center mb-4 md:mb-8">
-							<h3 class="text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-2 p-2">Calendrier de la Tontine</h3>
+							<h3 class="text-base md:text-lg lg:text-xl font-bold text-gray-900 mb-2 p-2">Calendrier de
+								la Tontine</h3>
 							<div class="flex items-center justify-center gap-4">
 								<div class="text-sm text-gray-600">
 									<span class="font-semibold text-green-700">{{ tontine.paidPoints|default(0)
@@ -222,184 +234,281 @@
 
 						<!-- Navigation par Onglets (Mois) -->
 						{% set isMonthly = tontine.frequency == 'monthly' %}
-						{% set pointsPerMonth = (isMonthly ? tontine.totalPoints : (tontine.frequency == 'daily' ? 31 : 4)) %}
+						{% set pointsPerMonth = (isMonthly ? tontine.totalPoints : (tontine.frequency == 'daily' ? 31 :
+						4)) %}
 						{% set currentPoint = (tontine.paidPoints|default(0)) + 1 %}
 						{% set totalMonths = (tontine.totalPoints / pointsPerMonth)|round(0, 'ceil') %}
 						{% set currentMonthIndex = max(1, (tontine.paidPoints / pointsPerMonth)|round(0, 'ceil')) %}
-						{% set multiplier = (tontine.statut == 'terminated') ? min(currentMonthIndex, totalMonths) : totalMonths %}
+						{% set multiplier = (tontine.statut == 'terminated') ? min(currentMonthIndex, totalMonths) :
+						totalMonths %}
 
 						<div class="px-4 mb-6">
-							<div class="flex items-center gap-2 overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+							<div
+								class="flex items-center gap-2 overflow-x-auto pb-4 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
 								{% for mIdx in 1..totalMonths %}
-									{% set isActive = mIdx == currentMonthIndex %}
-									{% set monthStart = (mIdx - 1) * pointsPerMonth + 1 %}
-									{% set monthEnd = min(mIdx * pointsPerMonth, tontine.totalPoints) %}
-									
-									{# Calculer la progression du mois #}
-									{% set monthPaidCount = 0 %}
-									{% for p in monthStart..monthEnd %}
-										{% if p <= (tontine.paidPoints|default(0)) %}
-											{% set monthPaidCount = monthPaidCount + 1 %}
-										{% endif %}
-									{% endfor %}
-									{% set monthTotalCount = monthEnd - monthStart + 1 %}
-									{% set isMonthFull = monthPaidCount == monthTotalCount %}
+								{% set isActive = mIdx == currentMonthIndex %}
+								{% set monthStart = (mIdx - 1) * pointsPerMonth + 1 %}
+								{% set monthEnd = min(mIdx * pointsPerMonth, tontine.totalPoints) %}
 
-									{% if tontine.frequency != 'monthly' %}
-									<button type="button" 
-										onclick="switchMonth({{ mIdx }})"
-										id="tab-month-{{ mIdx }}"
-										class="month-tab flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2 rounded-2xl transition-all duration-300 {{ isActive ? 'bg-green-600 text-white shadow-lg' : 'bg-green-50 border border-green-100 text-green-800 hover:bg-green-100' }}">
-										<span class="text-lg font-black leading-none">
-											{{ isMonthly ? 'Mensuelle' : mIdx ~ (mIdx == 1 ? 'er' : 'em') }}
-										</span>
-										<span class="text-[10px] font-bold uppercase tracking-wider opacity-80">
-											{{ isMonthly ? 'Tontine' : 'Mois' }}
-										</span>
-										
-										<div class="text-[9px] mt-1 px-2 py-0.5 rounded-full {{ isActive ? 'bg-green-500 text-white' : 'bg-green-100 text-green-700' }}">
-											{{ monthPaidCount }}/{{ monthTotalCount }}
-										</div>
+								{# Calculer la progression du mois #}
+								{% set monthPaidCount = 0 %}
+								{% for p in monthStart..monthEnd %}
+								{% if p <= (tontine.paidPoints|default(0)) %} {% set monthPaidCount=monthPaidCount + 1
+									%} {% endif %} {% endfor %} {% set monthTotalCount=monthEnd - monthStart + 1 %} {%
+									set isMonthFull=monthPaidCount==monthTotalCount %} {% if tontine.frequency
+									!='monthly' %} <button type="button" onclick="switchMonth({{ mIdx }})"
+									id="tab-month-{{ mIdx }}"
+									class="month-tab flex-shrink-0 flex flex-col items-center gap-1 px-4 py-2 rounded-2xl transition-all duration-300 {{ isActive ? 'bg-green-600 text-white shadow-lg' : 'bg-green-50 border border-green-100 text-green-800 hover:bg-green-100' }}">
+									<span class="text-lg font-black leading-none">
+										{{ isMonthly ? 'Mensuelle' : mIdx ~ (mIdx == 1 ? 'er' : 'em') }}
+									</span>
+									<span class="text-[10px] font-bold uppercase tracking-wider opacity-80">
+										{{ isMonthly ? 'Tontine' : 'Mois' }}
+									</span>
+
+									<div
+										class="text-[9px] mt-1 px-2 py-0.5 rounded-full {{ isActive ? 'bg-green-500 text-white' : 'bg-green-100 text-green-700' }}">
+										{{ monthPaidCount }}/{{ monthTotalCount }}
+									</div>
 									</button>
 									{% endif %}
 
-								{% endfor %}
+									{% endfor %}
 							</div>
 						</div>
 
 						<!-- Zone de Contenu (Grilles) -->
 						<div class="px-4">
 							{% for mIdx in 1..totalMonths %}
-								{% set isActive = mIdx == currentMonthIndex %}
-								<div id="month-content-{{ mIdx }}" class="month-content transition-all duration-500 {{ isActive ? 'block' : 'hidden opacity-0' }}">
-									<div class="bg-white border border-green-100 rounded-3xl p-4 sm:p-6 shadow-sm">
-										<div class="flex items-center justify-between mb-6">
-											<h4 class="font-black text-green-800 flex items-center gap-2">
-												<i class="fa-solid fa-calendar-check text-green-600"></i>
-												{{ isMonthly ? '' : 'Détails du ' ~ mIdx ~ (mIdx == 1 ? 'er' : 'em') ~ '  Mois' }}
-											</h4>
-											<span class="text-xxs font-bold text-green-600 bg-green-50 px-3 py-1 rounded-full border border-green-100">
-												{% set monthStart = (mIdx - 1) * pointsPerMonth + 1 %}
-												{% set monthEnd = min(mIdx * pointsPerMonth, tontine.totalPoints) %}
-												Points {{ monthStart }} - {{ monthEnd }}
-											</span>
-										</div>
+							{% set isActive = mIdx == currentMonthIndex %}
+							<div id="month-content-{{ mIdx }}"
+								class="month-content transition-all duration-500 {{ isActive ? 'block' : 'hidden opacity-0' }}">
+								<div class="bg-white border border-green-100 rounded-3xl p-4 sm:p-6 shadow-sm">
+									<div class="flex items-center justify-between mb-6">
+										<h4 class="font-black text-green-800 flex items-center gap-2">
+											<i class="fa-solid fa-calendar-check text-green-600"></i>
+											{{ isMonthly ? '' : 'Détails du ' ~ mIdx ~ (mIdx == 1 ? 'er' : 'em') ~ '
+											Mois' }}
+										</h4>
+										<span
+											class="text-xxs font-bold text-green-600 bg-green-50 px-3 py-1 rounded-full border border-green-100">
+											{% set monthStart = (mIdx - 1) * pointsPerMonth + 1 %}
+											{% set monthEnd = min(mIdx * pointsPerMonth, tontine.totalPoints) %}
+											Points {{ monthStart }} - {{ monthEnd }}
+										</span>
+									</div>
 
-										<div class="grid grid-cols-6 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 gap-2 sm:gap-3 md:gap-4">
-											{% for point in max(1, (mIdx - 1) * pointsPerMonth + 1)..min(tontine.totalPoints, mIdx * pointsPerMonth) %}
-												{% set isPaid = point <= (tontine.paidPoints|default(0)) %}
-												{% set isCurrent = point == currentPoint %}
-												{% set pointDueDate = null %}
-												{% if tontine.startDate %}
-													{% set pointDueDate = tontine.startDate|date_modify('+' ~ (point-1) ~ ' ' ~ (tontine.frequency == 'weekly' ? 'weeks' : tontine.frequency == 'daily' ? 'days' : 'months' )) %}
-												{% endif %}
-												{% set isMissed = pointDueDate and pointDueDate < date('now') and not isPaid %}
-												{% set pointLocalIndex = point - (mIdx - 1) * pointsPerMonth %}
-												
-												{# Libellé du point #}
-												{% if isMonthly %}
-													{% set pointLabel = point %}
-												{% else %}
-													{% set pointLabel = pointLocalIndex %}
-												{% endif %}
-
-												<div class="relative group/point">
-													<div class="aspect-square border {{ isPaid ? 'border-green-500 bg-green-50 text-green-700' : isMissed ? 'border-red-400 bg-red-50 text-red-700' : isCurrent ? 'border-yellow-500 bg-yellow-50 text-yellow-800' : 'border-slate-200 bg-green-50 text-slate-400' }}
+									<div
+										class="grid grid-cols-6 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-12 gap-2 sm:gap-3 md:gap-4">
+										{% for point in max(1, (mIdx - 1) * pointsPerMonth +
+										1)..min(tontine.totalPoints, mIdx * pointsPerMonth) %}
+										{% set isPaid = point <= (tontine.paidPoints|default(0)) %} {% set
+											isCurrent=point==currentPoint %} {% set pointDueDate=null %} {% if
+											tontine.startDate %} {% set pointDueDate=tontine.startDate|date_modify('+' ~
+											(point-1) ~ ' ' ~ (tontine.frequency=='weekly' ? 'weeks' :
+											tontine.frequency=='daily' ? 'days' : 'months' )) %} {% endif %} {% set
+											isMissed=pointDueDate and pointDueDate < date('now') and not isPaid %} {%
+											set pointLocalIndex=point - (mIdx - 1) * pointsPerMonth %} {# Libellé du
+											point #} {% if isMonthly %} {% set pointLabel=point %} {% else %} {% set
+											pointLabel=pointLocalIndex %} {% endif %} <div class="relative group/point">
+											<div class="aspect-square border {{ isPaid ? 'border-green-500 bg-green-50 text-green-700' : isMissed ? 'border-red-400 bg-red-50 text-red-700' : isCurrent ? 'border-yellow-500 bg-yellow-50 text-yellow-800' : 'border-slate-200 bg-green-50 text-slate-400' }}
 														rounded-2xl flex flex-col items-center justify-center p-2 cursor-pointer hover:shadow-xl hover:scale-105 transition-all duration-300 transform"
-														onclick="showPointInfo({{ point }})"
-														title="Point #{{ point }}{% if pointDueDate %} - Échéance: {{ pointDueDate|date('d/m/Y') }}{% endif %}">
+												onclick="showPointInfo({{ point }})"
+												title="Point #{{ point }}{% if pointDueDate %} - Échéance: {{ pointDueDate|date('d/m/Y') }}{% endif %}">
 
-														
-														<div class="{% if isMonthly %}text-xs{% else %}text-sm md:text-base{% endif %} font-black mb-1">{{ pointLabel }}</div>
 
-														<div class="text-xs md:text-sm">
-															{% if isPaid %}
-																<i class="fa-solid fa-check-double text-green-600 scale-110"></i>
-															{% elseif isMissed %}
-																<i class="fa-solid fa-triangle-exclamation text-red-500 animate-pulse"></i>
-															{% elseif isCurrent %}
-																<i class="fa-solid fa-bolt-lightning text-yellow-600 animate-bounce"></i>
-															{% else %}
-																<i class="fa-regular fa-circle text-slate-200 opacity-50"></i>
-															{% endif %}
-														</div>
-													</div>
+												<div
+													class="{% if isMonthly %}text-xs{% else %}text-sm md:text-base{% endif %} font-black mb-1">
+													{{ pointLabel }}</div>
 
-													{% if isCurrent and tontine.statut == 'active' %}
-														<div class="absolute -top-1 -right-1 bg-yellow-400 text-white text-[8px] h-5 w-5 rounded-full shadow-md flex items-center justify-center z-10 border-2 border-white ring-2 ring-yellow-100">
-															<i class="fa-solid fa-star text-[10px]"></i>
-														</div>
+												<div class="text-xs md:text-sm">
+													{% if isPaid %}
+													<i class="fa-solid fa-check-double text-green-600 scale-110"></i>
+													{% elseif isMissed %}
+													<i
+														class="fa-solid fa-triangle-exclamation text-red-500 animate-pulse"></i>
+													{% elseif isCurrent %}
+													<i
+														class="fa-solid fa-bolt-lightning text-yellow-600 animate-bounce"></i>
+													{% else %}
+													<i class="fa-regular fa-circle text-slate-200 opacity-50"></i>
 													{% endif %}
 												</div>
-											{% endfor %}
-										</div>
+											</div>
+
+											{% if isCurrent and tontine.statut == 'active' %}
+											<div
+												class="absolute -top-1 -right-1 bg-yellow-400 text-white text-[8px] h-5 w-5 rounded-full shadow-md flex items-center justify-center z-10 border-2 border-white ring-2 ring-yellow-100">
+												<i class="fa-solid fa-star text-[10px]"></i>
+											</div>
+											{% endif %}
 									</div>
+									{% endfor %}
 								</div>
-							{% endfor %}
+							</div>
 						</div>
+						{% endfor %}
+					</div>
 
-						<script>
-							function switchMonth(mIdx) {
-								// Masquer tous les contenus
-								document.querySelectorAll('.month-content').forEach(el => {
-									el.classList.add('hidden');
-									el.classList.remove('opacity-100');
-									el.classList.add('opacity-0');
-								});
-								
-								// Désactiver tous les onglets
-								document.querySelectorAll('.month-tab').forEach(el => {
-									el.classList.remove('bg-green-600', 'text-white', 'shadow-lg');
-									el.classList.add('bg-green-50', 'border', 'border-green-100', 'text-green-800');
-									
-									const badge = el.querySelector('div');
-									if (badge) {
-										badge.classList.remove('bg-green-500', 'text-white');
-										badge.classList.add('bg-green-100', 'text-green-700');
-									}
-								});
+					<script>
+						function switchMonth(mIdx) {
+							// Masquer tous les contenus
+							document.querySelectorAll('.month-content').forEach(el => {
+								el.classList.add('hidden');
+								el.classList.remove('opacity-100');
+								el.classList.add('opacity-0');
+							});
 
-								// Activer le contenu sélectionné
-								const activeContent = document.getElementById('month-content-' + mIdx);
-								activeContent.classList.remove('hidden');
-								setTimeout(() => activeContent.classList.add('opacity-100'), 10);
+							// Désactiver tous les onglets
+							document.querySelectorAll('.month-tab').forEach(el => {
+								el.classList.remove('bg-green-600', 'text-white', 'shadow-lg');
+								el.classList.add('bg-green-50', 'border', 'border-green-100', 'text-green-800');
 
-								// Activer l'onglet sélectionné
-								const activeTab = document.getElementById('tab-month-' + mIdx);
-								activeTab.classList.add('bg-green-600', 'text-white', 'shadow-lg');
-								activeTab.classList.remove('bg-green-50', 'border', 'border-green-100', 'text-green-800');
-								
-								const activeBadge = activeTab.querySelector('div');
-								if (activeBadge) {
-									activeBadge.classList.remove('bg-green-100', 'text-green-700');
-									activeBadge.classList.add('bg-green-500', 'text-white');
+								const badge = el.querySelector('div');
+								if (badge) {
+									badge.classList.remove('bg-green-500', 'text-white');
+									badge.classList.add('bg-green-100', 'text-green-700');
 								}
+							});
 
-								// Scroll tab into view if needed
-								activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+							// Activer le contenu sélectionné
+							const activeContent = document.getElementById('month-content-' + mIdx);
+							activeContent.classList.remove('hidden');
+							setTimeout(() => activeContent.classList.add('opacity-100'), 10);
+
+							// Activer l'onglet sélectionné
+							const activeTab = document.getElementById('tab-month-' + mIdx);
+							activeTab.classList.add('bg-green-600', 'text-white', 'shadow-lg');
+							activeTab.classList.remove('bg-green-50', 'border', 'border-green-100', 'text-green-800');
+
+							const activeBadge = activeTab.querySelector('div');
+							if (activeBadge) {
+								activeBadge.classList.remove('bg-green-100', 'text-green-700');
+								activeBadge.classList.add('bg-green-500', 'text-white');
 							}
 
-// Fonctions pour le modal de carte
-function openCardModal() {
-	const modal = document.getElementById('cardModal');
-	modal.classList.remove('hidden');
-	document.body.style.overflow = 'hidden';
+							// Scroll tab into view if needed
+							activeTab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+						}
+
+						// Fonctions pour le modal de carte
+						function openCardModal() {
+							const modal = document.getElementById('cardModal');
+							modal.classList.remove('hidden');
+							document.body.style.overflow = 'hidden';
+						}
+
+						function closeCardModal() {
+							const modal = document.getElementById('cardModal');
+							modal.classList.add('hidden');
+							document.body.style.overflow = '';
+						}
+
+						// Fermer le modal en cliquant sur le fond
+						// Fermer le modal en cliquant sur le fond
+						document.getElementById('cardModal')?.addEventListener('click', function (e) {
+							if (e.target === this) {
+								closeCardModal();
+							}
+						});
+
+						// ==================== FEE PAYMENT LOGIC ====================
+						let currentFeeAmount = 0;
+						const API_INIT_URL = '{{ path("app_tontine_payment_init") }}';
+						const API_VERIFY_URL = '{{ path("app_tontine_payment_verify") }}';
+						const KKIA_PUBLIC_KEY = '{{ kkiapay_public_key|default("") }}'; // Ensure this variable is passed to template
+
+						function openFeePaymentModal(amount) {
+							currentFeeAmount = amount;
+							if (confirm('Voulez-vous procéder au paiement des frais de ' + amount.toLocaleString('fr-FR') + ' FCFA ?')) {
+								initFeePayment(amount);
+							}
+						}
+
+						async function initFeePayment(amount) {
+							// Basic loading indicator
+							const btn = document.querySelector('button[onclick^="openFeePaymentModal"]');
+							const originalText = btn.innerText;
+							btn.innerText = 'Initialisation...';
+							btn.disabled = true;
+
+							try {
+								const response = await fetch(API_INIT_URL, {
+									method: 'POST',
+									headers: {
+										'Content-Type': 'application/json',
+										'X-CSRF-Token': '{{ csrf_token("payment") }}' // Ensure we have a token, maybe reuse or create one?
+									},
+									body: JSON.stringify({
+										tontine_id: {{ tontine.id }},
+									amount: amount,
+									method: 'kkiapay',
+									type: 'fee'
+            })
+						});
+
+						const data = await response.json();
+
+						if (typeof openKkiapayWidget === 'undefined') {
+							alert('KKiaPay non chargé. Veuillez recharger la page.');
+							btn.innerText = originalText;
+							btn.disabled = false;
+							return;
+						}
+
+						if (data.success) {
+							openKkiapayWidget({
+								amount: amount,
+								key: data.public_key || KKIA_PUBLIC_KEY,
+								position: "center",
+								theme: "#15803d",
+								sandbox: true,
+								data: JSON.stringify({
+									payment_id: data.payment_id,
+									tontine_id: {{ tontine.id }},
+								type: 'fee'
+                }),
+						name: "{{ app.user.nomComplet|default('') }}",
+							email: "{{ app.user.email|default('') }}"
+            });
+
+						addKKiaPayListeners(data.payment_id);
+        } else {
+							alert('Erreur: ' + data.message);
+						}
+    } catch (e) {
+							console.error(e);
+							alert('Erreur de communication');
+						} finally {
+							btn.innerText = originalText;
+							btn.disabled = false;
+						}
 }
 
-function closeCardModal() {
-	const modal = document.getElementById('cardModal');
-	modal.classList.add('hidden');
-	document.body.style.overflow = '';
-}
+						function addKKiaPayListeners(paymentId) {
+							addSuccessListener(async (response) => {
+								const transactionId = response.transactionId;
+								// Verify
+								try {
+									const res = await fetch(API_VERIFY_URL, {
+										method: 'POST',
+										headers: { 'Content-Type': 'application/json' },
+										body: JSON.stringify({ payment_id: paymentId, transaction_id: transactionId })
+									});
+									const d = await res.json();
+									if (d.success) {
+										alert('Paiement des frais réussi !');
+										window.location.reload();
+									} else {
+										alert('Erreur validation: ' + d.message);
+									}
+								} catch (e) {
+									alert('Erreur validation réseau');
+								}
+							});
+						}
 
-// Fermer le modal en cliquant sur le fond
-document.getElementById('cardModal')?.addEventListener('click', function(e) {
-	if (e.target === this) {
-		closeCardModal();
-	}
-});
-
-						</script>
+					</script>
 
 					<!-- Légende améliorée -->
 					<div class="flex flex-wrap justify-center gap-4 mt-4 pt-4 p-4 border-t border-gray-200">
@@ -426,32 +535,36 @@ document.getElementById('cardModal')?.addEventListener('click', function(e) {
 						<!-- Tontine active -->
 
 						<div class="flex items-center gap-4">
-							<a href="{{ path('app_tontine_payment', {'id': tontine.id}) }}" class="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-300 font-semibold shadow-sm transform hover:scale-[1.02]">
+							<a href="{{ path('app_tontine_payment', {'id': tontine.id}) }}"
+								class="inline-flex items-center gap-2 px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-all duration-300 font-semibold shadow-sm transform hover:scale-[1.02]">
 								<i class="fa-solid fa-plus-circle"></i>
 								<span>Verser</span>
 							</a>
 
-                            <a href="{{ path('app_tontine_terminate_request', {'id': tontine.id}) }}"
-                                onclick="return confirm('Confirmez-vous la clôture définitive de cette tontine ? Cette action est irréversible.')"
-                                class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border-2 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 transition-all duration-300 font-semibold shadow-sm transform hover:scale-[1.02]">
-                                <i class="fa-solid fa-power-off"></i>
-                                <span>Clôturer</span>
-                            </a>
+							<a href="{{ path('app_tontine_terminate_request', {'id': tontine.id}) }}"
+								onclick="return confirm('Confirmez-vous la clôture définitive de cette tontine ? Cette action est irréversible.')"
+								class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border-2 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 transition-all duration-300 font-semibold shadow-sm transform hover:scale-[1.02]">
+								<i class="fa-solid fa-power-off"></i>
+								<span>Clôturer</span>
+							</a>
 						</div>
 
 						{% elseif uiState == 'COMPLETED_NO_WITHDRAWAL' or uiState == 'PARTIAL_WITHDRAWAL' %}
 
 						<div class="flex items-center gap-4">
 							{% if tontine.canWithdraw %}
-								<a href="{{ path('app_withdrawal_request', {'id': tontine.id}) }}" class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-300 font-bold shadow-lg shadow-green-200 transform hover:scale-[1.02] active:scale-95">
-									<i class="fa-solid fa-hand-holding-dollar text-lg"></i>
-									<span>Demander un retrait</span>
-								</a>
+							<button
+								onclick="initiateWithdrawalFlow({{ tontine.id }}, {{ withdrawalFeesDue|number_format(2, '.', '') }}, '{{ tontine.frequency }}', {{ withdrawalGrossSavings|number_format(2, '.', '') }}, {{ withdrawalNetAmount|number_format(2, '.', '') }})"
+								class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-300 font-bold shadow-lg shadow-green-200 transform hover:scale-[1.02] active:scale-95">
+								<i class="fa-solid fa-hand-holding-dollar text-lg"></i>
+								<span>Demander un retrait</span>
+							</button>
 							{% else %}
-								<span class="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-500 rounded-xl font-semibold cursor-not-allowed">
-									<i class="fa-solid fa-circle-info"></i>
-									<span>Solde insuffisant</span>
-								</span>
+							<span
+								class="inline-flex items-center gap-2 px-6 py-3 bg-gray-100 text-gray-500 rounded-xl font-semibold cursor-not-allowed">
+								<i class="fa-solid fa-circle-info"></i>
+								<span>Solde insuffisant</span>
+							</span>
 							{% endif %}
 						</div>
 						{% elseif uiState == 'COMPLETED_FULL_WITHDRAWAL' %}
@@ -498,49 +611,77 @@ document.getElementById('cardModal')?.addEventListener('click', function(e) {
 					<div class="space-y-3 bg-green-50/50 p-4 rounded-xl border border-green-100">
 						<div class="flex items-center gap-2 mb-2">
 							<i class="fa-solid fa-circle-info text-green-600"></i>
-							<span class="text-sm font-semibold text-green-800">Prélèvement automatique</span>
+							<span class="text-sm font-semibold text-green-800">Frais de service</span>
 						</div>
 						<div class="flex justify-between text-sm">
-							<span class="text-gray-600">Frais de service :</span>
+							<span class="text-gray-600">Total :</span>
 							<span class="font-bold text-green-700">
-                                {{ tontine.getDeductedServiceFee()|number_format(0, ',', ' ') }} FCFA
-                            </span>
+								{{ tontine.getDeductedServiceFee()|number_format(0, ',', ' ') }} FCFA
+							</span>
 						</div>
-                        <p class="text-[11px] text-gray-500 leading-tight">
-                            Les frais de service sont calculés selon la fréquence et la durée de votre tontine. Ils sont prélevés automatiquement sur votre solde lors du retrait.
-                        </p>
+						<div class="flex justify-between text-sm">
+							<span class="text-gray-600">Payé :</span>
+							<span class="font-bold text-green-700">
+								{{ tontine.getPaidFees()|number_format(0, ',', ' ') }} FCFA
+							</span>
+						</div>
+						{% set feesDue = tontine.getFeesDue() %}
+						<div class="flex justify-between text-sm">
+							<span class="text-gray-600">Reste à payer :</span>
+							<span class="font-bold {{ feesDue > 0 ? 'text-red-600' : 'text-green-700' }}">
+								{{ feesDue|number_format(0, ',', ' ') }} FCFA
+							</span>
+						</div>
+
+						{% if tontine.frequency != 'daily' and feesDue > 0 %}
+						<button onclick="openFeePaymentModal({{ tontine.id }})"
+							class="w-full mt-2 py-2 px-4 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-lg transition-colors shadow-sm">
+							Payer les frais ({{ feesDue|number_format(0, ',', ' ') }} F)
+						</button>
+						{% endif %}
+
+						<p class="text-[11px] text-gray-500 leading-tight mt-2 italic">
+							{% if tontine.frequency == 'daily' %}
+							Les frais de service correspondent à 1 jour par mois de cotisation sur la durée totale
+							choisie.
+							{% else %}
+							Les frais de service sont calculés au prorata de votre épargne actuelle.
+							{% endif %}
+						</p>
 					</div>
 
-						<div class="pt-3 mt-3 border-t border-green-200">
-							<div class="flex justify-between font-bold">
-								<span>Solde disponible:</span>
-								<span id="previewNet" class="text-lg text-green-700">
-                                    {{ tontine.availableWithdrawalAmount|number_format(0, ',', ' ') }}
-									FCFA</span>
-							</div>
-							<div>
-								<p class="text-xs text-right text-green-600 mt-1">
-                                    {% if tontine.frequency == 'daily' %}
-                                        Après déduction des frais de service
-                                    {% else %}
-                                        Solde de vos cotisations
-                                    {% endif %}
-								</p>
-							</div>
+					<div class="pt-3 mt-3 border-t border-green-200">
+						<div class="flex justify-between font-bold">
+							<span>Solde disponible:</span>
+							<span id="previewNet" class="text-lg text-green-700">
+								{{ tontine.availableWithdrawalAmount|number_format(0, ',', ' ') }}
+								FCFA</span>
+						</div>
+						<div>
+							<p class="text-xs text-right text-green-600 mt-1">
+								{% if tontine.frequency == 'daily' %}
+								Après déduction des frais de service
+								{% else %}
+								Solde de vos cotisations
+								{% endif %}
+							</p>
 						</div>
 					</div>
+				</div>
 
 				<!-- Bouton pour afficher la carte (Mobile uniquement) -->
 				<div class="md:hidden mb-6">
-					<button onclick="openCardModal()" 
-							class="w-full inline-flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] touch-target">
+					<button onclick="openCardModal()"
+						class="w-full inline-flex items-center justify-center gap-3 px-6 py-4 bg-gradient-to-r from-green-600 to-green-700 text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-[1.02] touch-target">
 						<i class="fa-solid fa-id-card text-xl"></i>
 						<span>Voir ma carte de tontine</span>
 					</button>
 				</div>
 
 				<!-- Carte au format carte de service -->
-				<div id="serviceCardContent" class="hidden md:block relative overflow-hidden rounded-xl shadow-lg bg-gradient-to-br from-green-800 via-green-700 to-green-800" style="aspect-ratio: 85.6 / 54;">
+				<div id="serviceCardContent"
+					class="hidden md:block relative overflow-hidden rounded-xl shadow-lg bg-gradient-to-br from-green-800 via-green-700 to-green-800"
+					style="aspect-ratio: 85.6 / 54;">
 					<!-- Badge Clôturée -->
 					{% if uiState == 'COMPLETED_FULL_WITHDRAWAL' %}
 					<div class="absolute top-4 right-4 z-10">
@@ -789,7 +930,7 @@ document.getElementById('cardModal')?.addEventListener('click', function(e) {
 				{% elseif uiState == 'COMPLETED_NO_WITHDRAWAL' %}
 				<!-- ========================= COMPLETED NO WITHDRAWAL ========================= -->
 				<div
-					class="glass-card h-full rounded-2xl border-2 border-green-500 bg-gradient-to-br from-green-50/50 to-white p-6 shadow-hard">
+					class="glass-card h-full rounded-2xl bg-gradient-to-br from-green-50/50 to-white p-6 shadow-hard">
 					<div class="mb-6 flex items-center gap-4">
 						<div
 							class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-green-500 to-green-600">
@@ -826,11 +967,12 @@ document.getElementById('cardModal')?.addEventListener('click', function(e) {
 
 						{% if is_granted('WITHDRAW', tontine) %}
 						<div class="space-y-3">
-							<a href="{{ path('app_withdrawal_request', {'id': tontine.id}) }}"
+							<button
+								onclick="initiateWithdrawalFlow({{ tontine.id }}, {{ withdrawalFeesDue|number_format(2, '.', '') }}, '{{ tontine.frequency }}', {{ withdrawalGrossSavings|number_format(2, '.', '') }}, {{ withdrawalNetAmount|number_format(2, '.', '') }})"
 								class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-green-600 to-green-700 px-5 py-3.5 font-medium text-white shadow-md transition-all duration-300 hover:from-green-700 hover:to-green-800 hover:shadow-lg hover:scale-[1.02]">
 								<i class="fas fa-download"></i>
 								Demander le retrait complet
-							</a>
+							</button>
 							<p class="text-center text-sm text-gray-6000">
 								Traitement sous 24-48h ouvrables
 							</p>
@@ -841,8 +983,7 @@ document.getElementById('cardModal')?.addEventListener('click', function(e) {
 
 				{% elseif uiState == 'PARTIAL_WITHDRAWAL' %}
 				<!-- ========================= PARTIAL WITHDRAWAL ========================= -->
-				<div
-					class="glass-card h-full rounded-2xl border-2 border-yellow-500 bg-gradient-to-br from-yellow-50/50 to-white p-6 shadow-hard">
+				<div class="glass-card h-full rounded-2xl  bg-gradient-to-br from-yellow-50/50 to-white  shadow-hard">
 					<div class="mb-6 flex items-center gap-4">
 						<div
 							class="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-r from-yellow-500 to-yellow-600">
@@ -903,8 +1044,7 @@ document.getElementById('cardModal')?.addEventListener('click', function(e) {
 							<div class="rounded-xl bg-white p-4 shadow-sm border-2 border-yellow-200">
 								<div class="mb-1 text-sm font-medium text-gray-6000">Solde disponible</div>
 								<div class="text-2xl font-bold text-yellow-600">
-									{{ (tontine.getRemainingAmount() - tontine.getAmountPerPoint())|number_format(0,
-									',', ' ') }}
+									{{ tontine.getAvailableWithdrawalAmount()|number_format(0, ',', ' ') }}
 									F CFA
 								</div>
 								{% if tontine.isFraisPreleves() %}
@@ -918,11 +1058,12 @@ document.getElementById('cardModal')?.addEventListener('click', function(e) {
 
 						{% if is_granted('WITHDRAW', tontine) and tontine.getRemainingAmount() > 0 %}
 						<div class="space-y-3">
-							<a href="{{ path('app_withdrawal_request', {'id': tontine.id}) }}"
+							<button
+								onclick="initiateWithdrawalFlow({{ tontine.id }}, {{ withdrawalFeesDue|number_format(2, '.', '') }}, '{{ tontine.frequency }}', {{ withdrawalGrossSavings|number_format(2, '.', '') }}, {{ withdrawalNetAmount|number_format(2, '.', '') }})"
 								class="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-yellow-600 to-yellow-600 px-5 py-3.5 font-medium text-white shadow-md transition-all duration-300 hover:from-yellow-600 hover:to-yellow-800 hover:shadow-lg hover:scale-[1.02]">
 								<i class="fas fa-download mr-1"></i>
 								Retirer le solde
-							</a>
+							</button>
 							<p class="text-center text-sm text-gray-6000">
 								Vous pouvez effectuer plusieurs retraits
 							</p>
@@ -1036,108 +1177,109 @@ document.getElementById('cardModal')?.addEventListener('click', function(e) {
 <div id="cardModal" class="hidden fixed inset-0 bg-black/90 backdrop-blur-sm z-50 p-4">
 	<div class="min-h-screen flex flex-col items-center justify-center">
 		<!-- Bouton fermer en haut -->
-		<button onclick="closeCardModal()" 
-				class="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors touch-target">
+		<button onclick="closeCardModal()"
+			class="absolute top-4 right-4 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white transition-colors touch-target">
 			<i class="fa-solid fa-times text-xl"></i>
 		</button>
 
 		<!-- Carte en plein écran -->
 		<div class="w-full max-w-md">
-			<div class="relative overflow-hidden rounded-2xl shadow-2xl bg-gradient-to-br from-green-800 via-green-700 to-green-800" style="aspect-ratio: 85.6 / 54;">
+			<div class="relative overflow-hidden rounded-2xl shadow-2xl bg-gradient-to-br from-green-800 via-green-700 to-green-800"
+				style="aspect-ratio: 85.6 / 54;">
 				<!-- Badge Clôturée -->
 				{% if uiState == 'COMPLETED_FULL_WITHDRAWAL' %}
 				<div class="absolute top-4 right-4 z-10">
-					<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
+					<span
+						class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
 						<i class="fas fa-times-circle mr-1"></i>
 						Expirée
 					</span>
 				</div>
 				{% endif %}
-				
+
 				<!-- Contenu de la carte -->
 				<div class="relative p-5">
 					<!-- En-tête de la carte -->
 					<!-- En-tête de la carte -->
-						<div class="flex justify-between items-start mb-3">
-							<div class="flex items-center gap-3">
-								<div class="flex flex-col top-1">
-									<img src="{{ asset('images/carte_logo.png') }}" alt="Logo" style=" height: 40px;">
-								</div>
-							</div>
-
-							<!-- Puce de carte -->
-							<div class="absolute  flex items-center justify-start right-6 ">
-								<div class=" bg-gradient-to-r from-yellow-400 to-yellow-300 rounded-md">
-									<img class=" rounded-md" src="{{ path('qr_code',{'id': tontine.id}) }}"
-										alt="QR Code">
-								</div>
+					<div class="flex justify-between items-start mb-3">
+						<div class="flex items-center gap-3">
+							<div class="flex flex-col top-1">
+								<img src="{{ asset('images/carte_logo.png') }}" alt="Logo" style=" height: 40px;">
 							</div>
 						</div>
 
-						<div class="mt-1 space-y-3">
-							<!-- Nom de la tontine -->
-							<div class=' grid grid-cols-2'>
-								<div>
-									<p class="text-green-300 text-xs font-medium ">TITULAIRE</p>
-									<p class="text-[12px] font-bold text-white ">
-										{{ tontine.utilisateur.firstname|slice(0, 15)|upper }}
-										{{ tontine.utilisateur.lastname|upper|slice(0, 15) }}
-									</p>
-								</div>
-
-
+						<!-- Puce de carte -->
+						<div class="absolute  flex items-center justify-start right-6 ">
+							<div class=" bg-gradient-to-r from-yellow-400 to-yellow-300 rounded-md">
+								<img class=" rounded-md" src="{{ path('qr_code',{'id': tontine.id}) }}" alt="QR Code">
 							</div>
-
-							<div class='mt-2 grid grid-cols-2'>
-								<!-- Informations membre -->
-								<div>
-									<p class="text-green-300 text-xs font-medium ">TONTINE ASSOCIÉE</p>
-									<p class="text-sm font-bold text-white">
-										{{ tontine.tontineCode|upper|slice(0, 20) }}
-									</p>
-
-								</div>
-
-
-								<!-- code Qr -->
-								<div class="text-right">
-									<p class="text-green-300 text-xs font-medium ">OBJECTIF</p>
-									<p class="text-sm font-sm text-white">{{ tontine.name}}</p>
-								</div>
-							</div>
-
 						</div>
-						<!-- Pied de carte avec dates -->
-						<div
-							class="pt-2 mt-2 border-t {% if tontine.statut == 'completed' %}border-red-300/50{% else %}border-white/20{% endif %}">
-							<div class="flex justify-between items-center">
-								<div>
-									<p class="text-green-300 text-xs">ÉMISSION</p>
-									<p class="text-white font-medium text-xs">{{ tontine.createdAt|date('d/m/Y') }}</p>
-								</div>
+					</div>
 
-
-								<div class="text-right">
-									<p class="text-green-300 text-xs">VALIDITÉ</p>
-									<p class="text-white font-medium text-xs">
-
-										<!-- la date du dernier point -->
-										{% set lastPointDate = tontine.startDate|date_modify('+' ~ (tontine.totalPoints
-										- 1) ~ ' ' ~ interval) %}
-										{{ lastPointDate|date('d/m/Y') }}
-									</p>
-								</div>
+					<div class="mt-1 space-y-3">
+						<!-- Nom de la tontine -->
+						<div class=' grid grid-cols-2'>
+							<div>
+								<p class="text-green-300 text-xs font-medium ">TITULAIRE</p>
+								<p class="text-[12px] font-bold text-white ">
+									{{ tontine.utilisateur.firstname|slice(0, 15)|upper }}
+									{{ tontine.utilisateur.lastname|upper|slice(0, 15) }}
+								</p>
 							</div>
 
 
 						</div>
+
+						<div class='mt-2 grid grid-cols-2'>
+							<!-- Informations membre -->
+							<div>
+								<p class="text-green-300 text-xs font-medium ">TONTINE ASSOCIÉE</p>
+								<p class="text-sm font-bold text-white">
+									{{ tontine.tontineCode|upper|slice(0, 20) }}
+								</p>
+
+							</div>
+
+
+							<!-- code Qr -->
+							<div class="text-right">
+								<p class="text-green-300 text-xs font-medium ">OBJECTIF</p>
+								<p class="text-sm font-sm text-white">{{ tontine.name}}</p>
+							</div>
+						</div>
+
+					</div>
+					<!-- Pied de carte avec dates -->
+					<div
+						class="pt-2 mt-2 border-t {% if tontine.statut == 'completed' %}border-red-300/50{% else %}border-white/20{% endif %}">
+						<div class="flex justify-between items-center">
+							<div>
+								<p class="text-green-300 text-xs">ÉMISSION</p>
+								<p class="text-white font-medium text-xs">{{ tontine.createdAt|date('d/m/Y') }}</p>
+							</div>
+
+
+							<div class="text-right">
+								<p class="text-green-300 text-xs">VALIDITÉ</p>
+								<p class="text-white font-medium text-xs">
+
+									<!-- la date du dernier point -->
+									{% set lastPointDate = tontine.startDate|date_modify('+' ~ (tontine.totalPoints
+									- 1) ~ ' ' ~ interval) %}
+									{{ lastPointDate|date('d/m/Y') }}
+								</p>
+							</div>
+						</div>
+
+
+					</div>
 				</div>
 			</div>
 
 			<!-- Bouton télécharger -->
 			{% if uiState == 'ACTIVE' and uiState != 'COMPLETED_WITH_WITHDRAWAL' %}
-			<button onclick="downloadCard('{{ tontine.tontineCode }}')" 
-					class="w-full mt-4 inline-flex items-center justify-center gap-2 bg-white text-green-700 font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 touch-target">
+			<button onclick="downloadCard('{{ tontine.tontineCode }}')"
+				class="w-full mt-4 inline-flex items-center justify-center gap-2 bg-white text-green-700 font-semibold py-3 px-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 touch-target">
 				<i class="fa-solid fa-download"></i>
 				Télécharger la carte
 			</button>
@@ -1184,11 +1326,12 @@ document.getElementById('cardModal')?.addEventListener('click', function(e) {
 		const pointStatusIcon = document.getElementById('pointStatusIcon');
 		const pointActions = document.getElementById('pointActions');
 
-		const amount = {{ tontine.amountPerPoint|default(0) }};
-	
+		const amount = {{ tontine.amountPerPoint|default (0)
+	}};
+
 	const startDate = new Date('{{ tontine.startDate|date("Y-m-d") }}');
 	const frequency = '{{ tontine.frequency|default("daily") }}';
-	const paidPointsCount = {{ tontine.paidPoints|default(0) }};
+	const paidPointsCount = {{ tontine.paidPoints|default (0) }};
 
 	// Calculer la date estimée
 	let estimatedDate = new Date(startDate);
@@ -1411,6 +1554,23 @@ document.getElementById('cardModal')?.addEventListener('click', function(e) {
 </style>
 
 <script src="https://cdn.kkiapay.me/k.js"></script>
+
+{% include 'dashboard/partials/_withdrawal_fee_modal.html.twig' %}
+<script src="{{ asset('js/withdrawal-fee-modal.js') }}"></script>
+
+<script>
+	// Gérer le paramètre d'URL payFees
+	document.addEventListener('DOMContentLoaded', () => {
+		const urlParams = new URLSearchParams(window.location.search);
+		const feesDue = {{ max(0, tontine.getDeductedServiceFee() - tontine.getPaidFees())
+	}};
+	if (urlParams.has('payFees') && urlParams.get('payFees') === '1' && feesDue > 0) {
+		if (typeof openFeePaymentModal === 'function') {
+			openFeePaymentModal({{ tontine.id }});
+	}
+	}
+	});
+</script>
 
 
 {% endblock %}

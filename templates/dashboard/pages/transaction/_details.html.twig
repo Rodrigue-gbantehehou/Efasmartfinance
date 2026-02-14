@@ -1,17 +1,17 @@
 <div class="space-y-6">
     <!-- En-tête du modal -->
-    <div class="text-center pb-1 border-b border-gray-100">
+    <div class="text-center pb-1 border-b border-green-100">
         <div class="inline-flex items-center justify-center w-10 h-10 rounded-3xl mb-2 
             {% if transaction.statut == 'completed' %}bg-green-100 text-green-600 shadow-green-50
             {% elseif transaction.statut == 'pending' %}bg-amber-100 text-amber-600 shadow-amber-50
             {% else %}bg-red-100 text-red-600 shadow-red-50{% endif %} shadow-xl">
             <i class="fas {% if transaction.statut == 'completed' %}fa-check-circle{% elseif transaction.statut == 'pending' %}fa-clock{% else %}fa-times-circle{% endif %} text-3xl"></i>
         </div>
-        <h3 class="text-xl font-black text-gray-900 uppercase tracking-tight">Détails de la transaction</h3>
+        <h3 class="text-xl font-black text-green-900 uppercase tracking-tight">Détails de la transaction</h3>
         <div class="flex items-center justify-center gap-2 mt-1">
-            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Réf: #{{ transaction.externalReference ?? transaction.id }}</p>
+            <p class="text-[10px] font-bold text-green-400 uppercase tracking-widest">Réf: #{{ transaction.externalReference ?? transaction.id }}</p>
             <button onclick="copyToClipboard('{{ transaction.externalReference ?? transaction.id }}', this)" 
-                    class="h-6 w-6 flex items-center justify-center bg-gray-100 text-gray-400 rounded-lg hover:bg-green-100 hover:text-green-600 transition-all active:scale-90"
+                    class="h-6 w-6 flex items-center justify-center bg-green-100 text-green-400 rounded-lg hover:bg-green-100 hover:text-green-600 transition-all active:scale-90"
                     title="Copier la référence">
                 <i class="far fa-copy text-[10px]"></i>
             </button>
@@ -20,46 +20,46 @@
 
     <!-- Informations principales -->
     <div class="grid grid-cols-2 gap-4">
-        <div class="p-2 bg-gray-50 rounded-2xl border border-gray-100">
-            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Montant</span>
-            <span class="text-lg font-black text-gray-900">{{ transaction.amount|format_currency('XOF', locale='fr') }}</span>
+        <div class="p-2 bg-green-50 rounded-2xl border border-green-100">
+            <span class="text-[10px] font-black text-green-400 uppercase tracking-widest block mb-1">Montant</span>
+            <span class="text-lg font-black text-green-900">{{ transaction.amount|format_currency('XOF', locale='fr') }}</span>
         </div>
-        <div class="p-2 bg-gray-50 rounded-2xl border border-gray-100">
-            <span class="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">Date</span>
-            <span class="text-sm font-bold text-gray-900">{{ transaction.createdAt|date('d/m/Y') }} à {{ transaction.createdAt|date('H:i') }}</span>
+        <div class="p-2 bg-green-50 rounded-2xl border border-green-100">
+            <span class="text-[10px] font-black text-green-400 uppercase tracking-widest block mb-1">Date</span>
+            <span class="text-sm font-bold text-green-900">{{ transaction.createdAt|date('d/m/Y') }} à {{ transaction.createdAt|date('H:i') }}</span>
         </div>
     </div>
 
     <!-- Détails supplémentaires -->
     <div class="space-y-3">
-        <div class="flex items-center justify-between p-2 bg-white rounded-2xl border border-gray-100">
+        <div class="flex items-center justify-between p-2 bg-white rounded-2xl border border-green-100">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
                     <i class="fas fa-wallet text-xs"></i>
                 </div>
-                <span class="text-xs font-bold text-gray-500 uppercase">Type</span>
+                <span class="text-xs font-bold text-green-500 uppercase">Type</span>
             </div>
-            <span class="text-xs font-black text-gray-900 uppercase tracking-wide">{{ transaction.paymentMethod|replace({'_': ' '}) }}</span>
+            <span class="text-xs font-black text-green-900 uppercase tracking-wide">{{ transaction.paymentMethod|replace({'_': ' '}) }}</span>
         </div>
 
         {% if transaction.Tontine %}
-        <div class="flex items-center justify-between p-2 bg-white rounded-2xl border border-gray-100">
+        <div class="flex items-center justify-between p-2 bg-white rounded-2xl border border-green-100">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
                     <i class="fas fa-users text-xs"></i>
                 </div>
-                <span class="text-xs font-bold text-gray-500 uppercase">Tontine</span>
+                <span class="text-xs font-bold text-green-500 uppercase">Tontine</span>
             </div>
-            <span class="text-xs font-black text-gray-900">{{ transaction.Tontine.getName() }}</span>
+            <span class="text-xs font-black text-green-900">{{ transaction.Tontine.getName() }}</span>
         </div>
         {% endif %}
 
-        <div class="flex items-center justify-between p-2 bg-white rounded-2xl border border-gray-100">
+        <div class="flex items-center justify-between p-2 bg-white rounded-2xl border border-green-100">
             <div class="flex items-center gap-3">
                 <div class="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-600">
                     <i class="fas fa-info-circle text-xs"></i>
                 </div>
-                <span class="text-xs font-bold text-gray-500 uppercase">Statut</span>
+                <span class="text-xs font-bold text-green-500 uppercase">Statut</span>
             </div>
             <span class="px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider 
                 {% if transaction.statut == 'completed' %}bg-green-100 text-green-700

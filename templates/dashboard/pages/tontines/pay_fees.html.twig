@@ -1,0 +1,185 @@
+{% extends 'dashboard/base.html.twig' %}
+
+{% block title %}Paiement des frais - {{ tontine.name }}{% endblock %}
+
+{% block contentdashboard %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+        <!-- En-tête -->
+        <div class="mb-8">
+            <div class="flex items-center mb-4">
+                <a href="{{ path('app_tontines_show', {id: tontine.id}) }}" 
+                   class="text-gray-600 hover:text-gray-700 mr-4 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                    </svg>
+                </a>
+                <h1 class="text-2xl font-bold text-gray-800">Règlement des frais de service</h1>
+            </div>
+            
+            <div class="bg-gradient-to-r from-green-700 to-green-800 rounded-2xl p-6 shadow-lg border border-green-600">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center text-white">
+                        <i class="fas fa-receipt text-2xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white">{{ tontine.name }}</h2>
+                        <p class="text-green-100 italic">Solde de vos frais de service</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Détails des frais -->
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden mb-8 border border-gray-100">
+            <div class="p-8">
+                <div class="space-y-6">
+                    <div class="flex justify-between items-center pb-6 border-b border-gray-100">
+                        <span class="text-gray-600">Total estimé du contrat</span>
+                        <span class="font-bold text-gray-900">{{ tontine.getDeductedServiceFee()|number_format(0, ',', ' ') }} FCFA</span>
+                    </div>
+                    <div class="flex justify-between items-center pb-6 border-b border-gray-100">
+                        <span class="text-gray-600">Déjà payé</span>
+                        <span class="font-bold text-green-600">{{ tontine.getPaidFees()|number_format(0, ',', ' ') }} FCFA</span>
+                    </div>
+                    <div class="flex justify-between items-center pt-2">
+                        <span class="text-xl font-black text-gray-900">Reste à payer (prorata)</span>
+                        <div class="text-right">
+                            <span class="text-3xl font-black text-green-700">
+                                {{ tontine.getFeesDue()|number_format(0, ',', ' ') }} FCFA
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-10">
+                    <button onclick="initPayment()" 
+                            id="pay-btn"
+                            class="w-full bg-gradient-to-br from-green-600 to-emerald-700 text-white font-black py-5 px-8 rounded-2xl hover:from-green-700 hover:to-emerald-800 transform hover:scale-[1.02] active:scale-95 transition-all shadow-xl flex items-center justify-center gap-3">
+                        <i class="fas fa-credit-card"></i>
+                        <span id="btn-text">Payer maintenant avec KkiaPay</span>
+                    </button>
+                    
+                    <p class="text-center text-gray-500 text-sm mt-4">
+                        Paiement sécurisé par KkiaPay. Le solde de vos frais sera mis à jour instantanément.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Information de retrait -->
+        <div class="bg-blue-50 border border-blue-200 rounded-2xl p-6 flex items-start gap-4">
+            <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0 text-blue-600">
+                <i class="fas fa-info-circle"></i>
+            </div>
+            <div>
+                <h4 class="font-bold text-blue-900">Pourquoi payer maintenant ?</h4>
+                <p class="text-sm text-blue-700 mt-1">
+                    En réglant vos frais maintenant, vous pourrez retirer l'intégralité de votre épargne sans aucune déduction de la part de la plateforme.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.kkiapay.me/k.js"></script>
+<script>
+    const FEES_AMOUNT = Number('{{ tontine.getFeesDue() }}');
+    const TONTINE_ID = Number('{{ tontine.id }}');
+    const API_INIT_URL = "{{ path('app_tontine_payment_init') }}";
+    const API_VERIFY_URL = "{{ path('app_tontine_payment_verify') }}";
+    const KKIA_PUBLIC_KEY = "{{ kkiapay_public_key|default('') }}";
+
+    async function initPayment() {
+        if (FEES_AMOUNT <= 0) return;
+
+        const btn = document.getElementById('pay-btn');
+        const btnText = document.getElementById('btn-text');
+        
+        btn.disabled = true;
+        btnText.innerText = "Initialisation...";
+
+        if (typeof openKkiapayWidget === 'undefined') {
+            alert('KKiaPay non chargé. Veuillez recharger la page.');
+            btn.disabled = false;
+            btnText.innerText = "Payer maintenant avec KkiaPay";
+            return;
+        }
+
+        try {
+            const response = await fetch(API_INIT_URL, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-Token': '{{ csrf_token("payment") }}'
+                },
+                body: JSON.stringify({
+                    tontine_id: TONTINE_ID,
+                    amount: FEES_AMOUNT,
+                    method: 'kkiapay',
+                    type: 'fee'
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                openKkiapayWidget({
+                    amount: FEES_AMOUNT,
+                    key: data.public_key || KKIA_PUBLIC_KEY,
+                    position: "center",
+                    theme: "#15803d",
+                    sandbox: true,
+                    data: JSON.stringify({
+                        payment_id: data.payment_id,
+                        tontine_id: TONTINE_ID,
+                        type: 'fee'
+                    }),
+                    name: "{{ app.user.nomComplet|default('') }}",
+                    email: "{{ app.user.email|default('') }}"
+                });
+            } else {
+                alert("Erreur : " + (data.message || "Inconnue"));
+                btn.disabled = false;
+                btnText.innerText = "Payer maintenant avec KkiaPay";
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Erreur de connexion.");
+            btn.disabled = false;
+            btnText.innerText = "Payer maintenant avec KkiaPay";
+        }
+    }
+
+    // Gérer le retour de KkiaPay
+    addSuccessListener(async (response) => {
+        const transactionId = response.transactionId;
+        const paymentId = JSON.parse(response.data).payment_id;
+
+        try {
+            const res = await fetch(API_VERIFY_URL, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ payment_id: paymentId, transaction_id: transactionId })
+            });
+            const d = await res.json();
+            if(d.success) {
+                window.location.href = "{{ path('app_tontines_show', {id: tontine.id}) }}?payment_success=1";
+            } else {
+                alert('Erreur validation: ' + d.message);
+            }
+        } catch(e) {
+            alert('Erreur réseau lors de la validation');
+        }
+    });
+
+    addFailedListener((error) => {
+        console.error(error);
+        alert('Paiement échoué ou annulé.');
+        const btn = document.getElementById('pay-btn');
+        const btnText = document.getElementById('btn-text');
+        btn.disabled = false;
+        btnText.innerText = "Payer maintenant avec KkiaPay";
+    });
+</script>
+{% endblock %}

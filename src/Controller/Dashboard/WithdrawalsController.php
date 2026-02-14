@@ -53,14 +53,21 @@ final class WithdrawalsController extends AbstractController
      * Affiche le formulaire de demande de retrait et traite sa soumission
      */
     #[Route('/withdrawals/request/{id}', name: 'app_withdrawal_request', methods: ['GET', 'POST'])]
-    public function requestWithdrawal(Request $request, int $id, EntityManagerInterface $em): Response
+    public function requestWithdrawal(Request $request, $id, EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-        $tontine = $em->getRepository(Tontine::class)->find($id);
+        $tontine = $em->getRepository(Tontine::class)->find((int)$id);
 
-        // Vérifier si la tontine existe et appartient à l'utilisateur
-        if (!$tontine || $tontine->getUtilisateur() !== $user) {
-            $this->addFlash('error', 'Tontine non trouvée ou accès refusé.');
+        /** @var User $user */
+        // Vérifier si la tontine existe
+        if (!$tontine) {
+            $this->addFlash('error', 'Tontine avec l\'ID ' . $id . ' non trouvée.');
+            return $this->redirectToRoute('app_tontines_index');
+        }
+
+        // Vérifier si l'utilisateur est propriétaire
+        if ($tontine->getUtilisateur()->getId() !== $user->getId()) {
+            $this->addFlash('error', 'Accès refusé à cette tontine.');
             return $this->redirectToRoute('app_tontines_index');
         }
 
@@ -206,8 +213,16 @@ final class WithdrawalsController extends AbstractController
 
             if (!$existingFee) {
                 $serviceFeeAmount = $tontine->getDeductedServiceFee();
-                // On ne prélève que ce qui est disponible si le solde est insuffisant
-                $actualFee = min($serviceFeeAmount, $tontine->getTotalPay());
+                $paidFees = $tontine->getPaidFees();
+                
+                // Calculer le reste à payer sur les frais
+                $remainingFee = max(0, $serviceFeeAmount - $paidFees);
+                
+                // On ne prélève que ce qui est disponible si le solde est insuffisant (et si > 0)
+                $actualFee = 0;
+                if ($remainingFee > 0) {
+                    $actualFee = min($remainingFee, $tontine->getTotalPay());
+                }
                 
                 if ($actualFee > 0) {
                     // 1. Enregistrement dans PlatformFee (Admin)

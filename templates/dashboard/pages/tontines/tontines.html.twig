@@ -2,6 +2,10 @@
 
 {% block title %}Mes Tontines - Tableau{% endblock %}
 
+{% block javascripts %}
+{{ parent() }}
+{% endblock %}
+
 {% block contentdashboard %}
 <div class="min-h-screen bg-green-50 from-green-50 via-white to-green-50/30">
     <!-- Header Premium -->
@@ -74,7 +78,8 @@
                         <div class="w-1.5 h-1.5 bg-amber-500 rounded-full"></div>
                         À encaisser
                         <span class="ml-1 px-1.5 py-0.5 bg-amber-100 text-amber-700 rounded-md text-[10px]">
-                            {{ tontines|filter(t => t.statut != 'active' and t.getAvailableWithdrawalAmount() > 0)|length }}
+                            {{ tontines|filter(t => t.statut != 'active' and t.getAvailableWithdrawalAmount() >
+                            0)|length }}
                         </span>
                     </button>
                     <button data-filter="withdrawn"
@@ -82,8 +87,8 @@
                         <div class="w-1.5 h-1.5 bg-gray-400 rounded-full"></div>
                         Historique
                         <span class="ml-1 px-1.5 py-0.5 bg-gray-100 text-gray-700 rounded-md text-[10px]">
-                            {{ tontines|filter(t => t.statut != 'active' and t.getAvailableWithdrawalAmount() <= 0)|length }}
-                        </span>
+                            {{ tontines|filter(t => t.statut != 'active' and t.getAvailableWithdrawalAmount() <=
+                                0)|length }} </span>
                     </button>
                 </div>
             </div>
@@ -97,25 +102,27 @@
             {% set progress = totalToSave > 0 ? (savedAmount / totalToSave * 100)|round : 0 %}
             {% set isActive = tontine.statut == 'active' %}
             {% set isToWithdraw = (not isActive and tontine.getAvailableWithdrawalAmount() > 0) %}
-            {% set isHistory = (not isActive and tontine.getAvailableWithdrawalAmount() <= 0) %}
-
-            <div class="{{ isActive ? 'bg-white' : (isToWithdraw ? 'bg-amber-50/30' : 'bg-gray-50/50') }} rounded-2xl border {{ isActive ? 'border-green-500 shadow-sm' : (isToWithdraw ? 'border-amber-200' : 'border-gray-200') }} hover:shadow-md transition-all duration-300 overflow-hidden group tontine-card"
-                data-status="{{ isActive ? 'active' : (isToWithdraw ? 'to-withdraw' : 'withdrawn') }}" data-name="{{ tontine.name|lower }}"
-                data-code="{{ tontine.tontineCode|lower }}">
+            {% set isHistory = (not isActive and tontine.getAvailableWithdrawalAmount() <= 0) %} <div
+                class="{{ isActive ? 'bg-white' : (isToWithdraw ? 'bg-amber-50/30' : 'bg-gray-50/50') }} rounded-2xl border {{ isActive ? 'border-green-500 shadow-sm' : (isToWithdraw ? 'border-amber-200' : 'border-gray-200') }} hover:shadow-md transition-all duration-300 overflow-hidden group tontine-card"
+                data-status="{{ isActive ? 'active' : (isToWithdraw ? 'to-withdraw' : 'withdrawn') }}"
+                data-name="{{ tontine.name|lower }}" data-code="{{ tontine.tontineCode|lower }}">
 
                 <!-- Card Header -->
-                <div class="p-5 border-b {{ isActive ? 'border-green-100 bg-gradient-to-r from-white to-green-50' : (isToWithdraw ? 'border-amber-100 bg-gradient-to-r from-white to-amber-50' : 'border-gray-100 bg-gray-50') }} relative">
+                <div
+                    class="p-5 border-b {{ isActive ? 'border-green-100 bg-gradient-to-r from-white to-green-50' : (isToWithdraw ? 'border-amber-100 bg-gradient-to-r from-white to-amber-50' : 'border-gray-100 bg-gray-50') }} relative">
                     <div class="flex justify-between items-start mb-2">
                         <div class="flex items-center gap-3">
                             <div
                                 class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 shadow-inner {{ isActive ? 'bg-green-100 text-green-600' : (isToWithdraw ? 'bg-amber-100 text-amber-600' : 'bg-gray-200 text-gray-500') }}">
-                                <i class="fa-solid {{ isActive ? 'fa-wallet' : (isToWithdraw ? 'fa-hand-holding-dollar' : 'fa-archive') }}"></i>
+                                <i
+                                    class="fa-solid {{ isActive ? 'fa-wallet' : (isToWithdraw ? 'fa-hand-holding-dollar' : 'fa-archive') }}"></i>
                             </div>
                             <div>
                                 <h3
                                     class="font-bold {{ isActive ? 'text-gray-900 group-hover:text-green-700' : (isToWithdraw ? 'text-gray-900 group-hover:text-amber-700' : 'text-gray-400') }} line-clamp-1 transition-colors">
                                     {{ tontine.name }}</h3>
-                                <div class="flex items-center gap-2 text-xs {{ isActive ? 'text-gray-500' : (isToWithdraw ? 'text-gray-500' : 'text-gray-400') }}">
+                                <div
+                                    class="flex items-center gap-2 text-xs {{ isActive ? 'text-gray-500' : (isToWithdraw ? 'text-gray-500' : 'text-gray-400') }}">
                                     <i class="fa-solid fa-hashtag"></i>
                                     <span class="font-mono">{{ tontine.tontineCode }}</span>
                                 </div>
@@ -144,30 +151,45 @@
                 </div>
 
                 <!-- Card Body -->
-                <div class="p-5 space-y-4 {{ isActive ? 'bg-white' : (isToWithdraw ? 'bg-white' : 'bg-gray-50/50 opacity-60') }}">
+                <div
+                    class="p-5 space-y-4 {{ isActive ? 'bg-white' : (isToWithdraw ? 'bg-white' : 'bg-gray-50/50 opacity-60') }}">
                     <!-- Key Info -->
                     <div class="grid grid-cols-2 gap-4">
-                        <div class="{{ isActive ? 'bg-green-50/30 border-green-100' : (isToWithdraw ? 'bg-amber-50/30 border-amber-100' : 'bg-gray-100 border-gray-200') }} rounded-lg p-2.5 border">
-                            <span class="text-[10px] {{ isActive ? 'text-green-700/70' : (isToWithdraw ? 'text-amber-700/70' : 'text-gray-500') }} uppercase tracking-wider block mb-1 font-semibold">Montant Cotisé</span>
-                            <span class="font-bold {{ isActive ? 'text-green-800' : (isToWithdraw ? 'text-amber-800' : 'text-gray-600') }} text-sm">{{ savedAmount|number_format(0, ',', ' ') }} FCFA</span>
+                        <div
+                            class="{{ isActive ? 'bg-green-50/30 border-green-100' : (isToWithdraw ? 'bg-amber-50/30 border-amber-100' : 'bg-gray-100 border-gray-200') }} rounded-lg p-2.5 border">
+                            <span
+                                class="text-[10px] {{ isActive ? 'text-green-700/70' : (isToWithdraw ? 'text-amber-700/70' : 'text-gray-500') }} uppercase tracking-wider block mb-1 font-semibold">Montant
+                                Cotisé</span>
+                            <span
+                                class="font-bold {{ isActive ? 'text-green-800' : (isToWithdraw ? 'text-amber-800' : 'text-gray-600') }} text-sm">{{
+                                savedAmount|number_format(0, ',', ' ') }} FCFA</span>
                         </div>
-                        <div class="{{ isActive ? 'bg-emerald-50/30 border-emerald-100' : (isToWithdraw ? 'bg-amber-50/30 border-amber-100' : 'bg-gray-100 border-gray-200') }} rounded-lg p-2.5 border">
-                            <span class="text-[10px] {{ isActive ? 'text-emerald-700/70' : (isToWithdraw ? 'text-amber-700/70' : 'text-gray-500') }} uppercase tracking-wider block mb-1 font-semibold">Total Tontine</span>
-                            <span class="font-bold {{ isActive ? 'text-emerald-800' : (isToWithdraw ? 'text-amber-800' : 'text-gray-600') }} text-sm">{{ totalToSave|number_format(0, ',', ' ') }} FCFA</span>
+                        <div
+                            class="{{ isActive ? 'bg-emerald-50/30 border-emerald-100' : (isToWithdraw ? 'bg-amber-50/30 border-amber-100' : 'bg-gray-100 border-gray-200') }} rounded-lg p-2.5 border">
+                            <span
+                                class="text-[10px] {{ isActive ? 'text-emerald-700/70' : (isToWithdraw ? 'text-amber-700/70' : 'text-gray-500') }} uppercase tracking-wider block mb-1 font-semibold">Total
+                                Tontine</span>
+                            <span
+                                class="font-bold {{ isActive ? 'text-emerald-800' : (isToWithdraw ? 'text-amber-800' : 'text-gray-600') }} text-sm">{{
+                                totalToSave|number_format(0, ',', ' ') }} FCFA</span>
                         </div>
                     </div>
- 
+
                     <!-- Progress Bar -->
                     <div>
                         <div class="flex justify-between items-end mb-1.5">
-                            <span class="text-xs font-semibold {{ isActive ? 'text-gray-700' : 'text-gray-400' }}">Progression</span>
-                            <span class="text-xs font-bold {{ isActive ? 'text-green-600' : 'text-gray-500' }}">{{ progress }}%</span>
+                            <span
+                                class="text-xs font-semibold {{ isActive ? 'text-gray-700' : 'text-gray-400' }}">Progression</span>
+                            <span class="text-xs font-bold {{ isActive ? 'text-green-600' : 'text-gray-500' }}">{{
+                                progress }}%</span>
                         </div>
-                        <div class="h-2 w-full {{ isActive ? 'bg-green-300' : 'bg-gray-500' }} rounded-full overflow-hidden">
+                        <div
+                            class="h-2 w-full {{ isActive ? 'bg-green-300' : 'bg-gray-500' }} rounded-full overflow-hidden">
                             <div class="h-full bg-gradient-to-r {{ isActive ? 'from-green-500 to-emerald-500' : 'from-gray-400 to-gray-500' }} rounded-full transition-all duration-500"
                                 style="width: {{ progress }}%"></div>
                         </div>
-                        <div class="flex justify-between items-center mt-2 text-[10px] {{ isActive ? 'text-gray-500' : 'text-gray-400' }} font-medium uppercase tracking-tight">
+                        <div
+                            class="flex justify-between items-center mt-2 text-[10px] {{ isActive ? 'text-gray-500' : 'text-gray-400' }} font-medium uppercase tracking-tight">
                             <span>{{ tontine.paidPoints|default(0) }} / {{ tontine.totalPoints }} points</span>
                             <div class="flex items-center gap-1.5">
                                 <i class="fa-regular fa-clock"></i>
@@ -180,12 +202,13 @@
                         </div>
                     </div>
                 </div>
- 
+
                 <!-- Card Footer -->
-                <div class="px-5 py-4 {{ isActive ? 'bg-green-700' : (isToWithdraw ? 'bg-amber-600' : 'bg-gray-100') }} border-t border-gray-100 flex items-center justify-between gap-3">
+                <div
+                    class="px-5 py-4 {{ isActive ? 'bg-green-700' : (isToWithdraw ? 'bg-amber-600' : 'bg-gray-100') }} border-t border-gray-100 flex items-center justify-between gap-3">
                     <a href="{{ path('app_tontines_show', {'id': tontine.id}) }}"
                         class="flex-1 py-2 px-3 {{ isActive ? 'bg-white/20 text-white hover:bg-white/30' : (isToWithdraw ? 'bg-white/20 text-white hover:bg-white/30' : 'bg-white border border-gray-200 text-gray-500 hover:bg-gray-50') }} text-sm font-bold rounded-xl transition-all text-center backdrop-blur-sm">
-                        <i class="fa-solid fa-eye mr-1.5"></i> 
+                        <i class="fa-solid fa-eye mr-1.5"></i>
                         Détails
                     </a>
                     {% if isActive %}
@@ -194,10 +217,13 @@
                         <i class="fa-solid fa-credit-card"></i> Cotiser
                     </a>
                     {% elseif isToWithdraw %}
-                    <a href="{{ path('app_withdrawal_request', {'id': tontine.id}) }}"
+                    {% set withdrawalGrossSavings = (tontine.totalPay|default(0)) - (tontine.getWithdrawnAmount()|default(0)) %}
+                    {% set withdrawalNetAmount = tontine.getAvailableWithdrawalAmount()|default(0) %}
+                    <button
+                        onclick="initiateWithdrawalFlow({{ tontine.id|default(0) }}, {{ tontine.getFeesDue()|default(0)|number_format(2, '.', '') }}, '{{ tontine.frequency|default('daily') }}', {{ withdrawalGrossSavings|default(0)|number_format(2, '.', '') }}, {{ withdrawalNetAmount|default(0)|number_format(2, '.', '') }})"
                         class="flex-1 py-2 px-3 bg-white text-amber-700 text-sm font-bold rounded-xl hover:bg-amber-50 hover:shadow-md transition-all text-center shadow-md flex items-center justify-center gap-1.5">
                         <i class="fa-solid fa-money-bill-transfer"></i> Retrait
-                    </a>
+                    </button>
                     {% else %}
                     <button disabled
                         class="flex-1 py-2 px-3 bg-gray-200 text-gray-400 text-sm font-bold rounded-xl cursor-not-allowed text-center border border-gray-300">
@@ -205,29 +231,32 @@
                     </button>
                     {% endif %}
                 </div>
-            </div>
-            {% endfor %}
-
-            <!-- Empty State Card -->
-            {% if tontines|length == 0 %}
-            <div class="col-span-full py-12 text-center bg-white rounded-2xl border border-dashed border-gray-300">
-                <div class="w-24 h-24 mx-auto mb-4 bg-green-50 rounded-full flex items-center justify-center">
-                    <i class="fa-solid fa-folder-open text-green-300 text-4xl"></i>
-                </div>
-                <h3 class="text-lg font-bold text-gray-900 mb-2">Aucune tontine trouvée</h3>
-                <p class="text-gray-600 text-sm mb-6">Commencez par créer votre première tontine.</p>
-                <a href="{{ path('app_tontine') }}"
-                    class="inline-flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
-                    <i class="fa-solid fa-plus-circle"></i>
-                    Créer une tontine
-                </a>
-            </div>
-            {% endif %}
         </div>
+        {% endfor %}
 
-        <!-- Pagination (Hidden for now if single page) -->
-    </main>
+        <!-- Empty State Card -->
+        {% if tontines|length == 0 %}
+        <div class="col-span-full py-12 text-center bg-white rounded-2xl border border-dashed border-gray-300">
+            <div class="w-24 h-24 mx-auto mb-4 bg-green-50 rounded-full flex items-center justify-center">
+                <i class="fa-solid fa-folder-open text-green-300 text-4xl"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Aucune tontine trouvée</h3>
+            <p class="text-gray-600 text-sm mb-6">Commencez par créer votre première tontine.</p>
+            <a href="{{ path('app_tontine') }}"
+                class="inline-flex items-center gap-2 px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors font-medium">
+                <i class="fa-solid fa-plus-circle"></i>
+                Créer une tontine
+            </a>
+        </div>
+        {% endif %}
 </div>
+
+<!-- Pagination (Hidden for now if single page) -->
+</main>
+</div>
+
+{% include 'dashboard/partials/_withdrawal_fee_modal.html.twig' %}
+<script src="{{ asset('js/withdrawal-fee-modal.js') }}"></script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
@@ -284,18 +313,35 @@
 
 <style>
     @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
+
     .animate-fade-in {
         animation: fadeIn 0.4s ease-out forwards;
     }
+
     .animate-pulse-slow {
         animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
     }
+
     @keyframes pulse {
-        0%, 100% { opacity: 1; }
-        50% { opacity: .7; }
+
+        0%,
+        100% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: .7;
+        }
     }
 </style>
 {% endblock %}

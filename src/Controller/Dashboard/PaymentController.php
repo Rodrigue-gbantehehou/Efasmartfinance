@@ -61,8 +61,17 @@ final class PaymentController extends AbstractController
         if (!$tontine || $amount <= 0 || $method !== 'kkiapay') {
             return $this->json(['success' => false, 'message' => 'Données invalides ou méthode non supportée'], 400);
         }
+        
+        $type = $data['type'] ?? 'tontine'; // 'tontine' or 'fee'
+        $includeFees = $data['include_fees'] ?? false;
+        $feeAmount = (int) ($data['fee_amount'] ?? 0);
 
-        if ($tontine->getStatut() !== 'active') {
+        // Bloquer le paiement des frais pour les tontines journalières
+        if (($type === 'fee' || $includeFees) && $tontine->getFrequency() === 'daily') {
+             return $this->json(['success' => false, 'message' => 'Le paiement cumulatif des frais n\'est pas disponible pour les tontines journalières.'], 400);
+        }
+
+        if ($tontine->getStatut() !== 'active' && $type !== 'fee') {
             return $this->json(['success' => false, 'message' => 'Cette tontine n\'est plus active. les paiements sont bloqués.'], 403);
         }
 
@@ -90,6 +99,10 @@ final class PaymentController extends AbstractController
 
         $payment->setAmount($amount);
         $payment->setPaymentMethod($method);
+        $payment->setType($type);
+        if ($includeFees && $feeAmount > 0) {
+            $payment->setMetadata(['include_fees' => true, 'fee_amount' => $feeAmount]);
+        }
         $payment->setStatut('pending');
         $payment->setCreatedAt(new \DateTimeImmutable());
 
@@ -193,17 +206,70 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
             // 2. Appliquer le paiement à la tontine
             $tontine = $payment->getTontine();
             
-            $this->logger->info('Application du paiement à la tontine', [
-                'tontine_id' => $tontine->getId(),
-                'amount' => $payment->getAmount()
-            ]);
+            // Appliquer le paiement à la tontine ou aux frais
+            if ($payment->getType() === 'fee') {
+                $this->logger->info('Paiement de frais détecté', [
+                    'tontine_id' => $tontine->getId(),
+                    'amount' => $payment->getAmount()
+                ]);
+                $tontine->setPaidFees($tontine->getPaidFees() + $payment->getAmount());
+                $tontine->setPaidFees($tontine->getPaidFees() + $payment->getAmount());
+                $this->em->persist($tontine);
 
-            // Appliquer le paiement à la tontine
-            $tontine->applyPayment(
-                $payment->getAmount(),
-                $payment,
-                $payment->getPaymentMethod()
-            );
+                // Create PlatformFee record
+                $platformFee = new PlatformFee();
+                $platformFee->setUser($user);
+                $platformFee->setTontine($tontine);
+                $platformFee->setAmount((string)$payment->getAmount());
+                $platformFee->setType('service_fee');
+                $platformFee->setStatus('collected');
+                $platformFee->setTransactionId($transactionId);
+                $this->em->persist($platformFee);
+
+            } else {
+                $paymentAmount = $payment->getAmount();
+                $metadata = $payment->getMetadata();
+
+                // Vérifier si le paiement inclut des frais
+                if (isset($metadata['include_fees']) && $metadata['include_fees'] === true && isset($metadata['fee_amount'])) {
+                     $feeAmount = (int) $metadata['fee_amount'];
+                     $this->logger->info('Paiement combiné détecté (Tontine + Frais)', [
+                        'total_amount' => $paymentAmount,
+                        'fee_amount' => $feeAmount,
+                        'tontine_amount' => $paymentAmount - $feeAmount
+                     ]);
+
+                     // 1. Payer les frais
+                     $tontine->setPaidFees($tontine->getPaidFees() + $feeAmount);
+                     
+                     // Create PlatformFee record for the fee portion
+                     $platformFee = new PlatformFee();
+                     $platformFee->setUser($user);
+                     $platformFee->setTontine($tontine);
+                     $platformFee->setAmount((string)$feeAmount);
+                     $platformFee->setType('service_fee');
+                     $platformFee->setStatus('collected');
+                     $platformFee->setTransactionId($transactionId);
+                     $this->em->persist($platformFee);
+
+                     // 2. Ajuster le montant restant pour la tontine
+                     $paymentAmount -= $feeAmount;
+                     $this->em->persist($tontine);
+                }
+
+                $this->logger->info('Appliquer le paiement à la tontine', [
+                     'tontine_id' => $tontine->getId(),
+                     'amount' => $paymentAmount
+                 ]);
+                
+                 if ($paymentAmount > 0) {
+                    $tontine->applyPayment(
+                        $paymentAmount,
+                        $payment,
+                        $payment->getPaymentMethod()
+                    );
+                 }
+            }
 
             $this->logger->info('Paiement appliqué à la tontine avec succès');
 
@@ -799,6 +865,36 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
                 'trace' => $e->getTraceAsString()
             ], 500);
         }
+    }
+
+    #[Route('/transaction/{id}/download-invoice', name: 'app_transaction_invoice_download')]
+    public function downloadInvoice(Transaction $transaction): Response
+    {
+        $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+        $user = $this->getUser();
+
+        // Vérifier que le paiement appartient à l'utilisateur
+        if ($transaction->getUtilisateur()->getId() !== $user->getId()) {
+            throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à télécharger cette facture.');
+        }
+
+        $invoicePath = $transaction->getInvoicePath();
+        if (!$invoicePath) {
+            throw $this->createNotFoundException('Aucune facture n\'est associée à cette transaction.');
+        }
+
+        $projectDir = $this->getParameter('kernel.project_dir');
+        $filePath = $projectDir . '/var/' . $invoicePath;
+
+        if (!file_exists($filePath)) {
+            $this->logger->error('Fichier de facture introuvable', [
+                'path' => $filePath,
+                'transaction_id' => $transaction->getId()
+            ]);
+            throw $this->createNotFoundException('Le fichier de facture est introuvable sur le serveur.');
+        }
+
+        return $this->file($filePath, sprintf('facture-%s.pdf', $transaction->getExternalReference() ?? $transaction->getId()));
     }
 
     #[Route('/test-pdf/{id}', name: 'app_test_pdf')]

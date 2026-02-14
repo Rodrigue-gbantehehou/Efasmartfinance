@@ -25,7 +25,7 @@
         <div class="h-14 w-14 rounded-full flex items-center justify-center touch-target {% if 'app_transaction' in app.request.get('_route') or 'app_echeance' in app.request.get('_route') %}bg-green-700 text-white shadow-lg{% else %}text-gray-400 hover:text-green-700{% endif %}">
           <i class="fa-solid fa-calendar-check text-xl"></i>
         </div>
-        <span class="text-xs mt-1 {% if 'app_transaction' in app.request.get('_route') or 'app_echeance' in app.request.get('_route') %}text-green-700{% else %}text-gray-400 hover:text-green-700{% endif %}">Échéances</span>
+        <span class="text-xs mt-1 {% if 'app_transaction' in app.request.get('_route') or 'app_echeance' in app.request.get('_route') %}text-green-700{% else %}text-gray-400 hover:text-green-700{% endif %}">Transactions</span>
       </a>
       
       <a href="{{ path('app_settings') }}" class="flex flex-col items-center justify-center px-3 py-2 -mt-6">

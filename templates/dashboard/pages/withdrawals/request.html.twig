@@ -83,14 +83,22 @@
                 
                 <div class="grid grid-cols-2 gap-4 mt-4">
                     <div class="bg-white rounded-lg p-3 border border-gray-100">
-                        <p class="text-sm text-gray-600 mb-1">Total payé</p>
-                        <p class="text-xl font-bold text-green-600">
-                            {{ tontine.totalPay|number_format(0, ',', ' ') }} FCFA
+                        <p class="text-sm text-gray-600 mb-1">Montant cotisé</p>
+                        <p class="text-xl font-bold text-gray-800">
+                            {{ (tontine.totalPay - tontine.getWithdrawnAmount())|number_format(0, ',', ' ') }} FCFA
                         </p>
                     </div>
                     <div class="bg-white rounded-lg p-3 border border-gray-100">
-                        <p class="text-sm text-gray-600 mb-1">Solde disponible</p>
-                        <p class="text-xl font-bold text-green-600">
+                        <p class="text-sm text-gray-600 mb-1">Frais dus à ce jour</p>
+                        <p class="text-xl font-bold text-yellow-600">
+                            {{ tontine.getFeesDue()|number_format(0, ',', ' ') }} FCFA
+                        </p>
+                    </div>
+                </div>
+                <div class="mt-4 bg-green-900/20 rounded-lg p-3 border border-green-700/30">
+                    <div class="flex justify-between items-center">
+                        <p class="text-sm text-green-100 italic">Net si déduit</p>
+                        <p class="text-lg font-black text-white">
                             {{ tontine.availableWithdrawalAmount|number_format(0, ',', ' ') }} FCFA
                         </p>
                     </div>
@@ -239,6 +247,7 @@
 
     <script>
     // Variables globales
+    const FEES_DUE = Number('{{ tontine.getFeesDue() }}');
     let isSubmitting = false;
     const form = document.getElementById('withdrawal-form');
     const customAmountContainer = document.getElementById('custom-amount-container');
@@ -352,9 +361,130 @@
             });
         }
 
+
         // Initialiser l'affichage
         toggleCustomAmount();
         togglePhone();
+
+        const TONTINE_FREQUENCY = '{{ tontine.frequency }}';
+        // Afficher le modal de frais si nécessaire
+        if (typeof FEES_DUE !== 'undefined' && FEES_DUE > 0 && TONTINE_FREQUENCY !== 'daily') {
+            document.getElementById('feeChoiceModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
     });
+
+    function closeFeeModal() {
+        document.getElementById('feeChoiceModal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    function choosePayFeesNow() {
+        closeFeeModal();
+        // Rediriger vers la page dédiée au paiement des frais
+        window.location.href = "{{ path('app_tontine_pay_fees_page', {'id': tontine.id}) }}";
+    }
+
+    function chooseDeductFees() {
+        closeFeeModal();
+        // L'utilisateur reste sur cette page pour remplir le formulaire
+    }
     </script>
-{% endblock %}
+
+    <!-- Modal Frais de Retrait (Premium Edition) -->
+    <div id="feeChoiceModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[100] hidden flex items-center justify-center p-4 transition-all duration-500">
+        <div class="bg-white rounded-[2.5rem] max-w-lg w-full shadow-[0_20px_50px_rgba(0,0,0,0.2)] transform transition-all overflow-hidden border border-white/20">
+            <!-- Header Design -->
+            <div class="bg-gradient-to-br from-emerald-600 via-green-600 to-emerald-800 text-white p-8 relative overflow-hidden">
+                <div class="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-0 left-0 -ml-8 -mb-8 w-24 h-24 bg-white/5 rounded-full blur-2xl"></div>
+                
+                <div class="relative z-10 flex flex-col items-center text-center">
+                    <div class="h-16 w-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-4 shadow-inner">
+                        <i class="fas fa-wallet text-3xl"></i>
+                    </div>
+                    <h3 class="text-2xl font-black tracking-tight">Option de Retrait</h3>
+                    <p class="text-emerald-50/80 text-sm font-medium mt-1 uppercase tracking-widest">Gestion des frais de service</p>
+                </div>
+            </div>
+
+            <!-- Financial Breakdown Card -->
+            <div class="p-8 space-y-8">
+                <div class="bg-slate-50 rounded-3xl p-6 border border-slate-100 shadow-sm transition-hover hover:border-emerald-200 duration-300">
+                    <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                        <i class="fas fa-chart-pie text-emerald-500"></i>
+                        Récapitulatif Financier
+                    </h4>
+                    
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-slate-600 font-medium">Épargne brute</span>
+                            <span class="font-bold text-slate-900">{{ (tontine.totalPay - tontine.getWithdrawnAmount())|number_format(0, ',', ' ') }} FCFA</span>
+                        </div>
+                        <div class="flex justify-between items-center text-sm">
+                            <span class="text-slate-600 font-medium">Frais de service {{ tontine.frequency == 'daily' ? '(total)' : '(prorata)' }}</span>
+                            <span class="font-bold text-rose-500">- {{ tontine.getFeesDue()|number_format(0, ',', ' ') }} FCFA</span>
+                        </div>
+                        <div class="pt-4 border-t border-slate-200 flex justify-between items-center">
+                            <span class="text-slate-900 font-black">Net à recevoir</span>
+                            <span class="text-xl font-black text-emerald-600 tracking-tight">{{ tontine.getAvailableWithdrawalAmount()|number_format(0, ',', ' ') }} FCFA</span>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="text-slate-500 text-center text-sm px-4 leading-relaxed">
+                    Souhaitez-vous régler vos frais maintenant ou préférez-vous qu'ils soient déduits de votre retrait ?
+                </p>
+
+                <!-- Interactive Options -->
+                <div class="space-y-4">
+                    <!-- Option 1 : Déduire -->
+                    <button onclick="chooseDeductFees()" 
+                            class="w-full group relative bg-white hover:bg-slate-50 text-slate-900 rounded-2xl p-4 transition-all border-2 border-slate-200 hover:border-emerald-500 active:scale-[0.97] duration-300 overflow-hidden shadow-sm">
+                        <div class="flex items-center gap-4 relative z-10">
+                            <div class="h-12 w-12 rounded-xl bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-emerald-100 group-hover:text-emerald-600 transition-colors">
+                                <i class="fas fa-scissors text-lg"></i>
+                            </div>
+                            <div class="text-left flex-1">
+                                <span class="block font-black text-slate-800 tracking-tight">Déduire du montant</span>
+                                <span class="block text-[10px] text-slate-500 mt-1 uppercase font-bold tracking-wider group-hover:text-emerald-600">Rester sur cette page</span>
+                            </div>
+                            <i class="fas fa-chevron-right text-slate-300 group-hover:text-emerald-500 group-hover:translate-x-1 transition-all"></i>
+                        </div>
+                    </button>
+
+                    <!-- Option 2 : Payer -->
+                    <button onclick="choosePayFeesNow()" 
+                            class="w-full group relative bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl p-4 transition-all shadow-[0_10px_20px_-5px_rgba(16,185,129,0.4)] hover:shadow-[0_15px_30px_-5px_rgba(16,185,129,0.5)] active:scale-[0.97] duration-300 overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite]"></div>
+                        <div class="flex items-center gap-4 relative z-10">
+                            <div class="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center shadow-inner">
+                                <i class="fas fa-credit-card text-lg text-white"></i>
+                            </div>
+                            <div class="text-left flex-1">
+                                <span class="block font-black text-white tracking-tight">Payer maintenant</span>
+                                <span class="block text-[10px] text-emerald-100/80 mt-1 uppercase font-bold tracking-wider">Redirection paiement</span>
+                            </div>
+                            <i class="fas fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </button>
+                </div>
+            </div>
+
+            <div class="px-8 pb-8">
+                <button onclick="closeFeeModal()" class="w-full text-slate-400 hover:text-slate-600 py-2 text-xs font-bold uppercase tracking-widest transition-colors">
+                    Continuer sans changement
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    @keyframes shimmer {
+        100% { transform: translateX(100%); }
+    }
+    </style>
+
+    <script>
+        // FEES_DUE est déjà défini en haut
+    </script>{% endblock %}

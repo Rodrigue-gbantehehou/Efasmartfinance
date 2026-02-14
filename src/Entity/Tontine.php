@@ -82,6 +82,9 @@ class Tontine
     #[ORM\Column(type: 'boolean')]
     private bool $fraisPreleves = false;
 
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    private int $paidFees = 0;
+
     public function __construct()
     {
         $this->transactions = new ArrayCollection();
@@ -138,13 +141,12 @@ class Tontine
      */
     public function getDeductedServiceFee(): int
     {
-        $months = $this->getDuration() ?? 1;
-        $montantParPoint = (float)($this->amountPerPoint ?? 0);
+        $montantTotalProjete = (float)($this->amountPerPoint ?? 0) * ($this->totalPoints ?? 0);
 
         return (int) match ($this->frequency) {
-            'daily'   => $months * $montantParPoint,
-            'weekly'  => $months * ($montantParPoint / 4),
-            'monthly' => $months * ($montantParPoint / 30),
+            'daily'   => (int) ($montantTotalProjete / 31),
+            'weekly'  => (int) ($montantTotalProjete / 30),
+            'monthly' => (int) ($montantTotalProjete / 30),
             default   => 0,
         };
     }
@@ -517,10 +519,12 @@ class Tontine
      */
     public function getAvailableWithdrawalAmount(): int
     {
-        $basis = $this->getTotalPay() - $this->getWithdrawnAmount();
+        $basis = (int)$this->getTotalPay() - $this->getWithdrawnAmount();
         
-        // On déduit toujours les frais de service du solde disponible
-        return max(0, $basis - $this->getDeductedServiceFee());
+        // On ne déduit que les frais qui sont réellement dus par rapport aux cotisations effectuées
+        $feesDueAtThisStage = $this->getFeesDue();
+        
+        return max(0, $basis - $feesDueAtThisStage);
     }
     
     /**
@@ -628,5 +632,45 @@ class Tontine
     {
         $this->fraisPreleves = $fraisPreleves;
         return $this;
+    }
+
+    public function getPaidFees(): int
+    {
+        return $this->paidFees;
+    }
+
+    public function setPaidFees(int $paidFees): static
+    {
+        $this->paidFees = $paidFees;
+        return $this;
+    }
+
+    /**
+     * Calcule le montant des frais qui auraient dû être payés à ce stade
+     */
+    public function getFeesDue(): int
+    {
+        $totalFees = (float)$this->getDeductedServiceFee();
+        
+        // Les tontines quotidiennes ne sont pas soumises au prorata
+        if ($this->frequency === 'daily') {
+            return max(0, (int)$totalFees - $this->paidFees);
+        }
+
+        $totalToSave = (float)((float)($this->amountPerPoint ?? 0) * ($this->totalPoints ?? 0));
+        
+        if ($totalToSave <= 0) {
+            return 0;
+        }
+
+        // Progression de la tontine (basée sur le montant payé)
+        $progress = (float)$this->totalPay / $totalToSave;
+        
+        // Montant théorique dû = TotalFrais * Progression
+        // On utilise la progression pour avoir des frais au prorata de l'épargne
+        $theoreticalFeesDue = (int) round($totalFees * $progress);
+        
+        // Reste à payer = Théorique - Déjà payé via KkiaPay ou autre
+        return max(0, $theoreticalFeesDue - $this->paidFees);
     }
 }

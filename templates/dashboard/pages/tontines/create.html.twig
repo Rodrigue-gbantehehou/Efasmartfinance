@@ -658,7 +658,7 @@
     var duration = data.duration;
     switch (data.type) {
       case 'daily': return amount * duration;
-      case 'weekly': return (amount / 4) * duration;
+      case 'weekly': return (amount * 4 / 30) * duration;
       case 'monthly': return (amount / 30) * duration;
       default: return 0;
     }
