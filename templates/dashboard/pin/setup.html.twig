@@ -39,8 +39,11 @@
                             <i class="fas fa-key text-sm"></i>
                         </div>
                         <input id="pin" name="pin" type="password" required
-                            class="block w-full pl-10 pr-4 py-3.5 border-2 border-slate-100 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all text-center text-xl sm:text-2xl tracking-[0.2em] sm:tracking-[1em] font-bold"
+                            class="block w-full pl-10 pr-12 py-3.5 border-2 border-slate-100 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all text-center text-xl sm:text-2xl tracking-[0.2em] sm:tracking-[1em] font-bold"
                             placeholder="•••••" maxlength="5" pattern="\d{5}" inputmode="numeric">
+                        <button type="button" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-green-600 transition-colors focus:outline-none" onclick="togglePinVisibility('pin', 'toggle-pin-icon')">
+                            <i class="fas fa-eye text-sm" id="toggle-pin-icon"></i>
+                        </button>
                     </div>
                 </div>
 
@@ -53,8 +56,11 @@
                             <i class="fas fa-check-double text-sm"></i>
                         </div>
                         <input id="pin_confirm" name="pin_confirm" type="password" required
-                            class="block w-full pl-10 pr-4 py-3.5 border-2 border-slate-100 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all text-center text-xl sm:text-2xl tracking-[0.2em] sm:tracking-[1em] font-bold"
+                            class="block w-full pl-10 pr-12 py-3.5 border-2 border-slate-100 rounded-2xl text-slate-900 placeholder-slate-400 focus:outline-none focus:border-green-500 focus:ring-4 focus:ring-green-500/10 transition-all text-center text-xl sm:text-2xl tracking-[0.2em] sm:tracking-[1em] font-bold"
                             placeholder="•••••" maxlength="5" pattern="\d{5}" inputmode="numeric">
+                        <button type="button" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-green-600 transition-colors focus:outline-none" onclick="togglePinVisibility('pin_confirm', 'toggle-pin-confirm-icon')">
+                            <i class="fas fa-eye text-sm" id="toggle-pin-confirm-icon"></i>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -81,10 +87,27 @@
 </div>
 
 <script>
-    document.querySelectorAll('input[type="password"]').forEach(input => {
-        input.addEventListener('input', function (e) {
-            this.value = this.value.replace(/[^\d]/g, '');
-        });
+    function togglePinVisibility(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+
+    document.querySelectorAll('input[type="password"], input[type="text"]').forEach(input => {
+        if (input.id === 'pin' || input.id === 'pin_confirm') {
+            input.addEventListener('input', function (e) {
+                this.value = this.value.replace(/[^\d]/g, '');
+            });
+        }
     });
 </script>
 {% endblock %}

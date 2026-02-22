@@ -87,6 +87,15 @@
                       </div>
                       <span class="text-[8px] sm:text-[10px] uppercase font-black text-green-800 tracking-tighter">Inscription</span>
                   </a>
+
+                  <!-- Connexion mobile -->
+                  <a href="{{ path('app_login') }}" class="lg:hidden flex flex-col items-center justify-center space-y-0.5 group">
+                      <div class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-green-700 border border-green-700 text-white shadow-sm hover:bg-green-700/80 transition-all">
+                          <i class="fas fa-sign-in-alt text-xs sm:text-sm"></i>
+                      </div>
+                      <span class="text-[8px] sm:text-[10px] uppercase font-black text-green-800 tracking-tighter">Connexion</span>
+                  </a>
+
                 {% endif %}
                 
                 <!-- Menu mobile toggle -->

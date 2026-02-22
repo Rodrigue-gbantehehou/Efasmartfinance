@@ -43,12 +43,23 @@
         {% endfor %}
 
         <form method="post" action="{{ path('pin_check') }}" id="pinForm" class="space-y-4 md:space-y-6">
-            <!-- PIN Dots Display -->
-            <div class="flex justify-center gap-2 md:gap-4 py-1">
-                {% for i in 1..5 %}
-                <div id="dot-{{ i }}"
-                    class="w-3 h-3 md:w-4 md:h-4 rounded-full border-2 border-white/20 transition-all duration-300"></div>
-                {% endfor %}
+            <!-- PIN Display -->
+            <div class="flex p-4 items-center bg-white/5 border border-white/10 rounded-lg justify-center gap-3 md:gap-4 py-2">
+                <div class="flex gap-2">
+                    {% for i in 1..5 %}
+                    <div id="digit-{{ i }}"
+                        class="w-8 h-8 md:w-8 md:h-8 rounded-lg border border-white/30 flex items-center justify-center text-white text-lg md:text-xl font-medium transition-all duration-300 bg-white/5 shadow-sm">
+                        <span class="digit-content"></span>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Visibility Toggle -->
+                <button type="button" id="toggleVisibility" 
+                        class="text-white/40 hover:text-white  rounded-lg border border-white/30 transition-colors p-1.5 focus:outline-none focus:ring-1 focus:ring-white/10 rounded-lg"
+                        title="Afficher/Masquer">
+                    <i class="fas fa-eye text-sm" id="toggleIcon"></i>
+                </button>
             </div>
 
             <!-- Hidden Input -->
@@ -79,13 +90,13 @@
         </form>
 
         <div class="mt-4 md:mt-8 text-center space-y-3">
-            <div class="text-[9px] md:text-xs text-white/40 flex items-center justify-center gap-1.5">
+            <div class="text-[9px] md:text-xs text-white flex items-center justify-center gap-1.5">
                 <i class="fas fa-lock text-[8px]"></i>
                 {{ remaining_attempts }} tentatives restantes
             </div>
 
             <a href="{{ path('app_logout') }}"
-                class="inline-block text-slate-500 hover:text-white text-[10px] md:text-sm transition-colors border-b border-transparent hover:border-white/20">
+                class="inline-block text-white hover:text-white text-[10px] md:text-sm transition-colors border-b border-transparent hover:border-white/20">
                 <i class="fas fa-power-off mr-1 text-[8px]"></i>Déconnexion
             </a>
         </div>
@@ -109,44 +120,61 @@
         animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .dot-filled {
-        background-color: #4ade80 !important;
-        /* green-400 */
+    .digit-filled {
         border-color: #4ade80 !important;
-        box-shadow: 0 0 15px rgba(74, 222, 128, 0.5);
-        transform: scale(1.1);
+        background-color: rgba(74, 222, 128, 0.05) !important;
+        box-shadow: 0 0 10px rgba(74, 222, 128, 0.1);
+        transform: scale(1.02);
+    }
+
+    .digit-content {
+        display: inline-block;
+        transition: all 0.2s ease;
     }
 </style>
 
 <script>
     const pinInput = document.getElementById('pin');
-    const dots = [
-        document.getElementById('dot-1'),
-        document.getElementById('dot-2'),
-        document.getElementById('dot-3'),
-        document.getElementById('dot-4'),
-        document.getElementById('dot-5')
+    const digitContainers = [
+        document.getElementById('digit-1'),
+        document.getElementById('digit-2'),
+        document.getElementById('digit-3'),
+        document.getElementById('digit-4'),
+        document.getElementById('digit-5')
     ];
     const form = document.getElementById('pinForm');
     const submitBtn = document.getElementById('submitBtn');
+    const toggleBtn = document.getElementById('toggleVisibility');
+    const toggleIcon = document.getElementById('toggleIcon');
+    
+    let isVisible = false;
 
-    function updateDots() {
+    function updatePinDisplay() {
         const val = pinInput.value;
-        dots.forEach((dot, index) => {
+        digitContainers.forEach((container, index) => {
+            const contentSpan = container.querySelector('.digit-content');
             if (index < val.length) {
-                dot.classList.add('dot-filled');
+                container.classList.add('digit-filled');
+                contentSpan.textContent = isVisible ? val[index] : '•';
             } else {
-                dot.classList.remove('dot-filled');
+                container.classList.remove('digit-filled');
+                contentSpan.textContent = '';
             }
         });
 
         submitBtn.disabled = val.length !== 5;
     }
 
+    toggleBtn.addEventListener('click', () => {
+        isVisible = !isVisible;
+        toggleIcon.className = isVisible ? 'fas fa-eye-slash' : 'fas fa-eye';
+        updatePinDisplay();
+    });
+
     function appendPin(num) {
         if (pinInput.value.length < 5) {
             pinInput.value += num;
-            updateDots();
+            updatePinDisplay();
 
             if (pinInput.value.length === 5) {
                 setTimeout(() => {
@@ -158,7 +186,7 @@
 
     function clearPin() {
         pinInput.value = pinInput.value.slice(0, -1);
-        updateDots();
+        updatePinDisplay();
     }
 
     // Support keyboard input too
@@ -173,6 +201,6 @@
     });
 
     // Initial state
-    updateDots();
+    updatePinDisplay();
 </script>
 {% endblock %}

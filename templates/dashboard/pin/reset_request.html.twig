@@ -43,8 +43,11 @@
                         <i class="fas fa-lock text-sm"></i>
                     </div>
                     <input id="password" name="password" type="password" required
-                        class="block w-full pl-12 pr-6 py-4 bg-slate-50 border-2 border-transparent focus:bg-white focus:border-green-600 rounded-2xl text-slate-900 transition-all placeholder-slate-400"
+                        class="block w-full pl-12 pr-12 py-4 bg-slate-50 border-2 border-transparent focus:bg-white focus:border-green-600 rounded-2xl text-slate-900 transition-all placeholder-slate-400"
                         placeholder="••••••••••••" autofocus>
+                    <button type="button" class="absolute inset-y-0 right-0 pr-5 flex items-center text-slate-400 hover:text-green-600 transition-colors focus:outline-none" onclick="toggleVisibility('password', 'toggle-icon')">
+                        <i class="fas fa-eye" id="toggle-icon"></i>
+                    </button>
                 </div>
             </div>
 
@@ -78,4 +81,21 @@
         animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 </style>
+
+<script>
+    function toggleVisibility(inputId, iconId) {
+        const input = document.getElementById(inputId);
+        const icon = document.getElementById(iconId);
+        
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
+</script>
 {% endblock %}
