@@ -15,7 +15,8 @@ class EmailVerifier
     public function __construct(
         private VerifyEmailHelperInterface $verifyEmailHelper,
         private MailerInterface $mailer,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private \App\Service\EmailService $emailService
     ) {
     }
 
@@ -35,6 +36,9 @@ class EmailVerifier
 
         $email->context($context);
 
+        // Add the logo and text version
+        $this->emailService->embedLogo($email);
+        
         $this->mailer->send($email);
     }
 

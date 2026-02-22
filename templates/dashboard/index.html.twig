@@ -14,7 +14,7 @@
 				Nouvelle tontine
 			</a>
 
-			{% if app.user.verificationStatut == "pending" %}
+			{% if app.user.verificationStatus == "En attente" %}
 			<div class="relative group">
 				<button disabled
 					class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-yellow-100 text-yellow-800 cursor-not-allowed font-medium touch-target border border-yellow-200 shadow-sm">
@@ -27,7 +27,7 @@
 					24 heures.
 				</div>
 			</div>
-			{% elseif app.user.verificationStatut == "verified" %}
+			{% elseif app.user.verificationStatus == "Vérifié" %}
 
 			{% else %}
 			<a href="{{path('app_compte_verification')}}"
@@ -57,8 +57,8 @@
 			<!-- User Menu -->
 			<div class="flex items-center gap-3">
 				<div class="text-right hidden md:block">
-					<div class="font-semibold leading-4" id="userDisplayName">John Doe</div>
-					{% if app.user.verificationStatut == "verified" %}
+					<div class="font-semibold leading-4" id="userDisplayNameJohn">John Doe</div>
+					{% if app.user.verificationStatus == "Vérifié" %}
 					<div class="text-xs text-green-600">Compte vérifié</div>
 					{% else %}
 					<div class="text-xs text-red-500">Compte non vérifié</div>
@@ -74,7 +74,7 @@
 						<a href="{{path('app_settings')}}" class="block px-4 py-3 hover:bg-gray-50">
 							<i class="fa-solid fa-user mr-3"></i>
 							Mon profil</a>
-						{% if app.user.verificationStatut == "verified" %}
+						{% if app.user.verificationStatus != "Vérifié" %}
 
 						<a href="{{path('app_resend_verification')}}" class="block px-4 py-3 hover:bg-gray-50">
 							<i class="fa-solid fa-envelope mr-3"></i>
@@ -107,7 +107,7 @@
 				<!-- Left Column: User Context & Badges -->
 				<div class="flex flex-col space-y-2 md:space-y-4 min-w-0">
 					<div>
-						<h1 class="text-lg xs:text-xl sm:text-2xl md:text-4xl font-extrabold tracking-tight leading-tight">
+						<h1 class="text-lg xs:text-xl sm:text-2xl md:text-3xl font-bold tracking-tight leading-tight">
 							<span class="opacity-80 font-medium text-xs xs:text-sm md:text-xl block mb-0.5">Bonjour,</span>
 							<span id="welcomeUserName" class="truncate inline-block w-full drop-shadow-md">
 								{{user.firstName}}
@@ -136,12 +136,12 @@
 					<!-- Principal Balance Card -->
 					<div class="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl xs:rounded-2xl p-2 xs:p-2.5 md:p-5 w-full max-w-[160px] xs:max-w-[200px] md:max-w-xs shadow-inner transition-all hover:bg-white/15">
 						<div class="flex items-center justify-between gap-1 ">
-							<span class="text-[8px] md:text-[11px] font-bold uppercase tracking-wider opacity-70 truncate">Total cotisé</span>
+							<span class="text-[8px] md:text-[11px] font-bold uppercase tracking-wider  truncate">Total cotisé</span>
 							<button type="button" id="toggleBalance" class="" aria-label="Toggle balance">
 								<i class="fa-solid fa-eye-slash text-[10px] xs:text-xs" id="balanceIcon"></i>
 							</button>
 						</div>
-						<div class="text-lg xs:text-xl sm:text-2xl md:text-4xl font-black tracking-tighter tabular-nums truncate flex items-baseline gap-1">
+						<div class="text-lg xs:text-xl sm:text-2xl md:text-2xl font-black tracking-tighter tabular-nums truncate flex items-baseline gap-1">
 							<span id="totalBalance">{{ totalBalance|default(0)|number_format(0, ',', ' ') }}</span>
 							<span class="text-[10px] md:text-sm font-normal opacity-70">FCFA</span>
 						</div>
@@ -537,7 +537,7 @@
 
 <!-- Footer 
 	<div class="text-center text-xs text-gray-600 py-3 md:py-4">
-		<p class="mb-1 truncate">EFA SMART FINANCE • Sécurisé avec cryptage bancaire</p>
+		<p class="mb-1 truncate">Efa Smart Finance • Sécurisé avec cryptage bancaire</p>
 		<p class="text-xxs md:text-xs">Support: support@efasmartfinance.com</p>
 		<p class="mt-1 md:mt-2 text-xxs md:text-xs">©
 			<span id="currentYear">{{ "now"|date("Y") }}</span>

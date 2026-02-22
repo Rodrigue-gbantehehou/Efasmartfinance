@@ -3,6 +3,8 @@
 namespace App\Controller\Dashboard;
 
 use App\Entity\User;
+use App\Entity\UserVerification;
+use App\Service\FileUploader;
 use App\Service\CountryService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -21,47 +23,23 @@ class IdentityVerificationController extends AbstractController
 {
     private $entityManager;
     private $countryService;
-    private $uploadDirectory;
+    private $fileUploader;
     private $requestStack;
 
     public function __construct(
         EntityManagerInterface $entityManager,
         CountryService $countryService,
         RequestStack $requestStack,
-        string $uploadDirectory = 'uploads'
+        FileUploader $fileUploader
     ) {
         $this->entityManager = $entityManager;
         $this->countryService = $countryService;
-        $this->uploadDirectory = $uploadDirectory;
+        $this->fileUploader = $fileUploader;
         $this->requestStack = $requestStack;
     }
 
   
     
-    private function uploadFile(UploadedFile $file, string $directory): string
-    {
-        // Créer le répertoire s'il n'existe pas
-        $uploadDir = $this->getParameter('kernel.project_dir') . '/public/uploads/' . $directory;
-        if (!file_exists($uploadDir)) {
-            mkdir($uploadDir, 0777, true);
-        }
-        
-        // Générer un nom de fichier unique
-        $originalFilename = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
-        $fileName = $safeFilename . '_' . uniqid() . '.' . $file->guessExtension();
-        
-        try {
-            // Déplacer le fichier vers le répertoire de destination
-            $file->move($uploadDir, $fileName);
-            
-            // Retourner le chemin relatif pour le stockage en base de données
-            return '/uploads/' . $directory . '/' . $fileName;
-            
-        } catch (FileException $e) {
-            throw new \Exception('Une erreur est survenue lors du téléchargement du fichier.');
-        }
-    }
     
     /**
      * @Route("/delete-file", name="app_identity_verification_delete_file", methods={"POST"})
@@ -76,18 +54,15 @@ class IdentityVerificationController extends AbstractController
         }
         
         $filename = $data['filename'];
-        $filePath = $this->getParameter('kernel.project_dir') . '/public' . $filename;
+        // Le filename est stocké sous la forme /uploads/documents/xxx.jpg
+        // On enlève le /uploads/ initial pour FileUploader
+        $path = str_replace('/uploads/', '', $filename);
         
-        if (file_exists($filePath)) {
-            try {
-                unlink($filePath);
-                return $this->json(['success' => true]);
-            } catch (\Exception $e) {
-                return $this->json(['success' => false, 'message' => 'Erreur lors de la suppression du fichier'], 500);
-            }
+        if ($this->fileUploader->delete($path)) {
+            return $this->json(['success' => true]);
         }
         
-        return $this->json(['success' => false, 'message' => 'Fichier non trouvé'], 404);
+        return $this->json(['success' => false, 'message' => 'Fichier non trouvé ou erreur lors de la suppression'], 404);
     }
 
     /**
@@ -101,7 +76,6 @@ class IdentityVerificationController extends AbstractController
         
         // Get form data
         $data = json_decode($request->getContent(), true);
-        $session = $this->requestStack->getSession();
         
         try {
             // Basic info validation
@@ -114,35 +88,43 @@ class IdentityVerificationController extends AbstractController
                 throw new \Exception('Veuvez fournir les informations du document d\'identité.');
             }
 
-            // Save basic information
+            // Save basic information in User profile
             $user->setFirstname($data['firstName']);
             $user->setLastname($data['lastName']);
             $user->setBirthDate(new \DateTime($data['birthDate']));
-            $user->setNationality($data['nationality']);
+            $user->setNationality($data['country'] ?? $data['nationality']);
             $user->setPhoneNumber($data['phone'] ?? null);
             $user->setAddress($data['address'] ?? null);
-            $user->setNationality($data['country'] ?? null);
 
+            // Always create a NEW UserVerification for history
+            $verification = new \App\Entity\UserVerification();
+            $user->addVerification($verification);
+            
             // Save document information
-            $user->setIdentityDocument($data['documentNumber']);
+            $identityData = [
+                'type' => $data['documentType'],
+                'number' => $data['documentNumber']
+            ];
+            $verification->setIdentityData(json_encode($identityData));
             
             // Mark verification as pending
-            $user->setVerificationStatut('pending');
-            $user->setVerificationSubmittedAt(new \DateTimeImmutable());
+            $verification->setStatus('pending');
+            $verification->setSubmittedAt(new \DateTimeImmutable());
 
-            // Handle file uploads if any
+            // Handle file uploads
             if (!empty($data['documentFrontPath'])) {
-                $user->setDocumentFront($data['documentFrontPath']);
+                $verification->setDocumentFront($data['documentFrontPath']);
             }
             
             if (!empty($data['selfiePath'])) {
-                $user->setSelfie($data['selfiePath']);
+                $verification->setSelfie($data['selfiePath']);
             }
 
+            $this->entityManager->persist($verification);
             $this->entityManager->persist($user);
             $this->entityManager->flush();
 
-            // Add flash message for the next request
+            // Add flash message
             $this->addFlash('success', 'Votre demande de vérification a été soumise avec succès. Notre équipe va la traiter sous 24-48h.');
 
             return $this->json([
@@ -152,8 +134,6 @@ class IdentityVerificationController extends AbstractController
             ]);
             
         } catch (\Exception $e) {
-            $this->entityManager->rollback();
-            
             return $this->json([
                 'success' => false,
                 'message' => 'Une erreur est survenue : ' . $e->getMessage()

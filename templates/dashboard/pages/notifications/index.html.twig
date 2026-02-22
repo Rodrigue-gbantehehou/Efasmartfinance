@@ -1,6 +1,6 @@
 {% extends "dashboard/base.html.twig" %}
 
-{% block title %}Mes Notifications - EFA SMART FINANCE{% endblock %}
+{% block title %}Mes Notifications - Efa Smart Finance{% endblock %}
 
 {% block contentdashboard %}
 <div class="min-h-screen bg-green-50 from-green-50 via-white to-green-50/30">
@@ -133,7 +133,9 @@
                                     </h3>
                                     <div class="flex items-center gap-2 flex-wrap">
                                         <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium
-                                            {% if 'tontine' in notification.title|lower or 'tontine' in notification.message|lower %}
+                                            {% if notification.source %}
+                                                bg-emerald-100 text-emerald-700
+                                            {% elseif 'tontine' in notification.title|lower or 'tontine' in notification.message|lower %}
                                                 bg-green-100 text-green-700
                                             {% elseif 'portefeuille' in notification.title|lower or 'wallet' in notification.message|lower or 'dépôt' in notification.title|lower %}
                                                 bg-green-100 text-green-700
@@ -146,7 +148,9 @@
                                             {% else %}
                                                 bg-green-100 text-green-700
                                             {% endif %}">
-                                            {% if 'tontine' in notification.title|lower or 'tontine' in notification.message|lower %}
+                                            {% if notification.source %}
+                                                {{ notification.source }}
+                                            {% elseif 'tontine' in notification.title|lower or 'tontine' in notification.message|lower %}
                                                 Tontine
                                             {% elseif 'portefeuille' in notification.title|lower or 'wallet' in notification.message|lower or 'dépôt' in notification.title|lower %}
                                                 Portefeuille

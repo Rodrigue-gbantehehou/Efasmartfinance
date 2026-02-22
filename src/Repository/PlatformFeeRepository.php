@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\PlatformFee;
 use App\Entity\Tontine;
 use App\Entity\User;
+use App\Entity\Transaction;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use DateTimeInterface;
@@ -94,5 +95,38 @@ class PlatformFeeRepository extends ServiceEntityRepository
             ->groupBy('f.type')
             ->getQuery()
             ->getResult();
+    }
+    public function getSumByTontine(Tontine $tontine): float
+    {
+        return (float) $this->createQueryBuilder('f')
+            ->select('SUM(f.amount)')
+            ->where('f.tontine = :tontine')
+            ->andWhere('f.status = :status')
+            ->setParameter('tontine', $tontine)
+            ->setParameter('status', 'collected')
+            ->getQuery()
+            ->getSingleScalarResult() ?? 0;
+    }
+
+    /**
+     * Retourne la somme des frais qui sont liés à une transaction spécifique (ex: portion frais d'une cotisation KKiaPay)
+     */
+    public function getSumOfLinkedFeesByTontineAndTypes(Tontine $tontine, array $transactionTypes): float
+    {
+        return (float) $this->getEntityManager()->createQueryBuilder()
+            ->select('SUM(f.amount)')
+            ->from(PlatformFee::class, 'f')
+            ->join(Transaction::class, 't', 'WITH', 'f.transactionId = t.externalReference')
+            ->where('f.tontine = :tontine')
+            ->andWhere('t.Tontine = :tontine')
+            ->andWhere('t.type IN (:types)')
+            ->andWhere('f.status = :status')
+            ->andWhere('t.statut = :completed')
+            ->setParameter('tontine', $tontine)
+            ->setParameter('types', $transactionTypes)
+            ->setParameter('status', 'collected')
+            ->setParameter('completed', 'completed')
+            ->getQuery()
+            ->getSingleScalarResult() ?? 0;
     }
 }

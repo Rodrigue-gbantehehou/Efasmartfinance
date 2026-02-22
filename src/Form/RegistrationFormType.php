@@ -50,7 +50,13 @@ class RegistrationFormType extends AbstractType
             ])
             ->add('phoneNumber',TextType::class,[
                 'label' => false,
-                'required' => false])
+                'required' => true,
+                'constraints' => [
+                    new NotBlank([
+                        'message' => 'Veuillez entrer un numéro de téléphone',
+                    ]),
+                ],
+            ])
             ->add('plainPassword', PasswordType::class, [
                 'label' => false,
                 // instead of being set onto the object directly,

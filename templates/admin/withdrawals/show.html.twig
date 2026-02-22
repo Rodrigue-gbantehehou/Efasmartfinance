@@ -1,6 +1,6 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Détails du retrait #{{ withdrawal.id }} - EFA SMART FINANCE{% endblock %}
+{% block title %}Détails du retrait #{{ withdrawal.id }} - Efa Smart Finance{% endblock %}
 
 {% block contentadmin %}
 <div class="min-h-screen bg-green-50-gray-50/50 pb-20">
@@ -91,13 +91,10 @@
                                         Approuver le retrait
                                     </button>
                                 </form>
-                                <form method="post" action="{{ path('admin_withdrawal_reject', {'id': withdrawal.id}) }}" class="flex-1" onsubmit="return confirm('Êtes-vous sûr de vouloir rejeter cette demande ?');">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ withdrawal.id) }}">
-                                    <button type="submit" class="w-full flex items-center justify-center gap-2 px-6 py-4 bg-white text-red-600 border-2 border-red-100 rounded-2xl font-bold hover:bg-red-50 hover:border-red-200 transition-all">
-                                        <i class="fa-solid fa-times-circle"></i>
-                                        Rejeter la demande
-                                    </button>
-                                </form>
+                                <button type="button" onclick="openRejectModal()" class="flex-1 flex items-center justify-center gap-2 px-6 py-4 bg-white text-red-600 border-2 border-red-100 rounded-2xl font-bold hover:bg-red-50 hover:border-red-200 transition-all">
+                                    <i class="fa-solid fa-times-circle"></i>
+                                    Rejeter la demande
+                                </button>
                             </div>
                         </div>
                         {% endif %}
@@ -116,6 +113,12 @@
                             <div>
                                 <p class="text-sm font-bold text-gray-900">Traité par {{ withdrawal.administrateur.fullName }}</p>
                                 <p class="text-sm text-gray-600">Action : {{ withdrawal.statut|capitalize }}</p>
+                                {% if withdrawal.rejectionReason %}
+                                    <div class="mt-3 p-3 bg-red-50 rounded-xl border border-red-100">
+                                        <p class="text-xs font-bold text-red-700 uppercase mb-1">Motif du rejet :</p>
+                                        <p class="text-sm text-red-600">{{ withdrawal.rejectionReason }}</p>
+                                    </div>
+                                {% endif %}
                                 <p class="text-xs text-gray-600 mt-1">Le {{ withdrawal.processedAt|date('d/m/Y à H:i') }}</p>
                             </div>
                         </div>
@@ -176,7 +179,83 @@
                 </div>
 
             </div>
+
         </div>
     </main>
+
+    <!-- Modal Rejet -->
+    <div id="rejectModal" class="fixed inset-0 z-[100] hidden overflow-y-auto">
+        <div class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick="closeRejectModal()"></div>
+            
+            <div class="relative transform overflow-hidden rounded-[2.5rem] bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                <div class="bg-white p-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="h-12 w-12 rounded-2xl bg-red-50 flex items-center justify-center text-red-600">
+                            <i class="fa-solid fa-triangle-exclamation text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">Rejeter la demande</h3>
+                            <p class="text-sm text-gray-500">Veuillez indiquer le motif du rejet</p>
+                        </div>
+                    </div>
+
+                    <form id="rejectForm" method="post" action="{{ path('admin_withdrawal_reject', {'id': withdrawal.id}) }}">
+                        <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ withdrawal.id) }}">
+                        
+                        <div class="mb-4">
+                            <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Suggestions rapides :</p>
+                            <div class="flex flex-wrap gap-2">
+                                <button type="button" onclick="setReason('Coordonnées de paiement invalides (RIB/Numéro incorrect).')" class="px-3 py-1.5 bg-gray-50 hover:bg-red-50 hover:text-red-600 text-gray-600 rounded-lg text-xs font-medium transition-all border border-gray-100 hover:border-red-100">
+                                    Paiement invalide
+                                </button>
+                                <button type="button" onclick="setReason('Identité non conforme aux informations du retrait.')" class="px-3 py-1.5 bg-gray-50 hover:bg-red-50 hover:text-red-600 text-gray-600 rounded-lg text-xs font-medium transition-all border border-gray-100 hover:border-red-100">
+                                    Identité non conforme
+                                </button>
+                                <button type="button" onclick="setReason('Transaction suspecte détectée.')" class="px-3 py-1.5 bg-gray-50 hover:bg-red-50 hover:text-red-600 text-gray-600 rounded-lg text-xs font-medium transition-all border border-gray-100 hover:border-red-100">
+                                    Transaction suspecte
+                                </button>
+                                <button type="button" onclick="setReason('Documents justificatifs illisibles ou manquants.')" class="px-3 py-1.5 bg-gray-50 hover:bg-red-50 hover:text-red-600 text-gray-600 rounded-lg text-xs font-medium transition-all border border-gray-100 hover:border-red-100">
+                                    Documents invalides
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <textarea name="rejection_reason" id="rejection_reason_input" required
+                                      class="w-full rounded-2xl border-gray-200 focus:border-red-500 focus:ring-red-500 transition-all p-4 text-sm"
+                                      rows="4" placeholder="Saisissez ou choisissez un motif..."></textarea>
+                        </div>
+
+                        <div class="mt-8 flex gap-3">
+                            <button type="button" onclick="closeRejectModal()" class="flex-1 px-6 py-4 bg-gray-50 text-gray-700 rounded-2xl font-bold hover:bg-gray-100 transition-all">
+                                Annuler
+                            </button>
+                            <button type="submit" class="flex-1 px-6 py-4 bg-red-600 text-white rounded-2xl font-bold hover:bg-red-700 transition-all shadow-lg shadow-red-200">
+                                Confirmer le rejet
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function openRejectModal() {
+        document.getElementById('rejectModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeRejectModal() {
+        document.getElementById('rejectModal').classList.add('hidden');
+        document.body.style.overflow = 'auto';
+    }
+
+    function setReason(reason) {
+        document.getElementById('rejection_reason_input').value = reason;
+    }
+    </script>
 </div>
 {% endblock %}
+

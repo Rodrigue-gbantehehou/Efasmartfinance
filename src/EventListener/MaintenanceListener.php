@@ -28,6 +28,9 @@ class MaintenanceListener
         $path = $request->getPathInfo();
         if (
             str_starts_with($path, '/admin') ||
+            str_starts_with($path, '/pin') ||
+            str_starts_with($path, '/login') ||
+            str_starts_with($path, '/logout') ||
             str_starts_with($path, '/_profiler') ||
             str_starts_with($path, '/_wdt') ||
             str_starts_with($path, '/assets') ||

@@ -30,6 +30,7 @@ security:
             # https://symfony.com/doc/current/security.html#the-firewall
 
             # https://symfony.com/doc/current/security/impersonating_user.html
+            access_denied_url: app_access_denied
             # switch_user: true
 
     # Note: Only the *first* matching rule is applied
@@ -39,8 +40,8 @@ security:
         ROLE_SUPPORT: ROLE_USER
         ROLE_CAISSIER: ROLE_SUPPORT
         ROLE_FINANCE: ROLE_CAISSIER
-        ROLE_COMPTABLE: ROLE_USER
-        ROLE_SUPERVISOR: ROLE_USER
+        ROLE_COMPTABLE: ROLE_SUPPORT
+        ROLE_SUPERVISOR: ROLE_SUPPORT
 
         ROLE_MANAGER: [ROLE_SUPERVISOR, ROLE_COMPTABLE]
 
@@ -54,7 +55,7 @@ security:
         - { path: ^/pin/verify, roles: IS_AUTHENTICATED }
         - { path: ^/pin/check, roles: IS_AUTHENTICATED }
         - { path: ^/pin/setup, roles: IS_AUTHENTICATED }
-        - { path: ^/admin, roles: [ROLE_SUPPORT, ROLE_CAISSIER] }
+        - { path: ^/admin, roles: [ROLE_SUPPORT, ROLE_CAISSIER, ROLE_MANAGER, ROLE_COMPTABLE, ROLE_SUPERVISOR] }
         - { path: ^/dashboard, roles: ROLE_USER }
 
 when@test:

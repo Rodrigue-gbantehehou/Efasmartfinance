@@ -125,6 +125,13 @@
                                     class="flex items-center gap-2 text-xs {{ isActive ? 'text-gray-500' : (isToWithdraw ? 'text-gray-500' : 'text-gray-400') }}">
                                     <i class="fa-solid fa-hashtag"></i>
                                     <span class="font-mono">{{ tontine.tontineCode }}</span>
+                                    <span class="mx-1">•</span>
+                                    <span class="font-bold uppercase text-[10px] tracking-wider px-2 py-0.5 rounded-md {{ isActive ? 'bg-green-100 text-green-700' : (isToWithdraw ? 'bg-amber-100 text-amber-700' : 'bg-gray-200 text-gray-600') }}">
+                                        {% if tontine.frequency == 'daily' %}Quotidienne
+                                        {% elseif tontine.frequency == 'weekly' %}Hebdomadaire
+                                        {% elseif tontine.frequency == 'monthly' %}Mensuelle
+                                        {% else %}{{ tontine.frequency|capitalize }}{% endif %}
+                                    </span>
                                 </div>
                             </div>
                         </div>

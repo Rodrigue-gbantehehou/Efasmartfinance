@@ -1,0 +1,25 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block content %}
+<h1 style="color: #dc2626;">Mise à jour de votre demande de retrait</h1>
+
+<p>Bonjour {{ user.firstname }},</p>
+
+<p>Nous vous informons que votre demande de retrait d'un montant de <strong>{{ amount|number_format(0, ',', ' ') }} FCFA</strong> ne peut pas être traitée en l'état.</p>
+
+<div style="background-color: #fef2f2; border-left: 4px solid #dc2626; padding: 15px; margin: 20px 0; border-radius: 8px;">
+    <p style="color: #991b1b; font-weight: bold; margin: 0;">Motif du rejet :</p>
+    <p style="color: #991b1b; margin: 10px 0 0 0;">{{ reason }}</p>
+</div>
+
+<p>Pour plus d'informations ou pour soumettre une nouvelle demande avec les corrections nécessaires, veuillez vous connecter à votre tableau de bord.</p>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{ absolute_url(path('app_withdrawals_index')) }}" class="button" style="background-color: #dc2626;">Consulter mes retraits</a>
+</div>
+
+<p>Si vous avez des questions, notre support technique est à votre disposition.</p>
+
+<p>Cordialement,</p>
+<p><strong>L'équipe Efa Smart Finance</strong></p>
+{% endblock %}

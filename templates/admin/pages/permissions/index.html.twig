@@ -1,0 +1,179 @@
+{% extends 'admin/base.html.twig' %}
+
+{% block title %}Gestion des Permissions — Pôle Sécurité{% endblock %}
+
+{% block contentadmin %}
+<div class="min-h-screen bg-green-50/50">
+    <!-- Header Streamlined -->
+    <div class="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-10">
+        <div class="px-6 py-5">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold font-poppins text-gray-900 tracking-tight">Accès & Permissions</h1>
+                    <p class="text-sm font-medium text-gray-600 mt-0.5">Configuration de la matrice de visibilité par rôle</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="px-4 py-2 bg-amber-50 rounded-xl border border-amber-100 flex items-center gap-2">
+                        <i class="fas fa-exclamation-triangle text-amber-500 text-xs"></i>
+                        <span class="text-[10px] font-bold text-amber-700 uppercase tracking-widest">Édition Critique</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenu -->
+    <div class="p-6">
+        <div class="bg-white rounded-[2.5rem] border border-gray-100 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-gray-50/50">
+                            <th class="px-8 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] border-b border-gray-100 w-64">MODULES / SERVICES</th>
+                            {% for role in roles %}
+                            <th class="px-6 py-6 border-b border-gray-100 min-w-[200px]">
+                                <div class="flex flex-col">
+                                    <span class="text-[10px] font-black text-gray-900 uppercase tracking-widest">{{ role|replace({'ROLE_': ''}) }}</span>
+                                    <span class="text-[8px] text-gray-400 font-bold uppercase mt-0.5 tracking-tighter">Accès Niveau {{ loop.index }}</span>
+                                </div>
+                            </th>
+                            {% endfor %}
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-50">
+                        {% for module in modules %}
+                        <tr class="group hover:bg-emerald-50/20 transition-all duration-300">
+                            <td class="px-8 py-6">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-8 h-8 rounded-lg bg-gray-50 text-gray-400 flex items-center justify-center group-hover:bg-emerald-600 group-hover:text-white transition-all">
+                                        <i class="fas data-icon-map" data-module="{{ module }}"></i>
+                                    </div>
+                                    <span class="text-sm font-bold text-gray-700 capitalize">{{ module|replace({'_': ' '}) }}</span>
+                                </div>
+                            </td>
+                            {% for role in roles %}
+                            <td class="px-6 py-6">
+                                <div class="flex items-center gap-4">
+                                    <!-- VIEW Permission -->
+                                    <div class="permission-toggle group/btn" 
+                                         data-role="{{ role }}" 
+                                         data-module="{{ module }}" 
+                                         data-permission="VIEW_MODULE">
+                                        <button class="flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all duration-200 
+                                            {{ (matrix[module][role] is defined and 'VIEW_MODULE' in matrix[module][role]) ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-gray-50 border-gray-100 text-gray-300 hover:border-gray-200' }}">
+                                            <i class="fas fa-eye text-[10px]"></i>
+                                            <span class="text-[9px] font-black uppercase tracking-widest">VIEW</span>
+                                        </button>
+                                    </div>
+
+                                    <!-- EDIT Permission -->
+                                    <div class="permission-toggle group/btn" 
+                                         data-role="{{ role }}" 
+                                         data-module="{{ module }}" 
+                                         data-permission="EDIT_MODULE">
+                                        <button class="flex items-center gap-2 px-3 py-1.5 rounded-lg border transition-all duration-200 
+                                            {{ (matrix[module][role] is defined and 'EDIT_MODULE' in matrix[module][role]) ? 'bg-indigo-50 border-indigo-200 text-indigo-700' : 'bg-gray-50 border-gray-100 text-gray-300 hover:border-gray-200' }}">
+                                            <i class="fas fa-edit text-[10px]"></i>
+                                            <span class="text-[9px] font-black uppercase tracking-widest">EDIT</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Info Card -->
+        <div class="mt-8 p-6 bg-slate-900 rounded-[2rem] text-white flex items-start gap-4 shadow-xl">
+            <div class="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-emerald-400 shrink-0">
+                <i class="fas fa-info-circle text-xl"></i>
+            </div>
+            <div>
+                <h4 class="text-sm font-bold font-poppins mb-1">Impact des modifications</h4>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    Les modifications apportées ici sont appliquées immédiatement. Si un rôle perd l'accès VIEW à un module, il ne pourra plus accéder aux pages correspondantes ni les voir dans la barre latérale. Le rôle <strong>ROLE_SUPER_ADMIN</strong> conserve toujours tous les accès de manière native.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const iconMap = {
+        'dashboard': 'fa-home',
+        'users': 'fa-users',
+        'transactions': 'fa-money-bill-transfer',
+        'invoices': 'fa-file-invoice',
+        'financial': 'fa-chart-pie',
+        'support': 'fa-headset',
+        'audit': 'fa-clipboard-list',
+        'settings': 'fa-sliders',
+        'tontines': 'fa-piggy-bank',
+        'withdrawals': 'fa-hand-holding-dollar',
+        'fees': 'fa-percentage',
+        'reports': 'fa-file-contract',
+        'broadcast': 'fa-bullhorn',
+        'maintenance': 'fa-wrench',
+        'caisse': 'fa-cash-register'
+    };
+
+    document.querySelectorAll('.data-icon-map').forEach(el => {
+        const module = el.dataset.module;
+        if(iconMap[module]) {
+            el.classList.add(iconMap[module]);
+        }
+    });
+
+    document.querySelectorAll('.permission-toggle').forEach(toggle => {
+        toggle.addEventListener('click', async function() {
+            const btn = this.querySelector('button');
+            const role = this.dataset.role;
+            const module = this.dataset.module;
+            const permission = this.dataset.permission;
+
+            // Loading state
+            btn.classList.add('opacity-50', 'pointer-events-none');
+
+            try {
+                const response = await fetch('{{ path('admin_permissions_toggle') }}', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ role, module, permission })
+                });
+
+                const data = await response.json();
+
+                if (data.status === 'success') {
+                    if (data.action === 'added') {
+                        if (permission === 'VIEW_MODULE') {
+                            btn.classList.remove('bg-gray-50', 'border-gray-100', 'text-gray-300');
+                            btn.classList.add('bg-emerald-50', 'border-emerald-200', 'text-emerald-700');
+                        } else {
+                            btn.classList.remove('bg-gray-50', 'border-gray-100', 'text-gray-300');
+                            btn.classList.add('bg-indigo-50', 'border-indigo-200', 'text-indigo-700');
+                        }
+                    } else {
+                        btn.classList.add('bg-gray-50', 'border-gray-100', 'text-gray-300');
+                        btn.classList.remove('bg-emerald-50', 'border-emerald-200', 'text-emerald-700', 'bg-indigo-50', 'border-indigo-200', 'text-indigo-700');
+                    }
+                }
+            } catch (error) {
+                console.error('Error toggling permission:', error);
+            } finally {
+                btn.classList.remove('opacity-50', 'pointer-events-none');
+            }
+        });
+    });
+});
+</script>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap');
+    .font-poppins { font-family: 'Poppins', sans-serif; }
+</style>
+{% endblock %}

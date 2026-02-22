@@ -14,7 +14,11 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_UUID', fields: ['uuid'])]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_EMAIL', fields: ['email'])]
+#[ORM\UniqueConstraint(name: 'UNIQ_IDENTIFIER_PHONE', fields: ['phoneNumber'])]
 #[UniqueEntity(fields: ['uuid'], message: 'There is already an account with this uuid')]
+#[UniqueEntity(fields: ['email'], message: 'Cet email est déjà utilisé.')]
+#[UniqueEntity(fields: ['phoneNumber'], message: 'Ce numéro de téléphone est déjà utilisé.')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -88,13 +92,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 3, nullable: true)]
     private ?string $nationality = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $documentFront = null;
-
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $selfie = null;
-
 
 
     /**
@@ -127,6 +124,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: NotificationPreferences::class, mappedBy: 'utilisateur')]
     private Collection $notificationPreferences;
 
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $deletionWarningSentAt = null;
+
     #[ORM\OneToMany(targetEntity: Notification::class, mappedBy: 'user', orphanRemoval: true)]
     private Collection $notifications;
 
@@ -135,15 +135,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     #[ORM\OneToMany(targetEntity: SecuritySettings::class, mappedBy: 'utilisateur')]
     private Collection $securitySettings;
-
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $identityDocument = null;
-
-    #[ORM\Column(length: 20, nullable: true)]
-    private ?string $verificationStatut = null;
-
-    #[ORM\Column(nullable: true)]
-    private ?\DateTimeImmutable $verificationSubmittedAt = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $address = null;
@@ -171,6 +162,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', targetEntity: PinAuth::class, cascade: ['persist', 'remove'])]
     private ?PinAuth $pinAuth = null;
 
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: UserVerification::class, cascade: ['persist', 'remove'], orphanRemoval: true)]
+    #[ORM\OrderBy(['submittedAt' => 'DESC'])]
+    private Collection $verifications;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $deletionRequestedAt = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeImmutable $deletedAt = null;
+
     public function __construct()
     {
         $this->roles = ['ROLE_USER'];
@@ -190,6 +191,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $this->securityLogs = new ArrayCollection();
         $this->withdrawals = new ArrayCollection();
         $this->notifications = new ArrayCollection();
+        $this->verifications = new ArrayCollection();
 
         // PinAuth will be created after registration
     }
@@ -651,65 +653,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getDocumentFront(): ?string
-    {
-        return $this->documentFront;
-    }
-
-    public function setDocumentFront(?string $documentFront): static
-    {
-        $this->documentFront = $documentFront;
-        return $this;
-    }
-
-
-    public function getSelfie(): ?string
-    {
-        return $this->selfie;
-    }
-
-    public function setSelfie(?string $selfie): static
-    {
-        $this->selfie = $selfie;
-        return $this;
-    }
-
-    public function getIdentityDocument(): ?string
-    {
-        return $this->identityDocument;
-    }
-
-    public function setIdentityDocument(?string $identityDocument): static
-    {
-        $this->identityDocument = $identityDocument;
-
-        return $this;
-    }
-
-    public function getVerificationStatut(): ?string
-    {
-        return $this->verificationStatut;
-    }
-
-    public function setVerificationStatut(?string $verificationStatut): static
-    {
-        $this->verificationStatut = $verificationStatut;
-
-        return $this;
-    }
-
-    public function getVerificationSubmittedAt(): ?\DateTimeImmutable
-    {
-        return $this->verificationSubmittedAt;
-    }
-
-    public function setVerificationSubmittedAt(?\DateTimeImmutable $verificationSubmittedAt): static
-    {
-        $this->verificationSubmittedAt = $verificationSubmittedAt;
-
-        return $this;
-    }
-
     public function getAddress(): ?string
     {
         return $this->address;
@@ -919,5 +862,139 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return $this;
+    }
+
+    public function getDeletionRequestedAt(): ?\DateTimeImmutable
+    {
+        return $this->deletionRequestedAt;
+    }
+
+    public function setDeletionRequestedAt(?\DateTimeImmutable $deletionRequestedAt): static
+    {
+        $this->deletionRequestedAt = $deletionRequestedAt;
+        return $this;
+    }
+
+    public function getDeletedAt(): ?\DateTimeImmutable
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt(?\DateTimeImmutable $deletedAt): static
+    {
+        $this->deletedAt = $deletedAt;
+        return $this;
+    }
+
+    public function isPendingDeletion(): bool
+    {
+        return $this->deletionRequestedAt !== null && $this->deletedAt === null;
+    }
+
+    public function isDeleted(): bool
+    {
+        return $this->deletedAt !== null;
+    }
+
+    /**
+     * Returns the number of days remaining before permanent deletion.
+     */
+    public function getDaysUntilDeletion(): int
+    {
+        if ($this->deletionRequestedAt === null) {
+            return 30;
+        }
+        $deadline = $this->deletionRequestedAt->modify('+30 days');
+        $now = new \DateTimeImmutable();
+        $diff = $now->diff($deadline);
+        return max(0, (int) $diff->days);
+    }
+
+    /**
+     * Anonymizes the user's personal data permanently.
+     * Called after the grace period expires.
+     */
+    public function anonymize(): static
+    {
+        $this->firstname = 'Utilisateur';
+        $this->lastname = 'Supprimé';
+        $this->email = 'deleted_' . $this->id . '@deleted.efa';
+        $this->phoneNumber = null;
+        $this->address = null;
+        $this->birthDate = null;
+        $this->nationality = null;
+        
+        if ($this->verification) {
+            $this->verification->setDocumentFront(null);
+            $this->verification->setSelfie(null);
+            $this->verification->setIdentityData(null);
+            $this->verification->setRejectionReason('Compte anonymisé');
+        }
+
+        $this->deletedAt = new \DateTimeImmutable();
+        $this->isActive = false;
+
+        return $this;
+    }
+
+    public function getDeletionWarningSentAt(): ?\DateTimeImmutable
+    {
+        return $this->deletionWarningSentAt;
+    }
+
+    public function setDeletionWarningSentAt(?\DateTimeImmutable $deletionWarningSentAt): static
+    {
+        $this->deletionWarningSentAt = $deletionWarningSentAt;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserVerification>
+     */
+    public function getVerifications(): Collection
+    {
+        return $this->verifications;
+    }
+
+    public function addVerification(UserVerification $verification): static
+    {
+        if (!$this->verifications->contains($verification)) {
+            $this->verifications->add($verification);
+            $verification->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVerification(UserVerification $verification): static
+    {
+        if ($this->verifications->removeElement($verification)) {
+            // set the owning side to null (unless already changed)
+            if ($verification->getUser() === $this) {
+                $verification->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getLatestVerification(): ?UserVerification
+    {
+        return $this->verifications->first() ?: null;
+    }
+
+    public function getVerificationStatus(): string
+    {
+        $latest = $this->getLatestVerification();
+        if (!$latest) {
+            return 'None';
+        }
+
+        return match($latest->getStatus()) {
+            'pending' => 'En attente',
+            'verified' => 'Vérifié',
+            'rejected' => 'Rejeté',
+            default => 'Non renseigné'
+        };
     }
 }

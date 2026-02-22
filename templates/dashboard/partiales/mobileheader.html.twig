@@ -1,34 +1,41 @@
 <header class="md:hidden bg-white border-b border-gray-100 sticky top-0 z-40 safe-top flex-shrink-0">
-      <div class="px-4 py-2 flex items-center justify-between">
-        <div class="flex items-center">
-          <button id="openMobileMenu" class="flex flex-col items-center justify-center space-y-0.5 group focus:outline-none touch-target">
-            <div class="w-9 h-9 flex items-center justify-center rounded-lg bg-green-700 border border-green-700 text-white shadow-sm hover:bg-green-800 transition-all">
-                <i class="fa-solid fa-bars text-sm"></i>
-            </div>
-            <span class="text-[8px] uppercase font-black text-green-800 tracking-tighter">Menu</span>
-          </button>
+  <div class="px-4 py-6 flex items-center justify-between">
+    <div class="flex items-center">
+      <button id="openMobileMenu"
+        class="flex flex-col items-center justify-center space-y-0.5 group focus:outline-none touch-target">
+        <div
+          class="w-9 h-9 flex items-center justify-center rounded-lg bg-green-700 border border-green-700 text-white shadow-sm hover:bg-green-800 transition-all">
+          <i class="fa-solid fa-bars text-sm"></i>
         </div>
-    
-        <div class="flex items-center gap-4"> 
-          <a href="{{path('app_tontine')}}" class="flex flex-col items-center justify-center space-y-0.5 group touch-target" title="Nouvelle tontine">
-            <div class="w-9 h-9 flex items-center justify-center rounded-lg bg-green-700 border border-green-700 text-white shadow-sm hover:bg-green-800 transition-all">
-                <i class="fa-solid fa-plus text-sm"></i> 
-            </div>
-            <span class="text-[8px] uppercase font-black text-green-800 tracking-tighter">Ajouter</span>
-          </a>
+        <span class="text-[8px] uppercase font-black text-green-800 tracking-tighter">Menu</span>
+      </button>
+    </div>
 
-          <a href="{{ path('app_notifications_index') }}" class="flex flex-col items-center justify-center space-y-0.5 group touch-target relative">
-             <div class="w-9 h-9 flex items-center justify-center rounded-lg bg-green-700 border border-green-700 text-white shadow-sm hover:bg-green-800 transition-all">
-                <i class="fa-solid fa-bell text-sm"></i>
-                {% set unreadCount = app.user.notifications|filter(n => not n.isRead)|length %}
-                {% if unreadCount > 0 %}
-                <span id="mobileNotificationCount" class="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-warning text-white text-[9px] flex items-center justify-center font-bold border-2 border-white">
-                    {{ unreadCount }}
-                </span>
-                {% endif %}
-            </div>
-            <span class="text-[8px] uppercase font-black text-green-800 tracking-tighter">Alertes</span>
-          </a>
+    <div class="flex items-center gap-4">
+      <a href="{{path('app_tontine')}}" class="flex flex-col items-center justify-center space-y-0.5 group touch-target"
+        title="Nouvelle tontine">
+        <div
+          class="w-9 h-9 flex items-center justify-center rounded-lg bg-green-700 border border-green-700 text-white shadow-sm hover:bg-green-800 transition-all">
+          <i class="fa-solid fa-plus text-sm"></i>
         </div>
-      </div>
-    </header>
+        <span class="text-[8px] uppercase font-black text-green-800 tracking-tighter">Nouvelle tontine</span>
+      </a>
+
+      <a href="{{ path('app_notifications_index') }}"
+        class="flex flex-col items-center justify-center space-y-0.5 group touch-target relative">
+        <div
+          class="w-9 h-9 flex items-center justify-center rounded-lg bg-green-700 border border-green-700 text-white shadow-sm hover:bg-green-800 transition-all">
+          <i class="fa-solid fa-bell text-sm"></i>
+          {% set unreadCount = app.user.notifications|filter(n => not n.isRead)|length %}
+          {% if unreadCount > 0 %}
+          <span id="mobileNotificationCount"
+            class="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-warning text-white text-[9px] flex items-center justify-center font-bold border-2 border-white">
+            {{ unreadCount }}
+          </span>
+          {% endif %}
+        </div>
+        <span class="text-[8px] uppercase font-black text-green-800 tracking-tighter">Alertes</span>
+      </a>
+    </div>
+  </div>
+</header>

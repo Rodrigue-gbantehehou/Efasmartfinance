@@ -3,118 +3,173 @@
 {% block title %}Mode Maintenance{% endblock %}
 
 {% block contentadmin %}
-<div class="min-h-screen bg-green-50 from-slate-50 via-orange-50/30 to-slate-100 font-poppins p-8">
-    <div class="max-w-5xl mx-auto">
-        
-        {# Header #}
-        <div class="mb-8">
-            <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-orange-800 mb-2">
-                🔧 Mode Maintenance
-            </h1>
-            <p class="text-slate-600 text-lg">Gérez l'accès au site pendant les opérations de maintenance</p>
-        </div>
+<div class="min-h-screen bg-slate-50/50 p-6 md:p-10 font-sans">
+    <div class="max-w-4xl mx-auto">
 
-        {# Status Card #}
-        <div class="bg-white rounded-3xl p-8 shadow-lg border-2 border-slate-100 mb-6">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-800">Statut Actuel</h2>
-                    <p class="text-slate-600">Le mode maintenance est actuellement 
-                        {% if settings.isMaintenanceMode %}
-                            <span class="font-bold text-orange-600">ACTIVÉ</span>
-                        {% else %}
-                            <span class="font-bold text-green-600">DÉSACTIVÉ</span>
-                        {% endif %}
-                    </p>
-                </div>
-                <div class="text-6xl">
-                    {% if settings.isMaintenanceMode %}
-                        🔧
-                    {% else %}
-                        ✅
-                    {% endif %}
-                </div>
+        {# Page Header #}
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
+            <div>
+                <nav class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">
+                    <i class="fas fa-cog text-[10px]"></i>
+                    <span>Paramètres</span>
+                    <i class="fas fa-chevron-right text-[8px] opacity-30"></i>
+                    <span class="text-slate-600">Infrastructure</span>
+                </nav>
+                <h1 class="text-3xl font-extrabold text-slate-900 tracking-tight">Maintenance du Système</h1>
             </div>
 
-            {% if settings.isMaintenanceMode %}
-                <div class="p-4 bg-orange-50 border-2 border-orange-200 rounded-xl mb-4">
-                    <div class="flex items-start gap-3">
-                        <span class="text-2xl">⚠️</span>
+            <div class="flex items-center gap-4">
+                <div
+                    class="h-10 w-10 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+                    <i class="fas fa-server text-slate-400 text-sm"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            {# Sidebar / Status Info #}
+            <div class="md:col-span-1 space-y-6">
+                <!-- Status Mini-Card -->
+                <div class="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-4">
+                        <div
+                            class="h-2 w-2 rounded-full {{ settings.isMaintenanceMode ? 'bg-amber-500 animate-pulse' : 'bg-green-500' }}">
+                        </div>
+                    </div>
+
+                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Statut Actuel</div>
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="h-12 w-12 rounded-2xl flex items-center justify-center text-xl {{ settings.isMaintenanceMode ? 'bg-amber-50 text-amber-600' : 'bg-green-50 text-green-600' }}">
+                            <i class="fas {{ settings.isMaintenanceMode ? 'fa-pause-circle' : 'fa-check-circle' }}"></i>
+                        </div>
                         <div>
-                            <div class="font-bold text-orange-800">Site en maintenance</div>
-                            <div class="text-sm text-orange-700">
-                                Activé le {{ settings.maintenanceStartedAt|date('d/m/Y à H:i') }}
+                            <div class="font-black text-slate-900 leading-none">
+                                {{ settings.isMaintenanceMode ? 'Maintenance' : 'Opérationnel' }}
                             </div>
-                            <div class="text-sm text-orange-600 mt-2">
-                                💡 Les utilisateurs non-admin ne peuvent pas accéder au site
-                            </div>
+                            <div class="text-xs text-slate-500 mt-1">Plateforme publique</div>
                         </div>
                     </div>
                 </div>
-            {% endif %}
 
-            {# Toggle Form #}
-            <form method="post" action="{{ path('admin_maintenance_toggle') }}" class="space-y-4">
-                <input type="hidden" name="_token" value="{{ csrf_token('toggle_maintenance') }}">
-                
-                {% if not settings.isMaintenanceMode %}
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Message de maintenance</label>
-                        <textarea name="message" rows="3" 
-                                  class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-orange-500 focus:outline-none"
-                                  placeholder="Le site est actuellement en maintenance...">{{ settings.maintenanceMessage }}</textarea>
-                    </div>
-                {% endif %}
-
-                <button type="submit" 
-                        onclick="return confirm('Voulez-vous vraiment {{ settings.isMaintenanceMode ? 'désactiver' : 'activer' }} le mode maintenance ?')"
-                        class="w-full px-6 py-4 {% if settings.isMaintenanceMode %}bg-green-500 hover:bg-green-600{% else %}bg-orange-500 hover:bg-orange-600{% endif %} text-white rounded-xl transition-colors font-bold text-lg">
-                    {% if settings.isMaintenanceMode %}
-                        ✅ Désactiver le Mode Maintenance
-                    {% else %}
-                        🔧 Activer le Mode Maintenance
-                    {% endif %}
-                </button>
-            </form>
-        </div>
-
-        {# Update Message (when active) #}
-        {% if settings.isMaintenanceMode %}
-            <div class="bg-white rounded-3xl p-8 shadow-lg border-2 border-slate-100">
-                <h2 class="text-2xl font-bold text-slate-800 mb-4">Modifier le Message</h2>
-                <form method="post" action="{{ path('admin_maintenance_update_message') }}" class="space-y-4">
-                    <input type="hidden" name="_token" value="{{ csrf_token('update_message') }}">
-                    
-                    <div>
-                        <label class="block text-sm font-bold text-slate-700 mb-2">Message affiché aux utilisateurs</label>
-                        <textarea name="message" rows="4" 
-                                  class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-orange-500 focus:outline-none">{{ settings.maintenanceMessage }}</textarea>
-                    </div>
-
-                    <button type="submit" 
-                            class="px-6 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors font-bold">
-                        💾 Mettre à Jour le Message
-                    </button>
-                </form>
+                <!-- Info Box -->
+                <div class="bg-slate-900 rounded-3xl p-6 text-white shadow-xl shadow-slate-900/10">
+                    <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Accès Protégé</h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-shield-alt text-brand-600 mt-1"></i>
+                            <span class="text-xs text-slate-300 leading-relaxed"><strong class="text-white">Admins
+                                    Only:</strong> Les administrateurs peuvent toujours naviguer sur le site
+                                normalement.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-code text-brand-600 mt-1"></i>
+                            <span class="text-xs text-slate-300 leading-relaxed"><strong
+                                    class="text-white">API:</strong> Les services externes Webhook (KkiaPay, etc.)
+                                restent actifs.</span>
+                        </li>
+                    </ul>
+                </div>
             </div>
-        {% endif %}
 
-        {# Info Box #}
-        <div class="mt-6 p-6 bg-green-50 border-2 border-green-200 rounded-2xl">
-            <h3 class="font-bold text-green-800 mb-2">ℹ️ Informations Importantes</h3>
-            <ul class="text-sm text-green-700 space-y-1">
-                <li>✓ Les administrateurs (ROLE_ADMIN et supérieur) peuvent toujours accéder au site</li>
-                <li>✓ Les routes admin, profiler et assets restent accessibles</li>
-                <li>✓ Les utilisateurs normaux verront la page de maintenance</li>
-                <li>✓ Le code HTTP 503 (Service Unavailable) sera retourné</li>
-            </ul>
+            {# Main Control Area #}
+            <div class="md:col-span-2 space-y-6">
+
+                <!-- Main Toggle Card -->
+                <div class="bg-white rounded-[2rem] border border-slate-100 shadow-sm overflow-hidden">
+                    <div class="p-8 md:p-10">
+                        <div class="flex items-start justify-between mb-8">
+                            <div>
+                                <h2 class="text-2xl font-black text-slate-900 tracking-tight">Configuration du Mode</h2>
+                                <p class="text-sm text-slate-500 mt-1">Activez ou désactivez l'écran de maintenance pour
+                                    les utilisateurs publics.</p>
+                            </div>
+                        </div>
+
+                        {# Toggle Form #}
+                        <form method="post" action="{{ path('admin_maintenance_toggle') }}" class="space-y-8">
+                            <input type="hidden" name="_token" value="{{ csrf_token('toggle_maintenance') }}">
+
+                            {% if not settings.isMaintenanceMode %}
+                            <div class="space-y-3">
+                                <label
+                                    class="block text-xs font-bold text-slate-400 uppercase tracking-widest ml-1">Message
+                                    d'information public</label>
+                                <textarea name="message" rows="3"
+                                    class="w-full px-6 py-4 bg-slate-50 border border-slate-100 rounded-2xl focus:border-brand-600 focus:bg-white focus:outline-none transition-all text-slate-700 text-sm font-medium"
+                                    placeholder="Ex: Nous effectuons une mise à jour pour améliorer votre expérience...">{{ settings.maintenanceMessage }}</textarea>
+                            </div>
+                            {% endif %}
+
+                            <button type="submit"
+                                onclick="return confirm('Voulez-vous vraiment {{ settings.isMaintenanceMode ? 'désactiver' : 'activer' }} le mode maintenance ?')"
+                                class="w-full px-8 py-5 rounded-2xl transition-all font-black text-sm flex items-center justify-center gap-3 group {{ settings.isMaintenanceMode ? 'bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/20' : 'bg-slate-900 hover:bg-black text-white shadow-lg shadow-slate-900/20' }}">
+                                {% if settings.isMaintenanceMode %}
+                                <i class="fas fa-play text-[10px]"></i> REPRENDRE LE SERVICE PUBLIC
+                                {% else %}
+                                <i class="fas fa-tools text-[10px]"></i> ACTIVER LA MAINTENANCE
+                                {% endif %}
+                            </button>
+                        </form>
+                    </div>
+
+                    {% if settings.isMaintenanceMode %}
+                    <div class="bg-amber-50/50 border-t border-amber-100 p-8">
+                        <h3
+                            class="text-xs font-bold text-amber-700 uppercase tracking-widest mb-4 flex items-center gap-2">
+                            <i class="fas fa-edit"></i> Mise à jour du message
+                        </h3>
+                        <form method="post" action="{{ path('admin_maintenance_update_message') }}"
+                            class="flex flex-col md:flex-row gap-4">
+                            <input type="hidden" name="_token" value="{{ csrf_token('update_message') }}">
+                            <input type="text" name="message" value="{{ settings.maintenanceMessage }}"
+                                class="flex-1 px-5 py-3 bg-white border border-amber-200 rounded-xl focus:outline-none focus:border-amber-400 text-sm text-slate-700">
+                            <button type="submit"
+                                class="px-6 py-3 bg-white border border-amber-200 text-amber-700 rounded-xl hover:bg-amber-100 transition-colors text-xs font-bold whitespace-nowrap">
+                                Enregistrer
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {# Maintenance Log / History Info (Optional enhancement) #}
+                <div class="bg-white rounded-[2rem] p-8 border border-slate-100 shadow-sm">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div
+                            class="h-8 w-8 bg-slate-50 text-slate-400 rounded-lg flex items-center justify-center text-sm">
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <h3 class="font-bold text-slate-900">Dernière Action</h3>
+                    </div>
+
+                    <div class="flex items-center justify-between text-sm">
+                        <div class="flex items-center gap-3">
+                            <span class="text-slate-400 italic">Maintenance </span>
+                            <span
+                                class="px-2 py-0.5 rounded text-[10px] font-bold {{ settings.isMaintenanceMode ? 'bg-amber-100 text-amber-700' : 'bg-green-100 text-green-700' }}">
+                                {{ settings.isMaintenanceMode ? 'ACTIVÉE' : 'DÉSACTIVÉE' }}
+                            </span>
+                        </div>
+                        <div class="text-slate-500 font-medium">
+                            {{ settings.maintenanceStartedAt ? settings.maintenanceStartedAt|date('d/m/Y - H:i') : 'N/A'
+                            }}
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
 
     </div>
 </div>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap');
-    .font-poppins { font-family: 'Poppins', sans-serif; }
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+    .font-sans {
+        font-family: 'Inter', sans-serif;
+    }
 </style>
 {% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block content %}
+<h1 class="brand-green">Félicitations ! 🎉</h1>
+
+<p>Bonjour {{ user.firstname }},</p>
+<p>Nous avons le plaisir de vous informer que votre tontine <strong class="brand-green">{{ tontine.name }}</strong> est
+    officiellement <span style="color: #10b981; font-weight: bold;">terminée</span>.</p>
+
+<div
+    style="background-color: #f0fdf4; border-radius: 16px; padding: 30px; margin: 25px 0; text-align: center; border: 1px dashed #10b981;">
+    <p style="margin: 0; color: #065f46; font-size: 14px;">Objectif atteint</p>
+    <p style="margin: 10px 0 0 0; font-size: 32px; font-weight: 800; color: #006400;">
+        Épargne Complétée
+    </p>
+</div>
+
+<p>Votre rigueur et votre engagement ont porté leurs fruits. Vous pouvez dès maintenant consulter votre solde et
+    demander votre retrait depuis votre tableau de bord.</p>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{ absolute_url(path('app_tontines_index')) }}" class="button">Voir mon tableau de bord</a>
+</div>
+
+<p>Merci pour votre confiance et à bientôt pour de nouveaux projets avec Efa Smart Finance.</p>
+
+<p>L'équipe <strong>Efa Smart Finance</strong></p>
+{% endblock %}

@@ -36,6 +36,9 @@ class Notification
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $link = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $source = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -120,6 +123,17 @@ class Notification
     public function setLink(?string $link): static
     {
         $this->link = $link;
+        return $this;
+    }
+
+    public function getSource(): ?string
+    {
+        return $this->source;
+    }
+
+    public function setSource(?string $source): static
+    {
+        $this->source = $source;
         return $this;
     }
 }

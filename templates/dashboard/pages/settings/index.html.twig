@@ -1,6 +1,6 @@
 {% extends 'dashboard/base.html.twig' %}
 
-{% block title %}Paramètres - EFA SMART FINANCE{% endblock %}
+{% block title %}Paramètres - Efa Smart Finance{% endblock %}
 
 {% block contentdashboard %}
 <div class="min-h-screen bg-green-50/20">
@@ -63,7 +63,7 @@
             <!-- Navigation latérale (Desktop) -->
             <aside class="hidden md:block md:w-72 flex-shrink-0">
                 <div class="bg-white rounded-3xl shadow-sm border border-gray-100 p-5 sticky top-24">
-                    <h3 class="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 px-4">Menu Paramètres</h3>
+                    <h3 class="text-[10px] font-black text-gray-900 uppercase tracking-widest mb-6 px-4">Menu Paramètres</h3>
                     <nav class="space-y-2">
                         <button onclick="showSection('profil')" data-section-btn="profil"
                                 class="w-full flex items-center px-4 py-3.5 text-sm font-bold text-white bg-green-600 rounded-2xl shadow-lg shadow-green-100 transition-all">
@@ -75,11 +75,13 @@
                             <i class="fa-solid fa-shield-alt mr-3 text-lg opacity-60"></i>
                             Sécurité
                         </button>
+                        <!-- 
                         <button onclick="showSection('notifications')" data-section-btn="notifications"
                                 class="w-full flex items-center px-4 py-3.5 text-sm font-bold text-gray-500 hover:bg-green-50 hover:text-green-700 rounded-2xl transition-all">
                             <i class="fa-solid fa-bell mr-3 text-lg opacity-60"></i>
                             Notifications
                         </button>
+                        -->
                     </nav>
                 </div>
             </aside>
@@ -102,7 +104,7 @@
                                 </div>
                                 <div>
                                     <h2 class="text-2xl md:text-3xl font-black text-gray-900 tracking-tight">{{ app.user.firstname }} {{ app.user.lastname }}</h2>
-                                    <div class="flex items-center gap-2 mt-4 text-xs font-bold text-gray-400">
+                                    <div class="flex items-center gap-2 mt-4 text-xs font-bold text-gray-900">
                                         <i class="far fa-calendar-alt"></i>
                                         Membre depuis {{ app.user.createdAt|date('F Y') }}
                                     </div>
@@ -113,23 +115,23 @@
                         <form id="profile-form" class="space-y-8">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                                 <div class="space-y-2">
-                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Prénom</label>
-                                    <input type="text" value="{{ app.user.firstname }}"
+                                    <label class="text-[10px] font-black text-gray-900 uppercase tracking-widest ml-1">Prénom</label>
+                                    <input type="text" id="firstname" name="firstname" value="{{ app.user.firstname }}"
                                            class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-green-500 transition-all placeholder:text-gray-300">
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nom</label>
-                                    <input type="text" value="{{ app.user.lastname }}"
+                                    <label class="text-[10px] font-black text-gray-900 uppercase tracking-widest ml-1">Nom</label>
+                                    <input type="text" id="lastname" name="lastname" value="{{ app.user.lastname }}"
                                            class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-green-500 transition-all placeholder:text-gray-300">
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Email</label>
-                                    <input type="email" value="{{ app.user.email }}"
+                                    <label class="text-[10px] font-black text-gray-900 uppercase tracking-widest ml-1">Email</label>
+                                    <input type="email" id="email" name="email" value="{{ app.user.email }}"
                                            class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-green-500 transition-all placeholder:text-gray-300">
                                 </div>
                                 <div class="space-y-2">
-                                    <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Téléphone</label>
-                                    <input type="tel" value="{{ app.user.phoneNumber ?? '' }}" placeholder="+225 XX XX XX XX"
+                                    <label class="text-[10px] font-black text-gray-900 uppercase tracking-widest ml-1">Téléphone</label>
+                                    <input type="tel" id="phone" name="phone" value="{{ app.user.phoneNumber ?? '' }}" placeholder="+229 01 46 10 10 50"
                                            class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-green-500 transition-all placeholder:text-gray-300">
                                 </div>
                             </div>
@@ -140,6 +142,27 @@
                                 </button>
                             </div>
                         </form>
+
+                        <!-- Zone de danger -->
+                        <div class="mt-16 pt-10 border-t border-gray-100">
+                            <h3 class="text-sm font-black text-red-600 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                                Zone de danger
+                            </h3>
+                            <div class="p-6 bg-red-50 rounded-3xl border border-red-100 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                                <div>
+                                    <h4 class="text-sm font-black text-red-900 uppercase tracking-wider">Supprimer mon compte</h4>
+                                    <p class="text-xs text-red-700 font-medium mt-1 leading-relaxed">
+                                        Cette action marquera votre compte pour suppression. Vous aurez 30 jours pour annuler cette action.
+                                        Après ce délai, vos données personnelles seront définitivement anonymisées.
+                                    </p>
+                                </div>
+                                <button type="button" onclick="showDeleteModal()" 
+                                        class="px-6 py-3 bg-red-600 text-white text-[10px] font-black uppercase tracking-widest rounded-xl hover:bg-red-700 transition-all shadow-lg shadow-red-200 flex-shrink-0">
+                                    Supprimer le compte
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
@@ -148,7 +171,7 @@
                     <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 p-6 md:p-10">
                         <div class="mb-10">
                             <h2 class="text-2xl font-black text-gray-900 tracking-tight">Sécurité</h2>
-                            <p class="text-sm font-medium text-gray-400 mt-1">Protegez l'accès à votre compte</p>
+                            <p class="text-sm font-medium text-gray-900 mt-1">Protegez l'accès à votre compte</p>
                         </div>
 
                         <div class="space-y-6">
@@ -167,16 +190,16 @@
                             <form class="space-y-6">
                                 <div class="space-y-4">
                                     <div class="space-y-2">
-                                        <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Ancien mot de passe</label>
+                                        <label class="text-[10px] font-black text-gray-900 uppercase tracking-widest ml-1">Ancien mot de passe</label>
                                         <input type="password" class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-green-500 transition-all">
                                     </div>
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div class="space-y-2">
-                                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Nouveau mot de passe</label>
+                                            <label class="text-[10px] font-black text-gray-900 uppercase tracking-widest ml-1">Nouveau mot de passe</label>
                                             <input type="password" class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-green-500 transition-all">
                                         </div>
                                         <div class="space-y-2">
-                                            <label class="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Confirmer mot de passe</label>
+                                            <label class="text-[10px] font-black text-gray-900 uppercase tracking-widest ml-1">Confirmer mot de passe</label>
                                             <input type="password" class="w-full px-6 py-4 bg-gray-50 border-none rounded-2xl text-sm font-bold focus:ring-2 focus:ring-green-500 transition-all">
                                         </div>
                                     </div>
@@ -197,7 +220,7 @@
                     <div class="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 p-6 md:p-10">
                         <div class="mb-10">
                             <h2 class="text-2xl font-black text-gray-900 tracking-tight">Notifications</h2>
-                            <p class="text-sm font-medium text-gray-400 mt-1">Personnalisez vos alertes</p>
+                            <p class="text-sm font-medium text-gray-900 mt-1">Personnalisez vos alertes</p>
                         </div>
 
                         <div class="space-y-4">
@@ -232,51 +255,98 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Suppression Compte -->
+    <div id="delete-modal" class="fixed inset-0 z-[60] hidden">
+        <div class="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity"></div>
+        <div class="absolute inset-0 flex items-center justify-center p-4">
+            <div class="bg-white rounded-[2.5rem] w-full max-w-md shadow-2xl relative overflow-hidden animate-slideUp">
+                <div class="p-8">
+                    <div class="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center text-red-600 text-2xl mb-6">
+                        <i class="fa-solid fa-triangle-exclamation"></i>
+                    </div>
+                    <h3 class="text-2xl font-black text-gray-900 leading-tight mb-4">Supprimer votre compte ?</h3>
+                    <p class="text-sm font-medium text-gray-600 mb-8 leading-relaxed">
+                        Cette action mettra fin à votre session immédiatement. Vous aurez <span class="text-red-600 font-bold">30 jours</span> pour annuler cette suppression en vous reconnectant. Passé ce délai, vos données personnelles seront définitivement anonymisées.
+                    </p>
+                    
+                    <form action="{{ path('app_settings_delete') }}" method="POST" id="delete-account-form" class="space-y-6">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete-account' ~ app.user.id) }}">
+                        
+                        <!-- PIN Input -->
+                        <div class="space-y-4">
+                            <label class="block text-center text-[10px] font-black uppercase tracking-widest text-gray-400">Entrez votre code PIN pour confirmer</label>
+                            <div class="flex justify-center gap-3">
+                                {% for i in 1..5 %}
+                                <input type="password" maxlength="1" data-index="{{ i }}"
+                                       class="pin-digit-input w-12 h-14 bg-gray-50 border-2 border-gray-100 rounded-2xl text-center text-xl font-black text-gray-900 focus:border-red-500 focus:bg-white focus:ring-4 focus:ring-red-500/10 outline-none transition-all"
+                                       required>
+                                {% endfor %}
+                            </div>
+                            <input type="hidden" name="pin" id="final-pin">
+                        </div>
+
+                        <div class="space-y-3 pt-2">
+                            <button type="submit" class="w-full py-4 bg-red-600 text-white text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-red-700 transition-all shadow-xl shadow-red-100 disabled:opacity-50 disabled:cursor-not-allowed" id="confirm-delete-btn">
+                                Confirmer la suppression
+                            </button>
+                            <button type="button" onclick="hideDeleteModal()" class="w-full py-4 bg-gray-50 text-gray-900 text-xs font-black uppercase tracking-widest rounded-2xl hover:bg-gray-100 transition-all">
+                                Annuler
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-function showSection(sectionId) {
-    // Hide all sections
-    document.querySelectorAll('.section-content').forEach(el => {
-        el.classList.add('hidden');
-        el.classList.remove('active');
-    });
+function showDeleteModal() {
+    document.getElementById('delete-modal').classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    // Focus first input
+    setTimeout(() => {
+        document.querySelector('.pin-digit-input[data-index="1"]').focus();
+    }, 100);
+}
 
-    // Show selected section
-    const target = document.getElementById(sectionId + '-section');
-    target.classList.remove('hidden');
-    target.classList.add('active');
+function hideDeleteModal() {
+    document.getElementById('delete-modal').classList.add('hidden');
+    document.body.style.overflow = 'auto';
+    // Clear inputs
+    document.querySelectorAll('.pin-digit-input').forEach(input => input.value = '');
+    document.getElementById('final-pin').value = '';
+}
 
-    // Update nav buttons
-    document.querySelectorAll('[data-section-btn]').forEach(btn => {
-        const isSelected = btn.dataset.sectionBtn === sectionId;
-        
-        // Handle Mobile buttons
-        if (btn.closest('.md\\:hidden')) {
-            if (isSelected) {
-                btn.className = "px-5 py-2.5 rounded-xl text-xs font-bold transition-all bg-green-600 text-white shadow-sm shadow-green-200";
-            } else {
-                btn.className = "px-5 py-2.5 rounded-xl text-xs font-bold transition-all text-green-700 hover:bg-green-50";
-            }
-        } 
-        // Handle Desktop buttons
-        else {
-            if (isSelected) {
-                btn.className = "w-full flex items-center px-4 py-3.5 text-sm font-bold text-white bg-green-600 rounded-2xl shadow-lg shadow-green-100 transition-all";
-                btn.querySelector('i').className = btn.querySelector('i').className.replace('opacity-60', '').trim();
-            } else {
-                btn.className = "w-full flex items-center px-4 py-3.5 text-sm font-bold text-gray-500 hover:bg-green-50 hover:text-green-700 rounded-2xl transition-all";
-                if (!btn.querySelector('i').className.includes('opacity-60')) {
-                    btn.querySelector('i').className += ' opacity-60';
-                }
-            }
+// PIN digits handling
+const pinInputs = document.querySelectorAll('.pin-digit-input');
+const finalPinInput = document.getElementById('final-pin');
+
+pinInputs.forEach(input => {
+    input.addEventListener('keyup', (e) => {
+        if (e.key >= 0 && e.key <= 9) {
+            const next = input.nextElementSibling;
+            if (next && next.classList.contains('pin-digit-input')) next.focus();
+        } else if (e.key === 'Backspace') {
+            const prev = input.previousElementSibling;
+            if (prev && prev.classList.contains('pin-digit-input')) prev.focus();
         }
+        updateFinalPin();
     });
 
-    // Scroll to top of content on mobile
-    if (window.innerWidth < 768) {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    input.addEventListener('input', (e) => {
+        if (input.value.length > 1) {
+            input.value = input.value.slice(-1);
+        }
+        updateFinalPin();
+    });
+});
+
+function updateFinalPin() {
+    let pin = '';
+    pinInputs.forEach(input => pin += input.value);
+    finalPinInput.value = pin;
 }
 </script>
 

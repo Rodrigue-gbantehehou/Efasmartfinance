@@ -1,0 +1,25 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block content %}
+<h1 style="color: #4a5568;">Confirmation de suppression de compte</h1>
+
+<p>Bonjour {{ firstname }},</p>
+
+<p>Conformément à votre demande et après expiration du délai de grâce de 30 jours, nous vous confirmons que votre compte <strong>Efa Smart Finance</strong> a été définitivement supprimé.</p>
+
+<div style="background-color: #f7fafc; border-left: 4px solid #4a5568; padding: 15px; margin: 20px 0; border-radius: 8px;">
+    <p><strong>Ce qui a été fait :</strong></p>
+    <ul style="margin: 0; padding-left: 20px; color: #4a5568;">
+        <li>Vos informations personnelles (Nom, Prénom, Email, Téléphone) ont été supprimées.</li>
+        <li>Vos documents d'identité ont été supprimés de nos serveurs.</li>
+        <li>Votre accès à l'application a été définitivement révoqué.</li>
+    </ul>
+</div>
+
+<p>Nous vous remercions d'avoir utilisé nos services. Si vous souhaitez revenir parmi nous dans le futur, vous devrez créer un nouveau compte.</p>
+
+<p>Nous vous souhaitons une excellente continuation.</p>
+
+<p>Cordialement,</p>
+<p><strong>L'équipe Efa Smart Finance</strong></p>
+{% endblock %}

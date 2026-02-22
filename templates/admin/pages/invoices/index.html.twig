@@ -1,200 +1,269 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Gestion des Factures{% endblock %}
+{% block title %}Administration — Facturation{% endblock %}
 
 {% block contentadmin %}
-<div class="min-h-screen bg-green-50 from-slate-50 via-green-50/30 to-slate-100 font-poppins p-8">
-    <div class="max-w-7xl mx-auto">
-        
-        {# Header #}
-        <div class="mb-8">
-            <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-green-800 mb-2">
-                📄 Gestion des Factures
-            </h1>
-            <p class="text-slate-600 text-lg">Consultez, renvoyez et téléchargez vos factures</p>
-        </div>
-
-        {# Stats Cards #}
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-3xl p-6 shadow-lg border-2 border-green-100">
-                <div class="text-3xl font-black text-slate-800">{{ totalFactures }}</div>
-                <div class="text-sm text-slate-500 font-semibold">Total Factures</div>
-            </div>
-            <div class="bg-white rounded-3xl p-6 shadow-lg border-2 border-green-100">
-                <div class="text-3xl font-black text-green-600">{{ totalPayees }}</div>
-                <div class="text-sm text-slate-500 font-semibold">Payées</div>
-            </div>
-            <div class="bg-white rounded-3xl p-6 shadow-lg border-2 border-orange-100">
-                <div class="text-3xl font-black text-orange-600">{{ totalImpayees }}</div>
-                <div class="text-sm text-slate-500 font-semibold">En attente</div>
-            </div>
-            <div class="bg-white rounded-3xl p-6 shadow-lg border-2 border-green-100">
-                <div class="text-3xl font-black text-green-600">{{ montantTotal|number_format(0, ',', ' ') }}</div>
-                <div class="text-sm text-slate-500 font-semibold">FCFA Total</div>
-            </div>
-        </div>
-
-        {# Filters #}
-        <div class="bg-white rounded-3xl p-6 shadow-lg border-2 border-slate-100 mb-8">
-            <form method="get" class="grid grid-cols-1 md:grid-cols-4 gap-4">
+<div class="min-h-screen bg-green-50/50">
+    <!-- Header Streamlined -->
+    <div class="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-10">
+        <div class="px-6 py-5">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Recherche</label>
-                    <input type="text" name="search" value="{{ filters.search }}" placeholder="Numéro, email, nom..." 
-                           class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none">
+                    <h1 class="text-2xl font-bold font-poppins text-gray-900 tracking-tight">Gestion des Factures</h1>
+                    <p class="text-sm font-medium text-gray-600 mt-0.5">Historique et pilotage de la facturation plateforme</p>
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Statut</label>
-                    <select name="statut" class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none">
-                        <option value="">Tous</option>
+                <div class="flex items-center gap-3">
+                    <button onclick="downloadSelected()" class="px-5 py-2.5 bg-gray-900 text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-lg shadow-gray-200 flex items-center gap-2">
+                        <i class="fas fa-file-export"></i> Exporter la sélection
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contenu -->
+    <div class="p-6 space-y-8">
+        
+        <!-- Stats Cards Refined -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="group bg-white rounded-[2rem] border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/5 hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center transition-colors group-hover:bg-emerald-600 group-hover:text-white">
+                        <i class="fas fa-file-invoice text-lg"></i>
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <h3 class="text-3xl font-bold font-poppins text-gray-900">{{ totalFactures }}</h3>
+                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">Total Factures</p>
+                </div>
+            </div>
+
+            <div class="group bg-white rounded-[2rem] border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/5 hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center transition-colors group-hover:bg-green-600 group-hover:text-white">
+                        <i class="fas fa-check-circle text-lg"></i>
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <h3 class="text-3xl font-bold font-poppins text-gray-900">{{ totalPayees }}</h3>
+                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">Payées</p>
+                </div>
+            </div>
+
+            <div class="group bg-white rounded-[2rem] border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/5 hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center transition-colors group-hover:bg-amber-600 group-hover:text-white">
+                        <i class="fas fa-clock text-lg"></i>
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <h3 class="text-3xl font-bold font-poppins text-gray-900">{{ totalImpayees }}</h3>
+                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">En attente</p>
+                </div>
+            </div>
+
+            <div class="group bg-white rounded-[2rem] border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/5 hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center transition-colors group-hover:bg-emerald-600 group-hover:text-white">
+                        <i class="fas fa-money-bill-wave text-lg"></i>
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <h3 class="text-3xl font-bold font-poppins text-gray-900">{{ montantTotal|number_format(0, ',', ' ') }} <span class="text-sm font-semibold">FCFA</span></h3>
+                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">Volume Total</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="bg-white rounded-[2.5rem] border border-gray-100 p-8 shadow-sm">
+            <form method="get" class="flex flex-col lg:flex-row items-end gap-6">
+                <div class="flex-1 w-full lg:w-auto">
+                    <label class="block text-[10px] font-black text-gray-600 uppercase tracking-widest mb-3">Recherche</label>
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                        <input type="text" name="search" value="{{ filters.search }}" placeholder="Numéro, email, nom..." 
+                               class="w-full pl-10 pr-4 py-3 bg-gray-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-emerald-500/20 transition-all">
+                    </div>
+                </div>
+                <div class="w-full lg:w-48">
+                    <label class="block text-[10px] font-black text-gray-600 uppercase tracking-widest mb-3">Statut</label>
+                    <select name="statut" class="w-full px-4 py-3 bg-gray-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-emerald-500/20 transition-all">
+                        <option value="">Tous les statuts</option>
                         <option value="payee" {{ filters.statut == 'payee' ? 'selected' : '' }}>Payée</option>
                         <option value="impayee" {{ filters.statut == 'impayee' ? 'selected' : '' }}>Impayée</option>
                     </select>
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Date début</label>
+                <div class="w-full lg:w-48">
+                    <label class="block text-[10px] font-black text-gray-600 uppercase tracking-widest mb-3">Période</label>
                     <input type="date" name="date_debut" value="{{ filters.date_debut }}" 
-                           class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none">
+                           class="w-full px-4 py-3 bg-gray-50 border-none rounded-2xl text-sm font-medium focus:ring-2 focus:ring-emerald-500/20 transition-all">
                 </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Date fin</label>
-                    <input type="date" name="date_fin" value="{{ filters.date_fin }}" 
-                           class="w-full px-4 py-2 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none">
-                </div>
-                <div class="md:col-span-4 flex gap-3">
-                    <button type="submit" class="px-6 py-2 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors font-semibold">
-                        🔍 Filtrer
+                <div class="flex items-center gap-3">
+                    <button type="submit" class="px-8 py-3 bg-emerald-600 text-white rounded-2xl text-xs font-bold uppercase tracking-widest hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-100">
+                        Filtrer
                     </button>
-                    <a href="{{ path('admin_invoices') }}" class="px-6 py-2 bg-slate-200 text-slate-700 rounded-xl hover:bg-slate-300 transition-colors font-semibold">
-                        ↻ Réinitialiser
+                    <a href="{{ path('admin_invoices') }}" class="p-3 bg-gray-100 text-gray-600 rounded-2xl hover:bg-gray-200 transition-all" title="Réinitialiser">
+                        <i class="fas fa-sync-alt text-sm"></i>
                     </a>
                 </div>
             </form>
         </div>
 
-        {# Invoices Table #}
-        <div class="bg-white rounded-3xl p-8 shadow-lg border-2 border-slate-100">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-slate-800">📋 Liste des Factures</h2>
-                <button onclick="downloadSelected()" class="px-4 py-2 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-colors font-semibold">
-                    ⬇ Télécharger sélection
-                </button>
-            </div>
-
+        <!-- Invoices Table -->
+        <div class="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm">
             <form id="bulkForm" method="post" action="{{ path('admin_invoices_bulk_download') }}">
                 <div class="overflow-x-auto">
-                    <table class="w-full">
+                    <table class="w-full border-collapse">
                         <thead>
-                            <tr class="border-b-2 border-slate-200">
-                                <th class="text-left py-4 px-4">
-                                    <input type="checkbox" id="selectAll" class="w-5 h-5 rounded border-2 border-slate-300">
+                            <tr class="bg-gray-50/50">
+                                <th class="w-12 py-5 px-6">
+                                    <input type="checkbox" id="selectAll" class="w-4 h-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500/20 transition-all">
                                 </th>
-                                <th class="text-left py-4 px-4 font-bold text-slate-700">Numéro</th>
-                                <th class="text-left py-4 px-4 font-bold text-slate-700">Client</th>
-                                <th class="text-left py-4 px-4 font-bold text-slate-700">Date</th>
-                                <th class="text-left py-4 px-4 font-bold text-slate-700">Montant TTC</th>
-                                <th class="text-left py-4 px-4 font-bold text-slate-700">Statut</th>
-                                <th class="text-left py-4 px-4 font-bold text-slate-700">Actions</th>
+                                <th class="py-5 px-6 text-left text-[10px] font-black text-gray-600 uppercase tracking-widest">Numéro</th>
+                                <th class="py-5 px-6 text-left text-[10px] font-black text-gray-600 uppercase tracking-widest">Client</th>
+                                <th class="py-5 px-6 text-left text-[10px] font-black text-gray-600 uppercase tracking-widest">Date</th>
+                                <th class="py-5 px-6 text-left text-[10px] font-black text-gray-600 uppercase tracking-widest">Montant TTC</th>
+                                <th class="py-5 px-6 text-left text-[10px] font-black text-gray-600 uppercase tracking-widest">Statut</th>
+                                <th class="py-5 px-6 text-right text-[10px] font-black text-gray-600 uppercase tracking-widest">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="divide-y divide-gray-50">
                             {% for facture in factures %}
-                                <tr class="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                                    <td class="py-4 px-4">
-                                        <input type="checkbox" name="invoice_ids[]" value="{{ facture.id }}" class="invoice-checkbox w-5 h-5 rounded border-2 border-slate-300">
-                                    </td>
-                                    <td class="py-4 px-4 font-mono text-sm font-bold text-green-600">{{ facture.numero }}</td>
-                                    <td class="py-4 px-4">
-                                        {% if facture.client %}
-                                            <div class="font-semibold text-slate-800">{{ facture.client.firstname }} {{ facture.client.lastname }}</div>
-                                            <div class="text-sm text-slate-500">{{ facture.client.email }}</div>
-                                        {% else %}
-                                            <span class="text-slate-400">N/A</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="py-4 px-4 text-slate-600">{{ facture.dateEmission|date('d/m/Y') }}</td>
-                                    <td class="py-4 px-4 font-bold text-emerald-600">{{ facture.montantTTC|number_format(0, ',', ' ') }} FCFA</td>
-                                    <td class="py-4 px-4">
-                                        {% if facture.statut == 'payee' %}
-                                            <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">✓ Payée</span>
-                                        {% else %}
-                                            <span class="px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-semibold">⏳ En attente</span>
-                                        {% endif %}
-                                    </td>
-                                    <td class="py-4 px-4">
-                                        <div class="flex gap-2">
-                                            <a href="{{ path('admin_invoice_show', {id: facture.id}) }}" 
-                                               class="px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-semibold"
-                                               title="Voir détails">
-                                                👁️
-                                            </a>
-                                            <a href="{{ path('admin_invoice_download', {id: facture.id}) }}" 
-                                               class="px-3 py-1 bg-emerald-100 text-emerald-700 rounded-lg hover:bg-emerald-200 transition-colors text-sm font-semibold"
-                                               title="Télécharger">
-                                                ⬇
-                                            </a>
-                                            <button type="button" onclick="resendInvoice({{ facture.id }}, '{{ facture.numero }}', '{{ csrf_token('resend' ~ facture.id) }}')" 
-                                                    class="px-3 py-1 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors text-sm font-semibold"
-                                                    title="Renvoyer par email">
-                                                ✉️
-                                            </button>
+                            <tr class="hover:bg-gray-50/50 transition-colors group">
+                                <td class="py-5 px-6">
+                                    <input type="checkbox" name="invoice_ids[]" value="{{ facture.id }}" class="invoice-checkbox w-4 h-4 rounded border-gray-300 text-emerald-600 focus:ring-emerald-500/20 transition-all">
+                                </td>
+                                <td class="py-5 px-6">
+                                    <span class="text-sm font-bold font-poppins text-gray-900">#{{ facture.numero }}</span>
+                                </td>
+                                <td class="py-5 px-6">
+                                    {% if facture.client %}
+                                        <div class="flex flex-col">
+                                            <span class="text-sm font-bold text-gray-900">{{ facture.client.firstname }} {{ facture.client.lastname }}</span>
+                                            <span class="text-[10px] font-bold text-gray-500 uppercase">{{ facture.client.email }}</span>
                                         </div>
-                                    </td>
-                                </tr>
+                                    {% else %}
+                                        <span class="text-xs font-bold text-gray-400 italic">NON RÉFÉRENCÉ</span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-5 px-6">
+                                    <span class="text-xs font-bold text-gray-600 uppercase tracking-tighter">{{ facture.dateEmission|date('d M Y') }}</span>
+                                </td>
+                                <td class="py-5 px-6">
+                                    <span class="text-sm font-black text-emerald-600">{{ facture.montantTTC|number_format(0, ',', ' ') }} <span class="text-xs">FCFA</span></span>
+                                </td>
+                                <td class="py-5 px-6">
+                                    {% if facture.statut == 'payee' %}
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-green-50 text-green-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-green-100">
+                                            <i class="fas fa-check-circle text-[8px]"></i> Payée
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-50 text-amber-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-100 animate-pulse">
+                                            <i class="fas fa-clock text-[8px]"></i> En attente
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td class="py-5 px-6 text-right">
+                                    <div class="flex items-center justify-end gap-2">
+                                        <a href="{{ path('admin_invoice_show', {id: facture.id}) }}" 
+                                           class="w-8 h-8 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
+                                           title="Détails">
+                                            <i class="fas fa-eye text-xs"></i>
+                                        </a>
+                                        <a href="{{ path('admin_invoice_download', {id: facture.id}) }}" 
+                                           class="w-8 h-8 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
+                                           title="Télécharger">
+                                            <i class="fas fa-download text-xs"></i>
+                                        </a>
+                                        <button type="button" onclick="resendInvoice({{ facture.id }}, '{{ facture.numero }}', '{{ csrf_token('resend' ~ facture.id) }}')" 
+                                                class="w-8 h-8 rounded-xl bg-gray-50 text-gray-400 flex items-center justify-center hover:bg-emerald-600 hover:text-white transition-all shadow-sm"
+                                                title="Renvoyer par email">
+                                            <i class="fas fa-envelope text-xs"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
                             {% else %}
-                                <tr>
-                                    <td colspan="7" class="py-12 text-center text-slate-400">
-                                        Aucune facture trouvée
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td colspan="7" class="py-20 text-center">
+                                    <div class="flex flex-col items-center gap-3">
+                                        <div class="w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center text-gray-300">
+                                            <i class="fas fa-file-invoice text-3xl"></i>
+                                        </div>
+                                        <p class="text-[10px] font-black text-gray-400 uppercase tracking-widest">Aucune facture enregistrée pour cette période</p>
+                                    </div>
+                                </td>
+                            </tr>
                             {% endfor %}
                         </tbody>
                     </table>
                 </div>
             </form>
         </div>
-
     </div>
 </div>
 
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap');
-    .font-poppins { font-family: 'Poppins', sans-serif; }
-</style>
-
 <script>
-// Select all checkboxes
-document.getElementById('selectAll')?.addEventListener('change', function() {
-    document.querySelectorAll('.invoice-checkbox').forEach(cb => cb.checked = this.checked);
-});
+    // Select all checkboxes
+    document.getElementById('selectAll')?.addEventListener('change', function() {
+        document.querySelectorAll('.invoice-checkbox').forEach(cb => cb.checked = this.checked);
+    });
 
-// Download selected invoices
-function downloadSelected() {
-    const selected = document.querySelectorAll('.invoice-checkbox:checked');
-    if (selected.length === 0) {
-        alert('Veuillez sélectionner au moins une facture');
-        return;
+    // Download selected invoices
+    function downloadSelected() {
+        const selected = document.querySelectorAll('.invoice-checkbox:checked');
+        if (selected.length === 0) {
+            alert('Veuillez sélectionner au moins une facture');
+            return;
+        }
+        document.getElementById('bulkForm').submit();
     }
-    document.getElementById('bulkForm').submit();
-}
 
-// Resend invoice
-function resendInvoice(id, numero, tokenValue) {
-    if (!confirm(`Voulez-vous vraiment renvoyer la facture ${numero} par email ?`)) {
-        return;
+    // Resend invoice
+    function resendInvoice(id, numero, tokenValue) {
+        if (!confirm(`Voulez-vous vraiment renvoyer la facture ${numero} par email ?`)) {
+            return;
+        }
+        
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/admin/invoices/${id}/resend`;
+        
+        const token = document.createElement('input');
+        token.type = 'hidden';
+        token.name = '_token';
+        token.value = tokenValue;
+        form.appendChild(token);
+        
+        document.body.appendChild(form);
+        form.submit();
     }
-    
-    const form = document.createElement('form');
-    form.method = 'POST';
-    form.action = `/admin/invoices/${id}/resend`;
-    
-    const token = document.createElement('input');
-    token.type = 'hidden';
-    token.name = '_token';
-    token.value = tokenValue;
-    form.appendChild(token);
-    
-    document.body.appendChild(form);
-    form.submit();
-}
 </script>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap');
+    .font-poppins { font-family: 'Poppins', sans-serif; }
+    
+    input[type="date"]::-webkit-calendar-picker-indicator {
+        opacity: 0.4;
+        cursor: pointer;
+    }
+    
+    /* Custom Scrollbar for modern look */
+    ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+        background: #f8fafc;
+    }
+    ::-webkit-scrollbar-thumb {
+        background: #e2e8f0;
+        border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+        background: #cbd5e1;
+    }
+</style>
 {% endblock %}

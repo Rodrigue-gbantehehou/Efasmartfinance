@@ -63,9 +63,8 @@ class MigrateToPinCommand extends Command
                     $temporaryPin
                 ));
 
-                // TODO: Send email with temporary PIN
-                // $this->sendPinByEmail($user, $temporaryPin);
-
+                // PIN is created. User should be notified about their credentials.
+                
                 $migrated++;
             } catch (\Exception $e) {
                 $io->error(sprintf(

@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Facture {{ facture.numero }} - EFA SMART FINANCE</title>
+    <title>Facture {{ facture.numero }} - Efa Smart Finance</title>
     <style>
         @page { 
             margin: 1.5cm;
@@ -364,7 +364,7 @@
 </head>
 <body>
     <!-- Watermark -->
-    <div class="watermark">EFA SMART FINANCE</div>
+    <div class="watermark">Efa Smart Finance</div>
     
     <!-- Header Table -->
     <table class="header-table">
@@ -373,11 +373,11 @@
                
                 <div class="company-info">
                     <div class="company-name">
-                       <img src="{{ app.request.schemeAndHttpHost ~ asset('images/logovert.png') }}" alt="Logo EFA SMART FINANCE" class="logo">
+                       <img src="{{ app.request.schemeAndHttpHost ~ asset('images/logovert.png') }}" alt="Logo Efa Smart Finance" class="logo">
                     </div>
-                    <div>Plateforme de Tontines Digitales</div>
+                    <!-- <div>Plateforme de Tontines Digitales</div>-->
                     <div>contact@efasmartfinance.com</div>
-                    <div>+229 69 69 69 69</div>
+                    <div>+229 01 46 10 10 50</div>
                     <div>Cotonou, Bénin</div>
                 </div>
             </td>
@@ -448,32 +448,63 @@
     </table>
     
     <!-- Invoice Details Table -->
+    {% set metadata = payment.metadata|default({}) %}
+    {% set totalAmount = payment.amount %}
+    {% set feeAmount = 0 %}
+    {% set savingAmount = 0 %}
+
+    {% if payment.type == 'fee' %}
+        {% set feeAmount = totalAmount %}
+    {% elseif metadata.include_fees|default(false) and metadata.fee_amount|default(0) > 0 %}
+        {% set feeAmount = metadata.fee_amount %}
+        {% set savingAmount = totalAmount - feeAmount %}
+    {% else %}
+        {% set savingAmount = totalAmount %}
+    {% endif %}
+
     <table class="invoice-table">
         <thead>
             <tr>
-                <th width="60%">Description</th>
+                <th width="50%">Description</th>
                 <th width="15%" class="text-center">Quantité</th>
                 <th width="15%" class="text-center">Prix Unitaire</th>
                 <th width="20%" class="text-right">Montant</th>
             </tr>
         </thead>
         <tbody>
+            {% if savingAmount > 0 %}
             <tr>
                 <td>
-                    <span class="description">Participation à la tontine "{{ payment.tontine.tontineCode }}"</span>
+                    <span class="description">Épargne - Tontine "{{ payment.tontine.tontineCode }}"</span>
                     <span class="sub-description">
-                        Méthode de paiement: {{ payment.paymentMethod|upper }}<br>
-                        Référence: {{ payment.externalReference }}<br>
-                        Date: {{ payment.createdAt|date('d/m/Y H:i') }}
+                        Libellé: {{ payment.tontine.name }}<br>
+                        Méthode: {{ payment.paymentMethod|upper }}<br>
+                        Réf: {{ payment.externalReference|default('N/A') }}
                     </span>
                 </td>
                 <td class="text-center">
-                    {% set quantity = (payment.amount / payment.tontine.amountPerPoint)|round(2) %}
+                    {% set quantity = (savingAmount / payment.tontine.amountPerPoint)|round(2) %}
                     {{ quantity }} pts
                 </td>
                 <td class="text-center">{{ payment.tontine.amountPerPoint|number_format(0, ',', ' ') }} FCFA</td>
-                <td class="text-right">{{ payment.amount|number_format(0, ',', ' ') }} FCFA</td>
+                <td class="text-right">{{ savingAmount|number_format(0, ',', ' ') }} FCFA</td>
             </tr>
+            {% endif %}
+
+            {% if feeAmount > 0 %}
+            <tr>
+                <td>
+                    <span class="description">Frais de service plateforme</span>
+                    <span class="sub-description">
+                        Frais administratifs liés à la tontine "{{ payment.tontine.tontineCode }}"<br>
+                        Date: {{ payment.createdAt|date('d/m/Y H:i') }}
+                    </span>
+                </td>
+                <td class="text-center">1</td>
+                <td class="text-center">{{ feeAmount|number_format(0, ',', ' ') }} FCFA</td>
+                <td class="text-right">{{ feeAmount|number_format(0, ',', ' ') }} FCFA</td>
+            </tr>
+            {% endif %}
         </tbody>
     </table>
     
@@ -484,10 +515,7 @@
                 <td class="total-label">Sous-total</td>
                 <td class="total-amount">{{ payment.amount|number_format(0, ',', ' ') }} FCFA</td>
             </tr>
-            <tr>
-                <td class="total-label">TVA (0%)</td>
-                <td class="total-amount">0 FCFA</td>
-            </tr>
+           
             <tr>
                 <td class="total-label grand-total">TOTAL TTC</td>
                 <td class="total-amount grand-total">{{ payment.amount|number_format(0, ',', ' ') }} FCFA</td>
@@ -528,9 +556,8 @@
                 <td class="text-center">
                     <div class="thank-you">MERCI POUR VOTRE CONFIANCE</div>
                     <div>
-                        EFA SMART FINANCE • SAS au capital de 10 000 € • RCS Paris 123 456 789<br>
-                        TVA intracommunautaire FR12 3456789012 • SIRET 123 456 789 00010<br>
-                        Tél: +33 1 23 45 67 89 • Email: contact@efasmartfinance.com<br>
+                        Efa Smart Finance • SAS au capital de 10 000 € • RCS cotonou 123 456 789<br>
+                        Tél: +229 01 46 10 10 50 • Email: contact@efasmartfinance.com<br>
                         Site: https://efasmartfinance.com
                     </div>
                 </td>

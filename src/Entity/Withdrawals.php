@@ -58,6 +58,9 @@ class Withdrawals
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
     private ?string $transactionId = null;
 
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $rejectionReason = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -235,6 +238,17 @@ class Withdrawals
     public function setPhoneNumber(?string $phoneNumber): self
     {
         $this->phoneNumber = $phoneNumber;
+        return $this;
+    }
+
+    public function getRejectionReason(): ?string
+    {
+        return $this->rejectionReason;
+    }
+
+    public function setRejectionReason(?string $rejectionReason): static
+    {
+        $this->rejectionReason = $rejectionReason;
         return $this;
     }
 }

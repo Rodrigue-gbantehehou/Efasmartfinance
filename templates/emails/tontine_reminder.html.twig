@@ -1,0 +1,33 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block content %}
+<h1 class="brand-green">Rappel de versement</h1>
+
+<p>Bonjour {{ user.firstname }},</p>
+<p>Ceci est un rappel pour votre tontine <strong class="brand-green">{{ tontine.name }}</strong>.</p>
+
+<div style="background-color: #f8fafc; border-radius: 12px; padding: 25px; margin: 25px 0; border: 1px solid #e2e8f0;">
+    <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td style="padding-bottom: 10px; color: #64748b; font-size: 14px;">Prochaine échéance</td>
+            <td style="padding-bottom: 10px; text-align: right; font-weight: bold;">{{ tontine.nextDueDate|date('d/m/Y')
+                }}</td>
+        </tr>
+        <tr>
+            <td style="color: #64748b; font-size: 14px;">Montant à verser</td>
+            <td style="text-align: right; font-weight: bold; font-size: 20px;" class="brand-green">{{
+                tontine.amountPerPoint|number_format(0, ',', ' ') }} FCFA</td>
+        </tr>
+    </table>
+</div>
+
+<p>Merci de vous connecter à votre espace personnel pour effectuer votre versement et maintenir votre progression.</p>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{ absolute_url(path('app_login')) }}" class="button">Accéder à mon compte</a>
+</div>
+
+<p>Besoin d'aide ? Notre support est à votre disposition.</p>
+
+<p>L'équipe <strong>Efa Smart Finance</strong></p>
+{% endblock %}

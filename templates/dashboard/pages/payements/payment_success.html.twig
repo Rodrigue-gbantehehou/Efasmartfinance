@@ -1,6 +1,6 @@
 {% extends "dashboard/base.html.twig" %}
 
-{% block title %}Confirmation de Paiement - EFA SMART FINANCE{% endblock %}
+{% block title %}Confirmation de Paiement - Efa Smart Finance{% endblock %}
 
 {% block stylesheets %}
 {{ parent() }}
@@ -25,7 +25,7 @@
         <!-- Main Receipt Card -->
         <div class="receipt-card bg-white rounded-2xl shadow-xl shadow-slate-200/60 overflow-hidden border border-slate-100">
             <!-- Header Section -->
-            <div class="bg-green-600 px-6 py-4 text-center text-white">
+            <div class="bg-green-600 px-8 py-4 text-center text-white">
                 <div class="inline-flex items-center justify-center w-16 h-16 bg-white/20 rounded-full mb-4 ring-8 ring-white/10">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
@@ -36,8 +36,8 @@
             </div>
 
             <!-- Amount Section -->
-            <div class="px-6 py-10 text-center border-b border-dashed border-slate-200 relative">
-                <div class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-2">Montant Total</div>
+            <div class="px-6 py-6 text-center border-b border-dashed border-slate-200 relative">
+                <div class="text-sm font-semibold text-slate-400 uppercase tracking-wider ">Montant Total</div>
                 <div class="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight">
                     {{ transaction.amount|number_format(0, ',', ' ') }} <span class="text-lg font-bold text-slate-500 ml-1">FCFA</span>
                 </div>
@@ -48,7 +48,7 @@
             </div>
 
             <!-- Details Section -->
-            <div class="p-2 space-y-6">
+            <div class="p-4 space-y-6">
                 <div class="space-y-4">
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest text-left">Informations Transaction</h3>
                     
@@ -95,10 +95,10 @@
 
                 <!-- Action Section -->
                 <div class="pt-2 grid grid-cols-2 gap-3">
-                    <button onclick="window.print()" class="flex items-center justify-center py-2.5 px-4 rounded-xl border border-slate-200 text-slate-600 text-sm font-bold hover:bg-slate-50 transition-colors">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                        Imprimer
-                    </button>
+              <a href="{{ path('app_tontines_index') }}" class="w-full flex items-center justify-center py-3.5 bg-green-700 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-all active:scale-[0.98] shadow-lg shadow-slate-200">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                    Tableau de bord
+                </a>
                     {% if transaction.invoicePath %}
                         <a href="{{ path('app_transaction_invoice_download', {'id': transaction.id}) }}" class="flex items-center justify-center py-2.5 px-4 rounded-xl border border-slate-200 text-slate-600 text-sm font-bold hover:bg-slate-50 transition-colors">
                             <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
@@ -115,11 +115,7 @@
 
             <!-- Footer Section -->
             <div class="bg-slate-50 p-2">
-                <a href="{{ path('app_tontines_index') }}" class="w-full flex items-center justify-center py-3.5 bg-green-700 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-all active:scale-[0.98] shadow-lg shadow-slate-200">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                    Tableau de bord
-                </a>
-                <p class="mt-4 text-center text-xs text-slate-400 font-medium px-4">
+                <p class="mt-2 mb-2 text-center text-xs text-slate-400 font-medium px-4">
                     Une copie de ce reçu a été envoyée à votre adresse email.
                 </p>
             </div>
@@ -129,11 +125,11 @@
         <div class="mt-8 text-center space-y-2 mb-6">
             <p class="text-xs font-bold text-slate-400 uppercase tracking-widest text-center">Assistance</p>
             <div class="flex items-center justify-center space-x-6">
-                <a href="mailto:support@efasmartfinance.com" class="text-sm font-semibold text-slate-600 hover:text-green-600 flex items-center">
+                <a href="mailto:contact@efasmartfinance.com" class="text-sm font-semibold text-slate-600 hover:text-green-600 flex items-center">
                     Support
                 </a>
                 <span class="w-1.5 h-1.5 bg-slate-300 rounded-full"></span>
-                <a href="tel:+22890000000" class="text-sm font-semibold text-slate-600 hover:text-green-600 flex items-center">
+                <a href="tel:+2290146101050" class="text-sm font-semibold text-slate-600 hover:text-green-600 flex items-center">
                     Contact
                 </a>
             </div>

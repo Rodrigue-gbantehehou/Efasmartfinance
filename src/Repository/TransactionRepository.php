@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Transaction;
+use App\Entity\Tontine;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -264,4 +265,29 @@ class TransactionRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+    public function getSumByTontine(Tontine $tontine): float
+    {
+        return (float) $this->createQueryBuilder('t')
+            ->select('SUM(t.amount)')
+            ->where('t.Tontine = :tontine')
+            ->andWhere('t.statut = :statut')
+            ->setParameter('tontine', $tontine)
+            ->setParameter('statut', 'completed')
+            ->getQuery()
+            ->getSingleScalarResult() ?? 0;
+    }
+
+    public function getSumByTontineAndTypes(Tontine $tontine, array $types): float
+    {
+        return (float) $this->createQueryBuilder('t')
+            ->select('SUM(t.amount)')
+            ->where('t.Tontine = :tontine')
+            ->andWhere('t.type IN (:types)')
+            ->andWhere('t.statut = :statut')
+            ->setParameter('tontine', $tontine)
+            ->setParameter('types', $types)
+            ->setParameter('statut', 'completed')
+            ->getQuery()
+            ->getSingleScalarResult() ?? 0;
+    }
 }

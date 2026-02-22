@@ -35,7 +35,7 @@ class ContactType extends AbstractType
                 'required' => false,
                 'attr' => [
                     'class' => 'form-input mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-700 focus:ring focus:ring-green-700 focus:ring-opacity-50',
-                    'placeholder' => '+33 6 12 34 56 78'
+                    'placeholder' => '+229 01 46 10 10 50 6 12 34 56 78'
                 ]
             ])
             ->add('subject', TextType::class, [

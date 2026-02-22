@@ -146,34 +146,6 @@ class PinAuthService
         return true;
     }
 
-    /**
-     * Reset PIN - generates a temporary PIN and marks it for change
-     */
-    public function resetPin(User $user): string
-    {
-        $pinAuth = $user->getPinAuth();
-
-        if (!$pinAuth) {
-            throw new \RuntimeException('L\'utilisateur n\'a pas de code PIN configuré');
-        }
-
-        // Generate temporary PIN
-        $temporaryPin = $this->generateRandomPin();
-
-        // Update PIN and mark for change
-        $pinAuth->setPinHash($this->hashPin($temporaryPin));
-        $pinAuth->setMustChangePin(true);
-        $pinAuth->resetFailedAttempts();
-        $pinAuth->setLockedUntil(null);
-        
-        $this->entityManager->flush();
-
-        $this->logger->info('PIN réinitialisé', [
-            'user_id' => $user->getId()
-        ]);
-
-        return $temporaryPin;
-    }
 
     /**
      * Create a temporary PIN for existing users (migration)

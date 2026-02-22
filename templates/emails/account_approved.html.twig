@@ -1,0 +1,28 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block content %}
+<h1 style="color: #008040;">Votre compte est maintenant activé !</h1>
+
+<p>Bonjour {{ user.firstname }},</p>
+
+<p>Nous avons le plaisir de vous informer que votre demande de vérification de compte <strong>Efa Smart Finance</strong> a été approuvée par notre équipe de sécurité.</p>
+
+<div style="background-color: #f0fdf4; border-left: 4px solid #008040; padding: 15px; margin: 20px 0; border-radius: 8px;">
+    <p style="color: #166534; font-weight: bold; margin: 0;">Ce que vous pouvez faire maintenant :</p>
+    <ul style="margin: 10px 0 0 0; padding-left: 20px; color: #166534;">
+        <li>Demander des retraits.</li>
+        <li>Gérer vos épargnes en toute sécurité.</li>
+    </ul>
+</div>
+
+<p>Vous avez maintenant un accès complet à toutes les fonctionnalités de l'application.</p>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{ absolute_url(path('app_dashboard')) }}" class="button" style="background-color: #008040;">Accéder à mon tableau de bord</a>
+</div>
+
+<p>Nous sommes ravis de vous accompagner dans la gestion de vos finances.</p>
+
+<p>Bienvenue à bord,</p>
+<p><strong>L'équipe Efa Smart Finance</strong></p>
+{% endblock %}

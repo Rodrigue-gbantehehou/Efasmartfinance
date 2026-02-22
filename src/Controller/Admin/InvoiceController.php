@@ -121,7 +121,7 @@ class InvoiceController extends AbstractController
 
             $this->emailService->sendWithAttachment(
                 $facture->getClient()->getEmail(),
-                'Facture ' . $facture->getNumero() . ' - EFA Smart Finance',
+                'Facture ' . $facture->getNumero() . ' - Efa Smart Finance',
                 $emailContent,
                 $pdfPath,
                 'facture-' . $facture->getNumero() . '.pdf'

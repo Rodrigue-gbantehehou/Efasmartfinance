@@ -23,7 +23,7 @@ class Facture
     private ?string $montantHT = null;
 
     #[ORM\Column(type: 'decimal', precision: 5, scale: 2)]
-    private ?string $tva = '20.00';
+    private ?string $tva = '0.00';
 
     #[ORM\Column(type: 'decimal', precision: 10, scale: 2)]
     private ?string $montantTTC = null;

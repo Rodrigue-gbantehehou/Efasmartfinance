@@ -85,6 +85,9 @@ class Tontine
     #[ORM\Column(type: 'integer', options: ['default' => 0])]
     private int $paidFees = 0;
 
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    private int $paidFeesExternally = 0;
+
     public function __construct()
     {
         $this->transactions = new ArrayCollection();
@@ -501,17 +504,24 @@ class Tontine
         return $withdrawnAmount > 0 && $withdrawnAmount < $this->getTotalPay();
     }
 
-    /**
-     * Calcule le montant total déjà retiré de la tontine
-     */
     public function getWithdrawnAmount(): int
     {
         return (int) array_sum(
             $this->withdrawals
-                ->filter(fn($w) => $w->getStatut() === 'approved')
+                ->filter(fn($w) => in_array($w->getStatut(), ['approved', 'pending']))
                 ->map(fn($w) => (int) $w->getAmount())
                 ->toArray()
         );
+    }
+
+    /**
+     * Retourne l'épargne nette (Total cotisé - Frais déjà payés)
+     */
+    public function getNetSavings(): int
+    {
+        // On ne soustrait que les frais qui ont été prélevés sur le pot (PaidFees - PaidFeesExternally)
+        $deductedFromPot = max(0, $this->getPaidFees() - $this->getPaidFeesExternally());
+        return (int) ($this->getTotalPay() - $deductedFromPot);
     }
 
     /**
@@ -519,12 +529,21 @@ class Tontine
      */
     public function getAvailableWithdrawalAmount(): int
     {
-        $basis = (int)$this->getTotalPay() - $this->getWithdrawnAmount();
+        // 1. Pot total cotisé
+        $totalPay = (int)$this->getTotalPay();
         
-        // On ne déduit que les frais qui sont réellement dus par rapport aux cotisations effectuées
-        $feesDueAtThisStage = $this->getFeesDue();
+        // 2. Charge totale des frais à ce stade (ce qui doit sortir ou est déjà sorti du pot)
+        // La charge réelle pour le pot est : FraisThéoriques - FraisPayésParCarte
+        $theoreticalFees = (int)$this->getDeductedServiceFee() * ((float)$totalPay / ((float)($this->amountPerPoint ?? 0) * ($this->totalPoints ?? 0)));
+        // Note: On peut aussi utiliser (getFeesDue() + paidFees) mais attention aux arrondis
+        $theoreticalFees = (int) round($theoreticalFees);
         
-        return max(0, $basis - $feesDueAtThisStage);
+        $feeBurdenOnPot = max(0, $theoreticalFees - $this->paidFeesExternally);
+        
+        // 3. Montant déjà retiré (Net)
+        $netWithdrawn = $this->getWithdrawnAmount();
+        
+        return max(0, $totalPay - $feeBurdenOnPot - $netWithdrawn);
     }
     
     /**
@@ -645,6 +664,17 @@ class Tontine
         return $this;
     }
 
+    public function getPaidFeesExternally(): int
+    {
+        return $this->paidFeesExternally;
+    }
+
+    public function setPaidFeesExternally(int $paidFeesExternally): static
+    {
+        $this->paidFeesExternally = $paidFeesExternally;
+        return $this;
+    }
+
     /**
      * Calcule le montant des frais qui auraient dû être payés à ce stade
      */
@@ -652,11 +682,6 @@ class Tontine
     {
         $totalFees = (float)$this->getDeductedServiceFee();
         
-        // Les tontines quotidiennes ne sont pas soumises au prorata
-        if ($this->frequency === 'daily') {
-            return max(0, (int)$totalFees - $this->paidFees);
-        }
-
         $totalToSave = (float)((float)($this->amountPerPoint ?? 0) * ($this->totalPoints ?? 0));
         
         if ($totalToSave <= 0) {
@@ -670,7 +695,7 @@ class Tontine
         // On utilise la progression pour avoir des frais au prorata de l'épargne
         $theoreticalFeesDue = (int) round($totalFees * $progress);
         
-        // Reste à payer = Théorique - Déjà payé via KkiaPay ou autre
+        // Reste à payer = Théorique - Déjà payé via KkiaPay ou déduction précédente
         return max(0, $theoreticalFeesDue - $this->paidFees);
     }
 }

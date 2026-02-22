@@ -7,7 +7,9 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-    app.support_email: 'contact@binajia.org'
+    app.contact_email: '%env(CONTACT_EMAIL)%'
+    app.noreply_email: '%env(MAIL_FROM_ADDRESS)%'
+    app.support_email: '%app.contact_email%'
     app.admin_email: 'rodriguenagnon@gmail.com'
     uploads_directory: '%kernel.project_dir%/var/uploads'
 
@@ -27,11 +29,6 @@ services:
             - '../src/Kernel.php'
             - '../src/Tests/'
 
-    # Configure the test email command
-    App\Command\TestEmailCommand:
-        arguments:
-            $adminEmail: '%app.admin_email%'
-            $supportEmail: '%app.support_email%'
 
     # File uploader service
     App\Service\FileUploader:
@@ -39,10 +36,30 @@ services:
             $targetDirectory: '%uploads_directory%'
             $slugger: '@Symfony\Component\String\Slugger\SluggerInterface'
 
-    # Configure IdentityVerificationController with upload directory
-    App\Controller\Dashboard\IdentityVerificationController:
+    # Configuration du service d'email
+    App\Service\EmailService:
         arguments:
-            $uploadDirectory: '%uploads_directory%'
+            $contactEmail: '%app.contact_email%'
+            $noreplyEmail: '%app.noreply_email%'
+            $projectDir: '%kernel.project_dir%'
+
+    App\Controller\ContactController:
+        arguments:
+            $contactEmail: '%app.contact_email%'
+            $emailService: '@App\Service\EmailService'
+
+    App\Controller\RegistrationController:
+        arguments:
+            $contactEmail: '%app.contact_email%'
+
+    App\Controller\VerifyEmailController:
+        arguments:
+            $contactEmail: '%app.contact_email%'
+
+    App\Controller\Admin\SettingAdminController:
+        arguments:
+            $contactEmail: '%app.contact_email%'
+
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
@@ -81,3 +98,13 @@ services:
     App\EventListener\AccessDeniedListener:
         tags:
             - { name: 'kernel.event_listener', event: 'kernel.exception', method: 'onKernelException' }
+
+    # Configuration du listener pour le mode maintenance
+    App\EventListener\MaintenanceListener:
+        tags:
+            - { name: 'kernel.event_listener', event: 'kernel.request', method: 'onKernelRequest', priority: 10 }
+
+    # Restriction d'accès pour les comptes en attente de suppression
+    App\EventListener\PendingDeletionListener:
+        tags:
+            - { name: 'kernel.event_subscriber' }

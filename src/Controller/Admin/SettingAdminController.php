@@ -15,14 +15,18 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_SUPPORT')]
 class SettingAdminController extends AbstractController
 {
+    public function __construct(
+        private string $contactEmail
+    ) {}
+
     #[Route('', name: 'admin_settings')]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
         $this->denyAccessUnlessGranted('VIEW_MODULE', 'settings');
         // Récupérer les paramètres actuels (à adapter selon votre logique métier)
         $settings = [
-            'site_name' => 'EFA SMART FINANCE',
-            'contact_email' => 'contact@efasmartfinance.com',
+            'site_name' => 'Efa Smart Finance',
+            'contact_email' => $this->contactEmail,
             'items_per_page' => 10,
             'maintenance_mode' => false,
         ];

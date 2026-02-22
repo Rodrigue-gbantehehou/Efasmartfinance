@@ -7,7 +7,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>EFA SMART FINANCE — Tableau de bord Tontines</title>
+  <title>Efa Smart Finance — Tableau de bord Tontines</title>
   <meta name="description" content="Tableau de bord des tontines individuelles pour la gestion de vos épargnes." />
   <link rel="icon" href="{{ asset('images/logovert.png') }}" type="image/png">
   <!-- Tailwind CSS -->
@@ -457,11 +457,14 @@
   <!-- App Shell -->
   <div class="flex-1 flex flex-col md:flex-row h-screen overflow-hidden">
     
-    <!-- Mobile Header -->
-    {% include "dashboard/partiales/mobileheader.html.twig" %}
+    <!-- Navigation (Hidable) -->
+    {% if not hide_nav|default(false) %}
+        <!-- Mobile Header -->
+        {% include "dashboard/partiales/mobileheader.html.twig" %}
 
-    <!-- Desktop Sidebar -->
-    {% include "dashboard/partiales/sidebardesktop.html.twig" %}
+        <!-- Desktop Sidebar -->
+        {% include "dashboard/partiales/sidebardesktop.html.twig" %}
+    {% endif %}
 
     <!-- Main Content -->
     <main id="main-content" class="flex-1 min-w-0 flex flex-col overflow-y-auto scrollbar-hide pb-40 md:pb-0" role="main">
@@ -475,7 +478,9 @@
   </div>
 
   <!-- Mobile Drawer -->
-  {% include "dashboard/partiales/mobiledrawer.html.twig" %}
+  {% if not hide_nav|default(false) %}
+      {% include "dashboard/partiales/mobiledrawer.html.twig" %}
+  {% endif %}
   
   <!-- Bottom Navigation Mobile -->
   
@@ -795,7 +800,9 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-  {% include "dashboard/partiales/bottom_nav_mobile.html.twig" %}
+  {% if not hide_nav|default(false) %}
+      {% include "dashboard/partiales/bottom_nav_mobile.html.twig" %}
+  {% endif %}
 
 </body>
 

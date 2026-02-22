@@ -62,11 +62,19 @@ class Authenticator extends AbstractLoginFormAuthenticator
         } else {
             $user = $this->entityManager
                 ->getRepository(User::class)
-                ->findOneBy(['uuid' => (int) $identifier]);
+                ->findOneBy(['uuid' => $identifier]);
         }
 
         if (!$user) {
             throw new CustomUserMessageAuthenticationException('Identifiants invalides.');
+        }
+
+        if ($user->getDeletedAt() !== null) {
+            throw new CustomUserMessageAuthenticationException('Ce compte a été supprimé définitivement.');
+        }
+
+        if ($user->isActive() === false) {
+            throw new CustomUserMessageAuthenticationException('Votre compte a été suspendu. Veuillez contacter le support.');
         }
 
         return $user;
@@ -88,6 +96,11 @@ class Authenticator extends AbstractLoginFormAuthenticator
         $session = $request->getSession();
         $session->remove('pin_verified');
         $session->remove('pin_verified_at');
+
+        // Check if user is pending deletion
+        if ($user->isPendingDeletion()) {
+            return new RedirectResponse($this->urlGenerator->generate('app_settings_restore'));
+        }
 
         // Check if user has PIN configured
         if (!$user->hasPinAuth()) {

@@ -3,6 +3,7 @@
 namespace App\Twig;
 
 use Twig\TwigFunction;
+use Twig\TwigFilter;
 use App\Repository\TontineRepository;
 use App\Service\CookieConsentManager;
 use Twig\Extension\AbstractExtension;
@@ -31,6 +32,18 @@ class AppExtension extends AbstractExtension
             new TwigFunction('has_cookie_consent', [$this, 'hasCookieConsent']),
             new TwigFunction('cookie_consent_preferences', [$this, 'getCookieConsentPreferences']),
         ];
+    }
+
+    public function getFilters()
+    {
+        return [
+            new TwigFilter('json_decode', [$this, 'jsonDecode']),
+        ];
+    }
+
+    public function jsonDecode($string)
+    {
+        return json_decode($string, true);
     }
 
     public function getCurrentTontine()

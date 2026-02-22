@@ -22,7 +22,9 @@ final class WithdrawalsController extends AbstractController
 {
     public function __construct(
         private EntityManagerInterface $em,
-        private ActivityLogger $activityLogger
+        private ActivityLogger $activityLogger,
+        private \App\Service\NotificationService $notificationService,
+        private \App\Service\EmailService $emailService
     ) {}
 
     #[Route('/withdrawals', name: 'app_withdrawals_index', methods: ['GET'])]
@@ -71,9 +73,9 @@ final class WithdrawalsController extends AbstractController
             return $this->redirectToRoute('app_tontines_index');
         }
 
-        // Vérifier si le compte est vérifié (vérification de l'email)
-        if (!$user->getVerificationStatut() == 'verified') {
-            $this->addFlash('error', 'Veuillez d\'abord vérifier votre compte avant de pouvoir effectuer un retrait.');
+        // Vérifier si le compte est vérifié (vérification de l'identité)
+        if ($user->getVerificationStatus() !== 'Vérifié') {
+            $this->addFlash('error', 'Veuillez d\'abord faire vérifier votre compte avant de pouvoir effectuer un retrait.');
             return $this->redirectToRoute('app_tontines_show', ['id' => $tontine->getId()]);
         }
 
@@ -204,25 +206,12 @@ final class WithdrawalsController extends AbstractController
             // Effectuer le retrait du montant demandé
             $tontine->withdraw($amount);
             
-            // Pour toutes les tontines, enregistrer les frais de service lors du premier retrait
-            $platformFeeRepo = $em->getRepository(\App\Entity\PlatformFee::class);
-            $existingFee = $platformFeeRepo->findOneBy([
-                'tontine' => $tontine,
-                'type' => 'service_fee'
-            ]);
-
-            if (!$existingFee) {
-                $serviceFeeAmount = $tontine->getDeductedServiceFee();
-                $paidFees = $tontine->getPaidFees();
-                
-                // Calculer le reste à payer sur les frais
-                $remainingFee = max(0, $serviceFeeAmount - $paidFees);
-                
+            // Collecter les frais de service proratisés
+            $feesDueAtThisStage = $tontine->getFeesDue();
+            
+            if ($feesDueAtThisStage > 0) {
                 // On ne prélève que ce qui est disponible si le solde est insuffisant (et si > 0)
-                $actualFee = 0;
-                if ($remainingFee > 0) {
-                    $actualFee = min($remainingFee, $tontine->getTotalPay());
-                }
+                $actualFee = min($feesDueAtThisStage, $tontine->getTotalPay());
                 
                 if ($actualFee > 0) {
                     // 1. Enregistrement dans PlatformFee (Admin)
@@ -246,11 +235,36 @@ final class WithdrawalsController extends AbstractController
                     $feeTransaction->setStatut('completed');
                     $feeTransaction->setCreatedAt(new \DateTimeImmutable());
                     $em->persist($feeTransaction);
+
+                    // 3. Mettre à jour les frais payés sur la tontine
+                    $tontine->setPaidFees($tontine->getPaidFees() + (int)$actualFee);
+
+                    // 4. Log de la transaction de frais
+                    $this->activityLogger->log(
+                        $user,
+                        'FEE_DEDUCTION',
+                        'Transaction',
+                        $feeTransaction->getId(),
+                        sprintf(
+                            'Prélèvement automatique des frais de service : %s FCFA pour la tontine %s',
+                            number_format($actualFee, 0, ',', ' '),
+                            $tontine->getName()
+                        )
+                    );
                 }
             }
 
             $em->persist($withdrawal);
             $em->flush();
+
+            // Notification in-app
+            $this->notificationService->sendWithdrawalRequestNotification(
+                $user,
+                (float) $amount
+            );
+
+            // Notification Email
+            $this->emailService->sendWithdrawalRequestEmail($user, (float) $amount);
 
             // Mettre à jour le statut de la tontine si nécessaire
             if ($tontine->isComplete()) {

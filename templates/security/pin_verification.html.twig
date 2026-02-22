@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Vérification Sécurisée — EFA SMART FINANCE{% endblock %}
+{% block title %}Vérification Sécurisée — Efa Smart Finance{% endblock %}
 
 {# Disable header and footer for total focus #}
 {% block header %}{% endblock %}
@@ -56,23 +56,23 @@
                 autofocus>
 
             <!-- Virtual Keypad (Ultra Compact) -->
-            <div class="grid grid-cols-3 gap-2 md:gap-4">
+            <div class="grid grid-cols-3 gap-3 md:gap-4">
                 {% for num in ['1', '2', '3', '4', '5', '6', '7', '8', '9'] %}
                 <button type="button" onclick="appendPin('{{ num }}')"
-                    class="h-12 md:h-12 rounded-xl md:rounded-2xl bg-white/5 border border-white/5 hover:bg-green-700/40 hover:border-green-500 text-white text-lg md:text-xl font-semibold transition-all duration-200 active:scale-90 flex items-center justify-center shadow-lg backdrop-blur-sm">
+                    class="h-11 md:h-12 rounded-xl md:rounded-2xl bg-white/5 border border-white/5 hover:bg-green-700/40 hover:border-green-500 text-white text-lg md:text-xl font-semibold transition-all duration-200 active:scale-90 flex items-center justify-center shadow-lg backdrop-blur-sm">
                     {{ num }}
                 </button>
                 {% endfor %}
                 <button type="button" onclick="clearPin()"
-                    class="h-12 md:h-12 rounded-xl md:rounded-2xl bg-white/5 border border-white/5 hover:bg-red-500/20 hover:border-red-500 text-red-400 text-lg md:text-xl transition-all duration-200 active:scale-90 flex items-center justify-center">
+                    class="h-11 md:h-12 rounded-xl md:rounded-2xl bg-white/5 border border-white/5 hover:bg-red-500/20 hover:border-red-500 text-red-400 text-lg md:text-xl transition-all duration-200 active:scale-90 flex items-center justify-center">
                     <i class="fas fa-delete-left"></i>
                 </button>
                 <button type="button" onclick="appendPin('0')"
-                    class="h-12 md:h-12 rounded-xl md:rounded-2xl bg-white/5 border border-white/5 hover:bg-green-700/40 hover:border-green-500 text-white text-lg md:text-xl font-semibold transition-all duration-200 active:scale-90 flex items-center justify-center">
+                    class="h-11 md:h-12 rounded-xl md:rounded-2xl bg-white/5 border border-white/5 hover:bg-green-700/40 hover:border-green-500 text-white text-lg md:text-xl font-semibold transition-all duration-200 active:scale-90 flex items-center justify-center">
                     0
                 </button>
                 <button type="submit" id="submitBtn"
-                    class="h-12 md:h-12 rounded-xl md:rounded-2xl bg-green-600 border border-green-500 hover:bg-green-500 text-white text-lg md:text-xl font-semibold transition-all duration-200 active:scale-90 flex items-center justify-center disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed">
+                    class="h-11 md:h-12 rounded-xl md:rounded-2xl bg-green-600 border border-green-500 hover:bg-green-500 text-white text-lg md:text-xl font-semibold transition-all duration-200 active:scale-90 flex items-center justify-center disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed">
                     <i class="fas fa-chevron-right"></i>
                 </button>
             </div>

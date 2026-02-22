@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Facture {{ facture.numero }} - EFA SMART FINANCE</title>
+    <title>Facture {{ facture.numero }} - Efa Smart Finance</title>
     <style>
         @page { 
             margin: 1.5cm;
@@ -368,7 +368,7 @@
                
                 <div class="company-info">
                     <div class="company-name">
-                       <img src="{{ app.request.schemeAndHttpHost ~ asset('images/logovert.png') }}" alt="Logo EFA SMART FINANCE" class="logo">
+                       <img src="{{ app.request.schemeAndHttpHost ~ asset('images/logovert.png') }}" alt="Logo Efa Smart Finance" class="logo">
                     </div>
                     <div>Plateforme de Tontines Digitales</div>
                     <div>contact@efasmartfinance.com</div>
@@ -481,10 +481,7 @@
                 <td class="total-label">Sous-total</td>
                 <td class="total-amount">{{ payment.amount|number_format(0, ',', ' ') }} FCFA</td>
             </tr>
-            <tr>
-                <td class="total-label">TVA (0%)</td>
-                <td class="total-amount">0 FCFA</td>
-            </tr>
+            
             <tr>
                 <td class="total-label grand-total">TOTAL TTC</td>
                 <td class="total-amount grand-total">{{ payment.amount|number_format(0, ',', ' ') }} FCFA</td>
@@ -525,9 +522,8 @@
                 <td class="text-center">
                     <div class="thank-you">MERCI POUR VOTRE CONFIANCE</div>
                     <div>
-                        EFA SMART FINANCE • SAS au capital de 10 000 € • RCS Paris 123 456 789<br>
-                        TVA intracommunautaire FR12 3456789012 • SIRET 123 456 789 00010<br>
-                        Tél: +33 1 23 45 67 89 • Email: contact@efasmartfinance.com<br>
+                        Efa Smart Finance • SAS au capital de 10 000 € • RCS Cotonou 123 456 789<br>
+                        Tél: +229 01 46 10 10 50 • Email: contact@efasmartfinance.com<br>
                         Site: https://efasmartfinance.com
                     </div>
                 </td>

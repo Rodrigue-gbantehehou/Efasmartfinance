@@ -1,0 +1,28 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block content %}
+<h1 style="color: #008040;">Demande de retrait reçue</h1>
+
+<p>Bonjour {{ user.firstname }},</p>
+
+<p>Nous vous confirmons avoir bien reçu votre demande de retrait d'un montant de <strong>{{ amount|number_format(0, ',', ' ') }} FCFA</strong>.</p>
+
+<div style="background-color: #f0fdf4; border-left: 4px solid #008040; padding: 15px; margin: 20px 0; border-radius: 8px;">
+    <p style="color: #166534; font-weight: bold; margin: 0;">Détails de la demande :</p>
+    <ul style="margin: 10px 0 0 0; padding-left: 20px; color: #166534;">
+        <li>Montant : {{ amount|number_format(0, ',', ' ') }} FCFA</li>
+        <li>Statut : En attente de traitement</li>
+    </ul>
+</div>
+
+<p>Notre équipe traite actuellement votre demande. Vous recevrez un nouvel email dès qu'elle aura été validée.</p>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{ absolute_url(path('app_withdrawals_index')) }}" class="button">Suivre ma demande</a>
+</div>
+
+<p>Merci de votre confiance.</p>
+
+<p>Cordialement,</p>
+<p><strong>L'équipe Efa Smart Finance</strong></p>
+{% endblock %}

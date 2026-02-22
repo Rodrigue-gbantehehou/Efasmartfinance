@@ -14,7 +14,8 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class PinController extends AbstractController
 {
     public function __construct(
-        private PinAuthService $pinAuthService
+        private PinAuthService $pinAuthService,
+        private \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $passwordHasher
     ) {
     }
 
@@ -129,25 +130,64 @@ class PinController extends AbstractController
                 return $this->redirectToRoute('pin_reset_request');
             }
 
-            // Verify password (you'll need to inject PasswordHasher)
-            // For now, we'll just reset the PIN
+            // Verify password
+            if (!$this->passwordHasher->isPasswordValid($user, $password)) {
+                $this->addFlash('error', 'Mot de passe incorrect');
+                return $this->redirectToRoute('pin_reset_request');
+            }
             
             try {
-                $temporaryPin = $this->pinAuthService->resetPin($user);
+                // Clear any lockout
+                $this->pinAuthService->resetFailedAttempts($user);
                 
-                // TODO: Send temporary PIN by email
-                // For now, display it (NOT SECURE FOR PRODUCTION)
-                $this->addFlash('success', sprintf(
-                    'Votre code PIN a été réinitialisé. Votre nouveau code PIN temporaire est: %s. Vous devrez le changer à la prochaine connexion.',
-                    $temporaryPin
-                ));
+                // Authorize PIN change in session
+                $request->getSession()->set('pin_reset_authorized', true);
                 
-                return $this->redirectToRoute('pin_change');
+                $this->addFlash('success', 'Sécurité vérifiée. Vous pouvez maintenant définir votre nouveau code PIN.');
+                return $this->redirectToRoute('pin_setup_forced');
             } catch (\Exception $e) {
                 $this->addFlash('error', $e->getMessage());
             }
         }
 
         return $this->render('dashboard/pin/reset_request.html.twig');
+    }
+
+    #[Route('/setup/forced', name: 'pin_setup_forced')]
+    public function setupForced(Request $request): Response
+    {
+        $user = $this->getUser();
+
+        // Security check: only allow if password was just verified
+        if (!$request->getSession()->get('pin_reset_authorized')) {
+            return $this->redirectToRoute('pin_reset_request');
+        }
+
+        if ($request->isMethod('POST')) {
+            $pin = $request->request->get('pin');
+            $pinConfirm = $request->request->get('pin_confirm');
+
+            if ($pin !== $pinConfirm) {
+                $this->addFlash('error', 'Les codes PIN ne correspondent pas');
+                return $this->redirectToRoute('pin_setup_forced');
+            }
+
+            try {
+                // Use the special reset method in service
+                $this->pinAuthService->createPinAfterReset($user, $pin);
+                
+                // Clear temporary authorization
+                $request->getSession()->remove('pin_reset_authorized');
+                
+                $this->addFlash('success', 'Votre nouveau code PIN a été configuré avec succès');
+                return $this->redirectToRoute('app_tontines_index');
+            } catch (\Exception $e) {
+                $this->addFlash('error', $e->getMessage());
+            }
+        }
+
+        return $this->render('dashboard/pin/setup.html.twig', [
+            'is_forced' => true
+        ]);
     }
 }

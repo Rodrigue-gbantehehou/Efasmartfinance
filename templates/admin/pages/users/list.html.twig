@@ -9,11 +9,16 @@
         <div class="px-6 py-5">
             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h1 class="text-2xl font-bold font-poppins text-gray-900 tracking-tight">Utilisateurs</h1>
-                    <p class="text-sm font-medium text-gray-600 mt-0.5">Gestion et supervision des comptes de la plateforme</p>
+                    <h1 class="text-3xl font-bold font-poppins text-gray-900 tracking-tight">
+                        {{ current_group == 'staff' ? 'Gestion de l\'Équipe' : 'Annuaire Clients' }}
+                    </h1>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-[0.2em] mt-1.5 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full {{ current_group == 'staff' ? 'bg-indigo-500' : 'bg-emerald-500' }}"></span>
+                        {{ current_group == 'staff' ? 'Staff Technique & Administration' : 'Base de données des investisseurs' }}
+                    </p>
                 </div>
                 <div class="flex items-center gap-3">
-                    <a href="{{ path('admin_user_create') }}" 
+                    <a href="#" 
                        class="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-emerald-600 text-white rounded-xl hover:bg-emerald-700 transition-all shadow-lg shadow-emerald-500/20 text-sm font-bold tracking-wide uppercase">
                         <i class="fas fa-plus"></i>
                         Nouveau
@@ -68,11 +73,16 @@
             <div class="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-xs font-bold text-red-600/60 uppercase tracking-widest mb-1">Admin</p>
-                        <p class="text-3xl font-bold font-poppins text-gray-900">{{ users|filter(u => 'ROLE_ADMIN' in u.roles)|length }}</p>
+                        {% if current_group == 'staff' %}
+                            <p class="text-xs font-bold text-red-600/60 uppercase tracking-widest mb-1">Admins</p>
+                            <p class="text-3xl font-bold font-poppins text-gray-900">{{ users|filter(u => 'ROLE_ADMIN' in u.roles or 'ROLE_SUPER_ADMIN' in u.roles)|length }}</p>
+                        {% else %}
+                            <p class="text-xs font-bold text-amber-600/60 uppercase tracking-widest mb-1">En attente</p>
+                            <p class="text-3xl font-bold font-poppins text-gray-900">{{ users|filter(u => u.verificationStatus == 'En attente')|length }}</p>
+                        {% endif %}
                     </div>
-                    <div class="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center">
-                        <i class="fas fa-crown text-lg"></i>
+                    <div class="w-12 h-12 rounded-2xl {{ current_group == 'staff' ? 'bg-red-50 text-red-600' : 'bg-amber-50 text-amber-600' }} flex items-center justify-center">
+                        <i class="fas {{ current_group == 'staff' ? 'fa-crown' : 'fa-clock' }} text-lg"></i>
                     </div>
                 </div>
             </div>
@@ -93,14 +103,38 @@
         <!-- Table Card -->
         <div class="bg-white rounded-3xl border border-gray-100 overflow-hidden shadow-sm">
             <!-- Table Header -->
-            <div class="px-8 py-6 border-b border-gray-50 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-gray-50/50">
-                <div>
-                    <h3 class="text-lg font-bold font-poppins text-gray-900">Liste des Utilisateurs</h3>
-                    <p class="text-xs font-semibold text-gray-600 uppercase tracking-widest mt-0.5">Registres officiels</p>
-                </div>
-                <div class="relative max-w-xs w-full">
-                    <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-600 text-xs"></i>
-                    <input type="search" placeholder="Rechercher un profil..." class="w-full pl-10 pr-4 py-2 text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all placeholder:text-gray-600 font-medium">
+            <div class="px-8 py-6 border-b border-gray-50 bg-gray-50/50">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                    <div>
+                        <h3 class="text-lg font-bold font-poppins text-gray-900">Liste des Utilisateurs</h3>
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-4 mt-3">
+                            <div class="relative min-w-[240px]">
+                                <select onchange="window.location.href=this.value" 
+                                        class="w-full pl-4 pr-10 py-3 text-[10px] font-black uppercase tracking-[0.15em] bg-white border border-gray-200 rounded-2xl focus:ring-4 focus:ring-emerald-500/5 focus:border-emerald-600 outline-none transition-all appearance-none cursor-pointer shadow-sm hover:border-gray-300">
+                                    <option value="{{ path('admin_users', {group: current_group}) }}" {{ current_filter is empty ? 'selected' : '' }}>Tous les Profils</option>
+                                    <option value="{{ path('admin_users', {filter: 'unverified', group: current_group}) }}" {{ current_filter == 'unverified' ? 'selected' : '' }}>Comptes Non-Vérifiés</option>
+                                    <option value="{{ path('admin_users', {filter: 'pending_activation', group: current_group}) }}" {{ current_filter == 'pending_activation' ? 'selected' : '' }}>En Attente d'Activation</option>
+                                    <option value="{{ path('admin_users', {filter: 'suspended', group: current_group}) }}" {{ current_filter == 'suspended' ? 'selected' : '' }}>Utilisateurs Suspendus</option>
+                                    <option value="{{ path('admin_users', {filter: 'pending_deletion', group: current_group}) }}" {{ current_filter == 'pending_deletion' ? 'selected' : '' }}>En Attente de Suppression</option>
+                                    <option value="{{ path('admin_users', {filter: 'deleted', group: current_group}) }}" {{ current_filter == 'deleted' ? 'selected' : '' }}>Comptes Supprimés</option>
+                                </select>
+                                <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                                    <i class="fas fa-chevron-down text-[10px]"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="relative max-w-xs w-full">
+                        <form action="{{ path('admin_users') }}" method="get">
+                            <input type="hidden" name="group" value="{{ current_group }}">
+                            {% if current_filter %}
+                                <input type="hidden" name="filter" value="{{ current_filter }}">
+                            {% endif %}
+                            <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+                            <input type="search" name="q" value="{{ search_query }}" placeholder="Rechercher par nom, email..." 
+                                   class="w-full pl-10 pr-4 py-2.5 text-sm bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all placeholder:text-gray-400 font-medium shadow-sm hover:border-gray-300">
+                        </form>
+                    </div>
                 </div>
             </div>
 
@@ -161,21 +195,39 @@
                             <!-- Statuts -->
                             <td class="px-8 py-5">
                                 <div class="flex flex-col gap-2">
-                                    <span class="inline-flex items-center w-fit px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider 
-                                        {% if user.isActive %}
-                                            bg-emerald-100 text-emerald-800
-                                        {% else %}
-                                            bg-red-100 text-red-800
-                                        {% endif %}">
-                                        <span class="w-1.5 h-1.5 rounded-full mr-2 {% if user.isActive %}bg-emerald-500 animate-pulse{% else %}bg-red-500{% endif %}"></span>
-                                        {{ user.isActive ? 'Actif' : 'Bloqué' }}
-                                    </span>
+                                    {% if user.isDeleted() %}
+                                        <span class="inline-flex items-center w-fit px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-gray-200 text-gray-700">
+                                            <span class="w-1.5 h-1.5 rounded-full mr-2 bg-gray-500"></span>
+                                            Supprimé
+                                        </span>
+                                    {% elseif user.isPendingDeletion() %}
+                                        <span class="inline-flex items-center w-fit px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-100 text-amber-800 border border-amber-200">
+                                            <span class="w-1.5 h-1.5 rounded-full mr-2 bg-amber-500 animate-pulse"></span>
+                                            En attente suppression
+                                        </span>
+                                        <span class="text-[9px] font-bold text-amber-600 uppercase tracking-tighter">J-{{ user.getDaysUntilDeletion() }}</span>
+                                    {% else %}
+                                        <span class="inline-flex items-center w-fit px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider 
+                                            {% if user.isActive %}
+                                                bg-emerald-100 text-emerald-800
+                                            {% else %}
+                                                bg-red-100 text-red-800
+                                            {% endif %}">
+                                            <span class="w-1.5 h-1.5 rounded-full mr-2 {% if user.isActive %}bg-emerald-500 animate-pulse{% else %}bg-red-500{% endif %}"></span>
+                                            {{ user.isActive ? 'Actif' : 'Suspendu' }}
+                                        </span>
+                                    {% endif %}
                                     
-                                    {% if user.verificationStatut %}
-                                    <span class="inline-flex items-center w-fit px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider text-gray-600 border border-gray-100 bg-white shadow-sm">
-                                        <i class="fas {% if user.verificationStatut == 'Vérifié' %}fa-circle-check text-emerald-500{% elseif user.verificationStatut == 'En attente' %}fa-clock text-amber-500{% else %}fa-circle-xmark text-red-500{% endif %} mr-1.5"></i>
-                                        {{ user.verificationStatut }}
+                                    {% set vStatus = user.verificationStatus %}
+                                    {% if vStatus != 'None' %}
+                                    <span class="inline-flex items-center w-fit px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider 
+                                        {% if vStatus == 'Vérifié' %}text-emerald-700 bg-emerald-50 border-emerald-100{% elseif vStatus == 'En attente' %}text-amber-700 bg-amber-50 border-amber-100{% else %}text-red-700 bg-red-50 border-red-100{% endif %} border shadow-sm transition-all duration-300">
+                                        <i class="fas {% if vStatus == 'Vérifié' %}fa-circle-check{% elseif vStatus == 'En attente' %}fa-clock{% else %}fa-circle-xmark{% endif %} mr-1.5"></i>
+                                        {{ vStatus }}
                                     </span>
+                                    {% if vStatus == 'En attente' %}
+                                    <a href="{{ path('admin_account_activations') }}" class="text-[9px] font-bold text-emerald-600 hover:text-emerald-800 underline uppercase tracking-tighter decoration-emerald-200 underline-offset-2">Traiter le dossier</a>
+                                    {% endif %}
                                     {% endif %}
                                 </div>
                             </td>
@@ -197,29 +249,33 @@
                             <!-- Actions -->
                             <td class="px-8 py-5">
                                 <div class="flex items-center justify-end gap-3">
-                                    <a href="{{ path('admin_users_details', {'id': user.id}) }}" class="w-9 h-9 rounded-xl border border-gray-100 flex items-center justify-center text-gray-600 hover:text-emerald-600 hover:border-emerald-100 hover:bg-emerald-50 transition-all shadow-sm" title="Détails">
-                                        <i class="fas fa-eye text-xs"></i>
-                                    </a>
-                                    <a href="{{ path('admin_users_edit', {'id': user.id}) }}" class="w-9 h-9 rounded-xl border border-gray-100 flex items-center justify-center text-gray-600 hover:text-amber-600 hover:border-amber-100 hover:bg-amber-50 transition-all shadow-sm" title="Modifier">
-                                        <i class="fas fa-edit text-xs"></i>
-                                    </a>
-                                    
-                                    <div class="h-6 w-px bg-gray-100 mx-1"></div>
+                                    {% if not user.isDeleted() %}
+                                        <a href="{{ path('admin_users_details', {'id': user.id}) }}" class="w-9 h-9 rounded-xl border border-gray-100 flex items-center justify-center text-gray-600 hover:text-emerald-600 hover:border-emerald-100 hover:bg-emerald-50 transition-all shadow-sm" title="Détails">
+                                            <i class="fas fa-eye text-xs"></i>
+                                        </a>
+                                        <a href="{{ path('admin_users_edit', {'id': user.id}) }}" class="w-9 h-9 rounded-xl border border-gray-100 flex items-center justify-center text-gray-600 hover:text-amber-600 hover:border-amber-100 hover:bg-amber-50 transition-all shadow-sm" title="Modifier">
+                                            <i class="fas fa-edit text-xs"></i>
+                                        </a>
+                                        
+                                        <div class="h-6 w-px bg-gray-100 mx-1"></div>
 
-                                    {% if user.isActive %}
-                                    <form method="post" action="{{ path('admin_users_desactivate', {'id': user.id}) }}" onsubmit="return confirm('Désactiver cet utilisateur ?')">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('deactivate' ~ user.id) }}">
-                                        <button type="submit" class="w-9 h-9 rounded-xl bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all shadow-sm flex items-center justify-center" title="Bannir">
-                                            <i class="fas fa-ban text-xs"></i>
-                                        </button>
-                                    </form>
+                                        {% if user.isActive %}
+                                        <form method="post" action="{{ path('admin_users_desactivate', {'id': user.id}) }}" onsubmit="return confirm('Suspendre cet utilisateur ?')">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('deactivate' ~ user.id) }}">
+                                            <button type="submit" class="w-9 h-9 rounded-xl bg-red-50 text-red-600 hover:bg-red-600 hover:text-white transition-all shadow-sm flex items-center justify-center" title="Suspendre">
+                                                <i class="fas fa-user-slash text-xs"></i>
+                                            </button>
+                                        </form>
+                                        {% else %}
+                                        <form method="post" action="{{ path('admin_users_activate', {'id': user.id}) }}" onsubmit="return confirm('Réactiver cet utilisateur ?')">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('activate' ~ user.id) }}">
+                                            <button type="submit" class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm flex items-center justify-center" title="Réactiver">
+                                                <i class="fas fa-user-plus text-xs"></i>
+                                            </button>
+                                        </form>
+                                        {% endif %}
                                     {% else %}
-                                    <form method="post" action="{{ path('admin_users_activate', {'id': user.id}) }}" onsubmit="return confirm('Activer cet utilisateur ?')">
-                                        <input type="hidden" name="_token" value="{{ csrf_token('activate' ~ user.id) }}">
-                                        <button type="submit" class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm flex items-center justify-center" title="Débloquer">
-                                            <i class="fas fa-unlock text-xs"></i>
-                                        </button>
-                                    </form>
+                                        <span class="text-[10px] font-bold text-gray-400 uppercase tracking-widest italic">Aucune action</span>
                                     {% endif %}
                                 </div>
                             </td>
@@ -256,12 +312,10 @@
                         </button>
                         
                         {% for page in 1..users.pagination.totalPages %}
-                        <button class="w-9 h-9 rounded-xl text-xs font-bold transition-all
-                            {% if page == users.pagination.currentPage %}
-                                bg-emerald-600 text-white shadow-lg shadow-emerald-500/30
-                            {% else %}
-                                text-gray-600 hover:bg-white hover:border-gray-200 border border-transparent
-                            {% endif %}">
+                        {% set btnClass = page == users.pagination.currentPage 
+                            ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/30' 
+                            : 'text-gray-600 hover:bg-white hover:border-gray-200 border border-transparent' %}
+                        <button class="w-9 h-9 rounded-xl text-xs font-bold transition-all {{ btnClass }}">
                             {{ page }}
                         </button>
                         {% endfor %}
@@ -283,7 +337,7 @@
     
     tr { animation: fadeIn 0.4s ease-out both; }
     {% for i in 1..20 %}
-    tr:nth-child({{ i }}) { animation-delay: {{ i * 0.05 }}s; }
+    tr:nth-child({{ i }}) { animation-delay: 0s; }
     {% endfor %}
 
     @keyframes fadeIn {

@@ -26,7 +26,12 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 class RegistrationController extends AbstractController
 {
     public function __construct(
-        private EmailVerifier $emailVerifier, private EmailService $emailService,private SecurityLogger $securityLogger) {}
+        private EmailVerifier $emailVerifier,
+        private EmailService $emailService,
+        private SecurityLogger $securityLogger,
+        private \App\Service\NotificationService $notificationService,
+        private string $contactEmail
+    ) {}
 
     #[Route('/register', name: 'app_register')]
     public function register(Request $request, UserPasswordHasherInterface $userPasswordHasher, Security $security, EntityManagerInterface $entityManager): Response
@@ -69,19 +74,22 @@ class RegistrationController extends AbstractController
             // Envoyer un email avec le code utilisateur
             $this->emailService->send(
                 $user->getEmail(),
-                'Votre identifiant EFA Smart Finance',
+                'Votre identifiant Efa Smart Finance',
                 $this->renderView('emails/user_uuid.html.twig', [
                     'user' => $user,
                     'uuid' => $user->getUuid(),
                 ])
             );
 
+            // Envoyer une notification de bienvenue in-app
+            $this->notificationService->sendWelcomeNotification($user);
+
             // Envoyer un email de confirmation
             $this->emailVerifier->sendEmailConfirmation(
                 'app_verify_email',
                 $user,
                 (new TemplatedEmail())
-                    ->from(new Address('contact@binajia.org', 'Efa Smart Finance'))
+                    ->from(new Address($this->contactEmail, 'Efa Smart Finance'))
                     ->to((string) $user->getEmail())
                     ->subject('Please Confirm your Email')
                     ->htmlTemplate('emails/confirmation_email.html.twig')

@@ -14,8 +14,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class ContactController extends AbstractController
 {
+    public function __construct(
+        private \App\Service\EmailService $emailService,
+        private string $contactEmail
+    ) {}
+
     #[Route('/contact', name: 'app_contact')]
-    public function index(Request $request, MailerInterface $mailer, NotifierInterface $notifier): Response
+    public function index(Request $request, NotifierInterface $notifier): Response
     {
         $form = $this->createForm(ContactType::class);
         $form->handleRequest($request);
@@ -23,18 +28,17 @@ class ContactController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $data = $form->getData();
             
-            // Envoi de l'email (à configurer avec votre service d'email)
-            $email = (new Email())
-                ->from($data['email'])
-                ->to('contact@efasmartfinance.com')
-                ->subject('Nouveau message de contact: ' . $data['subject'])
-                ->html($this->renderView(
-                    'emails/contact.html.twig',
-                    ['data' => $data]
-                ));
-
             try {
-                $mailer->send($email);
+                // Utilisation de EmailService pour l'envoi
+                $this->emailService->send(
+                    $this->contactEmail,
+                    'Nouveau message de contact: ' . $data['subject'],
+                    $this->renderView(
+                        'emails/contact.html.twig',
+                        ['data' => $data]
+                    ),
+                    $data['email'] // On utilise l'email de l'expéditeur comme 'From'
+                );
                 
                 // Notification de succès
                 $notifier->send(new Notification(

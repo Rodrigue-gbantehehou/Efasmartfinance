@@ -36,6 +36,7 @@ final class PaymentController extends AbstractController
         private KkiaPayService $kkiaPayService,
         private ActivityLogger $activityLogger,
         private EmailService $emailService,
+        private \App\Service\NotificationService $notificationService,
         private TwigEnvironment $twig,
         private LoggerInterface $logger,
         private PdfService $pdfService,
@@ -213,7 +214,7 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
                     'amount' => $payment->getAmount()
                 ]);
                 $tontine->setPaidFees($tontine->getPaidFees() + $payment->getAmount());
-                $tontine->setPaidFees($tontine->getPaidFees() + $payment->getAmount());
+                $tontine->setPaidFeesExternally($tontine->getPaidFeesExternally() + $payment->getAmount());
                 $this->em->persist($tontine);
 
                 // Create PlatformFee record
@@ -241,6 +242,7 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
 
                      // 1. Payer les frais
                      $tontine->setPaidFees($tontine->getPaidFees() + $feeAmount);
+                     $tontine->setPaidFeesExternally($tontine->getPaidFeesExternally() + $feeAmount);
                      
                      // Create PlatformFee record for the fee portion
                      $platformFee = new PlatformFee();
@@ -282,15 +284,22 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
                 'Paiement de ' . $payment->getAmount() . ' FCFA effectué'
             );
 
+            // Notification in-app
+            $this->notificationService->sendPaymentNotification(
+                $user,
+                (float) $payment->getAmount(),
+                $tontine->getName()
+            );
+
             $this->logger->info('Génération de la facture');
 
             // Créer et enregistrer la facture avant de générer le PDF
             $facture = new Facture();
             $facture->setNumero($this->numerotationFactureService->genererNumero());
             $facture->setDateEmission(new \DateTime());
-            $facture->setMontantHT($payment->getAmount() / 1.2); // Exemple avec 20% de TVA
-            $facture->setTva(20.00);
-            $facture->calculerMontantTTC();
+            $facture->setMontantHT((string)$payment->getAmount());
+            $facture->setTva('0.00');
+            $facture->setMontantTTC((string)$payment->getAmount());
             $facture->setStatut('payee');
             $facture->setClient($user);
             
@@ -592,15 +601,12 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
                     ['verification_data' => $verification['data']]
                 ));
 
-                // Créditer la tontine
-                $this->creditTontine($payment);
-                $this->em->flush();
-
-                $this->logger->info('Paiement KkiaPay traité avec succès', [
-                    'payment_id' => $payment->getId(),
-                    'transaction_id' => $transactionId,
-                    'amount' => $paidAmount
-                ]);
+                // Notification in-app
+                $this->notificationService->sendPaymentNotification(
+                    $payment->getUtilisateur(),
+                    (float) $payment->getAmount(),
+                    $payment->getTontine()->getName()
+                );
 
                 return [
                     'success' => true,
@@ -656,59 +662,21 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
 
 
 
-    private function creditTontine(Transaction $payment): void
-    {
-        $tontine = $payment->getTontine();
-        $amount = $payment->getAmount();
-
-        // Calculer le nombre de points
-        $points = floor($amount / $tontine->getAmountPerPoint());
-
-        // Ajouter les points au membre
-        $member = $tontine->getUtilisateur()->filter(function ($member) use ($payment) {
-            return $member->getId() === $payment->getUtilisateur()->getId();
-        })->first();
-
-        if ($member) {
-            $currentPoints = $member->getPaidPoints() ?? 0;
-            $member->setPaidPoints($currentPoints + $points);
-            $member->setLastPaymentDate(new \DateTime());
-
-            // Mettre à jour la progression globale de la tontine
-            $this->updateTontineProgress($tontine);
-        }
-    }
-
-    private function updateTontineProgress(Tontine $tontine): void
-    {
-        $totalPaidPoints = 0;
-        $totalMembers = $tontine->getUtilisateur()->count();
-        $pointsPerMember = $tontine->getTotalPoints();
-
-        foreach ($tontine->getUtilisateur() as $member) {
-            $totalPaidPoints += $member->getPaidPoints() ?? 0;
-        }
-
-        $totalPossiblePoints = $totalMembers * $pointsPerMember;
-        $progress = $totalPossiblePoints > 0 ? ($totalPaidPoints / $totalPossiblePoints) * 100 : 0;
-    }
+    // Supprimé: creditTontine et updateTontineProgress sont gérés par Tontine::applyPayment
 
     #[Route('/webhook/{method}', name: 'app_payment_webhook', methods: ['POST'])]
     public function handleWebhook(string $method, Request $request): JsonResponse
     {
-        // Pour les webhooks (PayPal, FedaPay webhooks, etc.)
+        // Pour les webhooks KkiaPay uniquement pour le moment
         $payload = $request->getContent();
         $headers = $request->headers->all();
 
         try {
-            $webhookService = match ($method) {
-                'paypal' => $this->payPalService,
-                'fedapay' => $this->fedaPayService,
-                'kkiapay' => $this->kkiaPayService,
-                default => throw new \Exception('Méthode non supportée')
-            };
+            if ($method !== 'kkiapay') {
+                throw new \Exception('Méthode non supportée');
+            }
 
-            $result = $webhookService->handleWebhook($payload, $headers);
+            $result = $this->kkiaPayService->handleWebhook($payload, $headers);
 
             return new JsonResponse([
                 'success' => $result['success'],
@@ -843,6 +811,13 @@ public function verifyPayment(Request $request, EntityManagerInterface $em): Jso
                 $payment->setExternalReference($transactionId);
                 $payment->setCreatedAt(new \DateTimeImmutable());
                 $this->em->flush();
+
+                // Notification in-app
+                $this->notificationService->sendPaymentNotification(
+                    $payment->getUtilisateur(),
+                    (float) $payment->getAmount(),
+                    $payment->getTontine()->getName()
+                );
 
                 return $this->json([
                     'success' => true,

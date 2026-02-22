@@ -73,10 +73,10 @@
             <div class="space-y-3">
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
                     {% if app.user %}
-                    {% if is_granted('ROLE_ADMIN') %}
+                    {% if is_granted('ROLE_SUPPORT') or is_granted('ROLE_MANAGER') %}
                     <a href="{{ path('admin_dashboard') }}"
                         class="inline-flex items-center justify-center px-6 py-3 rounded-xl bg-green-700 text-white font-semibold shadow-lg shadow-green-200 hover:bg-green-800 hover:shadow-green-300 transition-all duration-300 transform hover:-translate-y-0.5">
-                        <i class="fas fa-tachometer-alt mr-2"></i> Dashboard
+                        <i class="fas fa-tachometer-alt mr-2"></i> Dashboard Admin
                     </a>
                     {% elseif is_granted('ROLE_USER') %}
                     <a href="{{ path('app_dashboard') }}"

@@ -1,136 +1,304 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Créer un Broadcast{% endblock %}
+{% block title %}Créer un nouveau Broadcast{% endblock %}
 
 {% block contentadmin %}
-<div class="min-h-screen bg-green-50 font-poppins p-8">
-    <div class="max-w-4xl mx-auto">
+<div class="min-h-screen bg-slate-50 font-poppins text-slate-900 pb-12">
+    <div class="max-w-4xl mx-auto px-4 py-8 sm:px-6">
         
-        {# Header #}
+        {# Breadcrumbs #}
+        <nav class="flex mb-8" aria-label="Breadcrumb">
+            <ol class="flex items-center space-x-2">
+                <li>
+                    <a href="{{ path('admin_broadcast') }}" class="text-sm font-medium text-slate-500 hover:text-emerald-600 transition-colors">
+                        Broadcasts
+                    </a>
+                </li>
+                <li class="flex items-center space-x-2">
+                    <svg class="h-5 w-5 text-slate-300" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="text-sm font-semibold text-slate-900">Nouveau message</span>
+                </li>
+            </ol>
+        </nav>
+
         <div class="mb-8">
-            <a href="{{ path('admin_broadcast') }}" class="inline-flex items-center gap-2 text-green-600 hover:text-green-700 font-semibold mb-4">
-                ← Retour aux broadcasts
-            </a>
-            <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-green-800 mb-2">
-                ✉️ Nouveau Broadcast
-            </h1>
-            <p class="text-slate-600 text-lg">Créez et envoyez un message groupé</p>
+            <h1 class="text-2xl font-bold text-slate-900 sm:text-3xl">Composer un Broadcast</h1>
+            <p class="mt-2 text-sm text-slate-500">Préparez votre communication et choisissez vos canaux de diffusion.</p>
         </div>
 
-        {# Form #}
-        <form method="post" class="bg-white rounded-3xl p-8 shadow-lg border-2 border-slate-100">
-            <div class="space-y-6">
+        <form method="post">
+            <div class="space-y-8">
                 
-                {# Title #}
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Titre du message *</label>
-                    <input type="text" name="title" required 
-                           class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none"
-                           placeholder="Ex: Nouvelle fonctionnalité disponible">
-                </div>
+                {# Main Content Card #}
+                <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden">
+                    <div class="p-6 sm:p-8 space-y-6">
+                        <h2 class="text-lg font-semibold text-slate-900 border-b border-slate-100 pb-4">Configuration du message</h2>
+                        
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Titre du broadcast</label>
+                                <input type="text" name="title" required 
+                                       class="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all sm:text-sm"
+                                       placeholder="Ex: Mise à jour des conditions d'utilisation">
+                            </div>
 
-                {# Content #}
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Contenu du message *</label>
-                    <textarea name="content" required rows="10"
-                              class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none"
-                              placeholder="Rédigez votre message ici..."></textarea>
-                    <p class="text-sm text-slate-500 mt-2">💡 Vous pouvez utiliser du HTML pour formater votre message</p>
-                </div>
-
-                {# Type #}
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Canal de diffusion *</label>
-                    <select name="type" class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none">
-                        <option value="email">📧 Email uniquement</option>
-                        <option value="notification">🔔 Notification uniquement</option>
-                        <option value="both">📧 + 🔔 Email et Notification</option>
-                    </select>
-                </div>
-
-                {# Target Audience #}
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Audience cible *</label>
-                    <select name="target_audience" id="targetAudience" 
-                            class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none">
-                        <option value="all">👥 Tous les utilisateurs</option>
-                        <option value="verified">✓ Utilisateurs vérifiés</option>
-                        <option value="unverified">⏳ Utilisateurs non vérifiés</option>
-                        <option value="role_support">🎧 Support uniquement</option>
-                        <option value="role_finance">💰 Finance uniquement</option>
-                        <option value="role_admin">👑 Admins uniquement</option>
-                    </select>
-                    <div id="audiencePreview" class="mt-3 p-3 bg-green-50 rounded-lg text-sm text-green-700 font-semibold">
-                        📊 Estimation: Chargement...
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Contenu du message</label>
+                                <textarea name="content" required rows="10"
+                                          class="block w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all sm:text-sm"
+                                          placeholder="Rédigez votre message ici. Vous pouvez utiliser des balises HTML."></textarea>
+                                <p class="mt-2 text-xs text-slate-400 flex items-center gap-1.5">
+                                    <svg class="h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    Le format HTML est supporté pour la mise en forme.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {# Scheduled Date (Optional) #}
-                <div>
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Planifier l'envoi (optionnel)</label>
-                    <input type="datetime-local" name="scheduled_date"
-                           class="w-full px-4 py-3 border-2 border-slate-200 rounded-xl focus:border-green-500 focus:outline-none">
-                    <p class="text-sm text-slate-500 mt-2">⏰ Laissez vide pour enregistrer comme brouillon</p>
-                </div>
+                {# Settings Card #}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white shadow-sm border border-slate-200 rounded-xl p-6 sm:p-8">
+                        <h3 class="text-base font-semibold text-slate-900 mb-6">Paramètres de diffusion</h3>
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Canal de diffusion</label>
+                                <select name="type" class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all sm:text-sm appearance-none cursor-pointer">
+                                    <option value="email">Email uniquement</option>
+                                    <option value="notification">Notification uniquement</option>
+                                    <option value="both">Email et Notification</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Audience cible</label>
+                                <select name="target_audience" id="targetAudience" 
+                                        class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all sm:text-sm appearance-none cursor-pointer">
+                                    <option value="all">Tous les utilisateurs</option>
+                                    <option value="verified">Utilisateurs vérifiés uniquement</option>
+                                    <option value="unverified">Utilisateurs non vérifiés uniquement</option>
+                                    <option value="single_user">Utilisateur spécifique (Recherche)</option>
+                                    <option value="role_support">Équipe Support</option>
+                                    <option value="role_finance">Équipe Finance</option>
+                                    <option value="role_admin">Administrateurs</option>
+                                </select>
+                            </div>
 
-                {# Preview Box #}
-                <div class="border-2 border-green-200 rounded-2xl p-6 bg-green-50/50">
-                    <h3 class="text-lg font-bold text-slate-800 mb-3">👁️ Aperçu du message</h3>
-                    <div class="bg-white rounded-xl p-6 border-2 border-slate-100">
-                        <div id="previewTitle" class="text-xl font-bold text-slate-800 mb-3">Titre du message</div>
-                        <div id="previewContent" class="text-slate-600">Contenu du message...</div>
+                            {# Specific User Selection (Hidden by default) #}
+                            <div id="recipientContainer" class="hidden animate-in fade-in slide-in-from-top-2 duration-300">
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Rechercher l'utilisateur (Email, Nom ou ID)</label>
+                                <div class="relative">
+                                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                        <svg class="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                    </div>
+                                    <input type="text" id="userSearchInput" 
+                                           class="block w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all sm:text-sm"
+                                           placeholder="Tapez au moins 2 caractères...">
+                                    <input type="hidden" name="recipient_id" id="recipientId">
+                                    
+                                    {# Search Results Dropdown #}
+                                    <div id="searchResults" class="hidden absolute z-10 mt-1 w-full bg-white shadow-xl border border-slate-200 rounded-lg overflow-hidden max-h-60 overflow-y-auto">
+                                        {# Results injected via JS #}
+                                    </div>
+                                </div>
+                                <div id="selectedUserBadge" class="hidden mt-3 p-2.5 bg-emerald-50 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-100 flex items-center justify-between">
+                                    <span id="selectedUserName">Aucun utilisateur sélectionné</span>
+                                    <button type="button" id="clearRecipient" class="text-emerald-900 hover:text-rose-600 transition-colors">
+                                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div id="audiencePreview" class="mt-3 px-3 py-2 bg-emerald-50 text-emerald-700 text-xs font-semibold rounded-md border border-emerald-100 italic">
+                                Estimation : Chargement...
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white shadow-sm border border-slate-200 rounded-xl p-6 sm:p-8">
+                        <h3 class="text-base font-semibold text-slate-900 mb-6">Planification</h3>
+                        <div class="space-y-5">
+                            <div>
+                                <label class="block text-sm font-semibold text-slate-700 mb-2">Date d'envoi (optionnel)</label>
+                                <input type="datetime-local" name="scheduled_date"
+                                       class="block w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all sm:text-sm">
+                                <p class="mt-2 text-xs text-slate-400">Si non renseigné, le message sera enregistré comme brouillon.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {# Actions #}
-                <div class="flex gap-4 pt-4">
-                    <button type="submit" 
-                            class="flex-1 px-6 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors font-bold">
-                        💾 Enregistrer le Broadcast
-                    </button>
+                {# Real-time Preview Card #}
+                <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden">
+                    <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+                        <h3 class="text-sm font-bold text-slate-700 uppercase tracking-wider">Aperçu en temps réel</h3>
+                        <div class="flex gap-1.5">
+                            <div class="w-2.5 h-2.5 rounded-full bg-rose-300"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-amber-300"></div>
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-300"></div>
+                        </div>
+                    </div>
+                    <div class="p-6 sm:p-10 bg-slate-100 min-h-[300px] flex items-start justify-center">
+                        <div class="w-full max-w-lg bg-white rounded-lg shadow-xl border border-slate-200 overflow-hidden">
+                            <div class="px-6 py-4 border-b border-slate-100 bg-white">
+                                <div id="previewTitle" class="text-lg font-bold text-slate-900 break-words line-clamp-2">Titre du broadcast</div>
+                                <div class="mt-1 flex items-center gap-2 text-[10px] text-slate-400 uppercase tracking-widest font-bold">
+                                    <span>De : Admin Support</span>
+                                    <span>•</span>
+                                    <span id="previewDate">Aujourd'hui</span>
+                                </div>
+                            </div>
+                            <div class="p-8">
+                                <div id="previewContent" class="text-slate-600 text-sm leading-relaxed whitespace-pre-wrap max-h-[400px] overflow-y-auto custom-scrollbar">Contenu du message ici...</div>
+                            </div>
+                            <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 text-[10px] text-slate-400 italic text-center">
+                                Efa Smart Finance - Communication Officielle
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Form Actions #}
+                <div class="flex items-center justify-end gap-4 pt-4 border-t border-slate-200">
                     <a href="{{ path('admin_broadcast') }}" 
-                       class="px-6 py-3 bg-slate-200 text-slate-700 rounded-xl hover:bg-slate-300 transition-colors font-bold">
+                       class="px-6 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">
                         Annuler
                     </a>
+                    <button type="submit" 
+                            class="px-8 py-2.5 bg-emerald-600 text-white text-sm font-bold rounded-lg shadow-sm hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-all">
+                        Enregistrer le Broadcast
+                    </button>
                 </div>
 
             </div>
         </form>
-
     </div>
 </div>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
     .font-poppins { font-family: 'Poppins', sans-serif; }
+    
+    /* Custom Scrollbar for Preview */
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
 </style>
 
 <script>
 // Live preview
 document.querySelector('input[name="title"]')?.addEventListener('input', function() {
-    document.getElementById('previewTitle').textContent = this.value || 'Titre du message';
+    document.getElementById('previewTitle').textContent = this.value || 'Titre du broadcast';
 });
 
 document.querySelector('textarea[name="content"]')?.addEventListener('input', function() {
-    document.getElementById('previewContent').innerHTML = this.value || 'Contenu du message...';
+    document.getElementById('previewContent').innerHTML = this.value.replace(/\n/g, '<br>') || 'Contenu du message ici...';
 });
 
-// Audience estimation (mock - à remplacer par un appel AJAX réel)
+// Update preview date
+const now = new Date();
+document.getElementById('previewDate').textContent = now.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
+
+// Mock Audience estimation
 const audienceCounts = {
-    'all': 'Tous les utilisateurs (~500)',
-    'verified': 'Utilisateurs vérifiés (~350)',
-    'unverified': 'Utilisateurs non vérifiés (~150)',
-    'role_support': 'Support (~5)',
-    'role_finance': 'Finance (~10)',
-    'role_admin': 'Admins (~3)'
+    'all': 'Environ 500 utilisateurs au total',
+    'verified': 'Environ 350 comptes vérifiés',
+    'unverified': 'Environ 150 comptes en attente',
+    'single_user': 'Ciblage individuel précis',
+    'role_support': 'Groupe Support (5 membres)',
+    'role_finance': 'Groupe Finance (10 membres)',
+    'role_admin': 'Administrateurs (3 membres)'
 };
 
-document.getElementById('targetAudience')?.addEventListener('change', function() {
+const targetSelect = document.getElementById('targetAudience');
+const recipientContainer = document.getElementById('recipientContainer');
+const userSearchInput = document.getElementById('userSearchInput');
+const searchResults = document.getElementById('searchResults');
+const recipientIdInput = document.getElementById('recipientId');
+const selectedUserBadge = document.getElementById('selectedUserBadge');
+const selectedUserName = document.getElementById('selectedUserName');
+const clearRecipient = document.getElementById('clearRecipient');
+
+targetSelect?.addEventListener('change', function() {
     const preview = document.getElementById('audiencePreview');
-    preview.textContent = '📊 Estimation: ' + (audienceCounts[this.value] || 'Chargement...');
+    preview.textContent = 'Estimation : ' + (audienceCounts[this.value] || 'Chargement...');
+    
+    // Toggle recipient search field
+    if (this.value === 'single_user') {
+        recipientContainer.classList.remove('hidden');
+    } else {
+        recipientContainer.classList.add('hidden');
+        resetRecipient();
+    }
+});
+
+// User Search Logic
+let searchTimeout;
+userSearchInput?.addEventListener('input', function() {
+    const q = this.value;
+    clearTimeout(searchTimeout);
+    
+    if (q.length < 2) {
+        searchResults.classList.add('hidden');
+        return;
+    }
+
+    searchTimeout = setTimeout(function() {
+        fetch(`{{ path('admin_broadcast_search_users') }}?q=${q}`)
+            .then(response => response.json())
+            .then(data => {
+                searchResults.innerHTML = '';
+                if (data.length > 0) {
+                    data.forEach(user => {
+                        const div = document.createElement('div');
+                        div.className = 'px-4 py-3 hover:bg-emerald-50 cursor-pointer text-sm text-slate-700 border-b border-slate-50 last:border-0 transition-colors';
+                        div.textContent = user.text;
+                        div.onclick = function() {
+                            selectUser(user.id, user.text);
+                        };
+                        searchResults.appendChild(div);
+                    });
+                    searchResults.classList.remove('hidden');
+                } else {
+                    searchResults.innerHTML = '<div class="px-4 py-3 text-sm text-slate-500">Aucun résultat</div>';
+                    searchResults.classList.remove('hidden');
+                }
+            });
+    }, 300);
+});
+
+function selectUser(id, name) {
+    recipientIdInput.value = id;
+    selectedUserName.textContent = name;
+    selectedUserBadge.classList.remove('hidden');
+    searchResults.classList.add('hidden');
+    userSearchInput.value = '';
+    userSearchInput.classList.add('hidden');
+}
+
+function resetRecipient() {
+    recipientIdInput.value = '';
+    selectedUserBadge.classList.add('hidden');
+    userSearchInput.classList.remove('hidden');
+    userSearchInput.value = '';
+}
+
+clearRecipient?.addEventListener('click', resetRecipient);
+
+// Close search results on click outside
+document.addEventListener('click', function(e) {
+    if (!userSearchInput?.contains(e.target) && !searchResults?.contains(e.target)) {
+        searchResults?.classList.add('hidden');
+    }
 });
 
 // Initialize
-document.getElementById('targetAudience')?.dispatchEvent(new Event('change'));
+targetSelect?.dispatchEvent(new Event('change'));
 </script>
 {% endblock %}

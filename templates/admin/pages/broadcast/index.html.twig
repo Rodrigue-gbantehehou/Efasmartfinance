@@ -1,108 +1,169 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Broadcast Messages{% endblock %}
+{% block title %}Gestion des Broadcasts{% endblock %}
 
 {% block contentadmin %}
-<div class="min-h-screen bg-green-50 font-poppins p-8">
-    <div class="max-w-7xl mx-auto">
+<div class="min-h-screen bg-slate-50 font-poppins text-slate-900">
+    <div class="max-w-7xl mx-auto px-4 py-8 sm:px-6 lg:px-8">
         
-        {# Header #}
-        <div class="mb-8 flex justify-between items-center">
-            <div>
-                <h1 class="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-green-800 mb-2">
-                    📢 Broadcast Messages
+        {# Page Header #}
+        <div class="mb-8 md:flex md:items-center md:justify-between">
+            <div class="flex-1 min-w-0">
+                <h1 class="text-2xl font-bold leading-7 text-slate-900 sm:text-3xl sm:truncate">
+                    Messages Broadcast
                 </h1>
-                <p class="text-slate-600 text-lg">Envoyez des messages groupés à vos utilisateurs</p>
+                <p class="mt-1 text-sm text-slate-500">
+                    Gérez et envoyez des communications groupées à vos utilisateurs.
+                </p>
             </div>
-            <a href="{{ path('admin_broadcast_create') }}" class="px-6 py-3 bg-green-500 text-white rounded-xl hover:bg-green-600 transition-colors font-semibold inline-flex items-center gap-2">
-                ✉️ Nouveau Broadcast
-            </a>
+            <div class="mt-4 flex md:mt-0 md:ml-4">
+                <a href="{{ path('admin_broadcast_create') }}" 
+                   class="inline-flex items-center px-4 py-2 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors">
+                    <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    Nouveau Broadcast
+                </a>
+            </div>
         </div>
 
-        {# Broadcasts List #}
-        <div class="bg-white rounded-3xl p-8 shadow-lg border-2 border-slate-100">
-            <h2 class="text-2xl font-bold text-slate-800 mb-6">📋 Historique des Broadcasts</h2>
-            
-            <div class="space-y-4">
-                {% for broadcast in broadcasts %}
-                    <div class="border-2 border-slate-100 rounded-2xl p-6 hover:border-green-200 transition-all">
-                        <div class="flex justify-between items-start mb-4">
-                            <div class="flex-1">
-                                <h3 class="text-xl font-bold text-slate-800 mb-2">{{ broadcast.title }}</h3>
-                                <div class="flex gap-3 text-sm text-slate-600">
-                                    <span>📅 {{ broadcast.createdAt|date('d/m/Y H:i') }}</span>
-                                    <span>👤 {{ broadcast.createdBy ? broadcast.createdBy.firstname ~ ' ' ~ broadcast.createdBy.lastname : 'N/A' }}</span>
-                                    <span>🎯 {{ broadcast.targetAudience|replace({'_': ' '})|title }}</span>
-                                </div>
-                            </div>
-                            <div class="flex gap-2">
-                                {% if broadcast.status == 'draft' %}
-                                    <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-semibold">📝 Brouillon</span>
-                                {% elseif broadcast.status == 'scheduled' %}
-                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">⏰ Planifié</span>
-                                {% elseif broadcast.status == 'sent' %}
-                                    <span class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">✓ Envoyé</span>
-                                {% else %}
-                                    <span class="px-3 py-1 bg-red-100 text-red-700 rounded-full text-sm font-semibold">❌ Échec</span>
-                                {% endif %}
-                            </div>
-                        </div>
+        {# Filters/Search Placeholder if needed #}
+        {# <div class="mb-6 bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex gap-4"> ... </div> #}
 
-                        <div class="mb-4 p-4 bg-slate-50 rounded-xl">
-                            <p class="text-slate-700 line-clamp-2">{{ broadcast.content|striptags|slice(0, 200) }}...</p>
-                        </div>
+        {# Broadcasts List - Professional Table #}
+        <div class="bg-white shadow-sm border border-slate-200 rounded-xl overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-slate-200">
+                    <thead class="bg-slate-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                Message
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                Statut
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                Audience
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                Performance
+                            </th>
+                            <th scope="col" class="px-6 py-4 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                                Actions
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-slate-200">
+                        {% for broadcast in broadcasts %}
+                            <tr class="hover:bg-slate-50 transition-colors">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex flex-col">
+                                        <div class="text-sm font-bold text-slate-900 mb-1 truncate max-w-xs sm:max-w-md">
+                                            {{ broadcast.title }}
+                                        </div>
+                                        <div class="text-xs text-slate-500 flex items-center gap-2">
+                                            <span>{{ broadcast.createdAt|date('d M Y, H:i') }}</span>
+                                            <span class="text-slate-300">•</span>
+                                            <span>{{ broadcast.createdBy ? broadcast.createdBy.firstname ~ ' ' ~ broadcast.createdBy.lastname : 'System' }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    {% if broadcast.status == 'draft' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200">
+                                            Brouillon
+                                        </span>
+                                    {% elseif broadcast.status == 'scheduled' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200">
+                                            Planifié
+                                        </span>
+                                    {% elseif broadcast.status == 'sent' %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 border border-emerald-200">
+                                            Envoyé
+                                        </span>
+                                    {% else %}
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-rose-100 text-rose-800 border border-rose-200">
+                                            Échec
+                                        </span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                                    {{ broadcast.targetAudience|replace({'_': ' '})|title }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    {% if broadcast.stats %}
+                                        <div class="flex items-center gap-3">
+                                            <div class="text-xs">
+                                                <span class="text-emerald-600 font-bold">{{ broadcast.stats.sent ?? 0 }}</span>
+                                                <span class="text-slate-400">/</span>
+                                                <span class="text-slate-600">{{ broadcast.stats.total_recipients ?? 0 }}</span>
+                                            </div>
+                                            {% if broadcast.stats.total_recipients > 0 %}
+                                                <div class="w-16 bg-slate-100 rounded-full h-1.5 hidden sm:block">
+                                                    <div class="bg-emerald-500 h-1.5 rounded-full" style="width: {{ (broadcast.stats.sent / broadcast.stats.total_recipients * 100)|round }}%"></div>
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    {% else %}
+                                        <span class="text-xs text-slate-400">—</span>
+                                    {% endif %}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="flex justify-end gap-3">
+                                        <a href="{{ path('admin_broadcast_show', {id: broadcast.id}) }}" 
+                                           class="text-emerald-600 hover:text-emerald-900 transition-colors" title="Voir les détails">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                            </svg>
+                                        </a>
 
-                        {% if broadcast.stats %}
-                            <div class="flex gap-4 mb-4 text-sm">
-                                <div class="px-3 py-1 bg-emerald-50 text-emerald-700 rounded-lg">
-                                    ✓ {{ broadcast.stats.sent ?? 0 }} envoyés
-                                </div>
-                                <div class="px-3 py-1 bg-red-50 text-red-700 rounded-lg">
-                                    ❌ {{ broadcast.stats.failed ?? 0 }} échecs
-                                </div>
-                            </div>
-                        {% endif %}
+                                        {% if broadcast.status == 'draft' %}
+                                            <form method="post" action="{{ path('admin_broadcast_send', {id: broadcast.id}) }}" class="inline">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('send' ~ broadcast.id) }}">
+                                                <button type="submit" 
+                                                        onclick="return confirm('Envoyer ce broadcast ?')"
+                                                        class="text-blue-600 hover:text-blue-900 transition-colors" title="Envoyer">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                                                    </svg>
+                                                </button>
+                                            </form>
+                                        {% endif %}
 
-                        <div class="flex gap-2">
-                            <a href="{{ path('admin_broadcast_show', {id: broadcast.id}) }}" 
-                               class="px-4 py-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 transition-colors font-semibold text-sm">
-                                👁️ Voir
-                            </a>
-                            
-                            {% if broadcast.status == 'draft' %}
-                                <form method="post" action="{{ path('admin_broadcast_send', {id: broadcast.id}) }}" class="inline">
-                                    <input type="hidden" name="_token" value="{{ csrf_token('send' ~ broadcast.id) }}">
-                                    <button type="submit" 
-                                            onclick="return confirm('Voulez-vous vraiment envoyer ce broadcast ?')"
-                                            class="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors font-semibold text-sm">
-                                        📤 Envoyer
-                                    </button>
-                                </form>
-                            {% endif %}
-
-                            <form method="post" action="{{ path('admin_broadcast_delete', {id: broadcast.id}) }}" class="inline">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ broadcast.id) }}">
-                                <button type="submit" 
-                                        onclick="return confirm('Voulez-vous vraiment supprimer ce broadcast ?')"
-                                        class="px-4 py-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors font-semibold text-sm">
-                                    🗑️ Supprimer
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                {% else %}
-                    <div class="text-center py-12 text-slate-400">
-                        Aucun broadcast créé pour le moment
-                    </div>
-                {% endfor %}
+                                        <form method="post" action="{{ path('admin_broadcast_delete', {id: broadcast.id}) }}" class="inline">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ broadcast.id) }}">
+                                            <button type="submit" 
+                                                    onclick="return confirm('Supprimer ce broadcast ?')"
+                                                    class="text-rose-600 hover:text-rose-900 transition-colors" title="Supprimer">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% else %}
+                            <tr>
+                                <td colspan="5" class="px-6 py-12 text-center text-slate-500 italic">
+                                    Aucun message broadcast trouvé.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
+            
+            {# Pagination Placeholder #}
+            {# <div class="bg-white px-6 py-4 border-t border-slate-200"> ... </div> #}
         </div>
 
     </div>
 </div>
 
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
     .font-poppins { font-family: 'Poppins', sans-serif; }
 </style>
 {% endblock %}

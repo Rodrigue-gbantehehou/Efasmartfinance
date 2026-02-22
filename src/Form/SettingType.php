@@ -18,7 +18,7 @@ class SettingType extends AbstractType
                 'label' => 'Nom du site',
                 'required' => true,
                 'attr' => [
-                    'placeholder' => 'EFA SMART FINANCE'
+                    'placeholder' => 'Efa Smart Finance'
                 ]
             ])
             ->add('contact_email', TextType::class, [

@@ -1,32 +1,29 @@
 {% extends 'emails/base.html.twig' %}
 
-{% block email_title %}Confirmez votre adresse email{% endblock %}
-
 {% block content %}
-    <h2 style="color: #111827; margin-top: 0; margin-bottom: 20px;">Confirmation de votre adresse email</h2>
-    
-    <p>Bonjour,</p>
-    
-    <p>Merci de vous être inscrit(e) sur EFA Smart Finance. Pour finaliser votre inscription, veuillez confirmer votre adresse email en cliquant sur le bouton ci-dessous :</p>
-    
-    <div style="text-align: center; margin: 30px 0;">
-        <a href="{{ signedUrl|raw }}" style="display: inline-block; padding: 12px 24px; background-color: #008040; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: bold;">
-            Confirmer mon email
-        </a>
-    </div>
-    
-    <p style="color: #6b7280; font-size: 14px; text-align: center;">
-        Ce lien de confirmation expirera dans <strong>{{ expiresAtMessageKey|trans(expiresAtMessageData, 'VerifyEmailBundle') }}</strong>.
+<h1 class="brand-green">Bienvenue chez Efa Smart Finance !</h1>
+
+<p>Merci de vous être inscrit(e). Pour finaliser la création de votre compte et commencer votre expérience de tontine
+    digitale, veuillez confirmer votre adresse email :</p>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{ signedUrl|raw }}" class="button">Confirmer mon adresse email</a>
+</div>
+
+<p
+    style="color: #64748b; font-size: 14px; text-align: center; background-color: #f8fafc; padding: 15px; border-radius: 8px;">
+    Ce lien de confirmation expirera dans <strong class="brand-gold">{{ expiresAtMessageKey|trans(expiresAtMessageData,
+        'VerifyEmailBundle') }}</strong>.
+</p>
+
+<div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #f1f5f9;">
+    <p style="margin: 0; color: #94a3b8; font-size: 13px;">
+        Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet email en toute sécurité.
     </p>
-    
-    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
-        <p style="margin: 5px 0; color: #6b7280; font-size: 14px;">
-            Si vous n'êtes pas à l'origine de cette demande, vous pouvez ignorer cet email en toute sécurité.
-        </p>
-    </div>
-    
-    <p style="margin-top: 25px;">
-        Cordialement,<br>
-        <strong>L'équipe EFA Smart Finance</strong>
-    </p>
+</div>
+
+<p style="margin-top: 25px;">
+    Cordialement,<br>
+    <strong>L'équipe Efa Smart Finance</strong>
+</p>
 {% endblock %}

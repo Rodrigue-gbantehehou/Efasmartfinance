@@ -7,7 +7,7 @@
             <!-- Logo et marque -->
             <a href="{{ path('app_home') }}" >
                 <div class="relative">
-                    <img src="{{ asset('/images/logovert.png') }}" alt="Logo EFA Smart Finance" class="h-20" />
+                    <img src="{{ asset('/images/logovert.png') }}" alt="Logo Efa Smart Finance" class="h-20" />
                 </div>
               
             </a>
@@ -119,7 +119,7 @@
                 <a href="{{ path('app_home') }}" class="flex items-center space-x-3 group" onclick="closeMobileMenu()">
                     <div class="relative p-1">
                         <img src="{{ asset('images/logovert.png') }}" 
-                             alt="Logo EFA Smart Finance" 
+                             alt="Logo Efa Smart Finance" 
                              class="h-16 brightness-0 invert">
                     </div>
                 </a>
@@ -165,19 +165,22 @@
             </a>
         
             <!-- Sécurité -->
-            <a href="{{ path('app_faq') }}" 
+             <a href="{{ app.user ? path('app_dashboard') : path('app_login') }}" 
                class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-white/10 transition-all duration-300"
                onclick="closeMobileMenu()">
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                        <i class="fas fa-question-circle text-white"></i>
+                        <i class="fas fa-user text-white"></i>
                     </div>
                     <div>
-                        <span class="font-semibold text-white block">FAQ</span>
+                        <span class="font-semibold text-white block">
+                            {% if app.user %}Mon compte{% else %}Connexion{% endif %}
+                        </span>
                     </div>
                 </div>
-                <i class="fas fa-chevron-right text-white/50 text-sm"></i>
+                <i class="fas fa-arrow-right text-white/50 text-sm"></i>
             </a>
+           
 
           
                <!-- À propos -->
@@ -208,22 +211,20 @@
                 </div>
                 <i class="fas fa-chevron-right text-white/50 text-sm"></i>
             </a>
-
-            <a href="{{ app.user ? path('app_dashboard') : path('app_login') }}" 
+ <a href="{{ path('app_faq') }}" 
                class="group flex items-center justify-between p-3 sm:p-4 rounded-xl hover:bg-white/10 transition-all duration-300"
                onclick="closeMobileMenu()">
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
-                        <i class="fas fa-user text-white"></i>
+                        <i class="fas fa-question-circle text-white"></i>
                     </div>
                     <div>
-                        <span class="font-semibold text-white block">
-                            {% if app.user %}Mon compte{% else %}Connexion{% endif %}
-                        </span>
+                        <span class="font-semibold text-white block">FAQ</span>
                     </div>
                 </div>
-                <i class="fas fa-arrow-right text-white/50 text-sm"></i>
+                <i class="fas fa-chevron-right text-white/50 text-sm"></i>
             </a>
+           
           
              <!-- admin -->
             {% if app.user %}
@@ -274,7 +275,7 @@
         <!-- Footer du menu -->
         <div class="p-4 sm:p-6 border-t border-white/10 bg-green-800">
             <div class="text-center text-white/50 text-xs sm:text-sm">
-                <p class="mb-2">© <span id="year">{{ "now"|date("Y") }}</span> EFA Smart Finance</p>
+                <p class="mb-2">© <span id="year">{{ "now"|date("Y") }}</span> Efa Smart Finance</p>
                 <p>Tous droits réservés</p>
             </div>
         </div>

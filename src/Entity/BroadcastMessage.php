@@ -41,6 +41,10 @@ class BroadcastMessage
     #[ORM\Column(type: 'json', nullable: true)]
     private ?array $stats = null;
 
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $recipient = null;
+
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
@@ -156,6 +160,17 @@ class BroadcastMessage
     public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
+    }
+
+    public function getRecipient(): ?User
+    {
+        return $this->recipient;
+    }
+
+    public function setRecipient(?User $recipient): static
+    {
+        $this->recipient = $recipient;
+        return $this;
     }
 
     public function setCreatedAt(\DateTimeImmutable $createdAt): static

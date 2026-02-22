@@ -3,7 +3,7 @@
 {% block title %}Détails de la demande d'activation - {{ user.firstname }} {{ user.lastname }}{% endblock %}
 
 {% block contentadmin %}
-    <div class="container mx-auto px-4 py-6">
+    <div class=" mx-auto px-4 py-4">
         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
             <h1 class="text-2xl font-semibold text-gray-800 mb-4 md:mb-0">Détails de la demande d'activation</h1>
             <a href="{{ path('admin_account_activations') }}" class="flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
@@ -36,16 +36,16 @@
                                 </div>
                                 <div class="mb-3">
                                     <p class="text-sm font-medium text-gray-600">Date de la demande</p>
-                                    <p class="text-gray-800">{{ user.verificationSubmittedAt|date('d/m/Y H:i') }}</p>
+                                    <p class="text-gray-800">{{ verification.submittedAt|date('d/m/Y H:i') }}</p>
                                 </div>
                             </div>
                         </div>
 
-                        {% if user.identityDocument or user.documentFront or user.documentBack or user.selfie %}
+                        {% if verification.identityData or verification.documentFront or verification.selfie %}
                         <div class="mb-6">
                             <h3 class="text-md font-semibold text-green-600 mb-4">Documents</h3>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                {% if user.identityDocument %}
+                                {% if verification.identityData %}
                                 <div class="mb-4">
                                     <p class="text-sm font-medium text-gray-600 mb-2">Détails de la pièce d'identité</p>
                                     <div class="bg-gray-50 p-3 rounded-md">
@@ -70,24 +70,28 @@
                                 </div>
                                 {% endif %}
                                 
-                                {% if user.documentFront %}
+                                {% if verification.documentFront %}
                                 <div class="mb-4">
                                     <p class="text-sm font-medium text-gray-600 mb-2">Recto de la pièce</p>
-                                    <a href="{{ asset(user.documentFront) }}" target="_blank" 
+                                    {% set docParts = verification.documentFront|replace({'/uploads/': '', 'uploads/': ''})|split('/') %}
+                                    {% set docUrl = path('admin_media_serve', {type: docParts[0], filename: docParts[1]}) %}
+                                    <button onclick="previewImage('{{ docUrl }}', 'Recto de la pièce d\'identité')" 
                                        class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                                         <i class="fas fa-eye mr-1"></i> Voir le document
-                                    </a>
+                                    </button>
                                 </div>
                                 {% endif %}
                                 
                                 
-                                {% if user.selfie %}
+                                {% if verification.selfie %}
                                 <div class="mb-4">
                                     <p class="text-sm font-medium text-gray-600 mb-2">Selfie</p>
-                                    <a href="{{ asset(user.selfie) }}" target="_blank" 
+                                    {% set selfieParts = verification.selfie|replace({'/uploads/': '', 'uploads/': ''})|split('/') %}
+                                    {% set selfieUrl = path('admin_media_serve', {type: selfieParts[0], filename: selfieParts[1]}) %}
+                                    <button onclick="previewImage('{{ selfieUrl }}', 'Selfie')" 
                                        class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                                         <i class="fas fa-camera mr-1"></i> Voir le selfie
-                                    </a>
+                                    </button>
                                 </div>
                                 {% endif %}
                             </div>
@@ -103,8 +107,8 @@
                     <div class="px-6 py-4 border-b border-gray-200">
                         <h2 class="text-lg font-semibold text-gray-800">Actions</h2>
                     </div>
-                    <div class="p-6 space-y-4">
-                        <form method="post" action="{{ path('admin_approve_activation', {'id': user.id}) }}" class="w-full">
+                    <div class="p-6 space-y-4 text-center">
+                        <form method="post" action="{{ path('admin_approve_activation', {'id': verification.id}) }}" class="w-full">
                             <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ user.id) }}">
                             <button type="submit" class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                                 <i class="fas fa-check mr-2"></i>
@@ -112,8 +116,47 @@
                             </button>
                         </form>
 
-                        <form method="post" action="{{ path('admin_reject_activation', {'id': user.id}) }}" class="w-full">
+                        <div class="relative py-4">
+                            <div class="absolute inset-0 flex items-center">
+                                <span class="w-full border-t border-gray-300"></span>
+                            </div>
+                            <div class="relative flex justify-center text-sm">
+                                <span class="px-2 bg-white text-gray-500">OU</span>
+                            </div>
+                        </div>
+
+                        <form id="reject-section" method="post" action="{{ path('admin_reject_activation', {'id': verification.id}) }}" class="w-full">
                             <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ user.id) }}">
+                            
+                            <div class="mb-4 text-left">
+                                <label for="rejection_reason" class="block text-sm font-medium text-gray-700 mb-1">Motif du rejet <span class="text-red-500 font-bold">* Obligatoire</span></label>
+                                <textarea name="rejection_reason" id="rejection_reason" rows="4" 
+                                    class="w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-sm"
+                                    placeholder="Expliquez clairement pourquoi la demande est rejetée..." required>{{ verification.rejectionReason }}</textarea>
+                                
+                                <div class="mt-3">
+                                    <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">Suggestions rapides :</p>
+                                    <div class="flex flex-wrap gap-2">
+                                        <button type="button" onclick="setReason('Photo de la pièce d\'identité floue ou illisible')" 
+                                            class="text-[10px] bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-full transition-all border border-gray-200">
+                                            Photo floue
+                                        </button>
+                                        <button type="button" onclick="setReason('Pièce d\'identité expirée')" 
+                                            class="text-[10px] bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-full transition-all border border-gray-200">
+                                            Document expiré
+                                        </button>
+                                        <button type="button" onclick="setReason('Selfie ne correspondant pas à la photo de la pièce')" 
+                                            class="text-[10px] bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-full transition-all border border-gray-200">
+                                            Selfie non conforme
+                                        </button>
+                                        <button type="button" onclick="setReason('Informations saisies ne correspondant pas aux documents fournis')" 
+                                            class="text-[10px] bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-1.5 rounded-full transition-all border border-gray-200">
+                                            Données incorrectes
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
                             <button type="submit" 
                                     onclick="return confirm('Êtes-vous sûr de vouloir rejeter cette demande ?')"
                                     class="w-full flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
@@ -131,24 +174,27 @@
                     </div>
                     <div class="p-6">
                         <div class="text-center">
-                            {% if user.verificationStatut == 'pending' %}
+                            {% if verification.status == 'pending' %}
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-yellow-100 text-yellow-800">
                                     <i class="fas fa-clock mr-1"></i>
                                     En attente
                                 </span>
                                 <p class="mt-2 text-sm text-gray-600">Cette demande est en attente de vérification.</p>
-                            {% elseif user.verificationStatut == 'approved' %}
+                            {% elseif verification.status == 'verified' %}
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
                                     <i class="fas fa-check-circle mr-1"></i>
                                     Approuvé
                                 </span>
-                                <p class="mt-2 text-sm text-gray-600">Approuvée le {{ user.verificationSubmittedAt|date('d/m/Y à H:i') }}</p>
+                                <p class="mt-2 text-sm text-gray-600">Approuvée</p>
                             {% else %}
                                 <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
                                     <i class="fas fa-times-circle mr-1"></i>
                                     Rejeté
                                 </span>
                                 <p class="mt-2 text-sm text-gray-600">Cette demande a été rejetée.</p>
+                                {% if verification.rejectionReason %}
+                                    <p class="mt-2 text-xs text-red-600 font-medium">Motif : {{ verification.rejectionReason }}</p>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>
@@ -156,4 +202,56 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal de prévisualisation -->
+    <div id="imagePreviewModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4 bg-black/90 backdrop-blur-sm">
+        <div class="relative max-w-5xl w-full flex flex-col items-center">
+            <div class="w-full flex justify-between items-center mb-4 text-white">
+                <h4 id="previewTitle" class="text-sm font-bold uppercase tracking-widest">Aperçu du document</h4>
+                <button onclick="closePreview()" class="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="bg-white p-2 rounded-2xl shadow-2xl overflow-hidden max-h-[80vh] flex items-center justify-center">
+                <img id="previewImg" src="" alt="Aperçu" class="max-w-full max-h-full object-contain rounded-xl">
+            </div>
+            <div class="mt-6">
+                <button onclick="closePreview()" class="px-8 py-3 bg-white text-black text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-gray-100 transition-all shadow-xl">
+                    Fermer l'aperçu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function previewImage(src, title) {
+            const modal = document.getElementById('imagePreviewModal');
+            const modalImg = document.getElementById('previewImg');
+            const modalTitle = document.getElementById('previewTitle');
+            
+            modalImg.src = src;
+            modalTitle.textContent = title;
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePreview() {
+            const modal = document.getElementById('imagePreviewModal');
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            document.body.style.overflow = '';
+        }
+
+        function setReason(reason) {
+            document.getElementById('rejection_reason').value = reason;
+        }
+
+        // Fermer au clic extérieur
+        document.getElementById('imagePreviewModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closePreview();
+            }
+        });
+    </script>
 {% endblock %}

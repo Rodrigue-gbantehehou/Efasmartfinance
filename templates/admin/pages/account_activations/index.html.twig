@@ -1,6 +1,6 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Activations | EFA SMART FINANCE{% endblock %}
+{% block title %}Activations | Efa Smart Finance{% endblock %}
 
 {% block contentadmin %}
 <div class="p-6 font-poppins">
@@ -46,7 +46,8 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-pro-green-50">
-                        {% for user in activations %}
+                        {% for verification in activations %}
+                            {% set user = verification.user %}
                             <tr class="group hover:bg-pro-green-50/40 transition-all duration-300">
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
@@ -68,17 +69,19 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex flex-col">
-                                        <span class="text-sm text-gray-700 font-medium">{{ user.verificationSubmittedAt|date('d M Y') }}</span>
-                                        <span class="text-xs text-pro-green-600 font-semibold">{{ user.verificationSubmittedAt|date('H:i') }}</span>
+                                        <span class="text-sm text-gray-700 font-medium">{{ verification.submittedAt|date('d M Y') }}</span>
+                                        <span class="text-xs text-pro-green-600 font-semibold">{{ verification.submittedAt|date('H:i') }}</span>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-center">
-                                    {% if user.selfie %}
+                                    {% if verification.selfie %}
                                         <div class="relative inline-block group/selfie">
-                                            <img src="{{ asset('uploads/' ~ user.selfie) }}" 
+                                            {% set selfieParts = verification.selfie|replace({'/uploads/': '', 'uploads/': ''})|split('/') %}
+                                            {% set selfieUrl = path('admin_media_serve', {type: selfieParts[0], filename: selfieParts[1]}) %}
+                                            <img src="{{ selfieUrl }}" 
                                                  alt="Selfie" 
                                                  class="h-12 w-12 rounded-xl object-cover ring-2 ring-white shadow-md cursor-pointer transition-transform hover:scale-110 selfie-preview-trigger"
-                                                 data-src="{{ asset('uploads/' ~ user.selfie) }}"
+                                                 data-src="{{ selfieUrl }}"
                                                  data-title="Selfie de {{ user.firstname }}">
                                             <div class="absolute -top-1 -right-1 h-4 w-4 bg-pro-gold-500 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
                                                 <i class="fas fa-search text-[8px] text-white"></i>
@@ -90,25 +93,23 @@
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right">
                                     <div class="flex justify-end gap-2">
-                                        <a href="{{ path('admin_activation_show', {'id': user.id}) }}" 
+                                        <a href="{{ path('admin_activation_show', {'id': verification.id}) }}" 
                                            class="w-10 h-10 flex items-center justify-center rounded-xl bg-pro-green-50 text-pro-green-600 hover:bg-pro-green-600 hover:text-white transition-all shadow-sm"
                                            title="Détails complets">
                                             <i class="fas fa-eye"></i>
                                         </a>
                                         
-                                        <form method="post" action="{{ path('admin_approve_activation', {'id': user.id}) }}" class="inline" onsubmit="return confirm('Approuver ce compte ?')">
+                                        <form method="post" action="{{ path('admin_approve_activation', {'id': verification.id}) }}" class="inline" onsubmit="return confirm('Approuver ce compte ?')">
                                             <input type="hidden" name="_token" value="{{ csrf_token('approve' ~ user.id) }}">
                                             <button type="submit" class="w-10 h-10 flex items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white transition-all shadow-sm group/btn">
                                                 <i class="fas fa-check"></i>
                                             </button>
                                         </form>
-
-                                        <form method="post" action="{{ path('admin_reject_activation', {'id': user.id}) }}" class="inline" onsubmit="return confirm('Rejeter cette demande ?')">
-                                            <input type="hidden" name="_token" value="{{ csrf_token('reject' ~ user.id) }}">
-                                            <button type="submit" class="w-10 h-10 flex items-center justify-center rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-all shadow-sm group/btn">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </form>
+                                        
+                                        <a href="{{ path('admin_activation_show', {'id': verification.id}) }}#reject-section" 
+                                           class="w-10 h-10 flex items-center justify-center rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-all shadow-sm group/btn">
+                                            <i class="fas fa-times"></i>
+                                        </a>
                                     </div>
                                 </td>
                             </tr>

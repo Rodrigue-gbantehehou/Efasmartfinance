@@ -24,11 +24,11 @@
             <div class="text-xs text-green-100">{{ app.user.firstname }} {{ app.user.lastname }}</div>
             <div class="flex flex-col gap-0.5 mt-1">
           
-              {% if app.user.verificationStatut == "verified" %}
+              {% if app.user.verificationStatus == "Vérifié" %}
                 <div class="flex items-center gap-1.5 text-[10px] font-bold text-green-300">
                   <i class="fa-solid fa-check-circle text-[8px]"></i> COMPTE VÉRIFIÉ
                 </div>
-              {% elseif app.user.verificationStatut == "pending" %}
+              {% elseif app.user.verificationStatus == "En attente" %}
                 <div class="flex items-center gap-1.5 text-[10px] font-bold text-yellow-300">
                   <i class="fa-solid fa-clock text-[8px] animate-pulse"></i> VÉRIF. EN COURS
                 </div>
@@ -43,7 +43,7 @@
 
         {# Verification Status #}
         <div class="mt-1">
-          {% if app.user.verificationStatut == "pending" %}
+          {% if app.user.verificationStatus == "En attente" %}
           <div class="relative group">
             <button disabled
               class="w-full inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-yellow-400/90 text-green-950 cursor-not-allowed text-xs font-bold border border-yellow-300/50 shadow-sm">
@@ -55,7 +55,7 @@
               Votre demande de vérification est en cours de traitement par notre équipe.
             </div>
           </div>
-          {% elseif app.user.verificationStatut == "verified" %}
+          {% elseif app.user.verificationStatus == "Vérifié" %}
           <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/20 border border-green-400/30 text-[10px] font-bold text-green-100 uppercase tracking-wider">
             <i class="fa-solid fa-check-circle"></i>
             Compte Vérifié
@@ -108,7 +108,7 @@
         class="w-full inline-flex items-center justify-center gap-2 px-3 py-3 rounded-lg border border-white/30 hover:bg-white/10 text-white touch-target transition-all duration-200">
         <i class="fa-solid fa-right-from-bracket"></i> <span>Se déconnecter</span>
       </a>
-      <p class="text-xs text-green-100 text-center mt-3">© <span id="year2"></span> EFA SMART FINANCE</p>
+      <p class="text-xs text-green-100 text-center mt-3">© <span id="year2"></span> Efa Smart Finance</p>
     </div>
   </aside>
 </div>

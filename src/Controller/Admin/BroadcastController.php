@@ -12,6 +12,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -38,6 +39,37 @@ class BroadcastController extends AbstractController
         ]);
     }
 
+    #[Route('/search-users', name: 'admin_broadcast_search_users')]
+    public function searchUsers(Request $request): JsonResponse
+    {
+        $this->denyAccessUnlessGranted('VIEW_MODULE', 'broadcast');
+        $q = $request->query->get('q', '');
+
+        if (strlen($q) < 2) {
+            return new JsonResponse([]);
+        }
+
+        $users = $this->userRepo->createQueryBuilder('u')
+            ->where('u.email LIKE :q')
+            ->orWhere('u.firstname LIKE :q')
+            ->orWhere('u.lastname LIKE :q')
+            ->orWhere('u.id LIKE :q')
+            ->setParameter('q', '%' . $q . '%')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult();
+
+        $data = [];
+        foreach ($users as $user) {
+            $data[] = [
+                'id' => $user->getId(),
+                'text' => sprintf('%s %s (%s)', $user->getFirstname(), $user->getLastname(), $user->getEmail()),
+            ];
+        }
+
+        return new JsonResponse($data);
+    }
+
     #[Route('/create', name: 'admin_broadcast_create')]
     public function create(Request $request): Response
     {
@@ -48,6 +80,15 @@ class BroadcastController extends AbstractController
             $broadcast->setContent($request->request->get('content'));
             $broadcast->setType($request->request->get('type', 'email'));
             $broadcast->setTargetAudience($request->request->get('target_audience', 'all'));
+            
+            if ($broadcast->getTargetAudience() === 'single_user') {
+                $recipientId = $request->request->get('recipient_id');
+                if ($recipientId) {
+                    $recipient = $this->userRepo->find($recipientId);
+                    $broadcast->setRecipient($recipient);
+                }
+            }
+
             $broadcast->setCreatedBy($this->getUser());
 
             $scheduledDate = $request->request->get('scheduled_date');
@@ -86,7 +127,7 @@ class BroadcastController extends AbstractController
         }
 
         try {
-            $recipients = $this->getRecipients($broadcast->getTargetAudience());
+            $recipients = $this->getRecipients($broadcast);
             
             if (empty($recipients)) {
                 $this->addFlash('error', 'Aucun destinataire trouvé pour cette audience.');
@@ -116,6 +157,7 @@ class BroadcastController extends AbstractController
                         $notification->setTitle($broadcast->getTitle());
                         $notification->setMessage($broadcast->getContent());
                         $notification->setType('info');
+                        $notification->setSource('Équipe Efa Smart Finance'); // Set explicit source
                         $notification->setUser($user);
                         $this->em->persist($notification);
                     }
@@ -185,9 +227,14 @@ class BroadcastController extends AbstractController
         return $this->redirectToRoute('admin_broadcast');
     }
 
-    private function getRecipients(string $targetAudience): array
+    private function getRecipients(BroadcastMessage $broadcast): array
     {
+        if ($broadcast->getTargetAudience() === 'single_user') {
+            return $broadcast->getRecipient() ? [$broadcast->getRecipient()] : [];
+        }
+
         $qb = $this->userRepo->createQueryBuilder('u');
+        $targetAudience = $broadcast->getTargetAudience();
 
         switch ($targetAudience) {
             case 'verified':

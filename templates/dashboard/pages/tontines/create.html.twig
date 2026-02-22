@@ -212,7 +212,9 @@
               <input type="number" id="amount" min="100" step="100"
                 class="w-full pl-14 sm:pl-20 pr-4 sm:pr-8 py-3 sm:py-5 bg-slate-50 border-2 border-green-500 rounded-xl sm:rounded-2xl focus:border-green-700 focus:bg-white focus:ring-[8px] sm:focus:ring-[12px] focus:ring-green-50 transition-all outline-none font-black text-lg sm:text-2xl text-slate-900 placeholder:text-slate-200"
                 placeholder="100">
+                
             </div>
+            <p class="text-xs text-slate-400 mt-3 font-medium flex items-center"><i class="fas fa-info-circle mr-2 text-yellow-500"></i> le montant minimum est de 100 FCFA  </p>
 
             <!-- Suggestions Modernes 
             <div class="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3 mt-4">
@@ -259,25 +261,25 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-8 mb-6 sm:mb-10">
               <div class="bg-white/5 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-white/10">
                 <div id="previewPoints" class="text-xl sm:text-3xl font-black text-white">--</div>
-                <div class="text-[10px] sm:text-sm font-bold text-slate-400 uppercase tracking-widest mt-1">Versements</div>
+                <div class="text-[10px] sm:text-sm font-bold text-yellow-400 uppercase tracking-widest mt-1">Versements</div>
               </div>
               <div class="bg-white/5 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-white/10">
-                <div id="previewTotal" class="text-xl sm:text-3xl font-black text-green-400">--</div>
-                <div class="text-[10px] sm:text-sm font-bold text-slate-400 uppercase tracking-widest mt-1">Total Brut</div>
+                <div id="previewTotal" class="text-xl sm:text-3xl font-black text-white">--</div>
+                <div class="text-[10px] sm:text-sm font-bold text-yellow-400 uppercase tracking-widest mt-1">Total Brut</div>
               </div>
             </div>
 
             <div class="space-y-4 relative z-10">
               <div class="flex justify-between text-sm">
-                <span class="text-white font-medium">Frais de service :</span>
-                <span id="previewFees" class="font-black text-yellow-500">--</span>
+                <span class="text-yellow-500 font-medium">Frais de service :</span>
+                <span id="previewFees" class="font-black text-white">--</span>
               </div>
               <div class="pt-6 border-t border-white/10">
                 <div class="flex justify-between items-end">
                   <div>
-                    <p class="text-xl font-black text-slate-400 uppercase tracking-widest mb-1">Montant Net à Recevoir
+                    <p class="text-xl font-black text-yellow-400 uppercase tracking-widest mb-1">Montant Net à Recevoir
                     </p>
-                    <span id="previewNet" class="text-4xl font-black text-white tracking-tighter">--</span>
+                    <span id="previewNet" class="text-4xl font-bold text-white tracking-tighter">--</span>
                   </div>
                 </div>
               </div>
@@ -321,7 +323,7 @@
               class="bg-green-700 rounded-[1.5rem] sm:rounded-[2rem] p-6 sm:p-8 text-white flex flex-col justify-between shadow-xl shadow-green-900/20">
               <div class="space-y-3 sm:space-y-4">
                 <div class="flex justify-between items-center text-xs sm:text-sm">
-                  <span class="opacity-60">Total à cotiser :</span>
+                  <span class="">Total à cotiser :</span>
                   <span id="confirmTotal" class="font-bold">--</span>
                 </div>
                 <div class="flex justify-between items-center text-xs sm:text-sm text-yellow-400 font-bold">
@@ -330,7 +332,7 @@
                 </div>
               </div>
               <div class="mt-6 sm:mt-8 pt-4 sm:pt-8 border-t border-white/10">
-                <p class="text-[10px] font-black opacity-60 uppercase tracking-widest mb-1 sm:mb-2">Total à Recevoir</p>
+                <p class="text-[10px] font-black  uppercase tracking-widest text-white mb-1 sm:mb-2">Total à Recevoir</p>
                 <div id="confirmNet" class="text-2xl sm:text-4xl font-black text-white tracking-tighter">--</div>
               </div>
             </div>
@@ -641,9 +643,12 @@
         var pNet = document.getElementById('previewNet');
 
         if (pPoints) pPoints.textContent = points;
-        if (pTotal) pTotal.textContent = formatCurrency(total);
-        if (pFees) pFees.textContent = formatCurrency(fees);
-        if (pNet) pNet.textContent = formatCurrency(net);
+        if (pTotal) pTotal.textContent = formatCurrency(total) + ' FCFA';
+        if (pFees) {
+          var monthlyFees = data.duration > 0 ? (fees / data.duration) : 0;
+          pFees.textContent = formatCurrency(Math.round(monthlyFees)) + ' FCFA';
+        }
+        if (pNet) pNet.textContent = formatCurrency(net) + ' FCFA';
       } else {
         preview.classList.add('hidden');
       }
@@ -685,7 +690,10 @@
     if (cDuration) cDuration.textContent = data.duration + ' mois';
     if (cPoints) cPoints.textContent = points + ' ';
     if (cTotal) cTotal.textContent = formatCurrency(total);
-    if (cFees) cFees.textContent = formatCurrency(fees);
+    if (cFees) {
+      var monthlyFees = data.duration > 0 ? (fees / data.duration) : 0;
+      cFees.textContent = formatCurrency(Math.round(monthlyFees)) + ' / mois';
+    }
     if (cNet) cNet.textContent = formatCurrency(net);
   }
 
