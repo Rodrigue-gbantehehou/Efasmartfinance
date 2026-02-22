@@ -1,0 +1,25 @@
+ .gradient-bg {
+    background: linear-gradient(135deg, #005600 0%, #008000 100%);
+ }
+
+ .shadow-custom {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, .15);
+ }
+
+ .pulse-animation {
+    animation: pulse 2s infinite;
+ }
+
+ @keyframes pulse {
+    0% {
+       transform: scale(1)
+    }
+
+    50% {
+       transform: scale(1.05)
+    }
+
+    100% {
+       transform: scale(1)
+    }
+ }
