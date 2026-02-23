@@ -226,7 +226,7 @@
                                         {{ vStatus }}
                                     </span>
                                     {% if vStatus == 'En attente' %}
-                                    <a href="{{ path('admin_account_activations') }}" class="text-[9px] font-bold text-emerald-600 hover:text-emerald-800 underline uppercase tracking-tighter decoration-emerald-200 underline-offset-2">Traiter le dossier</a>
+                                    <a href="{{ path('admin_activation_show', {'id': user.latestVerification.id}) }}" class="text-[9px] font-bold text-emerald-600 hover:text-emerald-800 underline uppercase tracking-tighter decoration-emerald-200 underline-offset-2">Traiter le dossier</a>
                                     {% endif %}
                                     {% endif %}
                                 </div>
