@@ -290,4 +290,16 @@ class TransactionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult() ?? 0;
     }
+
+    public function getTotalSavedByUser(\App\Entity\User $user): float
+    {
+        return (float) $this->createQueryBuilder('t')
+            ->select('SUM(t.amount)')
+            ->where('t.utilisateur = :user')
+            ->andWhere('t.statut = :statut')
+            ->setParameter('user', $user)
+            ->setParameter('statut', 'completed')
+            ->getQuery()
+            ->getSingleScalarResult() ?? 0;
+    }
 }

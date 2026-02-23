@@ -26,9 +26,12 @@ class CaisseController extends AbstractController
         private EntityManagerInterface $entityManager,
         private UserRepository $userRepository,
         private TontineRepository $tontineRepository,
-        private ActivityLogger $activityLogger,
+        private \App\Service\ActivityLogger $activityLogger,
         private \App\Service\PdfService $pdfService,
-        private \App\Service\NumerotationFactureService $numerotationFactureService
+        private \App\Service\NumerotationFactureService $numerotationFactureService,
+        private \App\Service\EmailService $emailService,
+        private \App\Service\NotificationService $notificationService,
+        private \Twig\Environment $twig
     ) {}
 
     #[Route('/', name: 'admin_caisse_index')]
@@ -172,6 +175,36 @@ class CaisseController extends AbstractController
                 $tontine->getId(),
                 sprintf('Encaissement physique de %d FCFA pour %s. Reçu: %s', $amount, $tontine->getUtilisateur()->getFullName(), basename($pdfPath))
             );
+
+            // 6. Envoyer les notifications
+            try {
+                $user = $tontine->getUtilisateur();
+                
+                // Notification interne
+                $this->notificationService->sendPaymentNotification(
+                    $user,
+                    (float) $amount,
+                    $tontine->getName()
+                );
+
+                // Email de confirmation avec PDF
+                $emailContent = $this->twig->render('emails/facture.html.twig', [
+                    'user' => $user,
+                    'payment' => $transaction,
+                    'facture' => $facture,
+                    'hasPdf' => true
+                ]);
+
+                $this->emailService->sendWithAttachment(
+                    $user->getEmail(),
+                    'Confirmation de votre paiement Efasmartfinance - ' . $facture->getNumero(),
+                    $emailContent,
+                    $pdfPath,
+                    'recu-' . $facture->getNumero() . '.pdf'
+                );
+            } catch (\Exception $e) {
+                // On ne bloque pas si l'email échoue
+            }
 
             $this->addFlash('success', 'Le paiement a été enregistré avec succès.');
             

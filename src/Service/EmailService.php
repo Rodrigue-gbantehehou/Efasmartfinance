@@ -266,6 +266,26 @@ class EmailService
     }
 
     /**
+     * Email de suspension de compte
+     */
+    public function sendAccountSuspendedEmail(\App\Entity\User $user): void
+    {
+        try {
+            $htmlContent = $this->twig->render('emails/account_suspended.html.twig', [
+                'user' => $user
+            ]);
+
+            $this->send(
+                $user->getEmail(),
+                'Alerte : Votre compte Efa Smart Finance a été suspendu',
+                $htmlContent
+            );
+        } catch (\Exception $e) {
+            $this->logger->error("Erreur l'envoi de l'email de suspension : " . $e->getMessage());
+        }
+    }
+
+    /**
      * Email de demande de retrait
      */
     public function sendWithdrawalRequestEmail(\App\Entity\User $user, float $amount): void

@@ -145,4 +145,18 @@ class NotificationService
             $this->router->generate('app_compte_verification')
         );
     }
+
+    /**
+     * Notification lors de la suspension du compte
+     */
+    public function sendAccountSuspendedNotification(User $user): void
+    {
+        $this->addNotification(
+            $user,
+            'Compte suspendu',
+            "Votre compte a été temporairement suspendu par un administrateur. Veuillez contacter le support pour plus d'informations.",
+            'danger',
+            'Équipe Sécurité'
+        );
+    }
 }

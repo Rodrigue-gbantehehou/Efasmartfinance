@@ -268,7 +268,7 @@ class DashboardAdminController extends AbstractController
         return $this->redirectToRoute('admin_users_details', ['id' => $user->getId()]);
     }
 
-    #[Route('/users/{id}/activate', name: 'admin_user_activate', methods: ['POST'])]
+    #[Route('/users/{id}/activate', name: 'admin_users_activate', methods: ['POST'])]
     public function activateUser(Request $request, User $user): Response
     {
         if ($this->isCsrfTokenValid('activate'.$user->getId(), $request->request->get('_token'))) {
@@ -307,6 +307,9 @@ class DashboardAdminController extends AbstractController
         if ($this->isCsrfTokenValid('deactivate'.$user->getId(), $request->request->get('_token'))) {
             $user->setIsActive(false);
             $this->entityManager->flush();
+            
+            $this->notificationService->sendAccountSuspendedNotification($user);
+            $this->emailService->sendAccountSuspendedEmail($user);
             
             $this->activityLogger->log(
                 $this->getUser(),
