@@ -13,7 +13,7 @@
 (tontine.frequency == 'daily' ? 'days' : 'months')) %}
 
 {# Variables pour le flux de retrait partagé #}
-{% set withdrawalFeesDue = max(0, tontine.getDeductedServiceFee() - tontine.getPaidFees()) %}
+{% set withdrawalFeesDue = tontine.getFeesDue() %}
 {% set withdrawalGrossSavings = tontine.totalPay - tontine.getWithdrawnAmount() %}
 {% set withdrawalNetAmount = tontine.getAvailableWithdrawalAmount() %}
 
@@ -123,8 +123,16 @@
 			<a href="{{ path('app_tontine_payment', {'id': tontine.id}) }}"
 				class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 bg-white/20 backdrop-blur-sm text-white rounded-lg font-bold text-sm shadow-sm active:scale-95 transition-all border border-white/30">
 				<i class="fas fa-credit-card"></i>
-				<span>Payer un point</span>
+				<span>Payer</span>
 			</a>
+			{% if tontine.canWithdraw %}
+			<button
+				onclick="initiateWithdrawalFlow({{ tontine.id }}, {{ withdrawalFeesDue|number_format(2, '.', '') }}, '{{ tontine.frequency }}', {{ withdrawalGrossSavings|number_format(2, '.', '') }}, {{ withdrawalNetAmount|number_format(2, '.', '') }})"
+				class="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2 bg-yellow-500 text-white rounded-lg font-bold text-sm shadow-sm active:scale-95 transition-all">
+				<i class="fas fa-download"></i>
+				<span>Retrait</span>
+			</button>
+			{% endif %}
 		</div>
 		{% elseif uiState == 'COMPLETED_NO_WITHDRAWAL' or uiState == 'PARTIAL_WITHDRAWAL' %}
 		<button
@@ -554,6 +562,15 @@
 								<span>Verser</span>
 							</a>
 
+							{% if tontine.canWithdraw %}
+							<button
+								onclick="initiateWithdrawalFlow({{ tontine.id }}, {{ withdrawalFeesDue|number_format(2, '.', '') }}, '{{ tontine.frequency }}', {{ withdrawalGrossSavings|number_format(2, '.', '') }}, {{ withdrawalNetAmount|number_format(2, '.', '') }})"
+								class="inline-flex items-center gap-2 px-6 py-2.5 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-all duration-300 font-bold shadow-sm transform hover:scale-[1.02] active:scale-95">
+								<i class="fa-solid fa-hand-holding-dollar"></i>
+								<span>Retrait</span>
+							</button>
+							{% endif %}
+
 							<a href="{{ path('app_tontine_terminate_request', {'id': tontine.id}) }}"
 								onclick="return confirm('Confirmez-vous la clôture définitive de cette tontine ? Cette action est irréversible.')"
 								class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border-2 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 transition-all duration-300 font-semibold shadow-sm transform hover:scale-[1.02]">
@@ -607,7 +624,7 @@
 						</svg>
 						Résumé de votre tontine
 					</h3>
-
+					<!--
 					<div class="grid grid-cols-1 xs:grid-cols-2 gap-4 mb-4">
 						<div class="text-center p-3 bg-white rounded-lg border">
 							<div class="text-2xl font-bold text-green-600">{{ tontine.totalPay|number_format(0, ',', ' ') }}</div>
@@ -618,22 +635,13 @@
 							<div class="text-xs text-gray-500 uppercase font-bold">Frais déduits</div>
 						</div>
 					</div>
-
+					
 					<div class="bg-white rounded-lg border p-4 mb-4 text-center">
 						<div class="text-3xl font-black text-green-700">{{ tontine.getNetSavings()|number_format(0, ',', ' ') }} FCFA</div>
 						<div class="text-xs text-gray-500 uppercase font-bold tracking-wider">Épargne Nette Disponibles</div>
-					</div>
-					<!--
-                    <div class="mb-4 text-center">
-                        <span class="inline-flex items-center gap-2 px-4 py-2 bg-green-100 text-green-700 rounded-xl text-sm font-bold border border-green-200 uppercase tracking-wide">
-                            <i class="fa-solid fa-clock"></i>
-                            {% if tontine.frequency == 'daily' %}Journalière
-                            {% elseif tontine.frequency == 'weekly' %}Hebdomadaire
-                            {% elseif tontine.frequency == 'monthly' %}Mensuelle
-                            {% else %}{{ tontine.frequency|capitalize }}{% endif %}
-                        </span>
-                    </div>
--->
+					</div>-->
+				
+             
 					<div class="space-y-3 bg-green-50/50 p-4 rounded-xl border border-green-100">
 						<div class="flex items-center justify-between">
 							<div class="flex items-center gap-2">

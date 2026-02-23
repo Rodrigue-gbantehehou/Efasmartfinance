@@ -485,7 +485,10 @@ class Tontine
     }
     public function getPaidPoints(): int
     {
-        return intdiv($this->totalPay, $this->amountPerPoint);
+        if (!$this->amountPerPoint || $this->amountPerPoint <= 0) {
+            return 0;
+        }
+        return intdiv((int)$this->totalPay, (int)$this->amountPerPoint);
     }
 
     /**

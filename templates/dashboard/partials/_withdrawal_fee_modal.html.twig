@@ -32,17 +32,20 @@
                 </h4>
 
                 <div class="space-y-3 sm:space-y-4">
-                    <div id="modalGrossSavingsContainer" class="flex justify-between items-center text-xs sm:text-sm hidden">
-                        <span class="text-slate-600 font-medium">Épargne brute</span>
+
+                    <!--  <div id="modalGrossSavingsContainer" class="flex justify-between items-center text-xs sm:text-sm hidden">
+                        <span class="text-slate-600 font-medium">Épargne brute cumulée</span>
                         <span class="font-bold text-slate-900" id="modalGrossSavings">- 0 FCFA</span>
-                    </div>
+                    </div> -->
                     <div class="flex justify-between items-center text-xs sm:text-sm">
-                        <span class="text-slate-600 font-medium">Frais de service dus</span>
+                        <div class="flex flex-col">
+                            <span class="text-slate-600 font-medium">Frais de service dus</span>
+                        </div>
                         <span class="font-bold text-rose-500" id="modalFeeAmount">- 0 FCFA</span>
                     </div>
                     <div id="modalNetAmountContainer"
                         class="pt-3 sm:pt-4 border-t border-slate-200 flex justify-between items-center hidden">
-                        <span class="text-slate-900 font-black text-sm sm:text-base">Net à recevoir</span>
+                        <span class="text-slate-900 font-black text-sm sm:text-base">Estimation Net à recevoir</span>
                         <span class="text-lg sm:text-xl font-black text-emerald-600 tracking-tight" id="modalNetAmount">0
                             FCFA</span>
                     </div>
