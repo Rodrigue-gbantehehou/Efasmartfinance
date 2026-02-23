@@ -1,348 +1,277 @@
 {% extends 'admin/base.html.twig' %}
 
-{% block title %}Rapports et statistiques{% endblock %}
+{% block title %}Administration — Rapports & Statistiques{% endblock %}
 
 {% block contentadmin %}
-<div class="px-4 sm:px-6 lg:px-8">
-    <div class="sm:flex sm:items-center">
-        <div class="sm:flex-auto">
-            <h1 class="text-2xl font-semibold text-gray-900">Rapports et statistiques</h1>
-            <p class="mt-2 text-sm text-gray-700">Consultez les statistiques et générez des rapports sur votre plateforme.</p>
-        </div>
-    </div>
-
-    <!-- Cartes de statistiques -->
-    <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <!-- Utilisateurs -->
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="px-4 py-5 sm:p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
-                        <i class="fas fa-users text-white text-xl"></i>
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-600 truncate">Utilisateurs</dt>
-                            <dd class="flex items-baseline">
-                                <div class="text-2xl font-semibold text-gray-900">{{ stats.total_users|number_format(0, ',', ' ') }}</div>
-                                <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
-                                    <i class="fas fa-arrow-up"></i>
-                                    <span class="sr-only">Augmenté de</span>
-                                    12%
-                                </div>
-                            </dd>
-                        </dl>
-                    </div>
+<div class="min-h-screen bg-green-50/50">
+    <!-- Header Streamlined -->
+    <div class="bg-white border-b border-gray-100 shadow-sm sticky top-0 z-10">
+        <div class="px-6 py-5">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl font-bold font-poppins text-gray-900 tracking-tight">Rapports & Statistiques</h1>
+                    <p class="text-sm font-medium text-gray-600 mt-0.5">Analyse globale et extraction de données sécurisée</p>
                 </div>
-            </div>
-         
-        </div>
-
-        <!-- Tontines actives -->
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="px-4 py-5 sm:p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
-                        <i class="fas fa-piggy-bank text-white text-xl"></i>
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-600 truncate">Tontines actives</dt>
-                            <dd class="flex items-baseline">
-                                <div class="text-2xl font-semibold text-gray-900">{{ stats.active_tontines|number_format(0, ',', ' ') }}</div>
-                                <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
-                                    <i class="fas fa-arrow-up"></i>
-                                    8%
-                                </div>
-                            </dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-           
-        </div>
-
-        <!-- Transactions -->
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="px-4 py-5 sm:p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 bg-green-500 rounded-md p-3">
-                        <i class="fas fa-exchange-alt text-white text-xl"></i>
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-600 truncate">Transactions</dt>
-                            <dd class="flex items-baseline">
-                                <div class="text-2xl font-semibold text-gray-900">{{ stats.total_transactions|number_format(0, ',', ' ') }}</div>
-                                <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
-                                    <i class="fas fa-arrow-up"></i>
-                                    15%
-                                </div>
-                            </dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
-           
-        </div>
-
-        <!-- Volume total -->
-        <div class="bg-white overflow-hidden shadow rounded-lg">
-            <div class="px-4 py-5 sm:p-6">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 bg-yellow-500 rounded-md p-3">
-                        <i class="fas fa-chart-line text-white text-xl"></i>
-                    </div>
-                    <div class="ml-5 w-0 flex-1">
-                        <dl>
-                            <dt class="text-sm font-medium text-gray-600 truncate">Volume total</dt>
-                            <dd class="flex items-baseline">
-                                <div class="text-2xl font-semibold text-gray-900">{{ (stats.total_volume ?? 0)  }}  F CFA</div>
-                                <div class="ml-2 flex items-baseline text-sm font-semibold text-green-600">
-                                    <i class="fas fa-arrow-up"></i>
-                                    23%
-                                </div>
-                            </dd>
-                        </dl>
-                    </div>
-                </div>
-            </div>
             
-        </div>
-    </div>
-
-    <!-- Graphiques -->
-    <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Activité récente -->
-        <div class="bg-white shadow rounded-lg p-6">
-            <h2 class="text-lg font-medium text-gray-900 mb-4">Activité récente</h2>
-            <div class="h-64">
-                <canvas id="recentActivityChart"></canvas>
-            </div>
-        </div>
-
-        <!-- Répartition des tontines -->
-        <div class="bg-white shadow rounded-lg p-6">
-            <h2 class="text-lg font-medium text-gray-900 mb-4">Répartition des tontines</h2>
-            <div class="h-64">
-                <canvas id="tontinesDistributionChart"></canvas>
             </div>
         </div>
     </div>
 
-    <!-- Export de données -->
-    <div class="mt-8 bg-white shadow rounded-lg overflow-hidden">
-        <div class="px-4 py-5 sm:px-6">
-            <h3 class="text-lg leading-6 font-medium text-gray-900">Exporter des données</h3>
-            <p class="mt-1 text-sm text-gray-600">Générez des rapports personnalisés au format Excel ou PDF.</p>
+    <!-- Contenu -->
+    <div class="p-6 space-y-8">
+        
+        <!-- Stats Cards Refined -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div class="group bg-white rounded-[2rem] border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/5 hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center transition-colors group-hover:bg-emerald-600 group-hover:text-white">
+                        <i class="fas fa-users text-lg"></i>
+                    </div>
+                    <span class="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">+12%</span>
+                </div>
+                <div class="space-y-1">
+                    <h3 class="text-3xl font-bold font-poppins text-gray-900">{{ stats.total_users|number_format(0, ',', ' ') }}</h3>
+                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">Utilisateurs inscrits</p>
+                </div>
+            </div>
+
+            <div class="group bg-white rounded-[2rem] border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/5 hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center transition-colors group-hover:bg-green-600 group-hover:text-white">
+                        <i class="fas fa-piggy-bank text-lg"></i>
+                    </div>
+                    <span class="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">+8%</span>
+                </div>
+                <div class="space-y-1">
+                    <h3 class="text-3xl font-bold font-poppins text-gray-900">{{ stats.active_tontines|number_format(0, ',', ' ') }}</h3>
+                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">Tontines Actives</p>
+                </div>
+            </div>
+
+            <div class="group bg-white rounded-[2rem] border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/5 hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center transition-colors group-hover:bg-blue-600 group-hover:text-white">
+                        <i class="fas fa-exchange-alt text-lg"></i>
+                    </div>
+                    <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full">+15%</span>
+                </div>
+                <div class="space-y-1">
+                    <h3 class="text-3xl font-bold font-poppins text-gray-900">{{ stats.total_transactions|number_format(0, ',', ' ') }}</h3>
+                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">Flux Transactions</p>
+                </div>
+            </div>
+
+            <div class="group bg-white rounded-[2rem] border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-amber-500/5 hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center transition-colors group-hover:bg-amber-600 group-hover:text-white">
+                        <i class="fas fa-chart-line text-lg"></i>
+                    </div>
+                    <span class="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-full">+23%</span>
+                </div>
+                <div class="space-y-1">
+                    <h3 class="text-2xl font-bold font-poppins text-gray-900">{{ (stats.total_volume ?? 0)|number_format(0, ',', ' ') }} <span class="text-xs">FCFA</span></h3>
+                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">Volume Total Généré</p>
+                </div>
+            </div>
         </div>
-        <div class="border-t border-gray-200 px-4 py-5 sm:p-6">
-            <form action="{{ path('admin_reports') }}" method="POST" class="space-y-6">
-                <div class="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-6">
-                    <div class="sm:col-span-3">
-                        <label for="report-type" class="block text-sm font-medium text-gray-700">Type de rapport</label>
-                        <select id="report-type" name="report-type" required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md">
-                            <option>Transactions</option>
-                            <option>Utilisateurs</option>
-                            <option>Tontines</option>
-                            <option>Retraits</option>
-                        </select>
-                    </div>
 
-                    <div class="sm:col-span-3">
-                        <label for="date-range" class="block text-sm font-medium text-gray-700">Période</label>
-                        <select id="date-range" name="date-range" required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md">
-                            <option>7 derniers jours</option>
-                            <option>30 derniers jours</option>
-                            <option>Mois en cours</option>
-                            <option>Mois précédent</option>
-                            <option>Personnalisé</option>
-                        </select>
-                    </div>
-
-                    <div class="sm:col-span-3">
-                        <label for="format" class="block text-sm font-medium text-gray-700">Format</label>
-                        <select id="format" name="format" required class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md">
-                            <option>Excel (.xlsx)</option>
-                            <option>PDF (.pdf)</option>
-                            <option>CSV (.csv)</option>
-                        </select>
-                    </div>
+        <!-- Charts Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white rounded-[2.5rem] border border-gray-100 p-8 shadow-sm">
+                <div class="mb-8">
+                    <h2 class="text-lg font-bold font-poppins text-gray-900">Activité Récente</h2>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-widest mt-1">Évolution des flux financiers</p>
                 </div>
-
-                <div class="flex justify-end">
-                    <button type="button" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                        Annuler
-                    </button>
-                    <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-                        <i class="fas fa-download mr-2"></i> Exporter
-                    </button>
+                <div class="h-[300px]">
+                    <canvas id="recentActivityChart"></canvas>
                 </div>
-            </form>
+            </div>
+
+            <div class="bg-white rounded-[2.5rem] border border-gray-100 p-8 shadow-sm">
+                <div class="mb-8">
+                    <h2 class="text-lg font-bold font-poppins text-gray-900">Répartition Tontines</h2>
+                    <p class="text-xs font-semibold text-gray-500 uppercase tracking-widest mt-1">Volume par fréquence</p>
+                </div>
+                <div class="h-[300px]">
+                    <canvas id="tontinesDistributionChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Section -->
+        <div id="export-section" class="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm">
+            <div class="px-8 py-6 border-b border-gray-50 bg-gray-50/30">
+                <h3 class="text-lg font-bold font-poppins text-gray-900">Générateur de Rapports</h3>
+                <p class="text-xs font-semibold text-gray-500 uppercase tracking-widest mt-1">Extraction personnalisée au format pro</p>
+            </div>
+            <div class="p-8">
+                <form action="{{ path('admin_reports') }}" method="POST" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="space-y-2">
+                        <label for="report-type" class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Type de Données</label>
+                        <div class="relative">
+                            <select id="report-type" name="report-type" required class="w-full bg-gray-50 border-0 rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-emerald-500 appearance-none transition-all cursor-pointer">
+                                <option>Transactions</option>
+                                <option>Utilisateurs</option>
+                                <option>Tontines</option>
+                                <option>Retraits</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="date-range" class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Période d'Analyse</label>
+                        <div class="relative">
+                            <select id="date-range" name="date-range" required class="w-full bg-gray-50 border-0 rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-emerald-500 appearance-none transition-all cursor-pointer">
+                                <option>7 derniers jours</option>
+                                <option>30 derniers jours</option>
+                                <option>Mois en cours</option>
+                                <option>Mois précédent</option>
+                                <option>Personnalisé</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
+                                <i class="fas fa-calendar-alt text-xs"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <label for="format" class="text-[10px] font-black text-gray-500 uppercase tracking-widest ml-1">Format de Sortie</label>
+                        <div class="relative flex gap-3">
+                            <div class="flex-1 relative">
+                                <select id="format" name="format" required class="w-full bg-gray-50 border-0 rounded-2xl px-5 py-4 text-sm font-bold text-gray-900 focus:ring-2 focus:ring-emerald-500 appearance-none transition-all cursor-pointer">
+                                    <option>Excel (.xlsx)</option>
+                                    <option>PDF (.pdf)</option>
+                                    <option>CSV (.csv)</option>
+                                </select>
+                                <div class="absolute inset-y-0 right-4 flex items-center pointer-events-none text-gray-400">
+                                    <i class="fas fa-file-code text-xs"></i>
+                                </div>
+                            </div>
+                            <button type="submit" class="bg-gray-900 text-white rounded-2xl px-8 py-4 text-xs font-black uppercase tracking-widest hover:bg-emerald-600 transition-all shadow-xl shadow-gray-200 flex items-center gap-3">
+                                <i class="fas fa-download"></i> <span class="hidden sm:inline">Exporter</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 </div>
 
 {% block javascripts %}
-
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Données des graphiques depuis le contrôleur
+    // Données des graphiques
     const activityData = {{ activity_data|raw }};
     const tontineStats = {{ tontine_stats|raw }};
     
-    // Formater les dates pour l'affichage
     const formatDate = (dateString) => {
         const date = new Date(dateString);
         return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
     };
 
-    // Graphique d'activité récente
-    const recentActivityCtx = document.getElementById('recentActivityChart').getContext('2d');
-    if (recentActivityCtx) {
-        new Chart(recentActivityCtx, {
-            type: 'line',
-            data: {
-                labels: activityData.map(item => formatDate(item.date)),
-                datasets: [{
-                    label: 'Montant des transactions (FCFA)',
-                    data: activityData.map(item => item.amount),
-                    borderColor: 'rgb(79, 70, 229)',
-                    backgroundColor: 'rgba(79, 70, 229, 0.1)',
-                    tension: 0.3,
-                    fill: true,
-                    yAxisID: 'y',
-                    order: 1
-                }, {
-                    label: 'Nombre de transactions',
-                    data: activityData.map(item => item.count),
-                    borderColor: 'rgb(16, 185, 129)',
-                    borderDash: [5, 5],
-                    backgroundColor: 'transparent',
-                    tension: 0.3,
-                    yAxisID: 'y1',
-                    order: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 20
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed.y !== null) {
-                                    if (context.dataset.label.includes('Montant')) {
-                                        label += new Intl.NumberFormat('fr-FR', { 
-                                            style: 'currency', 
-                                            currency: 'F CFA',
-                                            maximumFractionDigits: 0
-                                        }).format(context.parsed.y);
-                                    } else {
-                                        label += context.parsed.y;
-                                    }
-                                }
-                                return label;
-                            }
-                        }
-                    }
-                },
-                scales: {
-                    x: {
-                        grid: {
-                            display: false
-                        },
-                        ticks: {
-                            maxRotation: 45,
-                            minRotation: 45
-                        }
-                    },
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        title: {
-                            display: true,
-                            text: 'Montant (FCFA)'
-                        },
-                        grid: {
-                            drawOnChartArea: false
-                        }
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'Nombre de transactions'
-                        },
-                        grid: {
-                            drawOnChartArea: false
-                        },
-                        min: 0
-                    }
+    // Chart Options Base
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    usePointStyle: true,
+                    padding: 25,
+                    font: { size: 10, weight: 'bold', family: 'Poppins' }
                 }
             }
-        });
-    }
+        }
+    };
 
-    // Graphique de répartition des tontines
-    const tontinesCtx = document.getElementById('tontinesDistributionChart');
-    if (tontinesCtx) {
-        new Chart(tontinesCtx, {
-            type: 'doughnut',
-            data: {
-                labels: tontineStats.labels,
-                datasets: [{
-                    data: tontineStats.data,
-                    backgroundColor: tontineStats.colors,
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: {
-                            usePointStyle: true,
-                            padding: 20
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            label: function(context) {
-                                const label = context.label || '';
-                                const value = context.raw || 0;
-                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                const percentage = Math.round((value / total) * 100);
-                                return `${label}: ${value} (${percentage}%)`;
-                            }
-                        }
-                    }
+    // Graphique d'activité récente
+    const recentCtx = document.getElementById('recentActivityChart').getContext('2d');
+    const gradActivity = recentCtx.createLinearGradient(0, 0, 0, 300);
+    gradActivity.addColorStop(0, 'rgba(16, 185, 129, 0.2)');
+    gradActivity.addColorStop(1, 'rgba(16, 185, 129, 0)');
+
+    new Chart(recentCtx, {
+        type: 'line',
+        data: {
+            labels: activityData.map(item => formatDate(item.date)),
+            datasets: [{
+                label: 'Volume (FCFA)',
+                data: activityData.map(item => item.amount),
+                borderColor: '#10b981',
+                backgroundColor: gradActivity,
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                yAxisID: 'y'
+            }, {
+                label: 'Transactions',
+                data: activityData.map(item => item.count),
+                borderColor: '#6366f1',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                backgroundColor: 'transparent',
+                pointRadius: 0,
+                tension: 0.4,
+                yAxisID: 'y1'
+            }]
+        },
+        options: {
+            ...chartOptions,
+            scales: {
+                y: {
+                    type: 'linear',
+                    display: true,
+                    position: 'left',
+                    grid: { color: '#f3f4f6', borderDash: [5, 5] },
+                    ticks: { font: { size: 9, weight: 'bold' } }
                 },
-                cutout: '60%'
+                y1: {
+                    type: 'linear',
+                    display: true,
+                    position: 'right',
+                    grid: { display: false },
+                    ticks: { font: { size: 9, weight: 'bold' } }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { font: { size: 9, weight: 'bold' } }
+                }
             }
-        });
-    }
+        }
+    });
+
+    // Graphique de répartition
+    const tontinesCtx = document.getElementById('tontinesDistributionChart');
+    new Chart(tontinesCtx, {
+        type: 'doughnut',
+        data: {
+            labels: tontineStats.labels,
+            datasets: [{
+                data: tontineStats.data,
+                backgroundColor: tontineStats.colors,
+                hoverOffset: 20,
+                borderWidth: 0
+            }]
+        },
+        options: {
+            ...chartOptions,
+            cutout: '70%',
+            plugins: {
+                ...chartOptions.plugins,
+                tooltip: {
+                    padding: 12,
+                    cornerRadius: 12,
+                    titleFont: { family: 'Poppins', size: 12, weight: 'bold' }
+                }
+            }
+        }
+    });
 });
 </script>
 {% endblock %}

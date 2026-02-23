@@ -252,7 +252,7 @@ class ReportAdminController extends AbstractController
                   ->setCellValue('D' . $row, $tontine->getPeriode())
                   ->setCellValue('E' . $row, ucfirst($tontine->getStatut()))
                   ->setCellValue('F' . $row, $tontine->getCreatedAt()->format('d/m/Y H:i'))
-                  ->setCellValue('G' . $row, $tontine->getCreateur() ? $tontine->getCreateur()->getEmail() : 'Système');
+                  ->setCellValue('G' . $row, $tontine->getUtilisateur() ? $tontine->getUtilisateur()->getEmail() : 'Système');
             $row++;
         }
 
@@ -297,7 +297,7 @@ class ReportAdminController extends AbstractController
                   ->setCellValue('B' . $row, $withdrawal->getCreatedAt()->format('d/m/Y H:i'))
                   ->setCellValue('C' . $row, $withdrawal->getAmount())
                   ->setCellValue('D' . $row, $withdrawal->getStatut())
-                  ->setCellValue('E' . $row, $withdrawal->getRecipient() ? $withdrawal->getRecipient()->getEmail() : 'Inconnu')
+                  ->setCellValue('E' . $row, $withdrawal->getUtilisateur() ? $withdrawal->getUtilisateur()->getEmail() : 'Inconnu')
                   ->setCellValue('F' . $row, $withdrawal->getPaymentMethod() ?? 'Non spécifiée');
             $row++;
         }
