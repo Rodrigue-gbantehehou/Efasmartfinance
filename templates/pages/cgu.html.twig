@@ -1,13 +1,12 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Conditions Générales d’Utilisation - Efa Smart Finance{% endblock %}
+{% block title %}Conditions Générales d’Utilisation {% endblock %}
 
 {% block body %}
 <!-- Hero Section -->
 <div class="relative bg-green-700 text-white py-16 md:py-24">
     <div class="container mx-auto px-4 text-center">
-        <h1 class="text-3xl md:text-5xl font-bold mb-4">Conditions Générales d’Utilisation</h1>
-        <p class="text-xl text-gray-100 max-w-3xl mx-auto">Veuillez lire attentivement les règles d'utilisation de notre plateforme.</p>
+        <h1 class="text-3xl md:text-5xl font-bold mb-4">Conditions Générales d’Utilisation </h1>
     </div>
     <div class="absolute bottom-0 left-0 right-0 h-12 bg-white transform translate-y-1/2 rounded-t-3xl"></div>
 </div>
@@ -23,7 +22,7 @@
                 Objet
             </h2>
             <p class="text-slate-600 leading-relaxed">
-                Les présentes Conditions Générales d’Utilisation (CGU) définissent les règles applicables à l’accès et à l’utilisation de la plateforme <strong>Efa Smart Finance</strong>, dédiée à l’épargne individuelle digitale.
+                Les présentes Conditions Générales d’Utilisation (CGU) définissent les règles applicables à l’accès et à l’utilisation de la plateforme <strong>EFA Smart Finance</strong>, une solution numérique innovante dédiée à l’épargne individuelle simple et sécurisée.
             </p>
         </section>
 
@@ -36,15 +35,25 @@
             <ul class="space-y-3 text-slate-600">
                 <li class="flex gap-3">
                     <i class="fas fa-check text-green-600 mt-1"></i>
-                    <span>L’accès à la plateforme se fait via le site <strong>efasmartfinance.com</strong> et nécessite la création d’un compte personnel.</span>
+                    <span>L’accès se fait via le site officiel <strong>efasmartfinance.com</strong>.</span>
                 </li>
                 <li class="flex gap-3">
                     <i class="fas fa-check text-green-600 mt-1"></i>
-                    <span>Chaque utilisateur dispose d’un <strong>espace personnel sécurisé</strong>, d’une <strong>carte digitale avec code numérique et QR code</strong>, et d’un <strong>calendrier de tontine</strong>.</span>
+                    <span>Chaque utilisateur doit créer un compte personnel pour bénéficier des services.</span>
                 </li>
                 <li class="flex gap-3">
                     <i class="fas fa-check text-green-600 mt-1"></i>
-                    <span>Le service est accessible <strong>24h/24 et 7j/7</strong>.</span>
+                    <div>
+                        <span>L’espace personnel inclut :</span>
+                        <ul class="mt-2 ml-4 space-y-1 text-sm">
+                            <li class="flex items-center gap-2"><i class="fas fa-id-card text-green-700 text-xs"></i> Une carte digitale avec code numérique et QR code.</li>
+                            <li class="flex items-center gap-2"><i class="fas fa-calendar-alt text-green-700 text-xs"></i> Un calendrier de tontine personnalisé.</li>
+                        </ul>
+                    </div>
+                </li>
+                <li class="flex gap-3">
+                    <i class="fas fa-check text-green-600 mt-1"></i>
+                    <span>Le service est disponible <strong>24h/24 et 7j/7</strong>.</span>
                 </li>
             </ul>
         </section>
@@ -63,162 +72,133 @@
                     </li>
                     <li class="flex gap-3">
                         <i class="fas fa-clock text-green-700 mt-1"></i>
-                        <span>Les contributions peuvent être quotidiennes, hebdomadaire ou mensuelles.</span>
+                        <span>Les contributions peuvent être quotidiennes, hebdomadaires ou mensuelles.</span>
                     </li>
                     <li class="flex gap-3">
                         <i class="fas fa-hand-holding-usd text-green-700 mt-1"></i>
-                        <span>Les retraits sont possibles à la fin de la tontine ou à tout moment en cas de besoin.</span>
+                        <div>
+                            <span>Les retraits sont possibles :</span>
+                            <ul class="mt-2 ml-4 space-y-1 text-sm">
+                                <li>• À la fin de la tontine.</li>
+                                <li>• À tout moment en cas de besoin ou d’incapacité à poursuivre.</li>
+                            </ul>
+                        </div>
                     </li>
                 </ul>
             </div>
         </section>
 
-        <!-- 4. Frais de service -->
+        <!-- 4. Vérification d’identité (KYC) -->
         <section class="space-y-4">
             <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-3">
                 <span class="w-8 h-8 rounded-lg bg-yellow-100 text-yellow-700 flex items-center justify-center text-sm">4</span>
-                Comment les frais de gestion sont prélevés
+                Vérification d’identité (KYC)
             </h2>
-            <p class="text-slate-600 leading-relaxed">
-                Comme dans les tontines traditionnelles, vous cotisez chaque jour.
-            </p>
-            
-            <div class="bg-gradient-to-br from-green-50 to-yellow-50 p-6 rounded-2xl border border-green-100 space-y-4">
-                <ul class="space-y-3 text-slate-700">
-                    <li class="flex gap-3">
-                        <i class="fas fa-calendar-alt text-green-700 mt-1"></i>
-                        <span><strong>Durée :</strong> 1 mois = 31 jours de cotisation.</span>
-                    </li>
-                    <li class="flex gap-3">
-                        <i class="fas fa-money-bill-wave text-green-700 mt-1"></i>
-                        <span><strong>Récupération :</strong> Vous touchez vos cotisations sur 30 jours.</span>
-                    </li>
-                    <li class="flex gap-3">
-                        <i class="fas fa-cogs text-yellow-600 mt-1"></i>
-                        <span><strong>Frais de service :</strong> 1 jour de cotisation sert de frais de gestion.</span>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Exemple concret -->
-            <div class="bg-white border-2 border-green-200 p-6 rounded-2xl shadow-md space-y-4">
-                <h3 class="text-lg font-bold text-green-800 flex items-center gap-2">
-                    <i class="fas fa-calculator"></i>
-                    Exemple concret
-                </h3>
-                <ul class="space-y-2 text-slate-700 text-sm">
-                    <li class="flex gap-3">
-                        <span class="text-green-700">•</span>
-                        <span>Codjo choisit une carte tontine de 1 mois.</span>
-                    </li>
-                    <li class="flex gap-3">
-                        <span class="text-green-700">•</span>
-                        <span>Il cotise <strong>500 Fcfa par jour</strong>.</span>
-                    </li>
-                    <li class="flex gap-3">
-                        <span class="text-green-700">•</span>
-                        <span><strong>Total cotisé :</strong> 31 jours × 500 Fcfa = <span class="text-green-700 font-bold">15.500 Fcfa</span>.</span>
-                    </li>
-                    <li class="flex gap-3">
-                        <span class="text-green-700">•</span>
-                        <span><strong>Codjo récupère :</strong> <span class="text-green-700 font-bold text-lg">15.000 Fcfa</span>.</span>
-                    </li>
-                    <li class="flex gap-3">
-                        <span class="text-yellow-600">•</span>
-                        <span><strong>Frais de service et gestion :</strong> <span class="text-yellow-600 font-bold">500 Fcfa</span> (équivalent à 1 jour de cotisation).</span>
-                    </li>
-                </ul>
-            </div>
-
-            <!-- Avantages -->
-            <div class="bg-green-50 p-6 rounded-2xl border border-green-100">
-                <h3 class="text-lg font-bold text-green-800 flex items-center gap-2 mb-4">
-                    <i class="fas fa-check-circle"></i>
-                    Avantages pour le client
-                </h3>
-                <ul class="space-y-3 text-slate-700 text-sm">
-                    <li class="flex gap-3">
-                        <i class="fas fa-eye text-green-600 mt-1"></i>
-                        <span><strong>Transparence :</strong> les règles sont simples et identiques pour tous.</span>
-                    </li>
-                    <li class="flex gap-3">
-                        <i class="fas fa-shield-alt text-green-600 mt-1"></i>
-                        <span><strong>Sécurité :</strong> vos cotisations sont bien gérées.</span>
-                    </li>
-                    <li class="flex gap-3">
-                        <i class="fas fa-coins text-green-600 mt-1"></i>
-                        <span><strong>Accessibilité :</strong> vous pouvez commencer avec de petites sommes quotidiennes.</span>
-                    </li>
-                    <li class="flex gap-3">
-                        <i class="fas fa-history text-green-600 mt-1"></i>
-                        <span><strong>Tradition modernisée :</strong> nous reprenons l'esprit des tontines, mais avec une gestion claire et professionnelle.</span>
-                    </li>
-                </ul>
+            <div class="space-y-4 text-slate-600">
+                <p>La vérification KYC est <strong>obligatoire</strong> pour garantir la sécurité et la conformité légale.</p>
+                <div class="bg-yellow-50 p-6 rounded-2xl border border-yellow-100">
+                    <h3 class="font-bold text-yellow-800 mb-2">Documents requis :</h3>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center gap-2"><i class="fas fa-file-invoice text-yellow-700"></i> Pièce d’identité officielle</li>
+                        <li class="flex items-center gap-2"><i class="fas fa-home text-yellow-700"></i> Preuve de résidence</li>
+                    </ul>
+                </div>
+                <p class="text-sm">Les données KYC sont <strong>cryptées et protégées</strong>, utilisées uniquement pour la vérification.</p>
+                <p class="text-sm text-red-600 font-medium bg-red-50 p-3 rounded-xl border border-red-100">
+                    <i class="fas fa-exclamation-triangle mr-2"></i>
+                    En cas de non-validation, certaines fonctionnalités (notamment les retraits) peuvent être limitées.
+                </p>
             </div>
         </section>
 
-        <!-- 5. KYC -->
+        <!-- 5. Sécurité et confidentialité -->
         <section class="space-y-4">
             <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-3">
-                <span class="w-8 h-8 rounded-lg bg-yellow-100 text-yellow-700 flex items-center justify-center text-sm">5</span>
-                Vérification d'identité (KYC)
-            </h2>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="space-y-3 text-slate-600">
-                    <p class="text-sm">La vérification KYC est <strong>obligatoire</strong> pour garantir la sécurité et la conformité légale.</p>
-                    <p class="text-sm">L’utilisateur doit fournir une <strong>pièce d’identité officielle</strong> et une <strong>preuve de résidence</strong>.</p>
-                </div>
-                <div class="space-y-3 text-slate-600">
-                    <p class="text-sm">Les données KYC sont <strong>cryptées et protégées</strong>, utilisées uniquement pour la vérification.</p>
-                    <p class="text-sm text-red-600 font-medium">En cas de non-validation, certaines fonctionnalités (retraits) peuvent être limitées.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- 6. Sécurité -->
-        <section class="space-y-4">
-            <h2 class="text-2xl font-bold text-slate-900 flex items-center gap-3">
-                <span class="w-8 h-8 rounded-lg bg-green-100 text-green-700 flex items-center justify-center text-sm">6</span>
+                <span class="w-8 h-8 rounded-lg bg-green-100 text-green-700 flex items-center justify-center text-sm">5</span>
                 Sécurité et confidentialité
             </h2>
-            <p class="text-slate-600 leading-relaxed text-sm">
-                Toutes les données personnelles et transactions sont <strong>cryptées et sécurisées</strong>. La carte digitale et le QR code garantissent une traçabilité unique et fiable. <strong>Efa Smart Finance</strong> applique les lois béninoises et les standards internationaux :
+            <p class="text-slate-600 leading-relaxed">
+                Toutes les données personnelles et transactions sont <strong>cryptées et sécurisées</strong>. La carte digitale et le QR code assurent une traçabilité unique et fiable.
             </p>
-            <ul class="text-xs text-slate-500 space-y-1 pl-11">
-                <li>• <strong>Loi n°2017-20 du 20 avril 2018 portant Code du numérique (Bénin)</strong></li>
-                <li>• <strong>Loi n°2009-09 du 22 mai 2009 relative à la protection des données personnelles (Bénin)</strong></li>
-                <li>• <strong>RGPD (Union Européenne)</strong></li>
-                <li>• <strong>Normes KYC/AML (Know Your Customer / Anti-Money Laundering)</strong></li>
-                <li>• <strong>ISO/IEC 27001</strong> pour la sécurité des systèmes d’information</li>
-            </ul>
+            <div class="bg-slate-50 p-6 rounded-2xl border border-slate-100">
+                <h3 class="font-bold text-slate-900 mb-4">Conformité aux lois et standards :</h3>
+                <ul class="text-xs text-slate-500 space-y-2">
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-gavel text-green-700 mt-0.5"></i>
+                        <span><strong>Loi n°2017-20 du 20 avril 2018</strong> portant Code du numérique (Bénin)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-gavel text-green-700 mt-0.5"></i>
+                        <span><strong>Loi n°2009-09 du 22 mai 2009</strong> relative à la protection des données personnelles (Bénin)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-gavel text-green-700 mt-0.5"></i>
+                        <span><strong>Loi n°2025-14 du 02 juillet 2025</strong> relative à la régulation des services financiers numériques (Bénin)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-university text-green-700 mt-0.5"></i>
+                        <span>Règlements et directives <strong>BCEAO</strong> applicables aux services financiers digitaux et à la lutte contre le blanchiment de capitaux et le financement du terrorisme (AML/CFT)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-globe-europe text-green-700 mt-0.5"></i>
+                        <span><strong>RGPD</strong> (Union Européenne)</span>
+                    </li>
+                    <li class="flex items-start gap-2">
+                        <i class="fas fa-shield-alt text-green-700 mt-0.5"></i>
+                        <span><strong>ISO/IEC 27001</strong> pour la sécurité des systèmes d’information</span>
+                    </li>
+                </ul>
+            </div>
         </section>
 
-        <!-- 7 & 8 Responsabilités -->
+        <!-- 6 & 7 Responsabilités -->
         <div class="grid md:grid-cols-2 gap-8 pt-6 border-t border-slate-100">
             <div class="space-y-4">
-                <h3 class="font-bold text-slate-900">7. Responsabilités de l'utilisateur</h3>
-                <ul class="text-xs text-slate-500 space-y-2">
-                    <li>• Fournir des informations exactes lors de l’inscription et du KYC.</li>
-                    <li>• Respecter les échéances de contribution définies dans son calendrier de tontine.</li>
-                    <li>• Ne pas utiliser la plateforme à des fins frauduleuses ou illégales.</li>
+                <h3 class="font-bold text-slate-900 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded bg-slate-100 text-slate-700 flex items-center justify-center text-xs">6</span>
+                    Responsabilités de l’utilisateur
+                </h3>
+                <ul class="text-sm text-slate-500 space-y-2">
+                    <li class="flex gap-2"><i class="fas fa-circle text-[6px] mt-2 text-slate-400"></i> Fournir des informations exactes lors de l’inscription et du KYC.</li>
+                    <li class="flex gap-2"><i class="fas fa-circle text-[6px] mt-2 text-slate-400"></i> Respecter les échéances de contribution définies dans son calendrier de tontine.</li>
+                    <li class="flex gap-2"><i class="fas fa-circle text-[6px] mt-2 text-slate-400"></i> Ne pas utiliser la plateforme à des fins frauduleuses ou illégales.</li>
                 </ul>
             </div>
             <div class="space-y-4">
-                <h3 class="font-bold text-slate-900">8. Responsabilités de Efa Smart Finance</h3>
-                <ul class="text-xs text-slate-500 space-y-2">
-                    <li>• Assurer la disponibilité du service en continu (24/7).</li>
-                    <li>• Garantir la sécurité et la confidentialité des données.</li>
-                    <li>• Informer les utilisateurs en cas de mise à jour ou de modification des CGU.</li>
+                <h3 class="font-bold text-slate-900 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded bg-slate-100 text-slate-700 flex items-center justify-center text-xs">7</span>
+                    Responsabilités de EFA Smart Finance
+                </h3>
+                <ul class="text-sm text-slate-500 space-y-2">
+                    <li class="flex gap-2"><i class="fas fa-circle text-[6px] mt-2 text-slate-400"></i> Assurer la disponibilité du service en continu (24/7).</li>
+                    <li class="flex gap-2"><i class="fas fa-circle text-[6px] mt-2 text-slate-400"></i> Garantir la sécurité et la confidentialité des données.</li>
+                    <li class="flex gap-2"><i class="fas fa-circle text-[6px] mt-2 text-slate-400"></i> Informer les utilisateurs en cas de mise à jour ou de modification des CGU.</li>
                 </ul>
             </div>
         </div>
 
-        <!-- 9 & 10 Final -->
-        <div class="bg-green-900 text-white p-8 rounded-[2rem] space-y-4">
-            <h3 class="text-lg font-bold">9. Modification & 10. Loi applicable</h3>
-            <p class="text-white text-sm leading-relaxed">
-                <strong>Efa Smart Finance</strong> se réserve le droit de modifier les présentes CGU afin d’améliorer ses services. Les utilisateurs seront informés de toute mise à jour via le site officiel. Les présentes CGU sont régies par les lois en vigueur en <strong>République du Bénin</strong>.
-            </p>
+        <!-- 8 & 9 Final -->
+        <div class="grid md:grid-cols-2 gap-8 pt-6">
+            <div class="space-y-4">
+                <h3 class="font-bold text-slate-900 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded bg-slate-100 text-slate-700 flex items-center justify-center text-xs">8</span>
+                    Modification des conditions
+                </h3>
+                <p class="text-sm text-slate-500 leading-relaxed">
+                    <strong>EFA Smart Finance</strong> se réserve le droit de modifier les présentes CGU afin d’améliorer ses services. Les utilisateurs seront informés de toute mise à jour via le site officiel.
+                </p>
+            </div>
+            <div class="space-y-4">
+                <h3 class="font-bold text-slate-900 flex items-center gap-2">
+                    <span class="w-6 h-6 rounded bg-slate-100 text-slate-700 flex items-center justify-center text-xs">9</span>
+                    Loi applicable
+                </h3>
+                <ul class="text-sm text-slate-500 space-y-2">
+                    <li class="flex gap-2"><i class="fas fa-balance-scale text-slate-400 mt-1"></i> Les lois en vigueur en République du Bénin, notamment la <strong>loi n°2025-14 du 02 juillet 2025</strong>.</li>
+                    <li class="flex gap-2"><i class="fas fa-university text-slate-400 mt-1"></i> Les normes et directives de la <strong>BCEAO</strong>.</li>
+                    <li class="flex gap-2"><i class="fas fa-shield-alt text-slate-400 mt-1"></i> Les standards internationaux de protection des données.</li>
+                </ul>
+            </div>
         </div>
 
     </div>
