@@ -535,18 +535,14 @@ class Tontine
         // 1. Pot total cotisé
         $totalPay = (int)$this->getTotalPay();
         
-        // 2. Charge totale des frais à ce stade (ce qui doit sortir ou est déjà sorti du pot)
-        // La charge réelle pour le pot est : FraisThéoriques - FraisPayésParCarte
-        $theoreticalFees = (int)$this->getDeductedServiceFee() * ((float)$totalPay / ((float)($this->amountPerPoint ?? 0) * ($this->totalPoints ?? 0)));
-        // Note: On peut aussi utiliser (getFeesDue() + paidFees) mais attention aux arrondis
-        $theoreticalFees = (int) round($theoreticalFees);
+        // 2. Frais réellement déduits du pot (Frais au total - Frais payés par carte)
+        $deductedFromPot = max(0, $this->getPaidFees() - $this->getPaidFeesExternally());
         
-        $feeBurdenOnPot = max(0, $theoreticalFees - $this->paidFeesExternally);
-        
-        // 3. Montant déjà retiré (Net)
+        // 3. Montant déjà retiré
         $netWithdrawn = $this->getWithdrawnAmount();
         
-        return max(0, $totalPay - $feeBurdenOnPot - $netWithdrawn);
+        // Solde = Cotisations - Retraits - Frais déduits du pot
+        return max(0, $totalPay - $deductedFromPot - $netWithdrawn);
     }
     
     /**

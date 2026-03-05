@@ -550,7 +550,7 @@
             key: data.public_key || KKIA_PUBLIC_KEY,
             position: "center",
             theme: "#15803d",
-            sandbox: true,
+            sandbox: {{ kkiapay_sandbox ? 'true' : 'false' }},
             data: JSON.stringify({
                 payment_id: data.payment_id,
                 tontine_id: tontineId,

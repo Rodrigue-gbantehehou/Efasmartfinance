@@ -68,13 +68,13 @@
         </div>
 
         <!-- Information de retrait -->
-        <div class="bg-blue-50 border border-blue-200 rounded-2xl p-6 flex items-start gap-4">
-            <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0 text-blue-600">
+        <div class="bg-green-50 border border-green-200 rounded-2xl p-6 flex items-start gap-4">
+            <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0 text-green-600">
                 <i class="fas fa-info-circle"></i>
             </div>
             <div>
-                <h4 class="font-bold text-blue-900">Pourquoi payer maintenant ?</h4>
-                <p class="text-sm text-blue-700 mt-1">
+                <h4 class="font-bold text-green-900">Pourquoi payer maintenant ?</h4>
+                <p class="text-sm text-green-700 mt-1">
                     En réglant vos frais maintenant, vous pourrez retirer l'intégralité de votre épargne sans aucune déduction de la part de la plateforme.
                 </p>
             </div>
@@ -129,7 +129,7 @@
                     key: data.public_key || KKIA_PUBLIC_KEY,
                     position: "center",
                     theme: "#15803d",
-                    sandbox: true,
+                    sandbox: {{ kkiapay_sandbox ? 'true' : 'false' }},
                     data: JSON.stringify({
                         payment_id: data.payment_id,
                         tontine_id: TONTINE_ID,

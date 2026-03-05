@@ -16,7 +16,7 @@
         {% if diffPot|abs > 0.1 or diffFees|abs > 0.1 %}
         <form action="{{ path('admin_reconciliation_sync', {id: tontine.id}) }}" method="POST" onsubmit="return confirm('Attention : Cette action va synchroniser le solde et les frais de la tontine avec l\'historique des transactions. Continuer ?');">
             <input type="hidden" name="_token" value="{{ csrf_token('sync' ~ tontine.id) }}">
-            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-2xl font-bold shadow-lg shadow-blue-200 transition-all flex items-center gap-2">
+            <button type="submit" class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-2xl font-bold shadow-lg shadow-green-200 transition-all flex items-center gap-2">
                 <i class="fas fa-sync-alt"></i>
                 Réparer / Synchroniser
             </button>
@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div class="w-full bg-gray-100 h-1.5 rounded-full overflow-hidden">
-                <div class="bg-blue-500 h-full" style="width: {{ totalPay > 0 ? min(potTransactions / totalPay * 100, 100) : 0 }}%"></div>
+                <div class="bg-green-500 h-full" style="width: {{ totalPay > 0 ? min(potTransactions / totalPay * 100, 100) : 0 }}%"></div>
             </div>
             <div class="mt-2 text-[10px] text-slate-400">Somme des transactions nettes : {{ potTransactions|number_format(0, ',', ' ') }} F</div>
         </div>
@@ -65,7 +65,7 @@
     <div class="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden animate-fade-in-up">
         <div class="p-6 border-b border-gray-50 flex justify-between items-center">
             <h3 class="font-bold text-slate-900 flex items-center gap-2">
-                <i class="fas fa-history text-blue-500"></i>
+                <i class="fas fa-history text-green-500"></i>
                 Historique Audité (Qui, Quoi, Quand, Où)
             </h3>
         </div>
@@ -96,7 +96,7 @@
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-2">
                                 <div
-                                    class="h-8 w-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-[10px]">
+                                    class="h-8 w-8 rounded-full bg-green-50 text-green-600 flex items-center justify-center font-bold text-[10px]">
                                     {{ tx.utilisateur ? tx.utilisateur.firstname|first|upper ~
                                     tx.utilisateur.lastname|first|upper : '??' }}
                                 </div>
@@ -159,14 +159,14 @@
     </div>
 
     <!-- Technical Legend -->
-    <div class="mt-8 p-6 bg-blue-50 rounded-3xl border border-blue-100 flex gap-4 items-start">
+    <div class="mt-8 p-6 bg-green-50 rounded-3xl border border-green-100 flex gap-4 items-start">
         <div
-            class="h-10 w-10 bg-blue-600 text-white rounded-full flex items-center justify-center shrink-0 shadow-lg shadow-blue-200">
+            class="h-10 w-10 bg-green-600 text-white rounded-full flex items-center justify-center shrink-0 shadow-lg shadow-green-200">
             <i class="fas fa-microchip"></i>
         </div>
         <div>
-            <h4 class="font-bold text-blue-900 mb-1 leading-none">Intelligence d'Audit</h4>
-            <p class="text-blue-700 text-xs leading-relaxed opacity-80">
+            <h4 class="font-bold text-green-900 mb-1 leading-none">Intelligence d'Audit</h4>
+            <p class="text-green-700 text-xs leading-relaxed opacity-80">
                 Cet outil croise dynamiquement les <span class="font-bold">Transactions</span> financières avec les
                 <span class="font-bold">Logs d'Activités</span> système. Il permet de certifier l'origine (IP), l'auteur
                 (Utilisateur) et le contexte technique (Browser) de chaque franc crédité sur cette tontine.

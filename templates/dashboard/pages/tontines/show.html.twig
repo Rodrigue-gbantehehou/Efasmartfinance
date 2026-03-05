@@ -483,7 +483,7 @@
 								key: data.public_key || KKIA_PUBLIC_KEY,
 								position: "center",
 								theme: "#15803d",
-								sandbox: true,
+								sandbox: {{ kkiapay_sandbox ? 'true' : 'false' }},
 								data: JSON.stringify({
 									payment_id: data.payment_id,
 									tontine_id: {{ tontine.id }},
@@ -674,11 +674,11 @@
 								{{ tontine.availableWithdrawalAmount|number_format(0, ',', ' ') }}
 								FCFA</span>
 						</div>
-						<div>
+						<!--<div>
 							<p class="text-xs text-right text-green-600 mt-1">
 								Après déduction des frais de service
 							</p>
-						</div>
+						</div>-->
 					</div>
 				</div>
 

@@ -7,17 +7,17 @@ function formatCurrency(amount) {
         style: 'decimal',
         minimumFractionDigits: 0,
         maximumFractionDigits: 0
-    }).format(amount) ;
+    }).format(amount);
 }
 
 // Update tontines list
 function updateTontinesList(tontines) {
     const tontinesList = document.getElementById('tontinesList');
     if (!tontinesList) return;
-    
+
     // Clear existing content
     tontinesList.innerHTML = '';
-    
+
     if (tontines.length === 0) {
         tontinesList.innerHTML = `
             <div class="text-center py-8">
@@ -27,7 +27,7 @@ function updateTontinesList(tontines) {
         `;
         return;
     }
-    
+
     tontines.forEach(tontine => {
         const tontineElement = document.createElement('div');
         tontineElement.className = 'flex items-center justify-between p-3 md:p-4 border border-gray-100 rounded-lg hover:bg-gray-50 transition-colors';
@@ -75,22 +75,21 @@ function hideLoading() {
 // Show notification
 function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
-    notification.className = `fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg flex items-center justify-between transform transition-all duration-300 ${
-        type === 'success' ? 'bg-green-500 text-white' :
-        type === 'error' ? 'bg-red-500 text-white' :
-        type === 'warning' ? 'bg-yellow-500 text-white' :
-        'bg-blue-500 text-white'
-    }`;
-    
+    notification.className = `fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg flex items-center justify-between transform transition-all duration-300 ${type === 'success' ? 'bg-green-500 text-white' :
+            type === 'error' ? 'bg-red-500 text-white' :
+                type === 'warning' ? 'bg-yellow-500 text-white' :
+                    'bg-green-500 text-white'
+        }`;
+
     notification.innerHTML = `
         <span>${message}</span>
         <button class="ml-4 text-white hover:text-gray-200" onclick="this.parentElement.remove()">
             <i class="fa-solid fa-times"></i>
         </button>
     `;
-    
+
     document.body.appendChild(notification);
-    
+
     // Auto-remove notification after 5 seconds
     setTimeout(() => {
         notification.style.opacity = '0';
@@ -102,7 +101,7 @@ function showNotification(message, type = 'info') {
 function initSavingsChart() {
     const ctx = document.getElementById('savingsChart');
     if (!ctx) return;
-    
+
     // Simple chart implementation
     const canvas = ctx.getContext('2d');
     if (canvas) {
@@ -124,7 +123,7 @@ function initSavingsChart() {
 function refreshData() {
     showNotification('Actualisation en cours...', 'info');
     loadDashboardData();
-    
+
     // Vibration feedback on mobile
     if ('vibrate' in navigator) {
         navigator.vibrate([30, 50, 30]);
@@ -134,46 +133,46 @@ function refreshData() {
 // Load dashboard data from API
 async function loadDashboardData() {
     showLoading();
-    
+
     try {
         // Fetch data from API
         const response = await fetch('/api/tontines');
         if (!response.ok) {
             throw new Error('Erreur lors du chargement des données');
         }
-        
+
         const data = await response.json();
-        
+
         // Update user info
         const userNameElement = document.getElementById('welcomeUserName');
         const userDisplayNameElement = document.getElementById('userDisplayName');
-        
+
         if (userNameElement) {
             userNameElement.textContent = data.user.fullName || 'Utilisateur';
         }
-        
+
         if (userDisplayNameElement) {
             userDisplayNameElement.textContent = data.user.fullName || 'Utilisateur';
         }
-        
+
         // Format and update total balance
         const totalBalance = data.stats?.totalBalance || 0;
         const totalBalanceElement = document.getElementById('totalBalance');
         if (totalBalanceElement) {
             totalBalanceElement.textContent = formatCurrency(totalBalance);
         }
-        
+
         // Update KPIs
         const activeTontinesCountElement = document.getElementById('activeTontinesCount');
         if (activeTontinesCountElement) {
             activeTontinesCountElement.textContent = data.stats?.activeTontines || 0;
         }
-        
+
         const completedTontinesElement = document.getElementById('completedTontines');
         if (completedTontinesElement) {
             completedTontinesElement.textContent = data.stats?.completedTontines || 0;
         }
-        
+
         // Update progress bars
         const totalTontines = data.stats?.totalTontines || 1;
         const activeProgress = ((data.stats?.activeTontines || 0) / totalTontines) * 100;
@@ -181,28 +180,28 @@ async function loadDashboardData() {
         if (activeTontinesProgressElement) {
             activeTontinesProgressElement.style.width = `${activeProgress}%`;
         }
-        
+
         // Update upcoming payments
         const upcomingPaymentsCountElement = document.getElementById('upcomingPaymentsCount');
         if (upcomingPaymentsCountElement) {
             upcomingPaymentsCountElement.textContent = data.stats?.upcomingPayments || 0;
         }
-        
+
         // Update monthly savings (example)
         const monthlySavingsElement = document.getElementById('monthlySavings');
         if (monthlySavingsElement) {
             monthlySavingsElement.textContent = formatCurrency(totalBalance / 12);
         }
-        
+
         // If there are tontines, update the list
         if (data.tontines && data.tontines.length > 0) {
             updateTontinesList(data.tontines);
         }
-        
+
         // Update next payment info
         const nextPaymentAmountElement = document.getElementById('nextPaymentAmount');
         const nextPaymentDateElement = document.getElementById('nextPaymentDate');
-        
+
         if (data.tontines && data.tontines.length > 0) {
             const nextTontine = data.tontines.find(t => t.nextPayment) || data.tontines[0];
             if (nextTontine) {
@@ -215,7 +214,7 @@ async function loadDashboardData() {
                 }
             }
         }
-        
+
     } catch (error) {
         console.error('Erreur:', error);
         showNotification('Erreur lors du chargement des données', 'error');
@@ -225,41 +224,41 @@ async function loadDashboardData() {
 }
 
 // Initialize dashboard when DOM is loaded
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Set current year
     const currentYearElement = document.getElementById('currentYear');
     if (currentYearElement) {
         currentYearElement.textContent = new Date().getFullYear();
     }
-    
+
     // Initialize chart
     initSavingsChart();
-    
+
     // Load dashboard data
     loadDashboardData();
-    
+
     // User menu toggle
     const userMenuButton = document.getElementById('userMenuButton');
     const userMenu = document.getElementById('userMenu');
-    
+
     if (userMenuButton && userMenu) {
-        userMenuButton.addEventListener('click', function(e) {
+        userMenuButton.addEventListener('click', function (e) {
             e.stopPropagation();
             userMenu.classList.toggle('hidden');
         });
-        
+
         // Close menu when clicking outside
-        document.addEventListener('click', function(e) {
+        document.addEventListener('click', function (e) {
             if (!userMenu.contains(e.target) && e.target !== userMenuButton) {
                 userMenu.classList.add('hidden');
             }
         });
     }
-    
+
     // Add vibration on mobile for actions
     if ('vibrate' in navigator) {
         document.querySelectorAll('button, a').forEach(el => {
-            el.addEventListener('touchstart', function() {
+            el.addEventListener('touchstart', function () {
                 navigator.vibrate(10);
             });
         });
