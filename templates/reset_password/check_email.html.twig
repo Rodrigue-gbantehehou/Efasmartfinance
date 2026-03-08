@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+	<head>
+		<meta charset="UTF-8"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1"/>
+		<title>Efa Smart Finance — Email Envoyé</title>
+		<script src="https://cdn.tailwindcss.com"></script>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
+		<script>
+			tailwind.config = {
+				theme: {
+					extend: {
+						colors: {
+							secondary: '#f6c90e',
+							accent: '#2e7d32',
+							light: '#f8f9fa'
+						}
+					}
+				}
+			}
+		</script>
+		<style>
+			.gradient-bg {
+				background: linear-gradient(135deg, #1a4d2e 0%, #2e7d32 100%);
+			}
+			.shadow-custom {
+				box-shadow: 0 8px 40px rgba(0, 0, 0, .18);
+			}
+		</style>
+	</head>
+	<body class="min-h-screen gradient-bg flex items-center justify-center p-6">
+		<main class="w-full max-w-md">
+			<div class="bg-white/95 backdrop-blur rounded-2xl shadow-custom p-8 text-center">
+				<div class="flex items-center justify-center mb-6">
+					<div class="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center text-green-700 text-3xl">
+						<i class="fa-regular fa-paper-plane"></i>
+					</div>
+				</div>
+
+				<h2 class="text-lg font-semibold text-gray-800 mb-2">E-mail envoyé</h2>
+				<p class="text-sm text-gray-600 mb-6">
+					Si un compte correspond à votre adresse e-mail, vous recevrez un lien pour réinitialiser votre mot de passe.
+				</p>
+				
+				<div class="bg-blue-50 text-blue-700 p-4 rounded-lg mb-6 text-sm">
+					Ce lien expirera dans <span class="font-semibold">{{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}</span>.
+				</div>
+
+				<p class="text-sm text-gray-500 mb-8">
+					Si vous ne recevez pas l'e-mail, veuillez vérifier votre dossier de courrier indésirable ou 
+					<a href="{{ path('app_forgot_password_request') }}" class="text-green-700 hover:text-accent font-medium underline underline-offset-4">réessayer</a>.
+				</p>
+
+				<a href="{{ path('app_login') }}" class="w-full block bg-green-700 text-white font-bold py-2.5 rounded-lg hover:bg-yellow-500 transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary">
+					Retour à la connexion
+				</a>
+			</div>
+
+			<p class="text-center text-white/80 text-xs mt-4">
+				© <span id="year"></span> Efa Smart Finance — Tous droits réservés
+			</p>
+		</main>
+
+		<script>
+			document.getElementById('year').textContent = new Date().getFullYear();
+		</script>
+	</body>
+</html>

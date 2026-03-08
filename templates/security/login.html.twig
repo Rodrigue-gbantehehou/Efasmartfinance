@@ -89,8 +89,7 @@ light: '#f8f9fa'
 							<input type="checkbox" class="rounded border-gray-300 text-green-700 focus:ring-secondary"/>
 							<span class="text-gray-600">Se souvenir de moi</span>
 						</label>
-							<!-- Options 
-						<a href="#" class="text-green-700 hover:text-accent">Mot de passe oublié ?</a>-->
+						<a href="{{ path('app_forgot_password_request') }}" class="text-green-700 hover:text-accent font-medium">Mot de passe oublié ?</a>
 					</div>
 					<input
 					type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
