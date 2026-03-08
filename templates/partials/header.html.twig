@@ -59,12 +59,24 @@
                    </a>
                    {% endif %}
 
+                   <a href="{{ path('app_logout') }}" class="hidden lg:flex items-center space-x-2 bg-gradient-to-r from-yellow-500 to-yellow-400 hover:from-yellow-400 hover:to-yellow-300 text-white px-4 lg:px-5 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] group">
+                       <i class="fas fa-sign-out-alt text-xs lg:text-sm group-hover:translate-x-1 transition-transform"></i>
+                       <span class="text-xs lg:text-sm font-semibold hidden lg:inline">Déconnexion</span>
+                   </a>
+
                    <!-- Compte mobile -->
                   <a href="{{ path('app_dashboard') }}" class="lg:hidden flex flex-col items-center justify-center space-y-0.5 group">
                       <div class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-green-700 border border-green-700 text-white shadow-sm hover:bg-green-700/80 transition-all">
                           <i class="fas fa-user-alt text-xs sm:text-sm"></i>
                       </div>
                       <span class="text-[8px] sm:text-[10px] uppercase font-black text-green-800 tracking-tighter">Compte</span>
+                  </a>
+
+                  <a href="{{ path('app_logout') }}" class="lg:hidden flex flex-col items-center justify-center space-y-0.5 group">
+                      <div class="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center rounded-lg bg-yellow-500 border border-yellow-500 text-white shadow-sm hover:bg-yellow-400 transition-all">
+                          <i class="fas fa-sign-out-alt text-xs sm:text-sm"></i>
+                      </div>
+                      <span class="text-[8px] sm:text-[10px] uppercase font-black text-yellow-600 tracking-tighter">Sortie</span>
                   </a>
                   
                 {% else %}
@@ -253,6 +265,22 @@
             </a>
              {% endif %}
              {% endif %}  
+             
+             {% if app.user %}
+             <a href="{{ path('app_logout') }}" 
+                class="group flex items-center justify-between p-3 sm:p-4 rounded-xl bg-white/10 hover:bg-yellow-500/20 shadow-sm border border-white/5 transition-all duration-300 mt-4"
+                onclick="closeMobileMenu()">
+                 <div class="flex items-center space-x-3">
+                     <div class="w-10 h-10 rounded-lg bg-yellow-500 flex items-center justify-center text-white">
+                         <i class="fas fa-sign-out-alt"></i>
+                     </div>
+                     <div>
+                         <span class="font-semibold text-yellow-400 block">Déconnexion</span>
+                     </div>
+                 </div>
+                 <i class="fas fa-chevron-right text-yellow-500/50 text-sm"></i>
+             </a>
+             {% endif %}
              
 
         </nav>
