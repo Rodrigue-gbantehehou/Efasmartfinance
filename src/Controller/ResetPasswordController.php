@@ -27,7 +27,8 @@ class ResetPasswordController extends AbstractController
 
     public function __construct(
         private ResetPasswordHelperInterface $resetPasswordHelper,
-        private EntityManagerInterface $entityManager
+        private EntityManagerInterface $entityManager,
+        private \App\Service\EmailService $emailService
     ) {
     }
 
@@ -165,6 +166,8 @@ class ResetPasswordController extends AbstractController
                 'resetToken' => $resetToken,
             ])
         ;
+
+        $this->emailService->embedLogo($email);
 
         $mailer->send($email);
 

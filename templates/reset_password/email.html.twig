@@ -1,9 +1,30 @@
-<h1>Hi!</h1>
+{% extends 'emails/base.html.twig' %}
 
-<p>To reset your password, please visit the following link</p>
+{% block content %}
+<h1 class="brand-green">Réinitialisation de votre mot de passe</h1>
 
-<a href="{{ url('app_reset_password', {token: resetToken.token}) }}">{{ url('app_reset_password', {token: resetToken.token}) }}</a>
+<p>Bonjour,</p>
 
-<p>This link will expire in {{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}.</p>
+<p>Vous recevez cet e-mail car une demande de réinitialisation de mot de passe a été faite pour votre compte sur <strong>Efa Smart Finance</strong>.</p>
 
-<p>Cheers!</p>
+<p>Pour choisir un nouveau mot de passe, veuillez cliquer sur le bouton ci-dessous :</p>
+
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{ url('app_reset_password', {token: resetToken.token}) }}" class="button">Réinitialiser mon mot de passe</a>
+</div>
+
+<p style="color: #64748b; font-size: 14px; text-align: center; background-color: #f8fafc; padding: 15px; border-radius: 8px;">
+    Ce lien expirera dans <strong class="brand-gold">{{ resetToken.expirationMessageKey|trans(resetToken.expirationMessageData, 'ResetPasswordBundle') }}</strong>.
+</p>
+
+<div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #f1f5f9;">
+    <p style="margin: 0; color: #94a3b8; font-size: 13px;">
+        Si vous n'avez pas demandé de réinitialisation de mot de passe, aucune action supplémentaire n'est requise.
+    </p>
+</div>
+
+<p style="margin-top: 25px;">
+    Cordialement,<br>
+    <strong>L'équipe Efa Smart Finance</strong>
+</p>
+{% endblock %}
