@@ -797,7 +797,7 @@
 				{% if uiState == 'ACTIVE' and uiState != 'COMPLETED_WITH_WITHDRAWAL' %}
 
 				<div class="hidden md:block mt-6 text-center">
-					<button onclick="downloadCard()"
+					<button onclick="downloadCard('{{ tontine.tontineCode }}')"
 						class="inline-flex items-center gap-2 bg-gradient-to-r from-green-600 to-green-600 hover:from-green-700 hover:to-green-800 text-white font-medium py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
 						<i class="fa-solid fa-download"></i>
 						Télécharger la carte

@@ -697,24 +697,8 @@
 </script>
 
 
+
 <script>
-			// Fonction pour télécharger la carte
-function downloadCard() { // Vous pouvez utiliser html2canvas pour générer une image de la carte
-alert("Fonctionnalité de téléchargement à implémenter avec html2canvas.js");
-
-// Exemple d'implémentation avec html2canvas:
-/*
-            const card = document.querySelector('.membership-card');
-            const tontineCode = '{{ getCurrentTontine() ? getCurrentTontine().tontineCode : 'tontine' }}';
-            html2canvas(card).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'carte-tontine-' + tontineCode + '.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
-            });
-            */
-    }
-
     // Fonction pour afficher les infos d'un point ou payer via une modale
     function showPointInfo(pointNumber) {
         {% set currentT = getCurrentTontine() %}
