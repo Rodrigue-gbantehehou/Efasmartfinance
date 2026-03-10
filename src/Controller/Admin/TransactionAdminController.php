@@ -23,6 +23,7 @@ class TransactionAdminController extends AbstractController
         
         // Calculate statistics
         $totalEntrees = 0;
+        $totalPending = 0;
         $totalSorties = $withdrawalsRepository->getTotalApprovedAmount();
         $transactionsCount = count($transactions);
         $transactionsMois = 0;
@@ -42,14 +43,19 @@ class TransactionAdminController extends AbstractController
         
         foreach ($transactions as $transaction) {
             $amount = (float) $transaction->getAmount();
-            $paymentMethod = $transaction->getPaymentMethod();
+            $statut = strtolower($transaction->getStatut() ?? '');
             
-            // Assuming 'deposit' or similar indicates an incoming transaction
-            // Adjust these conditions based on your actual payment methods
-            if (str_contains(strtolower($paymentMethod ?? ''), 'deposit') || 
-                str_contains(strtolower($paymentMethod ?? ''), 'entree') ||
-                $transaction->getAmount() > 0) {
-                $totalEntrees += $amount;
+            // Only count successful transactions for Entrees
+            if (in_array($statut, ['completed', 'validé', 'success'])) {
+                if ($amount > 0) {
+                    $totalEntrees += $amount;
+                }
+            } 
+            // Count pending transactions separately
+            elseif (in_array($statut, ['pending', 'en attente', 'in_progress'])) {
+                if ($amount > 0) {
+                    $totalPending += $amount;
+                }
             }
             
             // Count transactions from the last 30 days
@@ -62,6 +68,7 @@ class TransactionAdminController extends AbstractController
             'transactions' => $transactions,
             'fees' => $fees,
             'totalEntrees' => $totalEntrees,
+            'totalPending' => $totalPending,
             'totalSorties' => $totalSorties,
             'totalFees' => $totalFees,
             'monthlyFees' => $monthlyFees,

@@ -103,30 +103,7 @@
 
         <!-- Cartes de Statistiques -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Utilisateurs (Restylé) - Seul Admin -->
-            {% if is_granted('ROLE_ADMIN') %}
-            <div class="group bg-white rounded-[2rem] border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/5 hover:-translate-y-1">
-                <div class="flex items-center justify-between mb-5">
-                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center transition-colors group-hover:bg-emerald-600 group-hover:text-white">
-                        <i class="fas fa-hand-holding-dollar text-lg"></i>
-                    </div>
-                </div>
-                <div class="space-y-1">
-                    <h3 class="text-3xl font-bold font-poppins text-gray-900">{{ stats.total_withdrawals_amount|default(0)|number_format(0, ',', ' ') }} <span class="text-sm font-semibold">FCFA</span></h3>
-                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">Total des retraits</p>
-                </div>
-                <div class="mt-6 pt-5 border-t border-gray-50 flex items-center justify-between">
-                    <span class="text-[10px] font-bold text-gray-600 uppercase">
-                        +{{ stats.new_users_today|default(0) }} <span class="text-emerald-500">Aujourd'hui</span>
-                    </span>
-                    <a href="{{ path('admin_withdrawals') }}" class="text-gray-300 hover:text-emerald-600 transition-colors">
-                        <i class="fas fa-arrow-right-long"></i>
-                    </a>
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- Tontines -->
+               <!-- Tontines -->
             <div class="group bg-white rounded-[2rem] border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-green-500/5 hover:-translate-y-1">
                 <div class="flex items-center justify-between mb-5">
                     <div class="w-12 h-12 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center transition-colors group-hover:bg-green-600 group-hover:text-white">
@@ -147,7 +124,35 @@
                 </div>
             </div>
 
-            <!-- Transactions -->
+            <!-- Utilisateurs (Restylé) - Seul Admin -->
+            {% if is_granted('ROLE_ADMIN') %}
+            <div class="group bg-white rounded-[2rem] border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/5 hover:-translate-y-1">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center transition-colors group-hover:bg-emerald-600 group-hover:text-white">
+                        <i class="fas fa-hand-holding-dollar text-lg"></i>
+                    </div>
+                </div>
+                <div class="space-y-1">
+                    <h3 class="text-3xl font-bold font-poppins text-gray-900">{{ stats.total_withdrawals_amount|default(0)|number_format(0, ',', ' ') }} <span class="text-sm font-semibold">FCFA</span></h3>
+                    <p class="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">Total des retraits</p>
+                </div>
+                <div class="mt-6 pt-5 border-t border-gray-50 flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-gray-600 uppercase">
+                        {% if stats.pending_withdrawals > 0 %}
+                            <span class="text-amber-500">{{ stats.pending_withdrawals }} en attente</span>
+                        {% else %}
+                            <span class="text-emerald-500">Aucun en attente</span>
+                        {% endif %}
+                    </span>
+                    <a href="{{ path('admin_withdrawals') }}" class="text-gray-300 hover:text-emerald-600 transition-colors">
+                        <i class="fas fa-arrow-right-long"></i>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+         
+            <!-- Transactions 
             <div class="group bg-white rounded-[2rem] border border-gray-100 p-6 transition-all duration-300 hover:shadow-xl hover:shadow-violet-500/5 hover:-translate-y-1">
                 <div class="flex items-center justify-between mb-5">
                     <div class="w-12 h-12 rounded-2xl bg-violet-50 text-violet-600 flex items-center justify-center transition-colors group-hover:bg-violet-600 group-hover:text-white">
@@ -171,7 +176,7 @@
                         <i class="fas fa-arrow-right-long"></i>
                     </a>
                 </div>
-            </div>
+            </div>-->
 
             <!-- Commissions (Masqué pour tous sauf Admin) -->
             {% if is_granted('ROLE_ADMIN') %}
@@ -180,11 +185,6 @@
                     <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center transition-colors group-hover:bg-amber-600 group-hover:text-white">
                         <i class="fas fa-receipt text-lg"></i>
                     </div>
-                    {% if stats.revenue_growth is defined %}
-                    <span class="text-[10px] font-black text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-100 uppercase italic">
-                        +{{ stats.revenue_growth }}%
-                    </span>
-                    {% endif %}
                 </div>
                 <div class="space-y-1">
                     <h3 class="text-3xl font-bold font-poppins text-gray-900">{{ stats.total_revenue|default(0)|number_format(0, ',', ' ') }} <span class="text-sm font-semibold">FCFA</span></h3>
@@ -195,6 +195,34 @@
                         Moy: {{ stats.avg_transaction|default(0)|number_format(0, ',', ' ') }} / t
                     </span>
                     <a href="{{ path('admin_financial_dashboard') }}" class="text-gray-300 hover:text-amber-600 transition-colors">
+                        <i class="fas fa-arrow-right-long"></i>
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Solde Réel (Admin uniquement) -->
+            {% if is_granted('ROLE_ADMIN') and stats.solde_reel is defined %}
+            <div class="group bg-gradient-to-br from-emerald-600 to-green-700 rounded-[2rem] p-6 transition-all duration-300 hover:shadow-xl hover:shadow-emerald-500/30 hover:-translate-y-1 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 group-hover:scale-110 transition-transform"></div>
+                <div class="flex items-center justify-between mb-5">
+                    <div class="w-12 h-12 rounded-2xl bg-white/20 text-white flex items-center justify-center">
+                        <i class="fas fa-scale-balanced text-lg"></i>
+                    </div>
+                    <span class="text-[9px] font-black text-white/70 bg-white/10 px-2.5 py-1 rounded-full uppercase tracking-widest">Trésorerie</span>
+                </div>
+                <div class="space-y-1">
+                    <h3 class="text-3xl font-bold font-poppins text-white">
+                        {{ stats.solde_reel|number_format(0, ',', ' ') }}
+                        <span class="text-sm font-semibold text-white/70">FCFA</span>
+                    </h3>
+                    <p class="text-[10px] font-black text-white/70 uppercase tracking-[0.2em]">Solde Réel</p>
+                </div>
+                <div class="mt-6 pt-5 border-t border-white/10 flex items-center justify-between">
+                    <span class="text-[10px] font-bold text-white/60 uppercase">
+                        Entrées − Retraits
+                    </span>
+                    <a href="{{ path('admin_transactions') }}" class="text-white/40 hover:text-white transition-colors">
                         <i class="fas fa-arrow-right-long"></i>
                     </a>
                 </div>
@@ -313,50 +341,57 @@
 
             <!-- Sidebar (Santé Système & Broadcasts) -->
             <div class="space-y-8">
-                <!-- Santé Système (Super Admin ou Admin) -->
-                {% if is_granted('VIEW_MODULE', 'maintenance') or is_granted('ROLE_ADMIN') %}
+                <!-- Répartition des Paiements (Admin) -->
+                {% if is_granted('ROLE_ADMIN') and stats.payment_distribution is defined %}
                 <div class="bg-gray-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl">
-                    <div class="relative ">
+                    <div class="relative">
                         <div class="flex items-center justify-between mb-8">
-                            <h3 class="text-sm font-bold font-poppins uppercase tracking-widest">Santé Système</h3>
+                            <h3 class="text-sm font-bold font-poppins uppercase tracking-widest">Répartition</h3>
                             <div class="flex items-center gap-2">
                                 <div class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></div>
-                                <span class="text-[10px] font-bold text-emerald-500 uppercase">Live</span>
+                                <span class="text-[10px] font-bold text-emerald-500 uppercase">Réel</span>
                             </div>
                         </div>
-                        
-                        <div class="space-y-6">
-                            {% set resources = [
-                                { label: 'CPU Load', value: system_status.server.load|split(' ')[0]|default('2%'), icon: 'fa-microchip', color: 'green' },
-                                { label: 'Memory', value: system_status.memory.percent|default(45) ~ '%', icon: 'fa-memory', color: 'emerald' },
-                                { label: 'Storage', value: system_status.disk.percent|default(12) ~ '%', icon: 'fa-hard-drive', color: 'amber' }
-                            ] %}
 
-                            {% for res in resources %}
+                        {# Calcul du total global pour les pourcentages #}
+                        {% set grand_total = 0 %}
+                        {% for row in stats.payment_distribution %}
+                            {% set grand_total = grand_total + row.total %}
+                        {% endfor %}
+
+                        <div class="space-y-5">
+                            {% set method_config = {
+                                'cash': { label: 'Espèces (Caisse)', icon: 'fa-money-bill-wave', color: 'emerald' },
+                                'kkiapay': { label: 'KkiaPay Mobile', icon: 'fa-mobile-screen', color: 'violet' },
+                                'wave': { label: 'Wave', icon: 'fa-wave-square', color: 'blue' },
+                                'om': { label: 'Orange Money', icon: 'fa-circle-dot', color: 'orange' }
+                            } %}
+
+                            {% for row in stats.payment_distribution %}
+                                {% set method = row.method|lower|default('autre') %}
+                                {% set config = method_config[method]|default({ label: method|capitalize, icon: 'fa-credit-card', color: 'gray' }) %}
+                                {% set pct = grand_total > 0 ? ((row.total / grand_total) * 100)|round(1) : 0 %}
                             <div class="space-y-2">
-                                <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gray-600">
+                                <div class="flex justify-between items-center text-[10px] font-bold uppercase tracking-widest text-gray-400">
                                     <div class="flex items-center gap-2">
-                                        <i class="fas {{ res.icon }} text-[9px]"></i>
-                                        <span>{{ res.label }}</span>
+                                        <i class="fas {{ config.icon }} text-[9px]"></i>
+                                        <span>{{ config.label }}</span>
                                     </div>
-                                    <span class="text-white">{{ res.value }}</span>
+                                    <span class="text-white">{{ pct }}%</span>
                                 </div>
-                                <div class="h-1 w-full bg-white/5 rounded-full overflow-hidden">
-                                    <div class="h-full bg-{{ res.color }}-500 rounded-full transition-all duration-1000" style="width: {{ res.value|replace({'%': ''})|trim }}%"></div>
+                                <div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                                    <div class="h-full bg-{{ config.color }}-500 rounded-full transition-all duration-700" style="width: {{ pct }}%"></div>
                                 </div>
+                                <p class="text-[9px] text-gray-600 text-right">{{ row.total|number_format(0, ',', ' ') }} F</p>
                             </div>
+                            {% else %}
+                            <p class="text-[10px] text-gray-600 text-center uppercase py-4">Aucune transaction confirmée</p>
                             {% endfor %}
                         </div>
 
-                        <div class="mt-8 pt-6 border-t border-white/5 grid grid-cols-2 gap-4">
-                            <div>
-                                <p class="text-[9px] font-black text-gray-600 uppercase italic">Database</p>
-                                <p class="text-[10px] font-bold text-emerald-400">Stable</p>
-                            </div>
-                            <div>
-                                <p class="text-[9px] font-black text-gray-600 uppercase italic">PHP Version</p>
-                                <p class="text-[10px] font-bold text-white">{{ system_status.php.version|default('8.1') }}</p>
-                            </div>
+                        <div class="mt-8 pt-6 border-t border-white/5">
+                            <p class="text-[9px] font-black text-gray-600 uppercase italic mb-1">Total Encaissé (confirmé)</p>
+                            <p class="text-base font-black text-emerald-400">{{ grand_total|number_format(0, ',', ' ') }} <span class="text-[10px] text-emerald-600/70">FCFA</span></p>
                         </div>
                     </div>
                     <!-- Décoration -->

@@ -693,6 +693,7 @@
     // Fonction d'origine qui ouvre la modale
     function requestWithdrawal(totalAPayer) {
         showWithdrawalModal(totalAPayer);
+    }
 
     // Fonction pour afficher les infos d'un point ou payer via une modale
     function showPointInfo(pointNumber) {
@@ -819,7 +820,7 @@ function getPointStatus(pointNumber) {
             return '';
         }
 
-        const paidPoints = currentTontine.paidPoints || 0;
+        const paidPoints = tontineInfo.paidPoints || 0;
         let status = '';
 
         if (pointNumber <= paidPoints) {

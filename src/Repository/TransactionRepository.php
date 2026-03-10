@@ -37,10 +37,10 @@ class TransactionRepository extends ServiceEntityRepository
 
     public function getTotalRevenue(): float
     {
-        return $this->createQueryBuilder('t')
+        return (float) $this->createQueryBuilder('t')
             ->select('SUM(t.amount)')
-            ->where('t.statut = :statut')
-            ->setParameter('statut', 'completed')
+            ->where('t.statut IN (:statuses)')
+            ->setParameter('statuses', ['completed', 'success', 'validé'])
             ->getQuery()
             ->getSingleScalarResult() ?? 0;
     }
@@ -72,8 +72,8 @@ class TransactionRepository extends ServiceEntityRepository
     {
         return (float) $this->createQueryBuilder('t')
             ->select('AVG(ABS(t.amount))')
-            ->where('t.statut = :statut')
-            ->setParameter('statut', 'completed')
+            ->where('t.statut IN (:statuses)')
+            ->setParameter('statuses', ['completed', 'success', 'validé'])
             ->getQuery()
             ->getSingleScalarResult() ?? 0;
     }
@@ -82,6 +82,8 @@ class TransactionRepository extends ServiceEntityRepository
     {
         return (float) $this->createQueryBuilder('t')
             ->select('SUM(ABS(t.amount))')
+            ->where('t.statut IN (:statuses)')
+            ->setParameter('statuses', ['completed', 'success', 'validé'])
             ->getQuery()
             ->getSingleScalarResult() ?? 0;
     }
@@ -221,11 +223,13 @@ class TransactionRepository extends ServiceEntityRepository
             'COUNT(t.id) as count '.
             'FROM App\Entity\Transaction t '.
             'WHERE t.createdAt >= :startDate AND t.createdAt <= :endDate '.
+            'AND t.statut IN (:statuses) '.
             'GROUP BY date '.
             'ORDER BY date ASC'
         )
         ->setParameter('startDate', $startDate->format('Y-m-d 00:00:00'))
-        ->setParameter('endDate', $endDate->format('Y-m-d 23:59:59'));
+        ->setParameter('endDate', $endDate->format('Y-m-d 23:59:59'))
+        ->setParameter('statuses', ['completed', 'success', 'validé']);
 
         $queryResults = $query->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
@@ -296,10 +300,24 @@ class TransactionRepository extends ServiceEntityRepository
         return (float) $this->createQueryBuilder('t')
             ->select('SUM(t.amount)')
             ->where('t.utilisateur = :user')
-            ->andWhere('t.statut = :statut')
+            ->andWhere('t.statut IN (:statuses)')
             ->setParameter('user', $user)
-            ->setParameter('statut', 'completed')
+            ->setParameter('statuses', ['completed', 'success', 'validé'])
             ->getQuery()
             ->getSingleScalarResult() ?? 0;
+    }
+
+    /**
+     * Récupère la répartition des encaissements par méthode de paiement
+     */
+    public function getPaymentMethodDistribution(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->select('t.paymentMethod as method, SUM(t.amount) as total')
+            ->where('t.statut IN (:statuses)')
+            ->setParameter('statuses', ['completed', 'success', 'validé'])
+            ->groupBy('t.paymentMethod')
+            ->getQuery()
+            ->getResult();
     }
 }

@@ -65,8 +65,10 @@ class DashboardAdminController extends AbstractController
             $stats['pending_withdrawals_amount'] = $this->withdrawalsRepository->getPendingAmount();
             $stats['total_withdrawals_amount'] = $this->withdrawalsRepository->getTotalApprovedAmount();
             $stats['total_revenue'] = $this->transactionRepository->getTotalRevenue();
+            $stats['solde_reel'] = $stats['total_revenue'] - $stats['total_withdrawals_amount'];
             $stats['avg_transaction'] = $this->transactionRepository->getAverageTransactionAmount();
             $stats['security_alerts'] = $this->activityLogRepository->countSecurityAlertsToday();
+            $stats['payment_distribution'] = $this->transactionRepository->getPaymentMethodDistribution();
             $stats['revenue_chart'] = [
                 'labels' => array_keys($revenueData),
                 'data' => array_values($revenueData)
@@ -79,21 +81,10 @@ class DashboardAdminController extends AbstractController
             'recent_broadcasts' => $this->broadcastRepository->findBy([], ['createdAt' => 'DESC'], 3),
             'recent_users' => $this->userRepository->findBy([], ['createdAt' => 'DESC'], 5),
             'recent_tontines' => $this->tontineRepository->findBy([], ['createdAt' => 'DESC'], 5),
-            'system_status' => $this->getSystemStatus(),
             'is_admin_view' => $isAdmin
         ]);
     }
 
-    private function getSystemStatus(): array
-    {
-        // Simple system status for Windows/Generic
-        return [
-            'server' => ['load' => 'N/A'],
-            'memory' => ['percent' => rand(30, 60)], // Moquerie réaliste si pas d'accès direct
-            'disk' => ['percent' => 15],
-            'php' => ['version' => PHP_VERSION]
-        ];
-    }
 
     #[Route('/users', name: 'admin_users')]
     public function usersList(Request $request): Response

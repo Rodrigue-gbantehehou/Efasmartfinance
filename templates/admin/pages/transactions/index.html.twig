@@ -17,64 +17,60 @@
     </div>
 
     <!-- Quick Insights -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 mb-10">
         <!-- Entrées -->
         <div class="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm relative overflow-hidden group">
             <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-full -mr-12 -mt-12 group-hover:scale-110 transition-transform"></div>
-            <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-4">Entrées Totales</p>
+            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Montants  Encaissés</p>
             <div class="flex items-end justify-between">
                 <div>
-                    <h4 class="text-2xl font-black font-poppins text-gray-900">{{ totalEntrees|number_format(0, ',', ' ') }} <span class="text-xs font-bold text-gray-600">FCFA</span></h4>
-                    <p class="text-[10px] text-emerald-600 font-bold mt-1 inline-flex items-center gap-1">
-                        <i class="fas fa-arrow-up"></i> +12.5%
-                    </p>
+                    <h4 class="text-lg font-black font-poppins text-gray-900">{{ totalEntrees|number_format(0, ',', ' ') }} <span class="text-[11px] font-bold text-gray-400">F</span></h4>
                 </div>
-                <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                    <i class="fas fa-arrow-right"></i>
-                </div>
+      
             </div>
         </div>
 
-        <!-- Sorties -->
         <div class="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm relative overflow-hidden group">
             <div class="absolute top-0 right-0 w-24 h-24 bg-rose-50 rounded-full -mr-12 -mt-12 group-hover:scale-110 transition-transform"></div>
-            <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-4">Sorties Globales</p>
+            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Montants  Decaissés</p>
             <div class="flex items-end justify-between">
                 <div>
-                    <h4 class="text-2xl font-black font-poppins text-gray-900">{{ totalSorties|number_format(0, ',', ' ') }} <span class="text-xs font-bold text-gray-600">FCFA</span></h4>
-                    <p class="text-[10px] text-rose-600 font-bold mt-1 inline-flex items-center gap-1">
-                        <i class="fas fa-arrow-down"></i> -3.2%
-                    </p>
+                    <h4 class="text-lg font-black font-poppins text-gray-900">{{ totalSorties|number_format(0, ',', ' ') }} <span class="text-[11px] font-bold text-gray-400">F</span></h4>
                 </div>
-                <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center">
-                    <i class="fas fa-arrow-left"></i>
+              
+            </div>
+        </div>
+
+        <!-- Volume en Attente -->
+        <div class="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-amber-50 rounded-full -mr-12 -mt-12 group-hover:scale-110 transition-transform"></div>
+            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Transactions En Attente</p>
+            <div class="flex items-end justify-between">
+                <div>
+                    <h4 class="text-lg font-black font-poppins text-amber-600">{{ totalPending|number_format(0, ',', ' ') }} <span class="text-[11px] font-bold text-amber-500/50">F</span></h4>
                 </div>
+             
             </div>
         </div>
 
         <!-- Solde -->
-        <div class="bg-white rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden group">
-            <div class="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full -mr-12 -mt-12 group-hover:scale-110 transition-transform"></div>
-            <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-4">Solde Plateforme</p>
-            <h4 class="text-2xl font-black font-poppins text-gray-900 leading-tight">
-                {{ (totalEntrees - totalSorties)|number_format(0, ',', ' ') }} <span class="text-xs text-gray-600">FCFA</span>
+        <div class="bg-white rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden group bg-gradient-to-br from-emerald-600 to-green-700">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 group-hover:scale-110 transition-transform"></div>
+            <p class="text-[10px] font-black text-white/80 uppercase tracking-widest mb-3">Solde Réel</p>
+            <h4 class="text-lg font-black font-poppins text-white leading-tight">
+                {{ (totalEntrees - totalSorties)|number_format(0, ',', ' ') }} <span class="text-[11px] text-white/60">F</span>
             </h4>
-            <div class="mt-4 w-full bg-white/5 h-1 rounded-full overflow-hidden">
-                <div class="bg-emerald-500 h-full w-[65%]"></div>
-            </div>
         </div>
 
         <!-- Volume Mensuel -->
         <div class="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm relative overflow-hidden group">
-            <p class="text-[10px] font-bold text-gray-600 uppercase tracking-widest mb-4">Flux Mensuel</p>
+            <p class="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-3">Volume (30j)</p>
             <div class="flex items-center justify-between">
                 <div>
-                    <h4 class="text-2xl font-black font-poppins text-gray-900">{{ transactionsMois }}</h4>
+                    <h4 class="text-lg font-black font-poppins text-gray-900">{{ transactionsMois }}</h4>
                     <p class="text-[10px] text-gray-600 font-bold mt-1 uppercase tracking-tighter">Opérations ce mois</p>
                 </div>
-                <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
-                    <i class="fas fa-calendar-check"></i>
-                </div>
+            
             </div>
         </div>
     </div>
